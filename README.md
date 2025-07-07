@@ -1,4 +1,5 @@
 # SPARTA: Sports Planning And Resource Tracking App
+SPARTA (Sports Planning and Resource Tracking App) is a web-based system designed to streamline the management of sports events. It centralizes key data such as participant profiles, team rosters, schedules, and scores, allowing organizers to efficiently plan, monitor, and update events in real time.
 
 ## Basic Commands:
 
