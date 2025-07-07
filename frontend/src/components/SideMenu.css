@@ -1,9 +1,10 @@
 .sidemenu {
-  width: 220px;
+  width: 150px;
   height: 100vh;
-  background-color: #1e1e2f;
-  color: white;
-  padding: 20px;
+  background-image: url('./SideMenuBG.png');
+  background-size: cover;        /* cover the whole sidebar */
+  background-position: top left;   /* center the image */
+  background-repeat: no-repeat;
   position: fixed;
   left: 0;
   top: 0;
@@ -20,15 +21,23 @@
 }
 
 .sidemenu-list li {
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 .sidemenu-list a {
-  color: white;
+  color: black;
+  display: inline-block;
+  padding: 6px 15px;
+  padding-right: 20px;
+  font-size: 15px;
+  font-family: Poppins, sans-serif;
   text-decoration: none;
   transition: 0.3s;
+  border-radius: 15px;
+  /*padding-left: 20px;*/
 }
 
 .sidemenu-list a:hover {
-  color: #00bcd4;
+  color: white;
+  background-color: #CE892C; /*1A2A49 - navy blue*/ /*#CE892C - orange*/
 }
