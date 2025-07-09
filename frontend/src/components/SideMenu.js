@@ -4,7 +4,7 @@ import { AiOutlineFire } from "react-icons/ai";
 import { MdOutlineScoreboard } from "react-icons/md";
 import { MdOutlineFeedback } from "react-icons/md";
 import { GiGreekTemple } from "react-icons/gi";
-import './SideMenu.css';
+import '../styles/SideMenu.css';
 
 const SideMenu = () => {
   return (

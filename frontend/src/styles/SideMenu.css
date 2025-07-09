@@ -1,7 +1,7 @@
 .sidemenu {
   width: 170px;
   height: 100vh;
-  background-image: url('./photos/SideMenuBG.png');
+  background-image: url('./SideMenuBG.png');
   background-size: cover;        /* cover the whole sidebar */
   background-position: top left;   /* center the image */
   background-repeat: no-repeat;
