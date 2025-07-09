@@ -5,6 +5,7 @@ SPARTA (Sports Planning and Resource Tracking App) is a web-based system designe
 
 **Frontend:**  
 1. `npm start` – start localhost  
+2. `npm run build` - compiles to check if theres any errors
 
 **Backend:**  
 1. `npm run dev` – start running server  

@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Login.css';
+import '../styles/Register.css';
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [role, setRole] = useState('admin');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    accessKey: '',
+    institution: '',
+    event: '',
   });
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,15 +22,24 @@ export default function LoginPage() {
 
     const payload =
       role === 'admin'
-        ? { email: formData.email, password: formData.password }
-        : { email: formData.email, password: formData.password, accessKey: formData.accessKey };
+        ? {
+            email: formData.email,
+            password: formData.password,
+            institution: formData.institution,
+          }
+        : {
+            email: formData.email,
+            password: formData.password,
+            institution: formData.institution,
+            event: formData.event,
+          };
 
-    console.log(`Submitting ${role} login:`, payload);
+    console.log(`Registering ${role}:`, payload);
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
+    <div className="register-container">
+      <div className="register-box">
         <div className="role-buttons">
           <button
             onClick={() => setRole('admin')}
@@ -45,7 +55,7 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="login-form">
+        <form onSubmit={handleSubmit} className="register-form">
           <div>
             <label>Email</label>
             <input
@@ -68,30 +78,40 @@ export default function LoginPage() {
             />
           </div>
 
+          <div>
+            <label>Institution</label>
+            <input
+              type="text"
+              name="institution"
+              required
+              value={formData.institution}
+              onChange={handleChange}
+            />
+          </div>
+
           {role === 'player' && (
             <div>
-              <label>Access Key</label>
+              <label>Event</label>
               <input
                 type="text"
-                name="accessKey"
+                name="event"
                 required
-                value={formData.accessKey}
+                value={formData.event}
                 onChange={handleChange}
               />
             </div>
           )}
 
-          <button type="submit" className="login-button">
-            Login as {role.charAt(0).toUpperCase() + role.slice(1)}
+          <button type="submit" className="register-button">
+            Register as {role.charAt(0).toUpperCase() + role.slice(1)}
           </button>
 
           <button
             type="button"
             className="switch-button"
-            onClick={() => navigate('/register')}>
-            Don't have an account? Register
+            onClick={() => navigate('/')}>
+            Already have an account? Login
           </button>
-
         </form>
       </div>
     </div>
