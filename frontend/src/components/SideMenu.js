@@ -1,16 +1,23 @@
 import React from 'react';
+import { RxDashboard } from "react-icons/rx";
+import { AiOutlineFire } from "react-icons/ai";
+import { MdOutlineScoreboard } from "react-icons/md";
+import { MdOutlineFeedback } from "react-icons/md";
+import { GiGreekTemple } from "react-icons/gi";
 import './SideMenu.css';
 
 const SideMenu = () => {
   return (
+
     <div className="sidemenu">
-      <h2 className="sidemenu-title">My App</h2>
+      <img src="./SPARTA_HeadBar.png" alt="SPARTA_HeadBar" className="SideMenu-Header-Pic"/>
+      <img src="./SPARTA_admin.png" alt="SPARTA_AdminLabel" className="SideMenu-Admin-Pic"/>
       <ul className="sidemenu-list">
-        <li><a href="/dashboard">🏠 Dashboard</a></li>
-        <li><a href="/event">📊 Event</a></li>
-        <li><a href="/liveScores">👤 Live Scores</a></li>
-        <li><a href="/feedback">⚙️ Feedback</a></li>
-        <li><a href="/pantheon">🚪 Pantheon</a></li>
+        <li><a href="/dashboard"> <RxDashboard /> Dashboard</a></li>
+        <li><a href="/event"> <AiOutlineFire /> Event</a></li>
+        <li><a href="/liveScores"> <MdOutlineScoreboard /> Live Scores</a></li>
+        <li><a href="/feedback"> <MdOutlineFeedback /> Feedback</a></li>
+        <li><a href="/pantheon"> <GiGreekTemple /> Pantheon</a></li>
       </ul>
     </div>
   );
