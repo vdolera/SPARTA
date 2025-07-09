@@ -9,6 +9,8 @@ const Header = () => {
   const pageTitles = {
     '/dashboard': 'DASHBOARD',
     '/event': 'EVENT',
+    '/event/team': 'TEAM',
+    '/event/game': 'GAME',
     '/liveScores': 'LIVE SCORES',
     '/feedback': 'FEEDBACK',
     '/pantheon': 'PANTHEON'
