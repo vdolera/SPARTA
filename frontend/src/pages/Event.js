@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SideMenu from '../components/SideMenu'
 import Header from "../components/Header";
 
-const Dashboard = () => {
+const Event = () => {
   return (
 
     <div style={{ display: 'flex' }}>
@@ -16,4 +16,4 @@ const Dashboard = () => {
   )
 };
 
-export default Dashboard;
+export default Event;
