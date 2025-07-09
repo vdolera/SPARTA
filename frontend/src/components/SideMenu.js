@@ -18,6 +18,7 @@ const SideMenu = () => {
         <li><a href="/liveScores"> <MdOutlineScoreboard /> Live Scores</a></li>
         <li><a href="/feedback"> <MdOutlineFeedback /> Feedback</a></li>
         <li><a href="/pantheon"> <GiGreekTemple /> Pantheon</a></li>
+        <li><a href="/pantheon"> <GiGreekTemple /> Log out</a></li>
       </ul>
     </div>
   );
