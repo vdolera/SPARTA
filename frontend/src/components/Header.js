@@ -1,12 +1,25 @@
 import React from 'react';
 import { FaUserCircle, FaCog } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom'
 import '../styles/Header.css';
 
 const Header = () => {
+  const location = useLocation();
+
+  const pageTitles = {
+    '/dashboard': 'DASHBOARD',
+    '/event': 'EVENT',
+    '/liveScores': 'LIVE SCORES',
+    '/feedback': 'FEEDBACK',
+    '/pantheon': 'PANTHEON'
+  };
+
+  const currentTitle = pageTitles[location.pathname] || 'Page';
+
   return (
     <div className="header">
       <div className="header-content">
-        <h2>DASHBOARD</h2>
+        <h2>{currentTitle}</h2>
         <div className="header-icons">
           <FaUserCircle size={24} />
           <FaCog size={24} />
