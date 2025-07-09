@@ -1,7 +1,7 @@
 .sidemenu {
-  width: 150px;
+  width: 170px;
   height: 100vh;
-  background-image: url('./SideMenuBG.png');
+  background-image: url('./photos/SideMenuBG.png');
   background-size: cover;        /* cover the whole sidebar */
   background-position: top left;   /* center the image */
   background-repeat: no-repeat;
@@ -10,31 +10,41 @@
   top: 0;
 }
 
-.sidemenu-title {
-  margin-bottom: 30px;
-  font-size: 24px;
+.SideMenu-Header-Pic {
+  width: 160px;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+  position: center;
+}
+
+.SideMenu-Admin-Pic {
+  width: 100px;
+  padding-left: 40px;
+  border-radius: 15px;
 }
 
 .sidemenu-list {
   list-style: none;
   padding: 0;
+  margin-left: 15px;
 }
 
 .sidemenu-list li {
-  margin: 15px 0;
+  margin: 15px 0px;
 }
 
 .sidemenu-list a {
   color: black;
-  display: inline-block;
-  padding: 6px 15px;
+  display: inline-flex;
+  padding: 5px 15px;
   padding-right: 20px;
   font-size: 15px;
+  gap: 5px;
   font-family: Poppins, sans-serif;
   text-decoration: none;
   transition: 0.3s;
   border-radius: 15px;
-  /*padding-left: 20px;*/
 }
 
 .sidemenu-list a:hover {
