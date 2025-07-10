@@ -30,6 +30,9 @@ export default function LoginPage() {
   return (
     <div className="login-container">
       <div className="login-box">
+
+      <div className="login-left">
+
         <div className="role-buttons">
           <button
             onClick={() => setRole('admin')}
@@ -93,6 +96,13 @@ export default function LoginPage() {
           </button>
 
         </form>
+
+      </div>
+
+      <div className="login-right">
+          <img src="./LoginIMG.png" alt="Login Illustration" className="login-image" />
+      </div>
+
       </div>
     </div>
   );
