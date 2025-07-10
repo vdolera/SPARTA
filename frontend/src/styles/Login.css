@@ -4,14 +4,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f3f4f6;
     padding: 1rem;
+    position: relative;
+    overflow: hidden;
+    border-radius: 25px;
+    outline-offset: -2px;
   }
   
   /* Box */
   .login-box {
     background-color: white;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    outline: 2px #CE892C solid;
     border-radius: 1rem;
     width: 100%;
     max-width: 400px;
@@ -22,11 +26,19 @@
   .role-buttons {
     display: flex;
     justify-content: center;
+    align-items: center;
+    width: 250px;
+    height: 45px;
+    background: #CE892C;
+    border-radius: 33px;
     margin-bottom: 1rem;
+    margin: 0 auto 1rem auto;
+    text-align: center;
   }
   
   .role-button {
     padding: 0.5rem 1rem;
+    margin: 25px;
     font-weight: 600;
     border: none;
     cursor: pointer;
@@ -42,7 +54,8 @@
   }
   
   .role-button.active {
-    background-color: #2563eb;
+    background-color: #063D73;
+    border-radius: 25px;
     color: white;
   }
   

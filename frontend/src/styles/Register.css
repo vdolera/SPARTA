@@ -8,12 +8,13 @@
   }
   
   .register-box {
-    background-color: white;
+    color: white;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     border-radius: 1rem;
     width: 100%;
     max-width: 400px;
     padding: 1.5rem;
+
   }
   
   .role-buttons {
@@ -31,20 +32,21 @@
   }
   
   .role-button.admin {
-    border-radius: 9999px 0 0 9999px;
+    border-radius: 25px;
   }
   
   .role-button.player {
-    border-radius: 0 9999px 9999px 0;
+    border-radius: 25px;
   }
   
   .role-button.active {
-    background-color: #2563eb;
+    background-color: #063D73;
     color: white;
   }
   
   .role-button.inactive {
-    background-color: #e5e7eb;
+    background-color: #CE892C;
+    color: white;
   }
   
   .register-form {
