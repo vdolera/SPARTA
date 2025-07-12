@@ -12,8 +12,8 @@ import '../styles/SideMenu.css';
 const SideMenu = () => {
   return (
     <div className="sidemenu">
-      <img src="./SPARTA_HeadBar.png" alt="SPARTA_HeadBar" className="SideMenu-Header-Pic"/>
-      <img src="./SPARTA_admin.png" alt="SPARTA_AdminLabel" className="SideMenu-Admin-Pic"/>
+      <img src="../SPARTA_HeadBar.png" alt="SPARTA_HeadBar" className="SideMenu-Header-Pic"/>
+      <img src="../SPARTA_admin.png" alt="SPARTA_AdminLabel" className="SideMenu-Admin-Pic"/>
       <ul className="sidemenu-list">
         <li><a href="/dashboard"><RxDashboard /> Dashboard</a></li>
 

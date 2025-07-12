@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import SideMenu from '../components/SideMenu'
+import SideMenu from '../components/SideMenu';
 import Header from "../components/Header";
 
 const Pantheon = () => {

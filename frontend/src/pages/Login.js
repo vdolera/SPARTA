@@ -30,78 +30,77 @@ export default function LoginPage() {
   return (
     <div className="login-container">
       <div className="login-box">
+        <div className="login-left">
 
-      <div className="login-left">
-
-        <div className="role-buttons">
-          <button
-            onClick={() => setRole('admin')}
-            className={`role-button admin ${role === 'admin' ? 'active' : 'inactive'}`}
-          >
-            Admin
-          </button>
-          <button
-            onClick={() => setRole('player')}
-            className={`role-button player ${role === 'player' ? 'active' : 'inactive'}`}
-          >
-            Player
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="login-form">
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-            />
+          <div className="role-buttons">
+            <button
+              onClick={() => setRole('admin')}
+              className={`role-button admin ${role === 'admin' ? 'active' : 'inactive'}`}
+            >
+              Admin
+            </button>
+            <button
+              onClick={() => setRole('player')}
+              className={`role-button player ${role === 'player' ? 'active' : 'inactive'}`}
+            >
+              Player
+            </button>
           </div>
 
-          <div>
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-            />
-          </div>
-
-          {role === 'player' && (
+          <form onSubmit={handleSubmit} className="login-form">
             <div>
-              <label>Access Key</label>
+              <label>Email</label>
               <input
-                type="text"
-                name="accessKey"
+                type="email"
+                name="email"
                 required
-                value={formData.accessKey}
+                value={formData.email}
                 onChange={handleChange}
               />
             </div>
-          )}
 
-          <button type="submit" className="login-button">
-            Login as {role.charAt(0).toUpperCase() + role.slice(1)}
-          </button>
+            <div>
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                required
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
 
-          <button
-            type="button"
-            className="switch-button"
-            onClick={() => navigate('/register')}>
-            Don't have an account? Register
-          </button>
+            {role === 'player' && (
+              <div>
+                <label>Access Key</label>
+                <input
+                  type="text"
+                  name="accessKey"
+                  required
+                  value={formData.accessKey}
+                  onChange={handleChange}
+                />
+              </div>
+            )}
 
-        </form>
+            <button type="submit" className="login-button">
+              Login as {role.charAt(0).toUpperCase() + role.slice(1)}
+            </button>
 
-      </div>
+            <button
+              type="button"
+              className="switch-button"
+              onClick={() => navigate('/register')}>
+              Don't have an account? Register
+            </button>
 
-      <div className="login-right">
-          <img src="./LoginIMG.png" alt="Login Illustration" className="login-image" />
-      </div>
+          </form>
+
+        </div>
+
+        <div className="login-right">
+            <img src="./LoginIMG.png" alt="Login Illustration" className="login-image" />
+        </div>
 
       </div>
     </div>
