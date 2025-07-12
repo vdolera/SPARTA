@@ -1,7 +1,7 @@
 import React from 'react';
 import SideMenu from './SideMenu';
 import Header from './Header';
-import './MainLayout.css';
+import '../styles/MainLayout.css';
 
 const MainLayout = ({ children }) => {
   return (

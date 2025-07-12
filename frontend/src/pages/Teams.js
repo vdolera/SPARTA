@@ -1,17 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import SideMenu from '../components/SideMenu';
-import Header from "../components/Header";
+
+import MainLayout from "../components/MainLayout";
 
 const Teams = () => {
   return (
 
-    <div style={{ display: 'flex' }}>
-      <SideMenu />
-      <Header />
-      <div style={{ marginLeft: '220px', padding: '20px' }}>
-        {/* Add Routes or content here */}
-      </div>
-    </div>
+    <MainLayout>
+      <h1>Teams</h1>
+    </MainLayout>
 
   )
 };
