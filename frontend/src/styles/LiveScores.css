@@ -1,0 +1,8 @@
+.live-scores-content {
+  margin-left: 170px; /* Pushes content to the right of sidebar */
+  margin-top: 95px;   /* Pushes content below header */
+  padding: 20px;
+  min-height: calc(100vh - 60px);
+  background-color: #f8f9fa;
+  box-sizing: border-box;
+}
