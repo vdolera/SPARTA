@@ -24,6 +24,23 @@
     justify-content: space-between;
   }
 
+  .login-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    padding: 20px;
+  }
+
+  .login-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+  }
+
   .login-image {
     width: 60%;
     max-width: 400px;
@@ -47,9 +64,8 @@
   
   .role-button {
     padding: 0.5rem 1rem;
-    margin: 25px;
+    margin: 0 25px 0 25px;
     font-weight: 600;
-    border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
