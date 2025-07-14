@@ -34,46 +34,28 @@ export default function LoginPage() {
 
           <div className="role-buttons">
             <button onClick={() => setRole('admin')} className={`role-button admin ${role === 'admin' ? 'active' : 'inactive'}`}>
-              Admin
+              ADMIN
             </button>
             <button onClick={() => setRole('player')} className={`role-button player ${role === 'player' ? 'active' : 'inactive'}`}>
-              Player
+              PLAYER
             </button>
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
-            <div>
+            <div className='form-group'>
               <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-              />
+              <input type="email" name="email" required value={formData.email} onChange={handleChange} />
             </div>
 
-            <div>
+            <div className='form-group'>
               <label>Password</label>
-              <input
-                type="password"
-                name="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-              />
+              <input type="password" name="password" required value={formData.password} onChange={handleChange} />
             </div>
 
             {role === 'player' && (
-              <div>
+              <div className='form-group'>
                 <label>Access Key</label>
-                <input
-                  type="text"
-                  name="accessKey"
-                  required
-                  value={formData.accessKey}
-                  onChange={handleChange}
-                />
+                <input type="text" name="accessKey" required value={formData.accessKey} onChange={handleChange} />
               </div>
             )}
 
@@ -81,10 +63,7 @@ export default function LoginPage() {
               Login as {role.charAt(0).toUpperCase() + role.slice(1)}
             </button>
 
-            <button
-              type="button"
-              className="switch-button"
-              onClick={() => navigate('/register')}>
+            <button type="button" className="switch-button" onClick={() => navigate('/register')}>
               Don't have an account? Register
             </button>
 
