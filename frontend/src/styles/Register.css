@@ -3,18 +3,46 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f3f4f6;
-    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+    outline-offset: -2px;
   }
   
   .register-box {
-    color: white;
+    background-color: white;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    outline: 2px #CE892C solid;
     border-radius: 1rem;
     width: 100%;
-    max-width: 400px;
+    max-width: 700px;
     padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    font-family: Poppins, sans-serif;
+  }
 
+  .register-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+  }
+
+  .register-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    padding: 20px;
+  }
+
+  .register-image {
+    width: 70%;
+    max-width: 400px;
+    height: auto;
+    object-fit: contain;
   }
   
   .role-buttons {
@@ -75,9 +103,11 @@
   }
   
   .register-button {
-    background-color: #2563eb;
+    background-color: #1e40af;
     color: white;
+    max-width: fit-content;
     font-weight: bold;
+    margin: 0 auto;
     padding: 0.5rem;
     border-radius: 0.375rem;
     border: none;
@@ -86,7 +116,7 @@
   }
   
   .register-button:hover {
-    background-color: #1e40af;
+    background-color: #CE892C;
   }
   
   .switch-button {
@@ -102,6 +132,6 @@
   }
   
   .switch-button:hover {
-    color: #1e40af;
+    color: #CE892C;
   }
   

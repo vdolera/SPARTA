@@ -4,11 +4,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
     position: relative;
     overflow: hidden;
-    border-radius: 25px;
     outline-offset: -2px;
+    /*background: linear-gradient(135deg, #CE892C, #1E40AF);*/
   }
   
   /* Box */
@@ -43,7 +42,7 @@
   }
 
   .login-image {
-    width: 60%;
+    width: 70%;
     max-width: 400px;
     height: auto;
     object-fit: contain;

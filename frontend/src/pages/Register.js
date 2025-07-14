@@ -40,23 +40,23 @@ export default function RegisterPage() {
   return (
     <div className="register-container">
       <div className="register-box">
-        <div className="role-buttons">
-          <button
-            onClick={() => setRole('admin')}
-            className={`role-button admin ${role === 'admin' ? 'active' : 'inactive'}`}
-          >
-            Admin
+
+        <div className='register-right'>
+          <img src="./LoginIMG.png" alt="Login Illustration" className="register-image" />
+        </div>
+
+        <div className="register-left">
+          <div className="role-buttons">
+          <button onClick={() => setRole('admin')} className={`role-button admin ${role === 'admin' ? 'active' : 'inactive'}`} >
+            ADMIN
           </button>
-          <button
-            onClick={() => setRole('player')}
-            className={`role-button player ${role === 'player' ? 'active' : 'inactive'}`}
-          >
-            Player
+          <button onClick={() => setRole('player')} className={`role-button player ${role === 'player' ? 'active' : 'inactive'}`} >
+            PLAYER
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="register-form">
-          <div>
+          <div className='form-group'>
             <label>Email</label>
             <input
               type="email"
@@ -67,7 +67,7 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div>
+          <div className='form-group'>
             <label>Password</label>
             <input
               type="password"
@@ -78,7 +78,7 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div>
+          <div className='form-group'>
             <label>Institution</label>
             <input
               type="text"
@@ -90,7 +90,7 @@ export default function RegisterPage() {
           </div>
 
           {role === 'player' && (
-            <div>
+            <div className='form-group'>
               <label>Event</label>
               <input
                 type="text"
@@ -114,6 +114,8 @@ export default function RegisterPage() {
           </button>
         </form>
       </div>
+      </div>
+        
     </div>
   );
 }
