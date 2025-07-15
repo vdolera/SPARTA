@@ -8,6 +8,7 @@ import Game from "./pages/Games";
 import Feedback from "./pages/Feedback";
 import LiveScores from "./pages/LiveScores";
 import Pantheon from "./pages/Pantheon";
+import BlockRoute from "./components/BlockRoute";
 
 export default function App() {
   return (
@@ -15,7 +16,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<BlockRoute> <Dashboard /> </BlockRoute>} />
         <Route path="/event" element={<Event />} />
         <Route path="/event/team" element={<Team />} />
         <Route path="/event/game" element={<Game />} />

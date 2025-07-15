@@ -8,8 +8,17 @@ import { MdOutlineFeedback } from "react-icons/md";
 import { GiGreekTemple } from "react-icons/gi";
 import { Link } from 'react-router-dom';
 import '../styles/SideMenu.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const SideMenu = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth');
+    navigate('/');
+  };
+
   return (
     <div className="sidemenu">
       <img src="../SPARTA_HeadBar.png" alt="SPARTA_HeadBar" className="SideMenu-Header-Pic"/>
@@ -28,6 +37,7 @@ const SideMenu = () => {
         <li><a href="/liveScores"><MdOutlineScoreboard /> Live Scores</a></li>
         <li><a href="/feedback"><MdOutlineFeedback /> Feedback</a></li>
         <li><a href="/pantheon"><GiGreekTemple /> Pantheon</a></li>
+        <li><button onClick={handleLogout}>Logout</button></li>
       </ul>
     </div>
   );

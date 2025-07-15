@@ -16,16 +16,37 @@ export default function LoginPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const payload =
       role === 'admin'
         ? { email: formData.email, password: formData.password }
         : { email: formData.email, password: formData.password, accessKey: formData.accessKey };
-
-    console.log(`Submitting ${role} login:`, payload);
+  
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/login/${role}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert(`Login successful as ${role}`);
+        // Optionally save token: localStorage.setItem('token', data.token)
+        localStorage.setItem('auth', JSON.stringify({ email: formData.email, role }));
+        navigate('/dashboard');
+      } else {
+        alert(data.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Something went wrong!');
+    }
   };
+  
 
   return (
     <div className="login-container">

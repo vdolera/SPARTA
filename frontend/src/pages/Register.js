@@ -17,9 +17,9 @@ export default function RegisterPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const payload =
       role === 'admin'
         ? {
@@ -33,9 +33,34 @@ export default function RegisterPage() {
             institution: formData.institution,
             event: formData.event,
           };
-
-    console.log(`Registering ${role}:`, payload);
+  
+    console.log(`Sending payload:`, payload);
+  
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/register/${role}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+  
+      console.log("Raw response:", response); // ADD THIS
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert(`Successfully registered as ${role}`);
+        navigate('/dashboard');
+      } else {
+        alert(data.message || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Error registering:', error);
+      alert('Something went wrong!');
+    }
   };
+  
+  
+  
 
   return (
     <div className="register-container">
