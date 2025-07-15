@@ -1,0 +1,78 @@
+.sidemenu {
+  width: 170px;
+  height: 100vh;
+  background-image: url('./SideMenuBG.png');
+  background-size: cover;        /* cover the whole sidebar */
+  background-position: top left;   /* center the image */
+  background-repeat: no-repeat;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.SideMenu-Header-Pic {
+  width: 160px;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+  position: center;
+}
+
+.SideMenu-Admin-Pic {
+  width: 100px;
+  padding-left: 40px;
+  border-radius: 15px;
+}
+
+.sidemenu-list {
+  list-style: none;
+  padding: 0;
+  margin-left: 15px;
+}
+
+.sidemenu-list li {
+  margin: 15px 0px;
+}
+
+.sidemenu-list a {
+  color: black;
+  display: inline-flex;
+  padding: 5px 15px;
+  padding-right: 20px;
+  font-size: 15px;
+  gap: 5px;
+  font-family: Poppins, sans-serif;
+  text-decoration: none;
+  transition: 0.3s;
+  border-radius: 15px;
+}
+
+.sidemenu-list a:hover {
+  color: white;
+  background-color: #CE892C; /*1A2A49 - navy blue*/ /*#CE892C - orange*/
+}
+
+/* Dropdown submenu */
+.dropdown .event-submenu {
+  display: none;
+  position: relative;
+  padding-left: 20px;
+  background-color: transparent;
+  list-style: none;
+}
+
+.dropdown:hover .event-submenu {
+  display: inline-block;
+}
+
+.event-submenu li a {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  color:  black;
+}
+
+.event-submenu a:hover {
+  color: white;
+  background-color: #CE892C; /*1A2A49 - navy blue*/ /*#CE892C - orange*/
+}

@@ -1,23 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RxDashboard } from "react-icons/rx";
 import { AiOutlineFire } from "react-icons/ai";
+import { TiGroupOutline } from "react-icons/ti";
+import { LuSwords } from "react-icons/lu";
 import { MdOutlineScoreboard } from "react-icons/md";
 import { MdOutlineFeedback } from "react-icons/md";
 import { GiGreekTemple } from "react-icons/gi";
-import './SideMenu.css';
+import { Link } from 'react-router-dom';
+import '../styles/SideMenu.css';
 
 const SideMenu = () => {
   return (
-
     <div className="sidemenu">
-      <img src="./SPARTA_HeadBar.png" alt="SPARTA_HeadBar" className="SideMenu-Header-Pic"/>
-      <img src="./SPARTA_admin.png" alt="SPARTA_AdminLabel" className="SideMenu-Admin-Pic"/>
+      <img src="../SPARTA_HeadBar.png" alt="SPARTA_HeadBar" className="SideMenu-Header-Pic"/>
+      <img src="../SPARTA_admin.png" alt="SPARTA_AdminLabel" className="SideMenu-Admin-Pic"/>
       <ul className="sidemenu-list">
-        <li><a href="/dashboard"> <RxDashboard /> Dashboard</a></li>
-        <li><a href="/event"> <AiOutlineFire /> Event</a></li>
-        <li><a href="/liveScores"> <MdOutlineScoreboard /> Live Scores</a></li>
-        <li><a href="/feedback"> <MdOutlineFeedback /> Feedback</a></li>
-        <li><a href="/pantheon"> <GiGreekTemple /> Pantheon</a></li>
+        <li><a href="/dashboard"><RxDashboard /> Dashboard</a></li>
+
+        <li className="dropdown">
+          <a href="/event"><AiOutlineFire /> Event</a>
+          <ul className="event-submenu">
+            <li><Link to="/event/team"><TiGroupOutline /> Team</Link></li>
+            <li><Link to="/event/game"><LuSwords /> Game</Link></li>
+          </ul>
+        </li>
+
+        <li><a href="/liveScores"><MdOutlineScoreboard /> Live Scores</a></li>
+        <li><a href="/feedback"><MdOutlineFeedback /> Feedback</a></li>
+        <li><a href="/pantheon"><GiGreekTemple /> Pantheon</a></li>
       </ul>
     </div>
   );
