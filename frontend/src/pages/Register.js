@@ -43,14 +43,12 @@ export default function RegisterPage() {
         <div className="role-buttons">
           <button
             onClick={() => setRole('admin')}
-            className={`role-button admin ${role === 'admin' ? 'active' : 'inactive'}`}
-          >
+            className={`role-button admin ${role === 'admin' ? 'active' : 'inactive'}`}>
             Admin
           </button>
           <button
             onClick={() => setRole('player')}
-            className={`role-button player ${role === 'player' ? 'active' : 'inactive'}`}
-          >
+            className={`role-button player ${role === 'player' ? 'active' : 'inactive'}`}>
             Player
           </button>
         </div>
