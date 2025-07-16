@@ -1,5 +1,6 @@
-import "../styles/LiveScores.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "../components/MainLayout";
+import "../styles/LiveScores.css"
 
 const LiveScores = () => {
   return (

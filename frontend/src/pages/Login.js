@@ -50,7 +50,11 @@ export default function LoginPage() {
   return (
     <div className="login-container">
       <div className="login-box">
-        <div className="role-buttons">
+
+      <div className="login-left">
+
+      <div className="role-buttons">
+
           <button
             onClick={() => setRole('admin')}
             className={`role-button admin ${role === 'admin' ? 'active' : 'inactive'}`}>
@@ -64,7 +68,7 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
-          <div>
+          <div className='form-group'>
             <label>Email</label>
             <input
               type="email"
@@ -75,7 +79,7 @@ export default function LoginPage() {
             />
           </div>
 
-          <div>
+          <div className='form-group'>
             <label>Password</label>
             <input
               type="password"
@@ -87,7 +91,7 @@ export default function LoginPage() {
           </div>
 
           {role === 'player' && (
-            <div>
+            <div className='form-group'>
               <label>Access Key</label>
               <input
                 type="text"
@@ -111,6 +115,11 @@ export default function LoginPage() {
           </button>
 
         </form>
+
+      </div>
+          <div className="login-right">
+            <img src="./LoginIMG.png" alt="Login Illustration" className="login-image" />
+          </div>
       </div>
     </div>
   );
