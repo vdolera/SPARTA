@@ -8,7 +8,7 @@ import Game from "./pages/Games";
 import Feedback from "./pages/Feedback";
 import LiveScores from "./pages/LiveScores";
 import Pantheon from "./pages/Pantheon";
-import BlockRoute from "./components/BlockRoute";
+import BlockRoute from "../src/BlockRoute";
 
 export default function App() {
   return (
@@ -17,12 +17,12 @@ export default function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<BlockRoute> <Dashboard /> </BlockRoute>} />
-        <Route path="/event" element={<Event />} />
-        <Route path="/event/team" element={<Team />} />
-        <Route path="/event/game" element={<Game />} />
-        <Route path="/feedback" element={<Feedback />} />
-        <Route path="/liveScores" element={<LiveScores />} />
-        <Route path="/pantheon" element={<Pantheon />} />
+        <Route path="/event" element={<BlockRoute> <Event /> </BlockRoute>} />
+        <Route path="/event/team" element={<BlockRoute> <Team /> </BlockRoute>} />
+        <Route path="/event/game" element={<BlockRoute> <Game /> </BlockRoute>} />
+        <Route path="/feedback" element={<BlockRoute> <Feedback /> </BlockRoute>} />
+        <Route path="/liveScores" element={<BlockRoute> <LiveScores /> </BlockRoute>} />
+        <Route path="/pantheon" element={<BlockRoute> <Pantheon /> </BlockRoute>} />
       </Routes>
     </Router>
   );
