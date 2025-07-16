@@ -65,77 +65,85 @@ export default function RegisterPage() {
   return (
     <div className="register-container">
       <div className="register-box">
-        <div className="role-buttons">
-          <button
-            onClick={() => setRole('admin')}
-            className={`role-button admin ${role === 'admin' ? 'active' : 'inactive'}`}>
-            Admin
-          </button>
-          <button
-            onClick={() => setRole('player')}
-            className={`role-button player ${role === 'player' ? 'active' : 'inactive'}`}>
-            Player
-          </button>
+
+        <div className='register-right'>
+          <img src="./LoginIMG.png" alt="Login Illustration" className="register-image" />
         </div>
 
-        <form onSubmit={handleSubmit} className="register-form">
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-            />
+        <div className="register-left">
+            <div className="role-buttons">
+            <button
+              onClick={() => setRole('admin')}
+              className={`role-button admin ${role === 'admin' ? 'active' : 'inactive'}`}>
+              Admin
+            </button>
+            <button
+              onClick={() => setRole('player')}
+              className={`role-button player ${role === 'player' ? 'active' : 'inactive'}`}>
+              Player
+            </button>
           </div>
 
-          <div>
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div>
-            <label>Institution</label>
-            <input
-              type="text"
-              name="institution"
-              required
-              value={formData.institution}
-              onChange={handleChange}
-            />
-          </div>
-
-          {role === 'player' && (
-            <div>
-              <label>Event</label>
+          <form onSubmit={handleSubmit} className="register-form">
+            <div className='form-group'>
+              <label>Email</label>
               <input
-                type="text"
-                name="event"
+                type="email"
+                name="email"
                 required
-                value={formData.event}
+                value={formData.email}
                 onChange={handleChange}
               />
             </div>
-          )}
 
-          <button type="submit" className="register-button">
-            Register as {role.charAt(0).toUpperCase() + role.slice(1)}
-          </button>
+            <div className='form-group'>
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                required
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
 
-          <button
-            type="button"
-            className="switch-button"
-            onClick={() => navigate('/')}>
-            Already have an account? Login
-          </button>
-        </form>
+            <div className='form-group'>
+              <label>Institution</label>
+              <input
+                type="text"
+                name="institution"
+                required
+                value={formData.institution}
+                onChange={handleChange}
+              />
+            </div>
+
+            {role === 'player' && (
+              <div className='form-group'>
+                <label>Event</label>
+                <input
+                  type="text"
+                  name="event"
+                  required
+                  value={formData.event}
+                  onChange={handleChange}
+                />
+              </div>
+            )}
+
+            <button type="submit" className="register-button">
+              Register as {role.charAt(0).toUpperCase() + role.slice(1)}
+            </button>
+
+            <button
+              type="button"
+              className="switch-button"
+              onClick={() => navigate('/')}>
+              Already have an account? Login
+            </button>
+          </form>
+        </div>
+        
       </div>
     </div>
   );
