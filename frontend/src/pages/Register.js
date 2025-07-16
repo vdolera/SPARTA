@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Register.css';
 
 export default function RegisterPage() {
   const [role, setRole] = useState('admin');
+  const [institutions, setInstitutions] = useState([]);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -16,6 +17,21 @@ export default function RegisterPage() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    const fetchInstitutions = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/institutions');
+        const data = await response.json();
+        setInstitutions(data);
+      } catch (err) {
+        console.error('Failed to load institutions:', err);
+      }
+    };
+  
+    fetchInstitutions();
+  }, []);
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,7 +59,7 @@ export default function RegisterPage() {
         body: JSON.stringify(payload),
       });
   
-      console.log("Raw response:", response); // ADD THIS
+      console.log("Raw response:", response);
   
       const data = await response.json();
   
@@ -59,9 +75,6 @@ export default function RegisterPage() {
     }
   };
   
-  
-  
-
   return (
     <div className="register-container">
       <div className="register-box">
@@ -102,14 +115,19 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label>Institution</label>
-            <input
-              type="text"
-              name="institution"
-              required
-              value={formData.institution}
-              onChange={handleChange}
-            />
+             <label>Institution</label>
+                <select
+                 name="institution"
+                 value={formData.institution}
+                 onChange={handleChange}
+                 required
+                >
+                <option value="">Select Institution</option>
+                 {institutions.map((inst) => (
+                 <option key={inst._id} value={inst.name}>
+                 {inst.name}
+                 </option>))}
+                </select>
           </div>
 
           {role === 'player' && (

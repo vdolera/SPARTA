@@ -1,4 +1,3 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "../styles/LiveScores.css";
 import MainLayout from "../components/MainLayout";
 

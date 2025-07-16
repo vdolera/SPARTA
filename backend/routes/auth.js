@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const Admin = require('../models/Admin');
 const Player = require('../models/Player');
+const Institution = require('../models/Institution');
 const router = express.Router();
 
 // Check or Get User Role
@@ -71,5 +72,15 @@ router.post('/login/:role', async (req, res) => {
     }
   });
   
+// GET institutions
+router.get('/institutions', async (req, res) => {
+    try {
+      const institutions = await Institution.find().sort({ name: 1 });
+      res.json(institutions);
+    } catch (err) {
+      console.error('Failed to fetch institutions:', err.message);
+      res.status(500).json({ message: 'Error fetching institutions' });
+    }
+  });
 
 module.exports = router;

@@ -23,12 +23,17 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Default Route
 app.get("/", (req, res) => {
-    res.send("API is running...");
+    res.send("Server is running...");
 });
 
-//Login & Register
+//Login & Register Safety
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
+
+//Institution route
+const institutionRoutes = require('./routes/auth');
+app.use('/api', institutionRoutes);
+
 
 // Server Start
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
