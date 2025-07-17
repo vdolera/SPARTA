@@ -6,7 +6,6 @@
 }
 
 .event-form-header {
-  margin-bottom: 20px;
   background-color: #CE892C;
   font-family: Montserrat, sans-serif;
   font-size: 10px;
@@ -14,6 +13,16 @@
   padding: 3px;
   border-radius: 5px;
   text-align: center;
+}
+
+h4, p {
+    margin: 0px;
+    font-family: Monteserrat, sans-serif;
+}
+
+p {
+    color: #EF5C5C;
+    font-size: 10px;
 }
 
 .event-form-container form {

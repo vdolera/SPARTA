@@ -8,6 +8,8 @@ const CreateEvent = () => {
   const navigate = useNavigate();
   const [eventName, setEventName] = useState("");
   const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [eventDuration, setEventDuration] = useState("");
   const [teams, setTeams] = useState([""]);
   
   // Add a new team input
@@ -44,6 +46,10 @@ const CreateEvent = () => {
     </div>
 
     <div className='event-form-container'>
+
+      <h4> ORGANIZER AND EVENT </h4>
+      <p> *All Fields Are REQUIRED To Be Filled Up* </p>
+
       <form onSubmit={handleCreate}>
         <label>
           Event Name:
@@ -52,6 +58,7 @@ const CreateEvent = () => {
             value={eventName}
             onChange={e => setEventName(e.target.value)}
             required
+            placeholder="Event Name"
           />
         </label>
         <label>
@@ -61,6 +68,27 @@ const CreateEvent = () => {
             value={userName}
             onChange={e => setUserName(e.target.value)}
             required
+            placeholder="Organizer Name"
+          />
+        </label>
+        <label>
+          Email:
+          <input
+            type="email"
+            value={userName}
+            onChange={e => setUserName(e.target.value)}
+            required
+            placeholder="Email"
+          />
+        </label>
+        <label>
+          Event Duration:
+          <input
+            type="text"
+            value={eventDuration}
+            onChange={e => setEventDuration(e.target.value)}
+            required
+            placeholder="Event Duration"
           />
         </label>
         <label>Participating Teams:</label>
