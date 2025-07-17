@@ -1,3 +1,0 @@
-MONGO_URI=mongodb+srv://vdolera:SPARTA@sparta.ptgpq5l.mongodb.net/SPARTA?retryWrites=true&w=majority&appName=SPARTA
-PORT=5000
-JWT_SECRET=12345
