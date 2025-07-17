@@ -1,6 +1,7 @@
 import MainLayout from "../components/MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import '../styles/Event.css'; // Assuming you have a CSS file for styling
 
 const Event = () => {
 
@@ -19,19 +20,20 @@ const Event = () => {
   <MainLayout>
     <h1>Event</h1>
       <div className="event-header">
-        <button onClick={handleAddEvent}> + Add Event </button>
 
-      <div style={{ marginTop: "20px" }}>
-        {events.map((event) => (
-          <button
-            key={event.id}
-            style={{ display: "block", margin: "10px 0" }}
-            onClick={() => handleEventClick(event.id)}
-          >
-            {event.name}
-          </button>
-        ))}
-      </div>
+        <button onClick={handleAddEvent}> + New Event </button>
+
+        <div style={{ marginTop: "20px" }}>
+          {events.map((event) => (
+            <button
+              key={event.id}
+              style={{ display: "block", margin: "10px 0" }}
+              onClick={() => handleEventClick(event.id)}
+            >
+              {event.name}
+            </button>
+          ))}
+        </div>
       
       </div>
   </MainLayout>
