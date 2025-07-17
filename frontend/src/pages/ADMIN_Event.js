@@ -18,8 +18,9 @@ const Event = () => {
   return (
 
   <MainLayout>
-    <h1>Event</h1>
+    
       <div className="event-header">
+        <h1>Event</h1>
 
         <button onClick={handleAddEvent}> + New Event </button>
 
