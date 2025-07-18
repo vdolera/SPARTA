@@ -1,10 +1,10 @@
 import MainLayout from "../../components/MainLayout";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import '../../styles/ADMIN_EventCreate.css';
+
+// NEEDS TO BE UPDATED PA
 
 const CreateEvent = () => {
-
   const navigate = useNavigate();
   const [eventName, setEventName] = useState("");
   const [userName, setUserName] = useState("");
@@ -12,7 +12,7 @@ const CreateEvent = () => {
   const [eventStartDate, setEventStartDate] = useState("");
   const [eventEndDate, setEventEndDate] = useState("");
   const [description, setDescription] = useState("");
-  
+
   // Handle form submission
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -48,69 +48,64 @@ const CreateEvent = () => {
       alert('❌ Failed to create event.');
     }
   };
-  
 
   // Handle cancel
   const handleCancel = () => navigate("/event");
 
   return (
-
-  <MainLayout>
-    <div className='event-form-header'>
-      <h1>Event Creation Form</h1>
-    </div>
-
-    <div className='event-form-container'>
-      <div className="event-form-title">
-        <h4> ORGANIZER AND EVENT </h4>
-        <p> *All Fields Are REQUIRED To Be Filled Up* </p>
+    <MainLayout>
+      <div className='event-form-header'>
+        <h1>Event Creation Form</h1>
       </div>
 
-      <form className="event-forms" onSubmit={handleCreate}>
-        <label>
-          Organizer Name:
-          <input
-            type="text"
-            value={userName}
-            onChange={e => setUserName(e.target.value)}
-            required
-            placeholder="Organizer Name"
-          />
-        </label>
-        <label>
-          Email:
-          <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            placeholder="Email"
-          />
-        </label>
-        <label>
-          Event Name:
-          <input 
-            type="text"
-            value={eventName}
-            onChange={e => setEventName(e.target.value)}
-            required
-            placeholder="Event Name"
-          />
-        </label>
-        <label>
+      <div className='event-form-container'>
+        <div className="event-form-title">
+          <h4> ORGANIZER AND EVENT </h4>
+          <p> *All Fields Are REQUIRED To Be Filled Up* </p>
+        </div>
+
+        <form className="event-forms" onSubmit={handleCreate}>
+          <label>
+            Organizer Name:
+            <input
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              required
+            />
+          </label>
+          <label>
+            Email:
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </label>
+          <label>
+            Event Name:
+            <input
+              type="text"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              required
+            />
+          </label>
+          <label>
             <div className="event-duration-inputs">
-            Event Duration:
+              Event Duration:
               <input
                 type="date"
                 value={eventStartDate}
-                onChange={e => setEventStartDate(e.target.value)}
+                onChange={(e) => setEventStartDate(e.target.value)}
                 required
               />
               <span> to </span>
               <input
                 type="date"
                 value={eventEndDate}
-                onChange={e => setEventEndDate(e.target.value)}
+                onChange={(e) => setEventEndDate(e.target.value)}
                 required
               />
             </div>
@@ -120,7 +115,7 @@ const CreateEvent = () => {
             Short Description:
             <textarea
               value={description}
-              onChange={e => setDescription(e.target.value)}
+              onChange={(e) => setDescription(e.target.value)}
               required
               placeholder="Brief summary of the event..."
               rows={4}
@@ -128,15 +123,14 @@ const CreateEvent = () => {
           </label>
         </form>
 
-          <div className="lower-buttons">
-             <button type="button" onClick={handleCancel}>Cancel</button>
-             <button type="submit">Create Event</button>
-          </div>
+        <div className="lower-buttons">
+          <button type="button" onClick={handleCancel}>Cancel</button>
+          <button type="submit">Create Event</button>
+        </div>
 
-      
-    </div>
+      </div>
 
-  </MainLayout>
+    </MainLayout>
 
   )
 };
