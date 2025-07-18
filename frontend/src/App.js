@@ -1,14 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/ADMIN_Dashboard";
-import Event from "./pages/ADMIN_Event"
-import CreateEvent from "./pages/ADMIN_EventCreate";
-import Team from "./pages/ADMIN_Teams";
-import Game from "./pages/ADMIN_Games";
-import Feedback from "./pages/ADMIN_Feedback";
-import LiveScores from "./pages/ADMIN_LiveScores";
-import Pantheon from "./pages/ADMIN_Pantheon";
+import Dashboard from "./pages/admin/ADMIN_Dashboard";
+import Event from "./pages/admin/ADMIN_Event"
+import CreateEvent from "./pages/admin/ADMIN_EventCreate";
+import Team from "./pages/admin/ADMIN_Teams";
+import Game from "./pages/admin/ADMIN_Games";
+import Feedback from "./pages/admin/ADMIN_Feedback";
+import LiveScores from "./pages/admin/ADMIN_LiveScores";
+import Pantheon from "./pages/admin/ADMIN_Pantheon";
 import BlockRoute from "../src/BlockRoute";
 
 export default function App() {

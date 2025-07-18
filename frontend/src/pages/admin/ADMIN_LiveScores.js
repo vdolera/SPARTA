@@ -1,7 +1,9 @@
-import MainLayout from "../components/MainLayout";
-import "../styles/LiveScores.css"
+import MainLayout from "../../components/MainLayout";
+import "../../styles/LiveScores.css"
 
 const LiveScores = () => {
+
+ 
   return (
 
     <MainLayout>

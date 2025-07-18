@@ -35,7 +35,7 @@ export default function LoginPage() {
   
       if (response.ok) {
         alert(`Login successful as ${role}`);
-        localStorage.setItem('auth', JSON.stringify({ email: formData.email, role }));
+        localStorage.setItem('auth', JSON.stringify(data.user));
         navigate('/dashboard');
       } else {
         alert(data.message || 'Login failed');

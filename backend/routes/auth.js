@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const Admin = require('../models/Admin');
 const Player = require('../models/Player');
 const Institution = require('../models/Institution');
+const Event = require('../models/Event');
 const router = express.Router();
 
 // Check or Get User Role
@@ -65,7 +66,7 @@ router.post('/login/:role', async (req, res) => {
         return res.status(403).json({ message: 'Invalid access key' });
       }
   
-      res.status(200).json({ message: `${role} logged in successfully`, user: { email, role } });
+      res.status(200).json({ message: `${role} logged in successfully`, user: { email: user.email, role, institution: user.institution } });
     } catch (err) {
       console.error('Login error:', err.message);
       res.status(500).json({ message: 'Login failed', error: err.message });
@@ -82,5 +83,41 @@ router.get('/institutions', async (req, res) => {
       res.status(500).json({ message: 'Error fetching institutions' });
     }
   });
+
+ // POST Create Event
+router.post('/event', async (req, res) => {
+    const { userName, email, institution, eventName, eventStartDate, eventEndDate, description } = req.body;
+  
+    try {
+      const event = new Event({
+        userName,
+        email,
+        institution,
+        eventName,
+        eventStartDate,
+        eventEndDate,
+        description
+      });
+  
+      await event.save();
+      console.log('✅ Event saved successfully');
+      res.status(201).json({ message: 'Event created successfully' });
+    } catch (err) {
+      console.error('❌ Failed to create event:', err.message);
+      res.status(500).json({ message: 'Event creation failed', error: err.message });
+    }
+  }); 
+
+  // GET Event
+  router.get('/events', async (req, res) => {
+    const userInstitution = req.query.institution;
+    try {
+      const events = await Event.find({ institution: userInstitution });
+      res.json(events);
+    } catch (err) {
+      res.status(500).json({ message: 'Failed to fetch events', error: err.message });
+    }
+  });
+  
 
 module.exports = router;

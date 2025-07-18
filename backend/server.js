@@ -34,6 +34,9 @@ app.use('/api/auth', authRoutes);
 const institutionRoutes = require('./routes/auth');
 app.use('/api', institutionRoutes);
 
+//For events
+const eventRoutes = require('./routes/auth');
+app.use('/api', eventRoutes);
 
 // Server Start
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
