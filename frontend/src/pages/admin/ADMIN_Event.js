@@ -37,19 +37,18 @@ const Event = () => {
 
         <div style={{ marginTop: "20px" }}>
         {events.map((event) => (
-  <button
-    key={event._id}
-    style={{ display: "block", margin: "10px 0" }}
-    onClick={() => handleEventClick(event._id)}
-  >
-    {event.eventName}
-  </button>
+          <button
+           key={event._id}
+           style={{ display: "block", margin: "10px 0" }}
+          onClick={() => handleEventClick(event._id)}
+           >
+          {event.eventName}
+          </button>
           ))}
         </div>
       
       </div>
   </MainLayout>
-
   )
 };
 

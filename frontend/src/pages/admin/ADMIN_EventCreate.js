@@ -17,7 +17,7 @@ const CreateEvent = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     const user = JSON.parse(localStorage.getItem('auth'));
-    
+
     try {
       const response = await fetch('http://localhost:5000/api/event', {
         method: 'POST',
@@ -38,14 +38,14 @@ const CreateEvent = () => {
       const data = await response.json();
   
       if (response.ok) {
-        alert('✅ Event created!');
+        alert('Event created!');
         navigate('/event');
       } else {
-        alert('❌ ' + data.message);
+        alert(data.message);
       }
     } catch (error) {
       console.error('Error creating event:', error);
-      alert('❌ Failed to create event.');
+      alert('Failed to create event.');
     }
   };
   

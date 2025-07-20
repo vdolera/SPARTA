@@ -39,7 +39,7 @@ router.post('/register/:role', async (req, res) => {
     });
 
     await user.save();
-    console.log(`✅ ${role} saved successfully`);
+    console.log(`${role} saved successfully`);
     res.status(201).json({ message: `${role} registered successfully` });
   } catch (err) {
     console.error('❌ Registration error:', err.message);
@@ -100,7 +100,7 @@ router.post('/event', async (req, res) => {
       });
   
       await event.save();
-      console.log('✅ Event saved successfully');
+      console.log('Event saved successfully');
       res.status(201).json({ message: 'Event created successfully' });
     } catch (err) {
       console.error('❌ Failed to create event:', err.message);
