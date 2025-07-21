@@ -32,22 +32,24 @@ const Event = () => {
     
       <div className="event-header">
         <h1>Event</h1>
+          <button onClick={handleAddEvent}> + New Event </button>
+      </div>
 
-        <button onClick={handleAddEvent}> + New Event </button>
-
-        <div style={{ marginTop: "20px" }}>
+        {/* <div style={{ marginTop: "20px" }}>
         {events.map((event) => (
-          <button
-           key={event._id}
-           style={{ display: "block", margin: "10px 0" }}
-          onClick={() => handleEventClick(event._id)}
-           >
-          {event.eventName}
+          <button key={event._id} style={{ display: "block", margin: "10px 0" }} onClick={() => handleEventClick(event._id)} >
+            {event.eventName}
           </button>
           ))}
-        </div>
-      
+        </div> */}
+
+      <div className="event-list">
+
+        <button className="event-item" onClick={() => handleEventClick(1)}> Event Number# 1 </button>
+
       </div>
+
+
   </MainLayout>
   )
 };

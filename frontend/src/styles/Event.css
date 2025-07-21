@@ -1,6 +1,5 @@
 /*ADMIN EVENT PAGE CSS*/
 
-
 .event-header {
   display: flex;
   justify-content: space-between;
@@ -19,5 +18,19 @@
   cursor: pointer;
 }
 
+.event-item {
+  background-color: #1A2A49;
+  color: white;
+  padding: 16px 24px;
+  font-size: 20px;
+  border: none;
+  border-radius: 8px;
+  text-align: left;      /* Align label to the left */
+  width: 100%;           /* Full width for large button */
+  cursor: pointer;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(26, 42, 73, 0.08);
+  transition: background 0.2s;
+}
 
 /*PLAYER EVENT PAGES CSS*/
