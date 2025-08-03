@@ -56,84 +56,86 @@ const CreateEvent = () => {
   return (
 
   <MainLayout>
-    <div className='event-form-header'>
-      <h1>Event Creation Form</h1>
-    </div>
-
-    <div className='event-form-container'>
-      <div className="event-form-title">
-        <h4> ORGANIZER AND EVENT </h4>
-        <p> *All Fields Are REQUIRED To Be Filled Up* </p>
+    <div className='event-create-maindiv'>
+      <div className='event-form-header'>
+        <h1>Event Creation Form</h1>
       </div>
 
-      <form className="event-forms" onSubmit={handleCreate}>
-        <label>
-          Organizer Name:
-          <input
-            type="text"
-            value={userName}
-            onChange={e => setUserName(e.target.value)}
-            required
-            placeholder="Organizer Name"
-          />
-        </label>
-        <label>
-          Email:
-          <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            placeholder="Email"
-          />
-        </label>
-        <label>
-          Event Name:
-          <input 
-            type="text"
-            value={eventName}
-            onChange={e => setEventName(e.target.value)}
-            required
-            placeholder="Event Name"
-          />
-        </label>
-        <label>
-            <div className="event-duration-inputs">
-            Event Duration:
-              <input
-                type="date"
-                value={eventStartDate}
-                onChange={e => setEventStartDate(e.target.value)}
-                required
-              />
-              <span> to </span>
-              <input
-                type="date"
-                value={eventEndDate}
-                onChange={e => setEventEndDate(e.target.value)}
-                required
-              />
-            </div>
-          </label>
+      <div className='event-form-container'>
+        <div className="event-form-title">
+          <h4> ORGANIZER AND EVENT </h4>
+          <p> *All Fields Are REQUIRED To Be Filled Up* </p>
+        </div>
 
+        <form className="event-forms" onSubmit={handleCreate}>
           <label>
-            Short Description:
-            <textarea
-              value={description}
-              onChange={e => setDescription(e.target.value)}
+            Organizer Name:
+            <input
+              type="text"
+              value={userName}
+              onChange={e => setUserName(e.target.value)}
               required
-              placeholder="Brief summary of the event..."
-              rows={4}
+              placeholder="Organizer Name"
             />
           </label>
-        </form>
+          <label>
+            Email:
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              placeholder="Email"
+            />
+          </label>
+          <label>
+            Event Name:
+            <input 
+              type="text"
+              value={eventName}
+              onChange={e => setEventName(e.target.value)}
+              required
+              placeholder="Event Name"
+            />
+          </label>
+          <label>
+              <div className="event-duration-inputs">
+              Event Duration:
+                <input
+                  type="date"
+                  value={eventStartDate}
+                  onChange={e => setEventStartDate(e.target.value)}
+                  required
+                />
+                <span> to </span>
+                <input
+                  type="date"
+                  value={eventEndDate}
+                  onChange={e => setEventEndDate(e.target.value)}
+                  required
+                />
+              </div>
+            </label>
 
-          <div className="lower-buttons">
-             <button type="button" onClick={handleCancel}>Cancel</button>
-             <button type="submit">Create Event</button>
-          </div>
+            <label>
+              Short Description:
+              <textarea
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                required
+                placeholder="Brief summary of the event..."
+                rows={4}
+              />
+            </label>
+          </form>
 
-      
+      </div>
+
+    </div>
+
+    <div className="lower-buttons">
+      <button type="button" onClick={handleCancel}>Cancel</button>
+      <button type="submit">Create Event</button>
     </div>
 
   </MainLayout>
