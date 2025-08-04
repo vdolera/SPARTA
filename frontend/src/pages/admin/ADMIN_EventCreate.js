@@ -141,16 +141,33 @@ const CreateEvent = () => {
                 onChange={e => setEventColor(e.target.value)}
                 required
                 style={{
-                appearance: 'none', // removes default styles
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                border: '2px solid #ccc',
-                cursor: 'pointer',
-                padding: 0,
-    }}
+                      appearance: 'none',            // removes default styles
+    WebkitAppearance: 'none',      // for Safari
+    MozAppearance: 'none',         // for Firefox
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',           // perfect circle
+    border: '2px solid ' + eventColor,      // optional clean border
+    backgroundColor: eventColor,   // ensure the color fills the shape
+    padding: 0,
+    cursor: 'pointer',
+    overflow: 'hidden'
+                }}
               /> 
             </label>
+
+          <hr style={{ border: '1px solid #ccc', margin: '20px 0' }} />
+
+          <label>
+            Organizer Name:
+            <input
+              type="text"
+              value={userName}
+              onChange={e => setUserName(e.target.value)}
+              required
+              placeholder="Organizer Name"
+            />
+          </label>
 
           </form>
 
