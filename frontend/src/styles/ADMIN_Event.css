@@ -25,8 +25,8 @@
   font-size: 20px;
   border: none;
   border-radius: 8px;
-  text-align: left;      /* Align label to the left */
-  width: 100%;           /* Full width for large button */
+  text-align: left;
+  width: 100%;
   cursor: pointer;
   margin-bottom: 10px;
   box-shadow: 0 2px 8px rgba(26, 42, 73, 0.08);

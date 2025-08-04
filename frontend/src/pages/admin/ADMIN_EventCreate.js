@@ -12,7 +12,9 @@ const CreateEvent = () => {
   const [eventStartDate, setEventStartDate] = useState("");
   const [eventEndDate, setEventEndDate] = useState("");
   const [description, setDescription] = useState("");
-  
+  const [eventColor, setEventColor] = useState("#007bff"); // Default color
+
+
   // Handle form submission
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -78,6 +80,7 @@ const CreateEvent = () => {
               placeholder="Organizer Name"
             />
           </label>
+
           <label>
             Email:
             <input
@@ -88,6 +91,7 @@ const CreateEvent = () => {
               placeholder="Email"
             />
           </label>
+
           <label>
             Event Name:
             <input 
@@ -98,6 +102,7 @@ const CreateEvent = () => {
               placeholder="Event Name"
             />
           </label>
+
           <label>
               <div className="event-duration-inputs">
               Event Duration:
@@ -127,6 +132,26 @@ const CreateEvent = () => {
                 rows={4}
               />
             </label>
+
+            <label style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              Event Color:
+              <input
+                type="color"
+                value={eventColor}
+                onChange={e => setEventColor(e.target.value)}
+                required
+                style={{
+                appearance: 'none', // removes default styles
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                border: '2px solid #ccc',
+                cursor: 'pointer',
+                padding: 0,
+    }}
+              /> 
+            </label>
+
           </form>
 
       </div>
