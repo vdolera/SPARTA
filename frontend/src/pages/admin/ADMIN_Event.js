@@ -1,7 +1,7 @@
 import MainLayout from "../../components/MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import '../../styles/Event.css'; 
+import '../../styles/ADMIN_Event.css'; 
 
 const Event = () => {
 
@@ -37,17 +37,11 @@ const Event = () => {
 
         { <div style={{ marginTop: "20px" }}>
         {events.map((event) => (
-          <button key={event._id} style={{ display: "block", margin: "10px 0" }} onClick={() => handleEventClick(event)} >
+          <button key={event._id} className="event-item" onClick={() => handleEventClick(event)} >
             {event.eventName}
           </button>
           ))}
         </div> }
-
-      {/*<div className="event-list">
-
-        <button className="event-item" onClick={() => handleEventClick(1)}> Event Number# 1 </button>
-
-        </div>*/}
 
 
   </MainLayout>
