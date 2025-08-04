@@ -23,8 +23,8 @@ const Event = () => {
     navigate("./create");
   };
 
-  const handleEventClick = (eventId) => {
-    navigate(`./pages/ADMIN_Event/${eventId}/Games`);
+  const handleEventClick = (event) => {
+    navigate(`/event/${encodeURIComponent(event.eventName)}/game`);
   };
   return (
 
@@ -35,19 +35,19 @@ const Event = () => {
           <button onClick={handleAddEvent}> + New Event </button>
       </div>
 
-        {/* <div style={{ marginTop: "20px" }}>
+        { <div style={{ marginTop: "20px" }}>
         {events.map((event) => (
-          <button key={event._id} style={{ display: "block", margin: "10px 0" }} onClick={() => handleEventClick(event._id)} >
+          <button key={event._id} style={{ display: "block", margin: "10px 0" }} onClick={() => handleEventClick(event)} >
             {event.eventName}
           </button>
           ))}
-        </div> */}
+        </div> }
 
-      <div className="event-list">
+      {/*<div className="event-list">
 
         <button className="event-item" onClick={() => handleEventClick(1)}> Event Number# 1 </button>
 
-      </div>
+        </div>*/}
 
 
   </MainLayout>

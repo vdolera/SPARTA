@@ -135,7 +135,7 @@ const CreateEvent = () => {
 
     <div className="lower-buttons">
       <button type="button" onClick={handleCancel}>Cancel</button>
-      <button type="submit">Create Event</button>
+      <button type="submit" onClick={handleCreate}>Create Event</button>
     </div>
 
   </MainLayout>

@@ -23,7 +23,7 @@ export default function App() {
         <Route path="/event/create" element={<BlockRoute> <CreateEvent /> </BlockRoute>} />
         <Route path="/event/team" element={<BlockRoute> <Team /> </BlockRoute>} />
         <Route path="/event/team/create" element={<BlockRoute> <CreateTeam /> </BlockRoute>} />
-        <Route path="/event/game" element={<BlockRoute> <Game /> </BlockRoute>} />
+        <Route path="/event/:eventName/game" element={<BlockRoute> <Game /> </BlockRoute>} />
         <Route path="/feedback" element={<BlockRoute> <Feedback /> </BlockRoute>} />
         <Route path="/liveScores" element={<BlockRoute> <LiveScores /> </BlockRoute>} />
         <Route path="/pantheon" element={<BlockRoute> <Pantheon /> </BlockRoute>} />

@@ -1,6 +1,16 @@
 import MainLayout from "../../components/MainLayout";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-const Games = () => {
+const Game = () => {
+  const { eventName } = useParams();
+  const decodedName = decodeURIComponent(eventName);
+
+  const navigate = useNavigate();
+  const handleAddGame = () => {
+      navigate("./create");
+    };
+
    /*
   const [teams, setTeams] = useState([""]);
   // Add a new team input
@@ -43,10 +53,11 @@ const Games = () => {
   return (
 
     <MainLayout>
-      <h1>Games</h1>
+         <h1>Games for {decodedName}</h1>
+         <button onClick={handleAddGame}> + Add Game </button>
     </MainLayout>
 
   )
 };
 
-export default Games;
+export default Game;

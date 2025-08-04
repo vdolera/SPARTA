@@ -59,7 +59,7 @@ export default function RegisterPage() {
         body: JSON.stringify(payload),
       });
   
-      console.log("Raw response:", response); // ADD THIS
+      console.log("Raw response:", response);
   
       const data = await response.json();
   
