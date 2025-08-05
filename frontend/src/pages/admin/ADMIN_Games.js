@@ -8,48 +8,9 @@ const Game = () => {
 
   const navigate = useNavigate();
   const handleAddGame = () => {
-      navigate("./create");
-    };
-
-   /*
-  const [teams, setTeams] = useState([""]);
-  // Add a new team input
-  const handleAddTeam = () => setTeams([...teams, ""]);
-  
-  // Update team name
-  const handleTeamChange = (idx, value) => {
-    const updated = [...teams];
-    updated[idx] = value;
-    setTeams(updated);
+    navigate(`/event/${encodeURIComponent(eventName)}/addgame`);
   };
 
-  // Remove a team input
-  const handleRemoveTeam = (idx) => {
-    setTeams(teams.filter((_, i) => i !== idx));
-  };
-
-<label>Participating Teams:</label>
-        {teams.map((team, idx) => (
-          <div key={idx}>
-            <input
-              type="text"
-              value={team}
-              onChange={e => handleTeamChange(idx, e.target.value)}
-              required
-              placeholder={`Team ${idx + 1}`}
-            />
-            <button type="button" onClick={() => handleRemoveTeam(idx)}>
-              Remove
-            </button>
-
-            <button type="button" onClick={handleAddTeam}>
-              Add Team
-            </button>
-
-          </div>
-        ))}
-
-  */
   return (
 
     <MainLayout>

@@ -4,6 +4,7 @@ const Admin = require('../models/Admin');
 const Player = require('../models/Player');
 const Institution = require('../models/Institution');
 const Event = require('../models/Event');
+const Game = require('../models/Game');
 const router = express.Router();
 
 // Check or Get User Role
@@ -118,6 +119,32 @@ router.post('/event', async (req, res) => {
       res.status(500).json({ message: 'Failed to fetch events', error: err.message });
     }
   });
-  
+
+  // POST /api/games
+  router.post('/games', async (req, res) => {
+    try {
+    const { institution, gameType, category, schedule, teams, requirements, rules } = req.body;
+
+    if (!institution || !gameType || !category || !schedule || !teams.length || !requirements.length || !rules) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    const newGame = new Game({
+      institution,
+      gameType,
+      category,
+      schedule,
+      teams,
+      requirements,
+      rules
+    });
+
+    await newGame.save();
+    res.status(201).json({ message: 'Game created successfully.' });
+  } catch (err) {
+    console.error("Error creating game:", err);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
 
 module.exports = router;

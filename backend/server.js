@@ -38,6 +38,9 @@ app.use('/api', institutionRoutes);
 const eventRoutes = require('./routes/auth');
 app.use('/api', eventRoutes);
 
+const gameRoutes = require('./routes/auth');
+app.use('/api', gameRoutes);
+
 // Server Start
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
 
