@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/admin/ADMIN_Dashboard";
 import Event from "./pages/admin/ADMIN_Event"
 import CreateEvent from "./pages/admin/ADMIN_EventCreate";
+import SpecificEvent from "./pages/admin/ADMIN_SpecificEvent";
 import Team from "./pages/admin/ADMIN_Teams";
 import CreateTeam from "./pages/admin/ADMIN_TeamCreate";
 import Game from "./pages/admin/ADMIN_Games";
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/dashboard" element={<BlockRoute> <Dashboard /> </BlockRoute>} />
         <Route path="/event" element={<BlockRoute> <Event /> </BlockRoute>} />
         <Route path="/event/create" element={<BlockRoute> <CreateEvent /> </BlockRoute>} />
+        <Route path="/event/:eventName" element={<BlockRoute> <SpecificEvent /> </BlockRoute>} />
         <Route path="/event/team" element={<BlockRoute> <Team /> </BlockRoute>} />
         <Route path="/event/team/create" element={<BlockRoute> <CreateTeam /> </BlockRoute>} />
         <Route path="/event/:eventName/game" element={<BlockRoute> <Game /> </BlockRoute>} />

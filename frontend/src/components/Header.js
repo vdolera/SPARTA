@@ -10,6 +10,7 @@ const Header = () => {
     '/dashboard': 'DASHBOARD',
     '/event': 'EVENT',
     '/event/create': 'CREATE EVENT',
+    '/event/:eventName': 'EVENT DETAILS',
     '/event/team': 'TEAM',
     '/event/game': 'GAME',
     '/liveScores': 'LIVE SCORES',
