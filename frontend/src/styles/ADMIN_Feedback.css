@@ -1,0 +1,13 @@
+.feedback-container {
+    background: linear-gradient(180deg, #ce892c, #1a2a49);
+    padding: 2px;
+    border-radius: 12px;
+    display: inline-block
+}
+
+.feedback-contents {
+    background: white;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-family: Poppins, sans-serif;
+}
