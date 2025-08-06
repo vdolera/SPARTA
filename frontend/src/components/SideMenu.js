@@ -26,17 +26,17 @@ const SideMenu = () => {
         <li><a href="/dashboard"><RxDashboard /> Dashboard</a></li>
 
         <li className="dropdown">
-          <a href="/event"><AiOutlineFire /> Event</a>
+          <a href="/event"><AiOutlineFire /> Event </a>
           <ul className="event-submenu">
-            <li><Link to="/event/team"><TiGroupOutline /> Team</Link></li>
-            <li><Link to="/event/game"><LuSwords /> Game</Link></li>
+            <li><Link to="/event/team"><TiGroupOutline /> Team </Link></li>
+            <li><Link to="/event/game"><LuSwords /> Game </Link></li>
           </ul>
         </li>
 
-        <li><a href="/liveScores"><MdOutlineScoreboard /> Live Scores</a></li>
+        <li><a href="/liveScores"><MdOutlineScoreboard /> Live Scores </a></li>
         <li><a href="/feedback"><MdOutlineFeedback /> Feedback</a></li>
-        <li><a href="/pantheon"><GiGreekTemple /> Pantheon</a></li>
-        <li><button onClick={handleLogout}>Logout</button></li>
+        <li><a href="/pantheon"><GiGreekTemple /> Pantheon </a></li>
+        <li><button onClick={handleLogout}>Logout </button></li>
       </ul>
     </div>
   );

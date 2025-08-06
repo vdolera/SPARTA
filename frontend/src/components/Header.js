@@ -13,7 +13,7 @@ const Header = () => {
     '/event/team': 'TEAM',
     '/event/game': 'GAME',
     '/liveScores': 'LIVE SCORES',
-    '/feedback': 'FEEDBACK',
+    '/feedback': 'POST GAME FEEDBACKS',
     '/pantheon': 'PANTHEON'
   };
 
