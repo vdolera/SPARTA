@@ -33,7 +33,7 @@ const CreateEvent = () => {
           eventName,
           eventStartDate,
           eventEndDate,
-          description,
+          location,
         }),
       });
   

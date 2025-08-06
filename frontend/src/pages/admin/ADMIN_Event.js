@@ -23,9 +23,10 @@ const Event = () => {
     navigate("./create");
   };
 
-  const handleEventClick = (event) => {
-    navigate(`/event/${encodeURIComponent(event.eventName)}/game`);
-  };
+    const handleEventClick = (event) => {
+      navigate(`/admin/event/${event._id}`);
+    };
+  
   return (
 
   <MainLayout>

@@ -1,0 +1,19 @@
+.specific-event-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+
+.event-details {
+    display: flex;
+    flex-direction: row;
+    gap: 150px;
+    align-items: center;
+    justify-content: center;
+}
+
+.organizer-box, .date-box, .location-box {
+  min-width: 150px;
+  text-align: center;
+}
