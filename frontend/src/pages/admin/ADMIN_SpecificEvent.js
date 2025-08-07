@@ -1,17 +1,30 @@
 import MainLayout from "../../components/MainLayout";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import '../../styles/ADMIN_SpecificEvents.css';
 
 const SpecificEvent = () => {
+    const navigate = useNavigate();
+    const { eventName } = useParams();
+    const decodedName = decodeURIComponent(eventName);
+
+    const handleGameClick = (event) => {
+        navigate(`/admin/event/${encodeURIComponent(decodedName)}/game`);
+      };
+
+    const handleTeamClick = (event) => {
+        navigate(`/admin/event/${encodeURIComponent(decodedName)}/team`);
+      };  
+
     return (
         <MainLayout>
-            <h1>Specific Event</h1>
+            <h1>{decodedName}</h1>
 
             <div className="specific-event-container">
                     
                 <div className="event-header">
-                    <h2>Event Name</h2>
+                    <h2>{decodedName}</h2>
                     {/* <p>Event Name: {eventName}</p> */}
                 </div>
                 
@@ -35,7 +48,10 @@ const SpecificEvent = () => {
                         <p>Venue: Event Venue</p>
                         {/* <p>Location: {location}</p> */}
                     </div>
-
+                        
+                    <button onClick={handleGameClick}> Game </button>
+                    <button onClick={handleTeamClick}> Team </button>
+                    
                 </div>
             </div>
         

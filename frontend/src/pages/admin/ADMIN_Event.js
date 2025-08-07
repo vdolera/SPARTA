@@ -24,7 +24,7 @@ const Event = () => {
   };
 
     const handleEventClick = (event) => {
-      navigate(`/admin/event/${event._id}`);
+      navigate(`/admin/event/${encodeURIComponent(event.eventName)}`);
     };
   
   return (
