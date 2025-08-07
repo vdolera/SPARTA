@@ -5,6 +5,7 @@ const Player = require('../models/Player');
 const Institution = require('../models/Institution');
 const Event = require('../models/Event');
 const Game = require('../models/Game');
+const Team = require('../models/Team');
 const router = express.Router();
 
 // Check or Get User Role
@@ -147,4 +148,108 @@ router.post('/event', async (req, res) => {
   }
 });
 
+// GET /api/games?institution=ADNU
+router.get('/games', async (req, res) => {
+  try {
+    const { institution } = req.query;
+
+    if (!institution) {
+      return res.status(400).json({ message: 'Institution is required.' });
+    }
+
+    const games = await Game.find({ institution });
+    res.json(games); // Full game objects
+  } catch (err) {
+    console.error('Error fetching games:', err);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+//POST Teams
+router.post('/team', async (req, res) => {
+  try {
+    const { teamName, teamManager, managerEmail, institution } = req.body;
+
+    if (!teamName || !teamManager || !managerEmail || !institution) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    // Optional: prevent duplicate team names per institution
+    const existing = await Team.findOne({ teamName, institution });
+    if (existing) {
+      return res.status(409).json({ message: 'Team already exists in this institution.' });
+    }
+
+    const team = new Team({ teamName, teamManager, managerEmail, institution });
+    await team.save();
+
+    res.status(201).json({ message: 'Team created successfully.' });
+  } catch (err) {
+    console.error("Error creating team:", err);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+//Get Teams
+router.get('/teams', async (req, res) => {
+  try {
+    const { institution } = req.query;
+
+    if (!institution) {
+      return res.status(400).json({ message: 'Institution is required' });
+    }
+
+    const teams = await Team.find({ institution });
+    res.status(200).json(teams);
+  } catch (err) {
+    console.error("Error fetching teams:", err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 module.exports = router;
+
+// Will reuse laterz
+/*
+// Create inventory item
+app.post("/inventory", async (req, res) => {
+    try {
+      const newItem = new Inventory(req.body);
+      const savedItem = await newItem.save();
+      res.json(savedItem);
+    } catch (err) {
+      res.status(400).json({ message: "Error creating item", error: err });
+    }
+  });
+  
+  // Read all inventory items
+  app.get("/inventory", async (req, res) => {
+    try {
+      const items = await Inventory.find();
+      res.json(items);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching items", error: err });
+    }
+  });
+  
+  // Update item
+  app.put("/inventory/:id", async (req, res) => {
+    try {
+      const updated = await Inventory.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      res.json(updated);
+    } catch (err) {
+      res.status(400).json({ message: "Error updating item", error: err });
+    }
+  });
+  
+  // Delete item
+  app.delete("/inventory/:id", async (req, res) => {
+    try {
+      await Inventory.findByIdAndDelete(req.params.id);
+      res.json({ message: "Item deleted" });
+    } catch (err) {
+      res.status(400).json({ message: "Error deleting item", error: err });
+    }
+  });
+  */

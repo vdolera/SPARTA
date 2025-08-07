@@ -38,55 +38,14 @@ app.use('/api', institutionRoutes);
 const eventRoutes = require('./routes/auth');
 app.use('/api', eventRoutes);
 
+//For games
 const gameRoutes = require('./routes/auth');
 app.use('/api', gameRoutes);
 
+//For all routes?
+/*
+const authRoutes = require('./routes/auth');
+app.use('/api', authRoutes);*/
+
 // Server Start
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
-
-
-
-
-// Will reuse laterz
-/*
-// Create inventory item
-app.post("/inventory", async (req, res) => {
-    try {
-      const newItem = new Inventory(req.body);
-      const savedItem = await newItem.save();
-      res.json(savedItem);
-    } catch (err) {
-      res.status(400).json({ message: "Error creating item", error: err });
-    }
-  });
-  
-  // Read all inventory items
-  app.get("/inventory", async (req, res) => {
-    try {
-      const items = await Inventory.find();
-      res.json(items);
-    } catch (err) {
-      res.status(500).json({ message: "Error fetching items", error: err });
-    }
-  });
-  
-  // Update item
-  app.put("/inventory/:id", async (req, res) => {
-    try {
-      const updated = await Inventory.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      res.json(updated);
-    } catch (err) {
-      res.status(400).json({ message: "Error updating item", error: err });
-    }
-  });
-  
-  // Delete item
-  app.delete("/inventory/:id", async (req, res) => {
-    try {
-      await Inventory.findByIdAndDelete(req.params.id);
-      res.json({ message: "Item deleted" });
-    } catch (err) {
-      res.status(400).json({ message: "Error deleting item", error: err });
-    }
-  });
-  */

@@ -3,42 +3,40 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CreateTeam = () => {
-  
-    const navigate = useNavigate();
-    const [teamName, setTeamName] = useState("");
-    const [teamManager, setTeamManager] = useState("");
-    const [managerEmail, setManagerEmail] = useState("");
-    const [teamColor, setTeamColor] = useState("#007bff");
-    const [subOrganizers, setSubOrganizers] = useState([]);
+  const navigate = useNavigate();
+  const [teamName, setTeamName] = useState("");
+  const [teamManager, setTeamManager] = useState("");
+  const [managerEmail, setManagerEmail] = useState("");
 
-  // Handle form submission
   const handleCreate = async (e) => {
     e.preventDefault();
     const user = JSON.parse(localStorage.getItem('auth'));
+    const institution = user?.institution;
+
+    if (!institution) {
+      alert("Institution missing from user data.");
+      return;
+    }
 
     try {
       const response = await fetch('http://localhost:5000/api/team', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           teamName,
           teamManager,
           managerEmail,
-          institution: user.institution,
-          teamColor,
-          subOrganizers,
+          institution,
         }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         alert('Team created!');
-        navigate('/team');
+        navigate(-1);
       } else {
-        alert(data.message);
+        alert(`${data.message}`);
       }
     } catch (error) {
       console.error('Error creating team:', error);
@@ -46,11 +44,8 @@ const CreateTeam = () => {
     }
   };
 
-
   return (
-
     <MainLayout>
-
       <div className='team-create-maindiv'>
         <h2>Create Team</h2>
         <form onSubmit={handleCreate}>
@@ -81,29 +76,11 @@ const CreateTeam = () => {
               required
             />
           </div>
-          <div>
-            <label>Team Color:</label>
-            <input
-              type="color"
-              value={teamColor}
-              onChange={(e) => setTeamColor(e.target.value)}
-            />
-          </div>
-          <div>
-            <label>Sub-Organizers:</label>
-            <input
-              type="text"
-              value={subOrganizers}
-              onChange={(e) => setSubOrganizers(e.target.value.split(","))}
-            />
-          </div>
           <button type="submit">Create Team</button>
         </form>
       </div>
-
     </MainLayout>
-
-  )
+  );
 };
 
 export default CreateTeam;
