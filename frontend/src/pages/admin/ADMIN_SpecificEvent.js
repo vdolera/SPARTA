@@ -2,6 +2,8 @@ import MainLayout from "../../components/MainLayout";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { TiGroupOutline } from "react-icons/ti";
+import { LuSwords } from "react-icons/lu";
 import '../../styles/ADMIN_SpecificEvents.css';
 
 const SpecificEvent = () => {
@@ -17,13 +19,15 @@ const SpecificEvent = () => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/team`);
       };  
 
+    const [eventColor, setEventColor] = useState("#1A2A49");
+
     return (
         <MainLayout>
             <h1>{decodedName}</h1>
 
             <div className="specific-event-container">
                     
-                <div className="event-header">
+                <div className="event-header" >
                     <h2>{decodedName}</h2>
                     {/* <p>Event Name: {eventName}</p> */}
                 </div>
@@ -48,11 +52,23 @@ const SpecificEvent = () => {
                         <p>Venue: Event Venue</p>
                         {/* <p>Location: {location}</p> */}
                     </div>
-                        
-                    <button onClick={handleGameClick}> Game </button>
-                    <button onClick={handleTeamClick}> Team </button>
-                    
                 </div>
+
+                <div className="event-specifics">
+                    <button className="btn-team" onClick={handleTeamClick}>
+                      <div className="btn-content">
+                        <TiGroupOutline size={48} /> {/* Larger icon */}
+                        <span>Team</span>
+                      </div>
+                    </button>
+                    <button className="btn-game" onClick={handleGameClick}>
+                      <div className="btn-content">
+                        <LuSwords size={48} /> {/* Larger icon */}
+                        <span>Game</span>
+                      </div>
+                    </button>
+                </div>
+                
             </div>
         
         </MainLayout>
