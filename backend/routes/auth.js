@@ -88,7 +88,7 @@ router.get('/institutions', async (req, res) => {
 
  // POST Create Event
 router.post('/event', async (req, res) => {
-    const { userName, email, institution, eventName, eventStartDate, eventEndDate, description } = req.body;
+    const { userName, email, institution, eventName, eventStartDate, eventEndDate, description, eventColor } = req.body;
   
     try {
       const event = new Event({
@@ -98,7 +98,8 @@ router.post('/event', async (req, res) => {
         eventName,
         eventStartDate,
         eventEndDate,
-        description
+        description,
+        eventColor
       });
   
       await event.save();

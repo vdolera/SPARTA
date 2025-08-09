@@ -38,10 +38,15 @@ const Event = () => {
 
         { <div style={{ marginTop: "20px" }}>
         {events.map((event) => (
-          <button key={event._id} className="event-item" onClick={() => handleEventClick(event)} >
-            {event.eventName}
+           <button
+            key={event._id}
+            className="event-item"
+            style={{ backgroundColor: event.eventColor || "#1A2A49" }} // fallback if no color
+            onClick={() => handleEventClick(event)}
+           >
+        {event.eventName}
           </button>
-          ))}
+        ))}
         </div> }
 
 
