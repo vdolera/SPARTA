@@ -5,6 +5,13 @@
     display: inline-block
 }
 
+.feedback-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
 .feedback-contents {
     background: white;
     border-radius: 10px;
