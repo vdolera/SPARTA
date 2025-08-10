@@ -23,7 +23,6 @@ const SpecificEvent = () => {
 
     return (
         <MainLayout>
-            <h1>{decodedName}</h1>
 
             <div className="specific-event-container">
                     

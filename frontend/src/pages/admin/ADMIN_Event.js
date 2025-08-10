@@ -32,8 +32,8 @@ const Event = () => {
   <MainLayout>
     
       <div className="event-header">
-        <h1>Event</h1>
-          <button onClick={handleAddEvent}> + New Event </button>
+        {/* insert search bar */}
+        <button onClick={handleAddEvent}> + New Event </button>
       </div>
 
         { <div style={{ marginTop: "20px" }}>

@@ -7,18 +7,35 @@
 
 .event-header {
     justify-content: center;
-    margin-top: 20px;
+    margin: 20px;
+    margin-bottom: 0px;
+    width: 150vh;
+    font-family: Montserrat, sans-serif;
+    font-size: 25px;
+    background: linear-gradient(to left, #1A2A49, #A96B24);
+    border: 1px solid #ccc;
+    border-radius: 10px 10px 0px 0px;
+    color: white;
+    padding: 25px 20px;
 }
 
 .event-details {
     display: flex;
     flex-direction: row;
     gap: 150px;
+    width: 150vh;
     align-items: center;
     justify-content: center;
     border: 1px solid #ccc;
-    padding: 20px 50px;
-    font-family: Montesserat, sans-serif; 
+    border-radius: 0px 0px 10px 10px;
+    padding: 20px 20px;
+    font-family: Montserrat, sans-serif;
+    font-size: 20px;
+}
+
+p {
+  color: black;
+  font-size: 15px;
 }
 
 .event-specifics {
@@ -55,7 +72,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 50px 40px
+  padding: 60px 50px
 }
 
 .btn-content svg {

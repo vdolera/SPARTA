@@ -3,7 +3,7 @@
 .event-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   margin: 0px 15px;
 }
 
