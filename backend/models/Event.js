@@ -7,7 +7,8 @@ const eventSchema = new mongoose.Schema({
   eventName: { type: String, required: true },
   eventStartDate: { type: Date, required: true },
   eventEndDate: { type: Date, required: true },
-  description: { type: String, required: true },
+  description: { type: String, required: false },
+  eventColor: { type: String, required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Event', eventSchema);

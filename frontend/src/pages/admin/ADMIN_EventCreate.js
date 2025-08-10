@@ -34,6 +34,7 @@ const CreateEvent = () => {
           eventStartDate,
           eventEndDate,
           location,
+          eventColor,
         }),
       });
   
@@ -161,17 +162,6 @@ const CreateEvent = () => {
 
 
           <hr style={{ border: '1px solid #ccc', margin: '20px 0' }} />
-
-          <label>
-            Organizer Name:
-            <input
-              type="text"
-              value={userName}
-              onChange={e => setUserName(e.target.value)}
-              required
-              placeholder="Organizer Name"
-            />
-          </label>
 
           </form>
 
