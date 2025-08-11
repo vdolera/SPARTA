@@ -68,38 +68,44 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
-          <div className='form-group'>
-            <label>Email</label>
+          <div className='form-group'style={{position: 'relative'}}>
             <input
               type="email"
               name="email"
+              placeholder=" "
               required
               value={formData.email}
               onChange={handleChange}
+              style={{width: '100%'}}
             />
+            <label htmlFor='email'>Email</label>
           </div>
 
-          <div className='form-group'>
-            <label>Password</label>
+          <div className='form-group'style={{position: 'relative'}}>
             <input
               type="password"
               name="password"
+              placeholder=" "
               required
               value={formData.password}
               onChange={handleChange}
+              style={{width: '100%'}}
             />
+            <label htmlFor='password'>Password</label>
           </div>
 
           {role === 'player' && (
-            <div className='form-group'>
-              <label>Access Key</label>
+            <div className='form-group' style={{position: 'relative'}}>
               <input
                 type="text"
                 name="accessKey"
+                placeholder=" "
                 required
                 value={formData.accessKey}
                 onChange={handleChange}
+                style={{width: '100%'}}
               />
+              <label htmlFor='accessKey'>Access Key</label>
             </div>
           )}
 

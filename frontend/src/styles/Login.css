@@ -123,6 +123,30 @@
     gap: 0.5rem;
   }
 
+  label {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    padding: 0px 5px;
+    font-size: 12px;
+    background: white;
+    transition: transform 0.3s ease, color 0.3s ease;
+    pointer-events: none;
+  }
+
+  input:focus + label,
+  input:not(:placeholder-shown) + label {
+    transform: translateY(-18px);
+    font-size: 10px;
+    color: #2563eb;
+    font-size: 11px;
+    background: white;
+  }
+
+  input:focus {
+    border-color: #0051ff;
+  }
+
   /* Submit button */
   .login-button {
     background-color: #2563eb;
