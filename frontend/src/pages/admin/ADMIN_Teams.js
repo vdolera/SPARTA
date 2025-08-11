@@ -55,7 +55,10 @@ const Teams = () => {
                 style={{
                   cursor: "pointer",
                   padding: "8px 12px",
-                  backgroundColor: team.teamColor || "#1A2A49",
+                  background: team.teamColor 
+                  ? `linear-gradient(to right, white, ${team.teamColor})`
+                  : 'linear-gradient(to right, white, #A96B24)',
+                  color: 'black',
                   marginBottom: "6px",
                   borderRadius: "6px"
                 }}
