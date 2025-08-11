@@ -169,7 +169,7 @@ router.get('/games', async (req, res) => {
 //POST Teams
 router.post('/team', async (req, res) => {
   try {
-    const { teamName, teamManager, managerEmail, institution } = req.body;
+    const { teamName, teamManager, managerEmail, institution, teamColor, eventName } = req.body;
 
     if (!teamName || !teamManager || !managerEmail || !institution) {
       return res.status(400).json({ message: 'All fields are required.' });
@@ -181,7 +181,7 @@ router.post('/team', async (req, res) => {
       return res.status(409).json({ message: 'Team already exists in this institution.' });
     }
 
-    const team = new Team({ teamName, teamManager, managerEmail, institution });
+    const team = new Team({ teamName, teamManager, managerEmail, institution, teamColor, eventName });
     await team.save();
 
     res.status(201).json({ message: 'Team created successfully.' });
@@ -194,13 +194,19 @@ router.post('/team', async (req, res) => {
 //Get Teams
 router.get('/teams', async (req, res) => {
   try {
-    const { institution } = req.query;
+    const { institution, event } = req.query;
 
     if (!institution) {
       return res.status(400).json({ message: 'Institution is required' });
     }
 
-    const teams = await Team.find({ institution });
+    const query = { institution };
+
+    if (event) {
+      query.eventName = event;
+    }
+
+    const teams = await Team.find(query);
     res.status(200).json(teams);
   } catch (err) {
     console.error("Error fetching teams:", err);

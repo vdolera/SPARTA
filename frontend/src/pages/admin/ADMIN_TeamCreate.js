@@ -1,12 +1,15 @@
 import MainLayout from "../../components/MainLayout";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CreateTeam = () => {
   const navigate = useNavigate();
   const [teamName, setTeamName] = useState("");
   const [teamManager, setTeamManager] = useState("");
   const [managerEmail, setManagerEmail] = useState("");
+  const [teamColor, setTeamColor] = useState("");
+  const { eventName } = useParams();
+  const decodedEventName = decodeURIComponent(eventName);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -27,6 +30,8 @@ const CreateTeam = () => {
           teamManager,
           managerEmail,
           institution,
+          teamColor,
+          eventName: decodedEventName,
         }),
       });
 
@@ -76,6 +81,16 @@ const CreateTeam = () => {
               required
             />
           </div>
+
+          <div>
+            <label>Team Color:</label>
+            <input
+              type="color"
+              value={teamColor}
+              onChange={(e) => setTeamColor(e.target.value)}
+            />
+          </div>
+
           <button type="submit">Create Team</button>
         </form>
       </div>

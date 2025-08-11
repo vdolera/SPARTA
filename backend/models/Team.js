@@ -5,6 +5,8 @@ const teamSchema = new mongoose.Schema({
   teamManager: { type: String, required: true },
   managerEmail: { type: String, required: true },
   institution: { type: String, required: true },
+  teamColor: {type: String, required: true},
+  eventName: {type: String, required: true},
 }, { timestamps: true });
 
 module.exports = mongoose.model('Team', teamSchema);

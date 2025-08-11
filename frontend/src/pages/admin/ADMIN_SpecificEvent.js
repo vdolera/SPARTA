@@ -1,5 +1,4 @@
 import MainLayout from "../../components/MainLayout";
-import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { TiGroupOutline } from "react-icons/ti";
@@ -19,7 +18,9 @@ const SpecificEvent = () => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/team`);
       };  
 
-    const [eventColor, setEventColor] = useState("#1A2A49");
+    const handleScoreClick = (event) => {
+        navigate(`/event/${encodeURIComponent(decodedName)}/liveScores`);
+      };
 
     return (
         <MainLayout>
@@ -67,6 +68,9 @@ const SpecificEvent = () => {
                       </div>
                     </button>
                 </div>
+
+                <div><button onClick={handleScoreClick}>Live Score</button></div>
+                <div><button>Feedback</button></div>
                 
             </div>
         

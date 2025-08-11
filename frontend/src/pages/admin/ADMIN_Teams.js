@@ -8,7 +8,6 @@ const Teams = () => {
 
   const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
-  const [selectedTeam, setSelectedTeam] = useState(null);
 
   const user = JSON.parse(localStorage.getItem('auth'));
   const userInstitution = user?.institution;
@@ -17,7 +16,7 @@ const Teams = () => {
     const fetchTeams = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/teams?institution=${encodeURIComponent(userInstitution)}`
+          `http://localhost:5000/api/teams?institution=${encodeURIComponent(userInstitution)}&event=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
         setTeams(data);
@@ -26,17 +25,16 @@ const Teams = () => {
       }
     };
 
-    if (userInstitution) {
+    if (userInstitution && decodedName) {
       fetchTeams();
     }
-  }, [userInstitution]);
+  }, [userInstitution, decodedName]);
 
   const handleAddTeam = () => {
     navigate(`/admin/event/${encodeURIComponent(decodedName)}/addteam`);
   };
 
   const handleSelectTeam = (teamName) => {
-    setSelectedTeam(teamName);
     alert(`Selected team: ${teamName}`);
   };
 
@@ -57,7 +55,7 @@ const Teams = () => {
                 style={{
                   cursor: "pointer",
                   padding: "8px 12px",
-                  backgroundColor: selectedTeam === team.teamName ? "#d0ebff" : "#f1f1f1",
+                  backgroundColor: team.teamColor || "#1A2A49",
                   marginBottom: "6px",
                   borderRadius: "6px"
                 }}
