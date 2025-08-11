@@ -41,7 +41,7 @@ p {
 .event-specifics {
     display: flex;
     flex-direction: row;
-    gap: 50vh;
+    gap: 10vh;
     margin-top: 50px;
 
 }
@@ -52,6 +52,8 @@ p {
     border: none;
     border-radius: 15px;
     cursor: pointer;
+    width: 150px;
+    height: 190px;
 }
 
 .event-specifics .btn-game {
@@ -60,6 +62,14 @@ p {
 
 .event-specifics .btn-team {
   background-color: #1A2A49
+}
+
+.event-specifics .btn-score {
+  background-color: #800000;
+}
+
+.event-specifics .btn-feedback {
+  background-color: #2E8B57;
 }
 
 .organizer-box, .date-box, .location-box {

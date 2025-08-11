@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { TiGroupOutline } from "react-icons/ti";
 import { LuSwords } from "react-icons/lu";
+import { MdOutlineScoreboard } from "react-icons/md";
+import { MdOutlineFeedback } from "react-icons/md";
 import '../../styles/ADMIN_SpecificEvents.css';
 
 const SpecificEvent = () => {
@@ -20,6 +22,10 @@ const SpecificEvent = () => {
 
     const handleScoreClick = (event) => {
         navigate(`/event/${encodeURIComponent(decodedName)}/liveScores`);
+      };
+
+    const handleFeedbackClick = (event) => {
+        navigate(`/admin/event/${encodeURIComponent(decodedName)}/feedback`);
       };
 
     return (
@@ -55,22 +61,36 @@ const SpecificEvent = () => {
                 </div>
 
                 <div className="event-specifics">
+                  
                     <button className="btn-team" onClick={handleTeamClick}>
                       <div className="btn-content">
                         <TiGroupOutline size={48} /> {/* Larger icon */}
                         <span>Team</span>
                       </div>
                     </button>
+
                     <button className="btn-game" onClick={handleGameClick}>
                       <div className="btn-content">
                         <LuSwords size={48} /> {/* Larger icon */}
                         <span>Game</span>
                       </div>
                     </button>
-                </div>
 
-                <div><button onClick={handleScoreClick}>Live Score</button></div>
-                <div><button>Feedback</button></div>
+                    <button className="btn-score" onClick={handleScoreClick}>
+                      <div className="btn-content">
+                        <MdOutlineScoreboard size={48} /> {/* Larger icon */}
+                        <span>Live Score</span>
+                      </div>
+                    </button>
+
+                    <button className="btn-feedback" onClick={handleFeedbackClick}>
+                      <div className="btn-content">
+                        <MdOutlineFeedback size={42} /> {/* Larger icon */}
+                        <span>Feedback</span>
+                      </div>
+                    </button>
+
+                </div>
                 
             </div>
         
