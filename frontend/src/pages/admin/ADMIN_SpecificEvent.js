@@ -25,7 +25,7 @@ const SpecificEvent = () => {
       };
 
     const handleFeedbackClick = (event) => {
-        navigate(`/admin/event/${encodeURIComponent(decodedName)}/feedback`);
+        navigate(`admin/event/${encodeURIComponent(decodedName)}/feedback`);
       };
 
     return (
@@ -35,7 +35,6 @@ const SpecificEvent = () => {
                     
                 <div className="event-header" >
                     <h2>{decodedName}</h2>
-                    {/* <p>Event Name: {eventName}</p> */}
                 </div>
                 
                 <div className="event-details">
@@ -43,7 +42,7 @@ const SpecificEvent = () => {
                     <div className="organizer-box">
                         <h3>Organizer Details</h3>
                         <p>Name: Organizer Name</p>
-                    {/* <p>Organizer: {organizerName}</p> */}
+
                     </div>
                     <div className="date-box">
                         <h3>Event Date</h3>
@@ -61,7 +60,7 @@ const SpecificEvent = () => {
                 </div>
 
                 <div className="event-specifics">
-                  
+
                     <button className="btn-team" onClick={handleTeamClick}>
                       <div className="btn-content">
                         <TiGroupOutline size={48} /> {/* Larger icon */}

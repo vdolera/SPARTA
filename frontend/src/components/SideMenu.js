@@ -23,6 +23,7 @@ const SideMenu = () => {
       <ul className="sidemenu-list">
         <li><a href="/dashboard"><RxDashboard /> Dashboard</a></li>
         <li><a href="/event"><AiOutlineFire /> Event </a></li>
+        <li><a href="/feedback"><MdOutlineFeedback /> Feedback</a></li>
         <li><a href="/pantheon"><GiGreekTemple /> Pantheon </a></li>
         <li><button onClick={handleLogout}>Logout </button></li>
       </ul>
