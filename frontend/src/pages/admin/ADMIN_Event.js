@@ -36,18 +36,23 @@ const Event = () => {
         <button onClick={handleAddEvent}> + New Event </button>
       </div>
 
-        { <div style={{ marginTop: "20px" }}>
-        {events.map((event) => (
-           <button
-            key={event._id}
-            className="event-item"
-            style={{ backgroundColor: event.eventColor || "#1A2A49" }} // fallback if no color
-            onClick={() => handleEventClick(event)}
-           >
-        {event.eventName}
-          </button>
-        ))}
-        </div> }
+      <div style={{ marginTop: "20px" }}>
+  {events.map((event) => (
+    <button
+      key={event._id}
+      className="event-item"
+      style={{ 
+        background: event.eventColor 
+          ? `linear-gradient(to right, white, ${event.eventColor})`
+          : 'linear-gradient(to right, white, #A96B24)',
+        color: 'black'
+      }}
+      onClick={() => handleEventClick(event)}
+    >
+      {event.eventName}
+    </button>
+  ))}
+</div>
 
 
   </MainLayout>
