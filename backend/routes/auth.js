@@ -125,7 +125,7 @@ router.post('/event', async (req, res) => {
   // POST /api/games
   router.post('/games', async (req, res) => {
     try {
-    const { institution, gameType, category, schedule, teams, requirements, rules } = req.body;
+    const { institution, gameType, category, schedule, teams, requirements, rules, eventName } = req.body;
 
     if (!institution || !gameType || !category || !schedule || !teams.length || !requirements.length || !rules) {
       return res.status(400).json({ message: 'All fields are required.' });
@@ -138,7 +138,8 @@ router.post('/event', async (req, res) => {
       schedule,
       teams,
       requirements,
-      rules
+      rules,
+      eventName
     });
 
     await newGame.save();
@@ -152,13 +153,19 @@ router.post('/event', async (req, res) => {
 // GET /api/games?institution=ADNU
 router.get('/games', async (req, res) => {
   try {
-    const { institution } = req.query;
+    const { institution, event } = req.query;
 
     if (!institution) {
       return res.status(400).json({ message: 'Institution is required.' });
     }
 
-    const games = await Game.find({ institution });
+    const query = { institution };
+
+    if (event) {
+      query.eventName = event;
+    }
+
+    const games = await Game.find( query );
     res.json(games); // Full game objects
   } catch (err) {
     console.error('Error fetching games:', err);

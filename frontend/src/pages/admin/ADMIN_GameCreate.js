@@ -1,25 +1,36 @@
 import MainLayout from "../../components/MainLayout";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CreateGame = () => {
-  const navigate = useNavigate();
-
   const [gameType, setGameType] = useState("Basketball");
   const [category, setCategory] = useState("Men");
   const [schedule, setSchedule] = useState("");
   const [requirements, setRequirements] = useState([""]);
   const [rules, setRules] = useState("");
-  const [teams, setTeams] = useState([""]);
+  const [availableTeams, setAvailableTeams] = useState([]);
+  const [selectedTeams, setSelectedTeams] = useState([]);
 
-  const handleAddTeam = () => setTeams([...teams, ""]);
-  const handleTeamChange = (idx, value) => {
-    const updated = [...teams];
-    updated[idx] = value;
-    setTeams(updated);
-  };
-  const handleRemoveTeam = (idx) => {
-    setTeams(teams.filter((_, i) => i !== idx));
+  const navigate = useNavigate();
+  const { eventName } = useParams();
+  const decodedName = decodeURIComponent(eventName);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("auth"));
+    if (!user?.institution) return;
+
+    fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user.institution)}&event=${encodeURIComponent(decodedName)}`)
+      .then(res => res.json())
+      .then(data => setAvailableTeams(data))
+      .catch(err => console.error("Error fetching teams:", err));
+  }, [decodedName]);
+
+  const toggleTeamSelection = (teamName) => {
+    setSelectedTeams((prev) =>
+      prev.includes(teamName)
+        ? prev.filter((t) => t !== teamName)
+        : [...prev, teamName]
+    );
   };
 
   const handleAddRequirement = () => setRequirements([...requirements, ""]);
@@ -34,10 +45,9 @@ const CreateGame = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const user = JSON.parse(localStorage.getItem("auth"));
 
     try {
-      const user = JSON.parse(localStorage.getItem("auth"));
-
       const response = await fetch("http://localhost:5000/api/games", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -46,9 +56,10 @@ const CreateGame = () => {
           gameType,
           category,
           schedule,
-          teams,
+          teams: selectedTeams,
           requirements,
           rules,
+          eventName: decodedName,
         }),
       });
 
@@ -77,7 +88,7 @@ const CreateGame = () => {
           <h4>All Fields Are REQUIRED To Be Filled Up</h4>
         </div>
 
-        <form className="event-forms">
+        <form className="event-forms" onSubmit={handleSubmit}>
           <label>
             Game Type:
             <select value={gameType} onChange={(e) => setGameType(e.target.value)} required>
@@ -111,25 +122,30 @@ const CreateGame = () => {
           </label>
 
           <label>Participating Teams:</label>
-          {teams.map((team, idx) => (
-            <div key={idx}>
-              <input
-                type="text"
-                value={team}
-                onChange={(e) => handleTeamChange(idx, e.target.value)}
-                required
-                placeholder={`Team ${idx + 1}`}
-              />
-              {teams.length > 1 && (
-                <button type="button" onClick={() => handleRemoveTeam(idx)}>
-                  Remove
+          <div className="team-selection">
+            {availableTeams.length === 0 ? (
+              <p>No teams available for this event.</p>
+            ) : (
+              availableTeams.map((team) => (
+                <button
+                  key={team._id}
+                  type="button"
+                  onClick={() => toggleTeamSelection(team.teamName)}
+                  style={{
+                    margin: "5px",
+                    padding: "8px 12px",
+                    backgroundColor: selectedTeams.includes(team.teamName) ? "#4caf50" : "#ccc",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {team.teamName}
                 </button>
-              )}
-            </div>
-          ))}
-          <button type="button" onClick={handleAddTeam}>
-            + Add Team
-          </button>
+              ))
+            )}
+          </div>
 
           <label>Requirements:</label>
           {requirements.map((req, idx) => (
@@ -165,7 +181,7 @@ const CreateGame = () => {
 
           <div className="lower-buttons">
             <button type="button" onClick={() => navigate(-1)}>Cancel</button>
-            <button type="submit" onClick={handleSubmit}>Create Game</button>
+            <button type="submit">Create Game</button>
           </div>
         </form>
       </div>
