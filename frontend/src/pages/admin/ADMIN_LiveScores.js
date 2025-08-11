@@ -15,7 +15,7 @@ const LiveScores = () => {
     const fetchTeams = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/teams?institution=${encodeURIComponent(userInstitution)}`
+          `http://localhost:5000/api/teams?institution=${encodeURIComponent(userInstitution)}&event=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
         setTeams(data);
@@ -24,10 +24,10 @@ const LiveScores = () => {
       }
     };
 
-    if (userInstitution) {
+    if (userInstitution && decodedName) {
       fetchTeams();
     }
-  }, [userInstitution]);
+  }, [userInstitution, decodedName]);
 
   return (
     <MainLayout>
@@ -44,7 +44,10 @@ const LiveScores = () => {
                 style={{
                   cursor: "pointer",
                   padding: "8px 12px",
-                  backgroundColor: team.teamColor || "#1A2A49",
+                  background: team.teamColor 
+                  ? `linear-gradient(to right, white, ${team.teamColor})`
+                  : 'linear-gradient(to right, white, #A96B24)',
+                  color: 'black',
                   marginBottom: "6px",
                   borderRadius: "6px"
                 }}
