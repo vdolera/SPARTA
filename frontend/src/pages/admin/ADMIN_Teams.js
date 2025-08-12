@@ -1,6 +1,7 @@
 import MainLayout from "../../components/MainLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import '../../styles/ADMIN_Teams.css';
 
 const Teams = () => {
   const { eventName } = useParams();
@@ -8,9 +9,15 @@ const Teams = () => {
 
   const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const user = JSON.parse(localStorage.getItem('auth'));
   const userInstitution = user?.institution;
+
+  // Filter teams based on search query
+  const filteredTeams = teams.filter(team =>
+    team.teamName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -41,27 +48,29 @@ const Teams = () => {
   return (
     <MainLayout>
       <h1>Teams for {decodedName}</h1>
-      <button onClick={handleAddTeam}> + New Team </button>
 
-      <div style={{ marginTop: "20px" }}>
-        {teams.length === 0 ? (
+      <div className="teams-header-row">
+        <input
+          type="text"
+          className="team-search-bar"
+          placeholder="Search teams..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          style={{ marginRight: "16px" }}
+        />
+        <button onClick={handleAddTeam}> + New Team </button>
+      </div>
+
+      <div className="teams-event">
+        {filteredTeams.length === 0 ? (
           <p>No teams found.</p>
         ) : (
-          <ul style={{ listStyle: "none", padding: 0 }}>
-            {teams.map((team, idx) => (
-              <li
+          <ul>
+            {filteredTeams.map((team, idx) => (
+              <li className="team-btn"
                 key={idx}
                 onClick={() => handleSelectTeam(team.teamName)}
-                style={{
-                  cursor: "pointer",
-                  padding: "8px 12px",
-                  background: team.teamColor 
-                  ? `linear-gradient(to right, white, ${team.teamColor})`
-                  : 'linear-gradient(to right, white, #A96B24)',
-                  color: 'black',
-                  marginBottom: "6px",
-                  borderRadius: "6px"
-                }}
+                style={{ background: team.teamColor ? team.teamColor : '#A96B24' }}
               >
                 {team.teamName}
               </li>

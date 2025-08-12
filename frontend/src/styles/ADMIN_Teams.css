@@ -1,0 +1,42 @@
+.teams-event ul{
+    margin: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    padding: 0px;
+    list-style: none;
+}
+
+.team-search-bar {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 25px;
+  border: 1.5px solid #1A2A49;
+  outline: none;
+  width: 43vh;
+  background: #f8f8ff;
+  color: #1A2A49;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-right: 16px;
+}
+
+.team-search-bar:focus {
+  border-color: #FF9800;
+  box-shadow: 0 0 0 2px rgba(255,152,0,0.15);
+}
+
+.team-btn {
+    cursor: pointer;
+    padding: 8px 12px;
+    color: black;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    width: 150px;
+    height: 190px;
+    font-family: Paytone One, sans-serif;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    align-items: center;
+
+}

@@ -1,7 +1,7 @@
 import MainLayout from "../../components/MainLayout";
 import { useState } from "react";
-// import Calendar from 'react-calendar';
-// import 'react-calendar/dist/Calendar.css'; // Default calendar styling
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css'; // Default calendar styling
 
 const Dashboard = () => {
   const [date, setDate] = useState(new Date());
@@ -37,11 +37,11 @@ const Dashboard = () => {
       <h1>Dashboard</h1>
       <div className="dashboard-container">
         <div className="calendar-container">
-          {/* <Calendar
+          <Calendar
             onChange={onChange}
             value={date}
             tileContent={tileContent}
-          /> */}
+          />
           <div className="selected-date">
             Selected Date: {date.toDateString()}
           </div>
