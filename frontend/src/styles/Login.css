@@ -98,7 +98,7 @@
     row-gap: 15px;
   }
 
-  .login-form label {
+  .login-form .label-login {
     font-size: 0.875rem;
     font-weight: 500;
     color: #374151;
@@ -123,7 +123,7 @@
     gap: 0.5rem;
   }
 
-  label {
+.label-login {
     position: absolute;
     left: 8px;
     top: 8px;
@@ -134,8 +134,8 @@
     pointer-events: none;
   }
 
-  input:focus + label,
-  input:not(:placeholder-shown) + label {
+  input:focus + .label-login,
+  input:not(:placeholder-shown) + .label-login {
     transform: translateY(-18px);
     font-size: 10px;
     color: #2563eb;

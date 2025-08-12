@@ -78,7 +78,7 @@ export default function LoginPage() {
               onChange={handleChange}
               style={{width: '100%'}}
             />
-            <label htmlFor='email'>Email</label>
+            <label className='label-login' htmlFor='email'>Email</label>
           </div>
 
           <div className='form-group'style={{position: 'relative'}}>
@@ -91,7 +91,7 @@ export default function LoginPage() {
               onChange={handleChange}
               style={{width: '100%'}}
             />
-            <label htmlFor='password'>Password</label>
+            <label className='label-login' htmlFor='password'>Password</label>
           </div>
 
           {role === 'player' && (
@@ -105,7 +105,7 @@ export default function LoginPage() {
                 onChange={handleChange}
                 style={{width: '100%'}}
               />
-              <label htmlFor='accessKey'>Access Key</label>
+              <label className='label-login' htmlFor='accessKey'>Access Key</label>
             </div>
           )}
 
