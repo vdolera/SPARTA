@@ -1,3 +1,9 @@
+.teams-event {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .teams-event ul{
     margin: 20px;
     display: flex;
@@ -7,9 +13,16 @@
     list-style: none;
 }
 
+.teams-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0px 20px;
+}
+
 .team-search-bar {
   padding: 6px 12px;
-  font-size: 12px;
+  font-size: 14px;
   border-radius: 25px;
   border: 1.5px solid #1A2A49;
   outline: none;
@@ -18,6 +31,24 @@
   color: #1A2A49;
   transition: border-color 0.2s, box-shadow 0.2s;
   margin-right: 16px;
+  flex: 1;
+  max-width: 300px;
+}
+
+div button {
+  background-color: #1A2A49;
+  color: white;
+  padding: 5px 10px;
+  font-size: 15px;
+  border: none;
+  border-radius: 20px;
+  max-width: fit-content;
+  cursor: pointer;
+}
+
+div button:hover {
+  background-color: #FF9800;
+  color: white;
 }
 
 .team-search-bar:focus {
@@ -26,6 +57,7 @@
 }
 
 .team-btn {
+
     cursor: pointer;
     padding: 8px 12px;
     color: black;
@@ -38,5 +70,14 @@
     color: white;
     text-align: center;
     align-items: center;
+}
 
+.no-teams-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Montserrat, sans-serif;
+    text-align: center;
+    padding: 15px;
+    margin: 20px;
 }

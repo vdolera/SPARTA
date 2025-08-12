@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import '../../styles/ADMIN_Teams.css';
+import { VscSearchStop } from "react-icons/vsc";
 
 const Teams = () => {
   const { eventName } = useParams();
@@ -63,7 +64,10 @@ const Teams = () => {
 
       <div className="teams-event">
         {filteredTeams.length === 0 ? (
-          <p>No teams found.</p>
+          <div className="no-teams-found">
+            <VscSearchStop size={48}/>
+            <p>No teams found.</p>
+          </div>
         ) : (
           <ul>
             {filteredTeams.map((team, idx) => (
