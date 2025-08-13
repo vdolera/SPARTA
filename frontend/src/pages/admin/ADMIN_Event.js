@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import '../../styles/ADMIN_Event.css'; 
 
 const Event = () => {
-
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const user = JSON.parse(localStorage.getItem('auth'));
   const userInstitution = user?.institution;
 
@@ -23,39 +23,44 @@ const Event = () => {
     navigate("./create");
   };
 
-    const handleEventClick = (event) => {
-      navigate(`/admin/event/${encodeURIComponent(event.eventName)}`);
-    };
-  
-  return (
+  const handleEventClick = (event) => {
+    navigate(`/admin/event/${encodeURIComponent(event.eventName)}`);
+  };
 
-  <MainLayout>
-    
-      <div className="event-header">
-        {/* insert search bar */}
+  // Filter events based on search query
+  const filteredEvents = events.filter(event =>
+    event.eventName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <MainLayout>
+      <div className="event-main-header">
+        <input
+          type="text"
+          className="event-search-bar"
+          placeholder="Search events..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          style={{ marginRight: "16px", padding: "8px 12px", borderRadius: "6px", border: "1px solid #ccc", fontSize: "16px" }}
+        />
         <button onClick={handleAddEvent}> + New Event </button>
       </div>
 
-      <div style={{ marginTop: "20px" }}>
-  {events.map((event) => (
-    <button
-      key={event._id}
-      className="event-item"
-      style={{ 
-        background: event.eventColor 
-          ? `linear-gradient(to right, white, ${event.eventColor})`
-          : 'linear-gradient(to right, white, #A96B24)',
-        color: 'black'
-      }}
-      onClick={() => handleEventClick(event)}
-    >
-      {event.eventName}
-    </button>
-  ))}
-</div>
-
-
-  </MainLayout>
+      <div className="event-list">
+        {filteredEvents.map((event) => (
+          <button
+            key={event._id}
+            className="event-item"
+            style={{ 
+              background: event.eventColor ? event.eventColor : '#A96B24',
+            }}
+            onClick={() => handleEventClick(event)}
+          >
+            {event.eventName}
+          </button>
+        ))}
+      </div>
+    </MainLayout>
   )
 };
 

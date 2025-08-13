@@ -25,17 +25,17 @@
 }
 
 .game-main-div {
-    padding: 25px 50px;
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
+  padding: 25px 50px;
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
 }
 
 .game-header-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 0px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0px 20px;
 }
 
 .game-search-bar {
