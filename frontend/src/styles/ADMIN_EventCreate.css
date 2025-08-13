@@ -95,3 +95,34 @@ p {
   width: 100%
 }
 
+.color-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.color-picker input[type="color"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #ccc;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.color-picker input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+.color-picker input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
