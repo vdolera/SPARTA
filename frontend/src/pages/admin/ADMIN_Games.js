@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import '../../styles/ADMIN_Games.css';
 
 const Game = () => {
   const navigate = useNavigate();
@@ -10,6 +11,11 @@ const Game = () => {
   const userInstitution = user?.institution;
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const filteredGames = Object.entries(gamesByType).filter(([combinedType]) =>
+    combinedType.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -44,21 +50,37 @@ const Game = () => {
 
   return (
     <MainLayout>
-      <h1>All Games for {userInstitution}</h1>
-      <button onClick={handleAddGame}> + Add Game </button>
+      <div className="game-header"> 
+        <h1>All Games for {userInstitution}</h1>
+      </div>
 
-      <div style={{ marginTop: "20px" }}>
-  <h2>Select a Game</h2>
-  {Object.entries(gamesByType).map(([combinedType, games]) => (
-    <button
-      key={combinedType}
-      onClick={() => navigate(`/event/game/${encodeURIComponent(combinedType)}`)}
-      style={{ display: "block", margin: "10px 0", padding: "10px" }}
-    >
-      {combinedType}
-    </button>
-  ))}
-</div>
+      <div className="game-header-row">
+        <input
+          type="text"
+          className="game-search-bar"
+          placeholder="Search for a game..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          style={{ marginRight: "16px" }}
+        />
+        <button onClick={handleAddGame}> + Add Game </button>
+      </div>  
+
+      <div className="game-main-div">
+        {filteredGames.length === 0 ? (
+          <p style={{ textAlign: "center", width: "100%" }}>No games found.</p>
+        ) : (
+          filteredGames.map(([combinedType, games]) => (
+            <button
+              className="game-button"
+              key={combinedType}
+              onClick={() => navigate(`/event/game/${encodeURIComponent(combinedType)}`)}
+            >
+              {combinedType}
+            </button>
+          ))
+        )}
+      </div>
 
     </MainLayout>
   );

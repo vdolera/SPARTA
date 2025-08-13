@@ -1,0 +1,78 @@
+.game-header {
+  width: 100%;
+  padding: 18px 0;
+  margin-bottom: 18px;
+  border-radius: 16px;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient border using ::before */
+.game-header::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 19px;
+  pointer-events: none;
+  z-index: 0;
+  border: 3px solid;
+  border-image: linear-gradient(90deg, #FF9800 0%, #1A2A49 100%);
+  border-image-slice: 1;
+}
+
+.game-main-div {
+    padding: 25px 50px;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.game-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0px 20px;
+}
+
+.game-search-bar {
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 25px;
+  border: 1.5px solid #1A2A49;
+  outline: none;
+  width: 43vh;
+  background: #f8f8ff;
+  color: #1A2A49;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-right: 16px;
+  flex: 1;
+  max-width: 300px;
+}
+
+.game-search-bar:focus {
+  border-color: #FF9800;
+  box-shadow: 0 0 0 2px rgba(255,152,0,0.15);
+}
+
+.game-button {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    min-width: 22vh;
+    min-height: 29vh;
+    background-color: #1A2A49;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+}
+
+.game-button:hover {
+    background-color: #CE892C;
+}

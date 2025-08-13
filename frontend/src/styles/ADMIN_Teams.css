@@ -52,7 +52,7 @@ div button {
 }
 
 div button:hover {
-  background-color: #FF9800;
+  background-color: #CE892C;
   color: white;
 }
 
@@ -62,7 +62,6 @@ div button:hover {
 }
 
 .team-btn {
-
     cursor: pointer;
     padding: 8px 12px;
     color: black;
