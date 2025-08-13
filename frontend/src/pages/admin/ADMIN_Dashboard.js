@@ -3,6 +3,7 @@ import { useState } from "react";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Default calendar styling
 
+
 const Dashboard = () => {
   const [date, setDate] = useState(new Date());
   const [events] = useState([

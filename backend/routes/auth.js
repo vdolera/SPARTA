@@ -122,6 +122,27 @@ router.post('/event', async (req, res) => {
     }
   });
 
+  // Get single event by eventName
+router.get('/event', async (req, res) => {
+  try {
+    const { eventName } = req.query;
+    if (!eventName) {
+      return res.status(400).json({ message: 'Event name is required' });
+    }
+
+    const event = await Event.findOne({ eventName });
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    res.json(event);
+  } catch (err) {
+    console.error("Error fetching event:", err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
   // POST /api/games
   router.post('/games', async (req, res) => {
     try {

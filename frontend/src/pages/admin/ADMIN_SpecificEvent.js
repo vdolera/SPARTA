@@ -1,6 +1,7 @@
 import MainLayout from "../../components/MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { TiGroupOutline } from "react-icons/ti";
 import { LuSwords } from "react-icons/lu";
 import { MdOutlineScoreboard } from "react-icons/md";
@@ -11,6 +12,23 @@ const SpecificEvent = () => {
     const navigate = useNavigate();
     const { eventName } = useParams();
     const decodedName = decodeURIComponent(eventName);
+
+    const [event, setEventDetails] = useState(null);
+
+    useEffect(() => {
+    const fetchEventDetails = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/event?eventName=${encodeURIComponent(decodedName)}`
+        );
+        const data = await response.json();
+        setEventDetails(data);
+      } catch (error) {
+        console.error("Error fetching event details:", error);
+       }
+      };
+      fetchEventDetails();
+    }, [decodedName]);
 
     const handleGameClick = (event) => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/game`);
@@ -41,13 +59,13 @@ const SpecificEvent = () => {
 
                     <div className="organizer-box">
                         <h3>Organizer Details</h3>
-                        <p>Name: Organizer Name</p>
+                        <p>Name: {event?.userName}</p>
 
                     </div>
                     <div className="date-box">
                         <h3>Event Date</h3>
-                        <p>Start: 2023-10-01</p>
-                        <p>End: 2023-10-02</p>
+                        <p>Start: {event?.eventStartDate ? new Date(event.eventStartDate).toLocaleDateString() : "Loading..."}</p>
+                        <p>End: {event?.eventEndDate ? new Date(event.eventEndDate).toLocaleDateString() : "Loading..."}</p>
                         {/* <p>Start: {eventStartDate}</p>
                         <p>End: {eventEndDate}</p> */}
                     </div>

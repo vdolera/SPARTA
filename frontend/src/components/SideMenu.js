@@ -1,9 +1,9 @@
 import { RxDashboard } from "react-icons/rx";
 import { AiOutlineFire } from "react-icons/ai";
-import { MdOutlineScoreboard } from "react-icons/md";
+//import { MdOutlineScoreboard } from "react-icons/md";
 import { MdOutlineFeedback } from "react-icons/md";
 import { GiGreekTemple } from "react-icons/gi";
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
 import '../styles/SideMenu.css';
 import { useNavigate } from 'react-router-dom';
 
