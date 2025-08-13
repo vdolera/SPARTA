@@ -1,0 +1,78 @@
+.team-create-maindiv {
+    border: 0.5px solid gray;
+    border-radius: 10px;
+    /* width: 500px; */
+}
+
+.team-form-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px;
+    font-family: Montserrat, sans-serif;
+}
+
+.team-form-header {
+    background-color: #CE892C;
+    font-size: 10px;
+    font-family: Monteserrat, sans-serif;
+    color: white;
+    padding: 3px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    text-align: center;
+}
+
+.team-form-container form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.team-form {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  font-size: 14px;    
+}
+
+.team-form-container label > input {
+    margin-left: 10px;
+}
+
+.team-form-container input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.color-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.color-picker input[type="color"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #ccc;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.color-picker input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+.color-picker input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}

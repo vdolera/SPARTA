@@ -1,6 +1,7 @@
 import MainLayout from "../../components/MainLayout";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import '../../styles/ADMIN_TeamCreate.css';
 
 const CreateTeam = () => {
   const navigate = useNavigate();
@@ -52,47 +53,66 @@ const CreateTeam = () => {
   return (
     <MainLayout>
       <div className='team-create-maindiv'>
-        <h2>Create Team</h2>
-        <form onSubmit={handleCreate}>
-          <div>
-            <label>Team Name:</label>
-            <input
-              type="text"
-              value={teamName}
-              onChange={(e) => setTeamName(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label>Team Manager:</label>
-            <input
-              type="text"
-              value={teamManager}
-              onChange={(e) => setTeamManager(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label>Manager Email:</label>
-            <input
-              type="email"
-              value={managerEmail}
-              onChange={(e) => setManagerEmail(e.target.value)}
-              required
-            />
-          </div>
+        <div className="team-form-header">
+          <h2>Team Creation Form</h2>
+        </div>
 
-          <div>
-            <label>Team Color:</label>
-            <input
-              type="color"
-              value={teamColor}
-              onChange={(e) => setTeamColor(e.target.value)}
-            />
-          </div>
+        <div className="team-form-container">
 
-          <button type="submit">Create Team</button>
-        </form>
+          <form className="team-form" onSubmit={handleCreate}>
+
+            <div>
+              <label>Team Name:
+                <input
+                  type="text"
+                  value={teamName}
+                  onChange={(e) => setTeamName(e.target.value)}
+                  required
+                />
+              </label> 
+            </div>
+
+            <div>
+              <label>Team Manager:
+                <input
+                  type="text"
+                  value={teamManager}
+                  onChange={(e) => setTeamManager(e.target.value)}
+                  required
+                />
+              </label>
+            </div>
+
+            <div>
+              <label>Manager Email:
+                <input
+                  type="email"
+                  value={managerEmail}
+                  onChange={(e) => setManagerEmail(e.target.value)}
+                  required
+                />
+              </label>
+            </div>
+
+            <div>
+              <label className="color-picker">
+                Team Color:
+                <input
+                  type="color"
+                  value={teamColor}
+                  onChange={(e) => setTeamColor(e.target.value)}
+                  required
+                />
+              </label>
+ 
+            </div>
+
+            <button type="submit">Create Team</button>
+
+          </form>
+
+        </div>
+        
       </div>
     </MainLayout>
   );

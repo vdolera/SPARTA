@@ -134,29 +134,13 @@ const CreateEvent = () => {
             />
             </label>
 
-            <label style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <label className="color-picker">
               Event Color:
                 <input
                   type="color"
                   value={eventColor}
                   onChange={e => setEventColor(e.target.value)}
                   required
-                  style={{
-                    appearance: 'none',            // removes default styles
-                    WebkitAppearance: 'none',      // for Safari
-                    MozAppearance: 'none',         // for Firefox
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',           // perfect circle
-                    backgroundColor: eventColor,   // ensure the color fills the shape
-                    padding: 0,
-                    cursor: 'pointer',
-                    overflow: 'hidden',
-                    boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)', // subtle shadow for depth
-                    transition: 'border-color 0.3s ease', // smooth transition for border color
-                  }}
-                  onMouseEnter={e => e.target.style.borderColor = '#000'} // change border color on hover
-                  onMouseLeave={e => e.target.style.borderColor = eventColor} // revert border color
                 />
             </label>
 
@@ -164,6 +148,13 @@ const CreateEvent = () => {
           <hr style={{ border: '1px solid #ccc', margin: '20px 0' }} />
 
           </form>
+
+        <div className="event-form-title">
+          <h4> SUB-ORGANIZERS </h4>
+          <p> *Fields are Optional To Be Filled Up* </p>
+
+          {/* Must create invite for sub-organizers */}
+        </div>
 
       </div>
 
