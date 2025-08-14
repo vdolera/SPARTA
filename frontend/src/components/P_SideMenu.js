@@ -21,9 +21,9 @@ const SideMenu = () => {
       <img src="/SPARTA_HeadBar.png" alt="SPARTA_HeadBar" className="SideMenu-Header-Pic"/>
       <img src="/SPARTA_admin.png" alt="SPARTA_AdminLabel" className="SideMenu-Admin-Pic"/>
       <ul className="sidemenu-list">
-        <li><a href="/admin/dashboard"><RxDashboard /> Dashboard</a></li>
-        <li><a href="/admin/event"><AiOutlineFire /> Event </a></li>
-        <li><a href="/admin/feedback"><MdOutlineFeedback /> Feedback</a></li>
+        <li><a href="/dashboard"><RxDashboard /> Dashboard</a></li>
+        <li><a href="/event"><AiOutlineFire /> Event </a></li>
+        <li><a href="/feedback"><MdOutlineFeedback /> Feedback</a></li>
         <li><a href="/pantheon"><GiGreekTemple /> Pantheon </a></li>
         <li><button onClick={handleLogout}>Logout </button></li>
       </ul>

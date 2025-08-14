@@ -18,9 +18,9 @@ const getModelByRole = (role) => {
 // REGISTER Auth
 router.post('/register/:role', async (req, res) => {
   const { role } = req.params;
-  const { email, password, institution, event } = req.body;
+  const { email, password, institution, eventName } = req.body;
 
-  console.log("📥 Incoming registration:", { role, email, institution, event });
+  console.log("Incoming registration:", { role, email, institution, eventName });
 
   const Model = getModelByRole(role);
   if (!Model) return res.status(400).json({ message: 'Invalid role' });
@@ -37,14 +37,14 @@ router.post('/register/:role', async (req, res) => {
       email,
       password: hashed,
       institution,
-      ...(role === 'player' && { event })
+      ...(role === 'player' && { eventName })
     });
 
     await user.save();
     console.log(`${role} saved successfully`);
     res.status(201).json({ message: `${role} registered successfully` });
   } catch (err) {
-    console.error('❌ Registration error:', err.message);
+    console.error('Registration error:', err.message);
     res.status(500).json({ message: 'Registration failed', error: err.message });
   }
 });
@@ -64,10 +64,17 @@ router.post('/login/:role', async (req, res) => {
       const match = await bcrypt.compare(password, user.password);
       if (!match) return res.status(401).json({ message: 'Invalid credentials' });
   
-      if (role === 'player' && accessKey !== '123456') {
+      // Player
+      if (role === 'player') {
+
+      if (!user.accessKey) {
+        return res.status(403).json({ message: 'Your account is not approved yet.' });
+      }
+      if (user.accessKey !== accessKey) {
         return res.status(403).json({ message: 'Invalid access key' });
       }
-  
+    }
+
       res.status(200).json({ message: `${role} logged in successfully`, user: { email: user.email, role, institution: user.institution } });
     } catch (err) {
       console.error('Login error:', err.message);
@@ -241,6 +248,50 @@ router.get('/teams', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// GET pending players
+router.get("/players/pending", async (req, res) => {
+  try {
+    const players = await Player.find({ accessKey: null });
+    res.json(players);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch pending players" });
+  }
+});
+
+const crypto = require("crypto");
+
+// PUT approve player
+router.put("/players/approve/:id", async (req, res) => {
+  try {
+    const accessKey = crypto.randomBytes(8).toString("hex"); // random key
+    const updatedPlayer = await Player.findByIdAndUpdate(
+      req.params.id,
+      { approved: true, accessKey },
+      { new: true }
+    );
+    if (!updatedPlayer) {
+      return res.status(404).json({ message: "Player not found" });
+    }
+    res.json({ message: "Player approved", accessKey });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to approve player" });
+  }
+});
+
+// DELETE player
+router.delete("/players/:id", async (req, res) => {
+  try {
+    const deleted = await Player.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Player not found" });
+    }
+    res.json({ message: "Player deleted" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete player" });
+  }
+});
+
 
 
 module.exports = router;

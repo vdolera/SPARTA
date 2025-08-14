@@ -1,10 +1,15 @@
 import React from 'react';
 import { FaUserCircle, FaCog } from 'react-icons/fa';
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import '../styles/Header.css';
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleSetting = () => {
+    navigate('/approval')
+  };
 
   const pageTitles = {
     '/dashboard': 'DASHBOARD',
@@ -26,7 +31,7 @@ const Header = () => {
         <h2>{currentTitle}</h2>
         <div className="header-icons">
           <FaUserCircle size={24} />
-          <FaCog size={24} />
+          <FaCog size={24} onClick={handleSetting}/>
         </div>
       </div>
     </div>

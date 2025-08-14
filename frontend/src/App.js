@@ -12,6 +12,10 @@ import CreateGame from "./pages/admin/ADMIN_GameCreate";
 import Feedback from "./pages/admin/ADMIN_Feedback";
 import LiveScores from "./pages/admin/ADMIN_LiveScores";
 import Pantheon from "./pages/admin/ADMIN_Pantheon";
+import Approval from "./pages/admin/ADMIN_PlayerApproval";
+import PlayerDashboard from "./pages/player/PLAYER_Dashboard";
+import PlayerEvent from "./pages/player/PLAYER_Event";
+import PlayerSpecificEvent from "./pages/player/PLAYER_SpecificEvent";
 import BlockRoute from "../src/BlockRoute";
 
 export default function App() {
@@ -20,15 +24,19 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<BlockRoute> <Dashboard /> </BlockRoute>} />
-        <Route path="/event" element={<BlockRoute> <Event /> </BlockRoute>} />
-        <Route path="/event/create" element={<BlockRoute> <CreateEvent /> </BlockRoute>} />
+        <Route path="/admin/dashboard" element={<BlockRoute> <Dashboard /> </BlockRoute>} />
+        <Route path="/dashboard" element={<BlockRoute> <PlayerDashboard /> </BlockRoute>} />
+        <Route path="/approval" element={<BlockRoute> <Approval /> </BlockRoute>} />
+        <Route path="/admin/event" element={<BlockRoute> <Event /> </BlockRoute>} />
+        <Route path="/event" element={<BlockRoute> <PlayerEvent /> </BlockRoute>} />
+        <Route path="/admin/event/create" element={<BlockRoute> <CreateEvent /> </BlockRoute>} />
         <Route path="/admin/event/:eventName" element={<SpecificEvent />} />
+        <Route path="/event/:eventName" element={<PlayerSpecificEvent />} />
         <Route path="/admin/event/:eventName/team" element={<BlockRoute> <Team /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/addteam" element={<BlockRoute> <CreateTeam /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/game" element={<BlockRoute> <Game /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/addgame" element={<BlockRoute> <CreateGame /> </BlockRoute>} />
-        <Route path="/feedback" element={<BlockRoute> <Feedback /> </BlockRoute>} />
+        <Route path="/admin/feedback" element={<BlockRoute> <Feedback /> </BlockRoute>} />
         <Route path="/event/:eventName/liveScores" element={<BlockRoute> <LiveScores /> </BlockRoute>} />
         <Route path="/pantheon" element={<BlockRoute> <Pantheon /> </BlockRoute>} />
       </Routes>

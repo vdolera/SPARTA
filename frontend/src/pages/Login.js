@@ -32,11 +32,16 @@ export default function LoginPage() {
       });
   
       const data = await response.json();
-  
+
       if (response.ok) {
         alert(`Login successful as ${role}`);
         localStorage.setItem('auth', JSON.stringify(data.user));
-        navigate('/dashboard');
+  
+      if (role === 'admin') {
+        navigate('/admin/dashboard');
+      } else if (role === 'player') {
+        navigate('/dashboard'); 
+      }
       } else {
         alert(data.message || 'Login failed');
       }

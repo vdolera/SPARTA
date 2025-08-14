@@ -5,11 +5,12 @@ import '../styles/Register.css';
 export default function RegisterPage() {
   const [role, setRole] = useState('admin');
   const [institutions, setInstitutions] = useState([]);
+  const [events, setEvents] = useState([]);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     institution: '',
-    event: '',
+    eventName: '',
   });
 
   const navigate = useNavigate(); 
@@ -27,6 +28,15 @@ export default function RegisterPage() {
   
     fetchInstitutions();
   }, []);
+
+  useEffect(() => {
+    if (role === 'player' && formData.institution) {
+      fetch(`http://localhost:5000/api/events?institution=${encodeURIComponent(formData.institution)}`)
+        .then(res => res.json())
+        .then(data => setEvents(data))
+        .catch(err => console.error('Failed to load events:', err));
+    }
+  }, [formData.institution, role]);
   
 
   const handleChange = (e) => {
@@ -47,7 +57,7 @@ export default function RegisterPage() {
             email: formData.email,
             password: formData.password,
             institution: formData.institution,
-            event: formData.event,
+            eventName: formData.event,
           };
   
     console.log(`Sending payload:`, payload);
@@ -142,13 +152,19 @@ export default function RegisterPage() {
             {role === 'player' && (
               <div className='form-group'>
                 <label>Event</label>
-                <input
-                  type="text"
+                <select
                   name="event"
-                  required
                   value={formData.event}
                   onChange={handleChange}
-                />
+                  required
+                >
+                  <option value="">Select Event</option>
+                  {events.map((ev) => (
+                    <option key={ev._id} value={ev.eventName}>
+                      {ev.eventName}
+                    </option>
+                  ))}
+                </select>
               </div>
             )}
 
