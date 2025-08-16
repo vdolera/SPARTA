@@ -16,6 +16,8 @@ import Approval from "./pages/admin/ADMIN_PlayerApproval";
 import PlayerDashboard from "./pages/player/PLAYER_Dashboard";
 import PlayerEvent from "./pages/player/PLAYER_Event";
 import PlayerSpecificEvent from "./pages/player/PLAYER_SpecificEvent";
+import PlayerGame from "./pages/player/PLAYER_Games";
+import PlayerRegistration from "./pages/player/PLAYER_Registration";
 import BlockRoute from "../src/BlockRoute";
 
 export default function App() {
@@ -35,6 +37,8 @@ export default function App() {
         <Route path="/admin/event/:eventName/team" element={<BlockRoute> <Team /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/addteam" element={<BlockRoute> <CreateTeam /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/game" element={<BlockRoute> <Game /> </BlockRoute>} />
+        <Route path="/event/:eventName/game" element={<BlockRoute> <PlayerGame /> </BlockRoute>} />
+        <Route path="/event/:eventName/registration" element={<BlockRoute> <PlayerRegistration /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/addgame" element={<BlockRoute> <CreateGame /> </BlockRoute>} />
         <Route path="/admin/feedback" element={<BlockRoute> <Feedback /> </BlockRoute>} />
         <Route path="/event/:eventName/liveScores" element={<BlockRoute> <LiveScores /> </BlockRoute>} />

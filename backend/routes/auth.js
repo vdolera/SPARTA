@@ -75,7 +75,7 @@ router.post('/login/:role', async (req, res) => {
       }
     }
 
-      res.status(200).json({ message: `${role} logged in successfully`, user: { email: user.email, role, institution: user.institution } });
+      res.status(200).json({ message: `${role} logged in successfully`, user: { _id: user._id, email: user.email, role, institution: user.institution } });
     } catch (err) {
       console.error('Login error:', err.message);
       res.status(500).json({ message: 'Login failed', error: err.message });
@@ -291,6 +291,34 @@ router.delete("/players/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to delete player" });
   }
 });
+
+// PUT /api/players/:id/register-game
+router.put("/players/:id/register-game", async (req, res) => {
+  try {
+    const { playerName, team, game } = req.body;
+
+    if (!playerName || !team || !game) {
+      return res.status(400).json({ message: "All fields required" });
+    }
+
+    const updatedPlayer = await Player.findByIdAndUpdate(
+      req.params.id,
+      { playerName, team, game },
+      { new: true }
+    );
+
+    if (!updatedPlayer) {
+      return res.status(404).json({ message: "Player not found" });
+    }
+
+    res.json({ message: "Game registered successfully", player: updatedPlayer });
+  } catch (err) {
+    console.error("Error updating player registration:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 
 
 

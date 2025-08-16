@@ -31,7 +31,7 @@ const PlayerSpecificEvent = () => {
     }, [decodedName]);
 
     const handleGameClick = (event) => {
-        navigate(`/admin/event/${encodeURIComponent(decodedName)}/game`);
+        navigate(`/event/${encodeURIComponent(decodedName)}/game`);
       };
 
     const handleTeamClick = (event) => {

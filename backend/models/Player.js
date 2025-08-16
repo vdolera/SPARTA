@@ -5,7 +5,14 @@ const playerSchema = new mongoose.Schema({
   password: { type: String, required: true },
   institution: { type: String, required: true },
   eventName: { type: String, required: true },
-  accessKey: { type: String, required: null }
+
+  //User Registration
+  accessKey: { type: String, required: null },
+
+  //Game Registration
+  playerName: { type: String, trim: true },
+  team: { type: String, trim: true },
+  game: { type: String, trim: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Player', playerSchema);

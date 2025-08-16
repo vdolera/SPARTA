@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import '../../styles/ADMIN_Games.css';
 
-const Game = () => {
+const PlayerGame = () => {
   const navigate = useNavigate();
   const [gamesByType, setGamesByType] = useState({});
   const user = JSON.parse(localStorage.getItem("auth"));
@@ -44,8 +44,8 @@ const Game = () => {
   }, [userInstitution, decodedName]);
   
 
-  const handleAddGame = () => {
-    navigate(`/admin/event/${encodeURIComponent(decodedName)}/addgame`); 
+  const handleRegistration = () => {
+    navigate(`/event/${encodeURIComponent(decodedName)}/registration`); 
   };
 
   return (
@@ -63,7 +63,7 @@ const Game = () => {
           onChange={e => setSearchQuery(e.target.value)}
           style={{ marginRight: "16px" }}
         />
-        <button onClick={handleAddGame}> + Add Game </button>
+        <button onClick={handleRegistration}> Register for a game here </button>
       </div>  
 
       <div className="game-main-div">
@@ -86,4 +86,4 @@ const Game = () => {
   );
 };
 
-export default Game;
+export default PlayerGame;
