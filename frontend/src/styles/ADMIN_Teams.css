@@ -65,10 +65,11 @@ div button:hover {
     cursor: pointer;
     padding: 8px 12px;
     color: black;
-    margin-bottom: 6px;
     border-radius: 6px;
-    width: 150px;
-    height: 190px;
+    margin: 10px 0;
+    padding: 10px;
+    min-width: 22vh;
+    min-height: 29vh;
     font-family: Paytone One, sans-serif;
     font-weight: bold;
     color: white;

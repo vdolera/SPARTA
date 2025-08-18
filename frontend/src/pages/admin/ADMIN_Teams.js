@@ -71,13 +71,14 @@ const Teams = () => {
         ) : (
           <ul>
             {filteredTeams.map((team, idx) => (
-              <li className="team-btn"
+              <button
+                className="team-btn"
                 key={idx}
                 onClick={() => handleSelectTeam(team.teamName)}
-                style={{ background: team.teamColor ? team.teamColor : '#A96B24' }}
+                style={{ background: team.teamColor ? team.teamColor : '#A96B24'}}
               >
                 {team.teamName}
-              </li>
+              </button>
             ))}
           </ul>
         )}
