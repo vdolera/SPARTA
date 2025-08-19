@@ -7,6 +7,7 @@ import CreateEvent from "./pages/admin/ADMIN_EventCreate";
 import SpecificEvent from "./pages/admin/ADMIN_SpecificEvent";
 import Team from "./pages/admin/ADMIN_Teams";
 import CreateTeam from "./pages/admin/ADMIN_TeamCreate";
+import TeamPlayers from "./pages/admin/ADMIN_TeamPlayers";
 import Game from "./pages/admin/ADMIN_Games";
 import CreateGame from "./pages/admin/ADMIN_GameCreate";
 import Feedback from "./pages/admin/ADMIN_Feedback";
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/admin/event/:eventName" element={<SpecificEvent />} />
         <Route path="/event/:eventName" element={<PlayerSpecificEvent />} />
         <Route path="/admin/event/:eventName/team" element={<BlockRoute> <Team /> </BlockRoute>} />
+        <Route path="/admin/event/:eventName/team/:teamName/players" element={<BlockRoute> <TeamPlayers /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/addteam" element={<BlockRoute> <CreateTeam /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/game" element={<BlockRoute> <Game /> </BlockRoute>} />
         <Route path="/event/:eventName/game" element={<BlockRoute> <PlayerGame /> </BlockRoute>} />

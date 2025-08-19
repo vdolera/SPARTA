@@ -318,6 +318,22 @@ router.put("/players/:id/register-game", async (req, res) => {
   }
 });
 
+// GET players by event, institution, and team
+router.get("/players", async (req, res) => {
+  try {
+    const { institution, eventName, team } = req.query;
+
+    if (!institution || !eventName || !team) {
+      return res.status(400).json({ message: "Institution, event, and team are required" });
+    }
+
+    const players = await Player.find({ institution, eventName, team });
+    res.json(players);
+  } catch (err) {
+    console.error("Error fetching players:", err);
+    res.status(500).json({ message: "Failed to fetch players" });
+  }
+});
 
 
 

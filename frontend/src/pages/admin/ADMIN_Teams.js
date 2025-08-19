@@ -43,7 +43,7 @@ const Teams = () => {
   };
 
   const handleSelectTeam = (teamName) => {
-    alert(`Selected team: ${teamName}`);
+    navigate(`/admin/event/${encodeURIComponent(decodedName)}/team/${encodeURIComponent(teamName)}/players`);
   };
 
   return (
