@@ -1,0 +1,94 @@
+import MainLayout from "../../components/MainLayout";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+const PlayerProfile = () => {
+  //const user = JSON.parse(localStorage.getItem("auth"));
+  const {playerId} = useParams();
+  const [player, setPlayer] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/players/${playerId}`);
+        const data = await res.json();
+        setPlayer(data);
+      } catch (err) {
+        console.error("Error fetching player profile:", err);
+      }
+    };
+    fetchProfile();
+  }, [playerId]);
+
+  const handleChange = (e) => {
+    setPlayer({ ...player, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/players/${playerId}/profile`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(player),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setPlayer(updated);
+        setIsEditing(false);
+        alert("Profile updated!");
+      } else {
+        alert("Failed to update profile");
+      }
+    } catch (err) {
+      console.error("Error updating profile:", err);
+    }
+  };
+
+  return (
+    <MainLayout>
+      <h1>Player Profile</h1>
+      <div className="profile-container">
+        {isEditing ? (
+          <div className="profile-form">
+            <input name="fullName" value={player.playerName || ""} onChange={handleChange} placeholder="Full Name" />
+            <input name="team" value={player.team || ""} onChange={handleChange} placeholder="Team" />
+            <input name="sport" value={player.game || ""} onChange={handleChange} placeholder="Sport" />
+            <input name="jerseyNumber" value={player.jerseyNumber || ""} onChange={handleChange} placeholder="Jersey #" />
+            <input name="contactNumber" value={player.contactNumber || ""} onChange={handleChange} placeholder="Contact Number" />
+            <input name="permanentAddress" value={player.permanentAddress || ""} onChange={handleChange} placeholder="Permanent Address" />
+            <input type="date" name="birthDate" value={player.birthDate ? player.birthDate.substring(0,10) : ""} onChange={handleChange} />
+            <input type="number" name="age" value={player.age || ""} onChange={handleChange} placeholder="Age" />
+            <input type="number" name="weight" value={player.weight || ""} onChange={handleChange} placeholder="Weight (kg)" />
+            <input type="number" name="height" value={player.height || ""} onChange={handleChange} placeholder="Height (cm)" />
+            <select name="sex" value={player.sex || ""} onChange={handleChange}>
+              <option value="">Select Sex</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+            <button onClick={handleSave}>Save</button>
+            <button onClick={() => setIsEditing(false)}>Cancel</button>
+          </div>
+        ) : (
+          <div className="profile-view">
+            <p><b>Full Name:</b> {player.playerName || "N/A"}</p>
+            <p><b>Team:</b> {player.team || "N/A"}</p>
+            <p><b>Sport:</b> {player.game || "N/A"}</p>
+            <p><b>Jersey Number:</b> {player.jerseyNumber || "N/A"}</p>
+            <p><b>Contact:</b> {player.contactNumber || "N/A"}</p>
+            <p><b>Address:</b> {player.permanentAddress || "N/A"}</p>
+            <p><b>Birth Date:</b> {player.birthDate ? player.birthDate.substring(0,10) : "N/A"}</p>
+            <p><b>Age:</b> {player.age || "N/A"}</p>
+            <p><b>Weight:</b> {player.weight ? `${player.weight} kg` : "N/A"}</p>
+            <p><b>Height:</b> {player.height ? `${player.height} cm` : "N/A"}</p>
+            <p><b>Sex:</b> {player.sex || "N/A"}</p>
+            <button onClick={() => setIsEditing(true)}>Edit Profile</button>
+          </div>
+        )}
+      </div>
+    </MainLayout>
+  );
+};
+
+export default PlayerProfile;

@@ -335,6 +335,36 @@ router.get("/players", async (req, res) => {
   }
 });
 
+// PUT update player profile
+router.put("/players/:id/profile", async (req, res) => {
+  try {
+    const updatedPlayer = await Player.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });
+    res.json(updatedPlayer);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update player profile" });
+  }
+});
+
+// GET single player by ID
+router.get("/players/:id", async (req, res) => {
+  try {
+    const player = await Player.findById(req.params.id);
+    if (!player) {
+      return res.status(404).json({ message: "Player not found" });
+    }
+    res.json(player);
+  } catch (err) {
+    console.error("Error fetching player:", err);
+    res.status(500).json({ message: "Failed to fetch player" });
+  }
+});
+
+
 
 
 

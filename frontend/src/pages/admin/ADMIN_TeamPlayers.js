@@ -1,16 +1,21 @@
 import MainLayout from "../../components/MainLayout";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const TeamPlayers = () => {
-  const { eventName, teamName } = useParams(); // assuming your route has /event/:eventName/team/:teamName
+  const { eventName, teamName } = useParams(); 
   const decodedEvent = decodeURIComponent(eventName);
   const decodedTeam = decodeURIComponent(teamName);
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("auth"));
   const userInstitution = user?.institution;
 
   const [players, setPlayers] = useState([]);
+
+  const handleViewButton = (playerId) => {
+    navigate(`/admin/event/${encodeURIComponent(decodedEvent)}/team/${encodeURIComponent(teamName)}/player/${playerId}/profile`);
+  };
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -44,21 +49,19 @@ const TeamPlayers = () => {
         <table border="1" cellPadding="10" style={{ borderCollapse: "collapse", width: "100%" }}>
           <thead>
             <tr>
-              <th>Player Name</th>
-              <th>Email</th>
-              <th>Team</th>
+              <th>Player</th>  
               <th>Event</th>
-              <th>Game</th>
+              <th>Sport</th>
+              <th>Profile</th>
             </tr>
           </thead>
           <tbody>
             {players.map((player) => (
               <tr key={player._id}>
                 <td>{player.playerName}</td>
-                <td>{player.email}</td>
-                <td>{player.team}</td>
                 <td>{player.eventName}</td>
                 <td>{player.game}</td>
+                <button onClick={() => handleViewButton(player._id)}>View</button>
               </tr>
             ))}
           </tbody>
