@@ -75,7 +75,7 @@ router.post('/login/:role', async (req, res) => {
       }
     }
 
-      res.status(200).json({ message: `${role} logged in successfully`, user: { _id: user._id, email: user.email, role, institution: user.institution } });
+    res.status(200).json({ message: `${role} logged in successfully`, user: { _id: user._id, email: user.email, role, institution: user.institution, ...(role === 'player' && { playerName: user.playerName, team: user.team, game: user.game }) } });
     } catch (err) {
       console.error('Login error:', err.message);
       res.status(500).json({ message: 'Login failed', error: err.message });
@@ -364,6 +364,44 @@ router.get("/players/:id", async (req, res) => {
   }
 });
 
+const Feedback = require("../models/Feedback");
+
+// POST feedback
+router.post("/feedback", async (req, res) => {
+  try {
+    const { eventName, institution, userId, playerName, message } = req.body;
+
+    if (!eventName || !institution || !userId || !message) {
+      return res.status(400).json({ message: "All fields required" });
+    }
+
+    const newFeedback = new Feedback({
+      eventName,
+      institution,
+      userId,
+      playerName,
+      message
+    });
+
+    await newFeedback.save();
+    res.status(201).json({ message: "Feedback posted successfully", feedback: newFeedback });
+  } catch (err) {
+    console.error("Error posting feedback:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// GET feedbacks by event
+router.get("/feedback/:eventName", async (req, res) => {
+  try {
+    const { eventName } = req.params;
+    const feedbacks = await Feedback.find({ eventName }).sort({ createdAt: -1 });
+    res.json(feedbacks);
+  } catch (err) {
+    console.error("Error fetching feedbacks:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 
 

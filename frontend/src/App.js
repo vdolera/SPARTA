@@ -20,6 +20,7 @@ import PlayerSpecificEvent from "./pages/player/PLAYER_SpecificEvent";
 import PlayerGame from "./pages/player/PLAYER_Games";
 import PlayerRegistration from "./pages/player/PLAYER_Registration";
 import PlayerProfile from "./pages/admin/ADMIN_PlayerProfile";
+import PlayerFeedback from "./pages/player/PLAYER_Feedback";
 import BlockRoute from "../src/BlockRoute";
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
         <Route path="/event/:eventName/registration" element={<BlockRoute> <PlayerRegistration /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/addgame" element={<BlockRoute> <CreateGame /> </BlockRoute>} />
         <Route path="/admin/feedback" element={<BlockRoute> <Feedback /> </BlockRoute>} />
+        <Route path="/event/:eventName/feedback" element={<BlockRoute> <PlayerFeedback /> </BlockRoute>} />
         <Route path="/event/:eventName/liveScores" element={<BlockRoute> <LiveScores /> </BlockRoute>} />
         <Route path="/pantheon" element={<BlockRoute> <Pantheon /> </BlockRoute>} />
       </Routes>

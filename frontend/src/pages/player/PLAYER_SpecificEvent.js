@@ -43,7 +43,7 @@ const PlayerSpecificEvent = () => {
       };
 
     const handleFeedbackClick = (event) => {
-        navigate(`admin/event/${encodeURIComponent(decodedName)}/feedback`);
+        navigate(`/event/${encodeURIComponent(decodedName)}/feedback`);
       };
 
     return (
