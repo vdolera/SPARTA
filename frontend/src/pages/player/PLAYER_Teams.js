@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import '../../styles/ADMIN_Teams.css';
 import { VscSearchStop } from "react-icons/vsc";
 
-const Teams = () => {
+const PlayerTeams = () => {
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
 
@@ -38,12 +38,8 @@ const Teams = () => {
     }
   }, [userInstitution, decodedName]);
 
-  const handleAddTeam = () => {
-    navigate(`/admin/event/${encodeURIComponent(decodedName)}/addteam`);
-  };
-
   const handleSelectTeam = (teamName) => {
-    alert(`Selected team: ${teamName}`);
+    navigate(`/event/${encodeURIComponent(decodedName)}/team/${encodeURIComponent(teamName)}/players`);
   };
 
   return (
@@ -59,7 +55,6 @@ const Teams = () => {
           onChange={e => setSearchQuery(e.target.value)}
           style={{ marginRight: "16px" }}
         />
-        <button onClick={handleAddTeam}> + New Team </button>
       </div>
 
       <div className="teams-event">
@@ -71,13 +66,14 @@ const Teams = () => {
         ) : (
           <ul>
             {filteredTeams.map((team, idx) => (
-              <li className="team-btn"
+              <button
+                className="team-btn"
                 key={idx}
                 onClick={() => handleSelectTeam(team.teamName)}
-                style={{ background: team.teamColor ? team.teamColor : '#A96B24' }}
+                style={{ background: team.teamColor ? team.teamColor : '#A96B24'}}
               >
                 {team.teamName}
-              </li>
+              </button>
             ))}
           </ul>
         )}
@@ -86,4 +82,4 @@ const Teams = () => {
   );
 };
 
-export default Teams;
+export default PlayerTeams;
