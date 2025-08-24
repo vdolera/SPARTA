@@ -5,7 +5,9 @@ import { useNavigate, useParams } from "react-router-dom";
 const CreateGame = () => {
   const [gameType, setGameType] = useState("Basketball");
   const [category, setCategory] = useState("Men");
-  const [schedule, setSchedule] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [bracketType, setBracketType] = useState("Single Elimination");
   const [requirements, setRequirements] = useState([""]);
   const [rules, setRules] = useState("");
   const [availableTeams, setAvailableTeams] = useState([]);
@@ -19,10 +21,14 @@ const CreateGame = () => {
     const user = JSON.parse(localStorage.getItem("auth"));
     if (!user?.institution) return;
 
-    fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user.institution)}&event=${encodeURIComponent(decodedName)}`)
-      .then(res => res.json())
-      .then(data => setAvailableTeams(data))
-      .catch(err => console.error("Error fetching teams:", err));
+    fetch(
+      `http://localhost:5000/api/teams?institution=${encodeURIComponent(
+        user.institution
+      )}&event=${encodeURIComponent(decodedName)}`
+    )
+      .then((res) => res.json())
+      .then((data) => setAvailableTeams(data))
+      .catch((err) => console.error("Error fetching teams:", err));
   }, [decodedName]);
 
   const toggleTeamSelection = (teamName) => {
@@ -55,7 +61,9 @@ const CreateGame = () => {
           institution: user.institution,
           gameType,
           category,
-          schedule,
+          startDate,
+          endDate,
+          bracketType,
           teams: selectedTeams,
           requirements,
           rules,
@@ -69,7 +77,7 @@ const CreateGame = () => {
         alert("Game created!");
         navigate(-1);
       } else {
-        alert("Failed!" + data.message);
+        alert("Failed! " + data.message);
       }
     } catch (err) {
       console.error("Error:", err);
@@ -89,9 +97,14 @@ const CreateGame = () => {
         </div>
 
         <form className="event-forms" onSubmit={handleSubmit}>
+          {/* Game Type */}
           <label>
             Game Type:
-            <select value={gameType} onChange={(e) => setGameType(e.target.value)} required>
+            <select
+              value={gameType}
+              onChange={(e) => setGameType(e.target.value)}
+              required
+            >
               <option value="Basketball">Basketball</option>
               <option value="Volleyball">Volleyball</option>
               <option value="Soccer">Soccer</option>
@@ -102,25 +115,41 @@ const CreateGame = () => {
             </select>
           </label>
 
+          {/* Game Category */}
           <label>
             Category:
-            <div>
-              <label><input type="radio" value="Men" checked={category === "Men"} onChange={(e) => setCategory(e.target.value)} /> Men</label>
-              <label><input type="radio" value="Women" checked={category === "Women"} onChange={(e) => setCategory(e.target.value)} /> Women</label>
-              <label><input type="radio" value="Mixed" checked={category === "Mixed"} onChange={(e) => setCategory(e.target.value)} /> Mixed</label>
-            </div>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              required
+            >
+              <option value="Men">Men</option>
+              <option value="Women">Women</option>
+              <option value="Mixed">Mixed</option>
+            </select>
           </label>
 
+          {/* Game Duration */}
           <label>
-            Game Schedule:
+            Game Start Date:
             <input
               type="datetime-local"
-              value={schedule}
-              onChange={(e) => setSchedule(e.target.value)}
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              required
+            />
+          </label>
+          <label>
+            Game End Date:
+            <input
+              type="datetime-local"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
               required
             />
           </label>
 
+          {/* Participating Teams */}
           <label>Participating Teams:</label>
           <div className="team-selection">
             {availableTeams.length === 0 ? (
@@ -134,7 +163,9 @@ const CreateGame = () => {
                   style={{
                     margin: "5px",
                     padding: "8px 12px",
-                    backgroundColor: selectedTeams.includes(team.teamName) ? "#4caf50" : "#ccc",
+                    backgroundColor: selectedTeams.includes(team.teamName)
+                      ? "#4caf50"
+                      : "#ccc",
                     color: "white",
                     border: "none",
                     borderRadius: "5px",
@@ -147,7 +178,11 @@ const CreateGame = () => {
             )}
           </div>
 
+          {/* Requirements */}
           <label>Requirements:</label>
+          <button type="button" onClick={handleAddRequirement}>
+            + Add Requirement
+          </button>
           {requirements.map((req, idx) => (
             <div key={idx}>
               <input
@@ -164,10 +199,9 @@ const CreateGame = () => {
               )}
             </div>
           ))}
-          <button type="button" onClick={handleAddRequirement}>
-            + Add Requirement
-          </button>
+        
 
+          {/* Rules */}
           <label>
             Rules and Guidelines:
             <textarea
@@ -179,8 +213,40 @@ const CreateGame = () => {
             />
           </label>
 
+          {/* Bracket Type */}
+          <label>Bracket Type:</label>
+          <div className="bracket-selection">
+            {[
+              "Single Elimination",
+              "Double Elimination",
+              "Round Robin",
+              "Swiss",
+              "Free for All"
+            ].map((type) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setBracketType(type)}
+                style={{
+                  margin: "5px",
+                  padding: "8px 12px",
+                  backgroundColor: bracketType === type ? "#4caf50" : "#ccc",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+
+          {/* Buttons */}
           <div className="lower-buttons">
-            <button type="button" onClick={() => navigate(-1)}>Cancel</button>
+            <button type="button" onClick={() => navigate(-1)}>
+              Cancel
+            </button>
             <button type="submit">Create Game</button>
           </div>
         </form>

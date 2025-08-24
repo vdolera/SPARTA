@@ -51,21 +51,21 @@ router.post('/register/:role', async (req, res) => {
 
 // LOGIN Auth
 router.post('/login/:role', async (req, res) => {
-    const { role } = req.params;
-    const { email, password, accessKey } = req.body;
-  
-    const Model = getModelByRole(role);
-    if (!Model) return res.status(400).json({ message: 'Invalid role' });
-  
-    try {
-      const user = await Model.findOne({ email });
-      if (!user) return res.status(401).json({ message: 'Invalid credentials' });
-  
-      const match = await bcrypt.compare(password, user.password);
-      if (!match) return res.status(401).json({ message: 'Invalid credentials' });
-  
-      // Player
-      if (role === 'player') {
+  const { role } = req.params;
+  const { email, password, accessKey } = req.body;
+
+  const Model = getModelByRole(role);
+  if (!Model) return res.status(400).json({ message: 'Invalid role' });
+
+  try {
+    const user = await Model.findOne({ email });
+    if (!user) return res.status(401).json({ message: 'Invalid credentials' });
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(401).json({ message: 'Invalid credentials' });
+
+    // Player
+    if (role === 'player') {
 
       if (!user.accessKey) {
         return res.status(403).json({ message: 'Your account is not approved yet.' });
@@ -76,60 +76,60 @@ router.post('/login/:role', async (req, res) => {
     }
 
     res.status(200).json({ message: `${role} logged in successfully`, user: { _id: user._id, email: user.email, role, institution: user.institution, ...(role === 'player' && { playerName: user.playerName, team: user.team, game: user.game }) } });
-    } catch (err) {
-      console.error('Login error:', err.message);
-      res.status(500).json({ message: 'Login failed', error: err.message });
-    }
-  });
-  
+  } catch (err) {
+    console.error('Login error:', err.message);
+    res.status(500).json({ message: 'Login failed', error: err.message });
+  }
+});
+
 // GET institutions
 router.get('/institutions', async (req, res) => {
-    try {
-      const institutions = await Institution.find().sort({ name: 1 });
-      res.json(institutions);
-    } catch (err) {
-      console.error('Failed to fetch institutions:', err.message);
-      res.status(500).json({ message: 'Error fetching institutions' });
-    }
-  });
+  try {
+    const institutions = await Institution.find().sort({ name: 1 });
+    res.json(institutions);
+  } catch (err) {
+    console.error('Failed to fetch institutions:', err.message);
+    res.status(500).json({ message: 'Error fetching institutions' });
+  }
+});
 
- // POST Create Event
+// POST Create Event
 router.post('/event', async (req, res) => {
-    const { userName, email, institution, eventName, eventStartDate, eventEndDate, description, eventColor } = req.body;
-  
-    try {
-      const event = new Event({
-        userName,
-        email,
-        institution,
-        eventName,
-        eventStartDate,
-        eventEndDate,
-        description,
-        eventColor
-      });
-  
-      await event.save();
-      console.log('Event saved successfully');
-      res.status(201).json({ message: 'Event created successfully' });
-    } catch (err) {
-      console.error('❌ Failed to create event:', err.message);
-      res.status(500).json({ message: 'Event creation failed', error: err.message });
-    }
-  }); 
+  const { userName, email, institution, eventName, eventStartDate, eventEndDate, description, eventColor } = req.body;
 
-  // GET Event
-  router.get('/events', async (req, res) => {
-    const userInstitution = req.query.institution;
-    try {
-      const events = await Event.find({ institution: userInstitution });
-      res.json(events);
-    } catch (err) {
-      res.status(500).json({ message: 'Failed to fetch events', error: err.message });
-    }
-  });
+  try {
+    const event = new Event({
+      userName,
+      email,
+      institution,
+      eventName,
+      eventStartDate,
+      eventEndDate,
+      description,
+      eventColor
+    });
 
-  // Get single event by eventName
+    await event.save();
+    console.log('Event saved successfully');
+    res.status(201).json({ message: 'Event created successfully' });
+  } catch (err) {
+    console.error('❌ Failed to create event:', err.message);
+    res.status(500).json({ message: 'Event creation failed', error: err.message });
+  }
+});
+
+// GET Event
+router.get('/events', async (req, res) => {
+  const userInstitution = req.query.institution;
+  try {
+    const events = await Event.find({ institution: userInstitution });
+    res.json(events);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch events', error: err.message });
+  }
+});
+
+// Get single event by eventName
 router.get('/event', async (req, res) => {
   try {
     const { eventName } = req.query;
@@ -150,12 +150,24 @@ router.get('/event', async (req, res) => {
 });
 
 
-  // POST /api/games
-  router.post('/games', async (req, res) => {
-    try {
-    const { institution, gameType, category, schedule, teams, requirements, rules, eventName } = req.body;
+// POST /api/games
+router.post('/games', async (req, res) => {
+  try {
+    const {
+      institution,
+      gameType,
+      category,
+      startDate,
+      endDate,
+      teams,
+      requirements,
+      rules,
+      eventName,
+      bracketType
+    } = req.body;
 
-    if (!institution || !gameType || !category || !schedule || !teams.length || !requirements.length || !rules) {
+    if (!institution || !gameType || !category || !startDate || !endDate ||
+      !teams?.length || !requirements?.length || !rules || !eventName || !bracketType) {
       return res.status(400).json({ message: 'All fields are required.' });
     }
 
@@ -163,22 +175,25 @@ router.get('/event', async (req, res) => {
       institution,
       gameType,
       category,
-      schedule,
+      startDate,
+      endDate,
       teams,
       requirements,
       rules,
-      eventName
+      eventName,
+      bracketType
     });
 
     await newGame.save();
-    res.status(201).json({ message: 'Game created successfully.' });
+    res.status(201).json({ message: 'Game created successfully.', game: newGame });
   } catch (err) {
     console.error("Error creating game:", err);
     res.status(500).json({ message: 'Server error.' });
   }
 });
 
-// GET /api/games?institution=ADNU
+
+// GET /api/games?institution=ADNU&event=Intramurals
 router.get('/games', async (req, res) => {
   try {
     const { institution, event } = req.query;
@@ -188,18 +203,16 @@ router.get('/games', async (req, res) => {
     }
 
     const query = { institution };
+    if (event) query.eventName = event;
 
-    if (event) {
-      query.eventName = event;
-    }
-
-    const games = await Game.find( query );
-    res.json(games); // Full game objects
+    const games = await Game.find(query);
+    res.json(games); // now includes startDate, endDate, bracketType
   } catch (err) {
     console.error('Error fetching games:', err);
     res.status(500).json({ message: 'Server error.' });
   }
 });
+
 
 //POST Teams
 router.post('/team', async (req, res) => {
@@ -404,50 +417,4 @@ router.get("/feedback/:eventName", async (req, res) => {
 });
 
 
-
-
 module.exports = router;
-
-// Will reuse laterz
-/*
-// Create inventory item
-app.post("/inventory", async (req, res) => {
-    try {
-      const newItem = new Inventory(req.body);
-      const savedItem = await newItem.save();
-      res.json(savedItem);
-    } catch (err) {
-      res.status(400).json({ message: "Error creating item", error: err });
-    }
-  });
-  
-  // Read all inventory items
-  app.get("/inventory", async (req, res) => {
-    try {
-      const items = await Inventory.find();
-      res.json(items);
-    } catch (err) {
-      res.status(500).json({ message: "Error fetching items", error: err });
-    }
-  });
-  
-  // Update item
-  app.put("/inventory/:id", async (req, res) => {
-    try {
-      const updated = await Inventory.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      res.json(updated);
-    } catch (err) {
-      res.status(400).json({ message: "Error updating item", error: err });
-    }
-  });
-  
-  // Delete item
-  app.delete("/inventory/:id", async (req, res) => {
-    try {
-      await Inventory.findByIdAndDelete(req.params.id);
-      res.json({ message: "Item deleted" });
-    } catch (err) {
-      res.status(400).json({ message: "Error deleting item", error: err });
-    }
-  });
-  */
