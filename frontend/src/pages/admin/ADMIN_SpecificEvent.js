@@ -43,7 +43,7 @@ const SpecificEvent = () => {
       };
 
     const handleFeedbackClick = (event) => {
-        navigate(`admin/event/${encodeURIComponent(decodedName)}/feedback`);
+        navigate(`/admin/event/${encodeURIComponent(decodedName)}/feedback`);
       };
 
     return (
@@ -66,8 +66,6 @@ const SpecificEvent = () => {
                         <h3>Event Date</h3>
                         <p>Start: {event?.eventStartDate ? new Date(event.eventStartDate).toLocaleDateString() : "Loading..."}</p>
                         <p>End: {event?.eventEndDate ? new Date(event.eventEndDate).toLocaleDateString() : "Loading..."}</p>
-                        {/* <p>Start: {eventStartDate}</p>
-                        <p>End: {eventEndDate}</p> */}
                     </div>
 
                     <div className="location-box">
