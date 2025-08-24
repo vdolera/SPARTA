@@ -1,7 +1,7 @@
 import { RxDashboard } from "react-icons/rx";
 import { AiOutlineFire } from "react-icons/ai";
 //import { MdOutlineScoreboard } from "react-icons/md";
-import { MdOutlineFeedback } from "react-icons/md";
+import { FaUserCheck } from "react-icons/fa";
 import { GiGreekTemple } from "react-icons/gi";
 //import { Link } from 'react-router-dom';
 import '../styles/SideMenu.css';
@@ -23,9 +23,9 @@ const SideMenu = () => {
       <ul className="sidemenu-list">
         <li><a href="/admin/dashboard"><RxDashboard /> Dashboard</a></li>
         <li><a href="/admin/event"><AiOutlineFire /> Event </a></li>
-        <li><a href="/admin/feedback"><MdOutlineFeedback /> Feedback</a></li>
+        <li><a href="/admin/feedback"><FaUserCheck /> Approvals </a></li>
         <li><a href="/pantheon"><GiGreekTemple /> Pantheon </a></li>
-        <li><button onClick={handleLogout}>Logout </button></li>
+        <li><button onClick={handleLogout}> Logout </button></li>
       </ul>
     </div>
   );

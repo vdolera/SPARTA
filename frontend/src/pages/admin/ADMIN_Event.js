@@ -47,18 +47,24 @@ const Event = () => {
       </div>
 
       <div className="event-list">
-        {filteredEvents.map((event) => (
-          <button
-            key={event._id}
-            className="event-item"
-            style={{ 
-              background: event.eventColor ? event.eventColor : '#A96B24',
-            }}
-            onClick={() => handleEventClick(event)}
-          >
-            {event.eventName}
-          </button>
-        ))}
+          {filteredEvents.map((event) => (
+            <div key={event._id} className="event-item">
+              <div className="event-color"
+                style={{
+                  background: event.eventColor ? event.eventColor : '#A96B24',
+                }}
+                onClick={() => handleEventClick(event)}
+              >
+              </div>
+
+              <div className="event-name" onClick={() => handleEventClick(event)}>
+                {event.eventName}
+                <p>{event?.eventStartDate ? new Date(event.eventStartDate).toLocaleDateString() : "Loading..."} - {event?.eventEndDate ? new Date(event.eventEndDate).toLocaleDateString() : "Loading..."}</p>
+                
+              </div>  
+            </div>
+          ))}
+
       </div>
     </MainLayout>
   )
