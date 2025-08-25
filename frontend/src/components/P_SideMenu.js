@@ -19,7 +19,7 @@ const SideMenu = () => {
   return (
     <div className="sidemenu">
       <img src="/SPARTA_HeadBar.png" alt="SPARTA_HeadBar" className="SideMenu-Header-Pic"/>
-      <img src="/SPARTA_admin.png" alt="SPARTA_AdminLabel" className="SideMenu-Admin-Pic"/>
+      <img src="/SPARTA_player.png" alt="SPARTA_PlayerLabel" className="SideMenu-Player-Pic" style={{ width: "100px", paddingLeft: "40px", borderRadius: "15px" }}/>
       <ul className="sidemenu-list">
         <li><a href="/dashboard"><RxDashboard /> Dashboard</a></li>
         <li><a href="/event"><AiOutlineFire /> Event </a></li>

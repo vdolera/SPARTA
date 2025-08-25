@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import '../../styles/ADMIN_Feedback.css';
+import { VscSearchStop } from "react-icons/vsc";
 
 const Feedback = () => {
   const { eventName } = useParams();
@@ -25,21 +26,36 @@ const Feedback = () => {
   return (
     <MainLayout>
       <div className="feedback-maindiv">
-        <div className="feedback-container">
+        
           {feedbacks.length === 0 ? (
-            <p>No feedback yet for {decodedEvent}.</p>
+            <div className="no-feedback-message">
+              <VscSearchStop size={48}/>
+              <p > No feedback yet for {decodedEvent}.</p>
+            </div>
           ) : (
             feedbacks.map((fb) => (
-              <div className="feedback-contents" key={fb._id}>
-                <div className="feedback-header-row">
-                  <h3>{fb.playerName}</h3>
-                  <h5 style={{ fontStyle: "italic" }}>{new Date(fb.createdAt).toLocaleString()}</h5>
+              <div className="feedback-item" key={fb._id}>
+                <div className="feedback-container">  
+                  <div className="feedback-contents" >
+
+                      <div className="feedback-playername">
+                        <h4>{fb.playerName || "Anonymous"}</h4>
+                      </div>
+
+                      <div className="feedback-date">
+                        <p style={{ fontStyle: "italic", fontSize: "10px", fontFamily: "Monteserrat, Sans-Serif" }}>{new Date(fb.createdAt).toLocaleString()}</p>
+                      </div>
+
+                      <div className="feedback-content">
+                        <p>{fb.message}</p>
+                      </div>
+  
+                  </div>
                 </div>
-                <p>{fb.message}</p>
               </div>
             ))
           )}
-        </div>
+        
       </div>
     </MainLayout>
   );

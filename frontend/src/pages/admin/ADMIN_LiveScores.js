@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import {useParams} from "react-router-dom";
 import React, {useState, useEffect} from "react";
 import "../../styles/LiveScores.css"
+import { TbCalendarQuestion } from "react-icons/tb";
 
 const LiveScores = () => {
   const { eventName } = useParams();
@@ -33,9 +34,12 @@ const LiveScores = () => {
     <MainLayout>
       <h1>Live Scores for {decodedName}</h1>
 
-      <div style={{ marginTop: "20px" }}>
+      <div className="live-scores-container">
         {teams.length === 0 ? (
-          <p>No teams found.</p>
+          <div className="no-matches-found">
+            <TbCalendarQuestion size={48} />
+            <p> OOPS! <br /> There are no ongoing matches found under {decodedName} <br /> Please come back again soon :)</p>
+          </div>
         ) : (
           <ul style={{ listStyle: "none", padding: 0 }}>
             {teams.map((team, idx) => (

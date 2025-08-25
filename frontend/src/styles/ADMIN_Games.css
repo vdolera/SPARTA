@@ -29,6 +29,8 @@
   display: flex;
   flex-direction: row;
   gap: 15px;
+  justify-content: center;
+  align-items: center;
 }
 
 .game-header-row {
@@ -75,4 +77,14 @@
 
 .game-button:hover {
     background-color: #CE892C;
+}
+
+.no-games-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Montserrat, sans-serif;
+  text-align: center;
+  padding: 15px;
+  margin: 20px;
 }

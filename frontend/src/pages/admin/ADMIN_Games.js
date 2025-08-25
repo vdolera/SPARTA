@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight } from "react-icons/gi";
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
 import '../../styles/ADMIN_Games.css';
+import { FaCircleQuestion } from "react-icons/fa6";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -79,7 +80,10 @@ const Game = () => {
 
       <div className="game-main-div">
         {filteredGames.length === 0 ? (
-          <p style={{ textAlign: "center", width: "100%" }}>No games found.</p>
+          <div className="no-games-found">
+            <FaCircleQuestion size={48} />
+            <p style={{ textAlign: "center", width: "100%" }}>No games found.</p>
+          </div>
         ) : (
           filteredGames.map(([combinedType, games]) => {
             const gameType = games[0]?.gameType || "Default";
