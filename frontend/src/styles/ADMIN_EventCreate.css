@@ -1,14 +1,26 @@
+.event-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .event-create-maindiv {
   border: 0.5px solid gray;
   border-radius: 10px;
+  width: 1200px;
+
 }
 
 .event-form-container {
   display: flex;
-  flex-direction: column;
-  align-items: left;
-  padding: 20px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   font-family: Monteserrat, sans-serif;
+  margin: 10px auto;
+  flex-direction: row;
+  gap: 20px;
+  background-color: rgba(211, 211, 211, 0.149);
 }
 
 .event-form-header {
@@ -22,19 +34,33 @@
   text-align: center;
 }
 
+.event-form-right {
+  border: 2px solid #1A2A49;
+  margin: 5px;
+  width: 650px;
+}
+
+.event-form-left {
+  border: 2px solid #CE892C;
+  margin: 5px;
+  width: 400px;
+}
+
+.event-form-left, .event-form-right {
+  padding: 20px;
+  height: 360px;
+  background-color: white;
+  border-radius: 10px;
+}
+
 h4, p {
-    font-size: 18px;
-    font-family: inherit;
-    margin: 0px
+  font-size: 18px;
+  font-family: inherit;
+  margin: 0px;
 }
 
 .event-form-title {
-  margin-bottom: 15px;
-}
-
-p {
-  color: #EF5C5C;
-  font-size: 10px;
+  margin-bottom: 5px;
 }
 
 .event-form-container form {
@@ -46,7 +72,7 @@ p {
 .event-forms {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
   font-size: 14px;
 }
 
@@ -80,8 +106,21 @@ p {
   color: white;
 }
 
+.lower-buttons button[type="submit"]:hover {
+  background-color: #0F4D0F;
+  color: white;
+}
+
 .lower-buttons button[type="button"] {
-  background-color: lightgray;
+  background-color: #a70000;
+}
+
+.lower-buttons button[type="button"] {
+  background-color: #CD1C18;
+}
+
+.lower-buttons button[type="button"]:hover {
+  background-color: #8a0000;
 }
 
 .lower-buttons {
@@ -90,6 +129,7 @@ p {
   padding: 20px;
   font-family: Monteserrat, sans-serif;
   text-align: center;
+  justify-content: center;;
   gap: 10px;
   align-items: center;
   width: 100%
@@ -102,6 +142,7 @@ p {
   font-size: 0.95rem;
   font-weight: 500;
   color: #333;
+  font-family: inherit;
 }
 
 .color-picker input[type="color"] {
@@ -125,4 +166,20 @@ p {
 
 .color-picker input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
+}
+
+.role-selector {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1.5px solid #3E64AF;
+  background: #f8f8ff;
+  color: #1A2A49;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.role-selector:focus {
+  border-color: #CE892C;
+  box-shadow: 0 0 0 2px rgba(206,137,44,0.15);
 }
