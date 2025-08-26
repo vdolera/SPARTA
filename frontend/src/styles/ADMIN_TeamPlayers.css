@@ -1,0 +1,67 @@
+.team-players-container {
+    max-width: 90vw;
+}
+
+.team-players-header {
+  text-align: center;
+  color: #333;
+  font-family: Montserrat, sans-serif;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+}
+
+.team-players-team {
+    font-size: 40px;
+    color: white;
+    width: 700px;
+    height: 125px;
+    border-radius: 15px;
+    padding-left: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    text-align: center;
+}
+
+.team-players-total {
+    border: 2px solid maroon;
+    width: 200px;
+    height: 125px;
+    border-radius: 15px;
+}
+
+.team-ranking-event {
+    border: 2px solid cornflowerblue;
+    width: 200px;
+    height: 125px;
+    border-radius: 15px;
+}
+
+.team-players-table {
+  width: 90%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  font-family: Montserrat, sans-serif;
+  justify-content: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+    text-align: center;
+    align-items: center;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}

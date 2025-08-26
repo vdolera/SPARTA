@@ -53,7 +53,7 @@ const CreateEvent = () => {
   
       if (response.ok) {
         alert('Event created!');
-        navigate('/event');
+        navigate('/admin/event');
       } else {
         alert(data.message);
       }
@@ -65,7 +65,7 @@ const CreateEvent = () => {
   
 
   // Handle cancel
-  const handleCancel = () => navigate("/event");
+  const handleCancel = () => navigate("/admin/event");
 
   const handleSubOrganizerChange = (idx, field, value) => {
     const updated = [...subOrganizers];
