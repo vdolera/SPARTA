@@ -1,6 +1,7 @@
 import MainLayout from "../../components/MainLayout";
 import { useState } from "react";
 import Calendar from 'react-calendar';
+import Breadcrumbs from "../../components/Breadcrumbs";
 import 'react-calendar/dist/Calendar.css'; // Default calendar styling
 
 
@@ -34,7 +35,8 @@ const Dashboard = () => {
   };
 
   return (
-    <MainLayout> 
+    <MainLayout>
+      <Breadcrumbs />
       <h1>Dashboard</h1>
       <div className="dashboard-container">
         <div className="calendar-container">
