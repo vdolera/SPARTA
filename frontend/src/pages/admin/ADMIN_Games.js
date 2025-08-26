@@ -45,24 +45,24 @@ const Game = () => {
           }
           grouped[key].push(game);
         });
-  
+
         setGamesByType(grouped);
       } catch (error) {
         console.error("Error fetching games:", error);
       }
     };
-  
+
     fetchGames();
   }, [userInstitution, decodedName]);
-  
+
 
   const handleAddGame = () => {
-    navigate(`/admin/event/${encodeURIComponent(decodedName)}/addgame`); 
+    navigate(`/admin/event/${encodeURIComponent(decodedName)}/addgame`);
   };
 
   return (
     <MainLayout>
-      <div className="game-header"> 
+      <div className="game-header">
         <h1>All Games for {userInstitution}</h1>
       </div>
 
@@ -76,7 +76,7 @@ const Game = () => {
           style={{ marginRight: "16px" }}
         />
         <button onClick={handleAddGame}> + Add Game </button>
-      </div>  
+      </div>
 
       <div className="game-main-div">
         {filteredGames.length === 0 ? (
@@ -88,17 +88,18 @@ const Game = () => {
           filteredGames.map(([combinedType, games]) => {
             const gameType = games[0]?.gameType || "Default";
             const icon = gameIcons[gameType] || gameIcons.Default;
-
+          
             return (
               <button
                 className="game-button"
                 key={combinedType}
-                onClick={() => navigate(`/event/game/${encodeURIComponent(combinedType)}`)}
+                onClick={() => navigate(`/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`)}
                 style={{ display: "flex", alignItems: "center", gap: "8px" }}
               >
                 {icon}
                 {combinedType}
               </button>
+
             );
           })
         )}
