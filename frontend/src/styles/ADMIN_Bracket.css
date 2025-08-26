@@ -1,0 +1,56 @@
+.bracket {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 50px; /* space between rounds */
+    margin-top: 20px;
+  }
+  
+  .round {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 40px; /* vertical spacing between matches */
+  }
+  
+  .match {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+  }
+  
+  .team {
+    background: #fff;
+    border: 1px solid #333;
+    padding: 6px 12px;
+    min-width: 130px;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 14px;
+    position: relative;
+  }
+  
+  /* Connector line from team to next round */
+  .match::after {
+    content: "";
+    position: absolute;
+    right: -25px;
+    top: 50%;
+    width: 25px;
+    height: 2px;
+    background: #333;
+  }
+  
+  .round:last-child .match::after {
+    display: none; /* No connector for final */
+  }
+  
+  /* Vertical line joining two matches */
+  .round .match:nth-child(2n)::after {
+    height: 80px;
+    top: 0;
+    border-right: 2px solid #333;
+  }
+  

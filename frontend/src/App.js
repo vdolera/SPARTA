@@ -10,6 +10,7 @@ import CreateTeam from "./pages/admin/ADMIN_TeamCreate";
 import TeamPlayers from "./pages/admin/ADMIN_TeamPlayers";
 import Game from "./pages/admin/ADMIN_Games";
 import CreateGame from "./pages/admin/ADMIN_GameCreate";
+import GameBracket from "./pages/admin/ADMIN_GameBracket";
 import Feedback from "./pages/admin/ADMIN_Feedback";
 import LiveScores from "./pages/admin/ADMIN_LiveScores";
 import Pantheon from "./pages/admin/ADMIN_Pantheon";
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="/admin/event/:eventName/addteam" element={<BlockRoute> <CreateTeam /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/game" element={<BlockRoute> <Game /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/addgame" element={<BlockRoute> <CreateGame /> </BlockRoute>} />
+        <Route path="/admin/event/:eventName/game/:game" element={<BlockRoute> <GameBracket /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/feedback" element={<BlockRoute> <Feedback /> </BlockRoute>} />
         {/*Player*/}
         <Route path="/dashboard" element={<BlockRoute> <PlayerDashboard /> </BlockRoute>} />
