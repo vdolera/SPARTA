@@ -1,0 +1,47 @@
+/* Container */
+.bracket-container {
+  overflow-x: auto;
+  padding: 20px;
+  background: #f3f4f6;
+  border-radius: 12px;
+}
+
+/* Override SeedItem default */
+.bracket-container .seed-item {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  margin: 10px 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Each team box */
+.bracket-container .seed-team {
+  background: #ffffff !important;
+  border: 2px solid #d1d5db !important;
+  border-radius: 8px !important;
+  padding: 10px 12px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  transition: all 0.2s ease-in-out !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  color: #111827 !important;  /* Tailwind "gray-900" */
+}
+
+/* Hover */
+.bracket-container .seed-team:hover {
+  border-color: #3b82f6 !important;
+  transform: translateY(-2px) !important;
+  background: #f9fafb !important;
+}
+
+/* Placeholder (TBD) */
+.bracket-container .seed-team:contains("TBD") {
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
+  font-style: italic !important;
+  border-color: #fca5a5 !important;
+}

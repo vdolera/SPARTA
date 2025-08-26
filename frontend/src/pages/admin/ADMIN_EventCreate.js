@@ -65,7 +65,7 @@ const CreateEvent = () => {
   
 
   // Handle cancel
-  const handleCancel = () => navigate("/event");
+  const handleCancel = () => navigate(-1);
 
   const handleSubOrganizerChange = (idx, field, value) => {
     const updated = [...subOrganizers];
