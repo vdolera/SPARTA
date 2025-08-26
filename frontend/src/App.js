@@ -34,7 +34,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         {/*Admin*/}
         <Route path="/admin/dashboard" element={<BlockRoute> <Dashboard /> </BlockRoute>} />
-        <Route path="/approval" element={<BlockRoute> <Approval /> </BlockRoute>} />
+        <Route path="/admin/approval" element={<BlockRoute> <Approval /> </BlockRoute>} />
         <Route path="/admin/event" element={<BlockRoute> <Event /> </BlockRoute>} />
         <Route path="/admin/event/create" element={<BlockRoute> <CreateEvent /> </BlockRoute>} />
         <Route path="/admin/event/:eventName" element={<SpecificEvent />} />

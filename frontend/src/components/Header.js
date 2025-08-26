@@ -7,10 +7,6 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleSetting = () => {
-    navigate('/approval')
-  };
-
   const pageTitles = {
     '/dashboard': 'DASHBOARD',
     '/event': 'EVENT',
@@ -31,7 +27,6 @@ const Header = () => {
         <h2>{currentTitle}</h2>
         <div className="header-icons">
           <FaUserCircle size={24} />
-          <FaCog size={24} onClick={handleSetting}/>
         </div>
       </div>
     </div>

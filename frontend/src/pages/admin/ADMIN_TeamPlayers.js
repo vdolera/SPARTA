@@ -57,7 +57,7 @@ const TeamPlayers = () => {
 
         <div className='team-players-header'>
 
-          <div className='team-players-team' style={{ background: eventColor}}>
+          <div className='team-players-team' style={{ background: "eventColor"}}>
             <h2>{decodedTeam}</h2>
           </div>
 
