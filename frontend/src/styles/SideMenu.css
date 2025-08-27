@@ -76,3 +76,13 @@
   color: white;
   background-color: #CE892C; /*1A2A49 - navy blue*/ /*#CE892C - orange*/
 }
+
+.sidemenu-list .active {
+  background: #CE892C;
+  color: white;
+  border-radius: 8px;
+}
+
+.sidemenu-list .active a {
+  color: white;
+}

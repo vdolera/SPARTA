@@ -14,22 +14,25 @@ const CreateEvent = () => {
   const [location, setLocation] = useState("");
   const [eventColor, setEventColor] = useState("#3E64AF");
   const [description, setDescription] = useState("");
+  const [subOrganizerName, setSubOrganizerName] = useState("");
+  const [subOrganizerEmail, setSubOrganizerEmail] = useState("");
+  const [subOrganizerRole, setSubOrganizerRole] = useState("co-organizer");
   const [subOrganizers, setSubOrganizers] = useState([
     { email: "", role: "co-organizer" }
   ]);
-  const [inviteStatus] = useState("");
+  const [inviteStatus, setInviteStatus] = useState("");
 
 
   // Handle form submission
   const handleCreate = async (e) => {
     e.preventDefault();
-    const user = JSON.parse(localStorage.getItem("auth"));
-  
+    const user = JSON.parse(localStorage.getItem('auth'));
+
     try {
-      const response = await fetch("http://localhost:5000/api/event", {
-        method: "POST",
+      const response = await fetch('http://localhost:5000/api/event', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           userName,
@@ -41,28 +44,28 @@ const CreateEvent = () => {
           location,
           eventColor,
           description,
-          subOrganizers,
+          subOrganizerName,
+          subOrganizerEmail,
         }),
       });
   
       const data = await response.json();
   
       if (response.ok) {
-        alert("Event created and invitations sent!");
-        navigate(-1);
+        alert('Event created!');
+        navigate('/admin/event');
       } else {
         alert(data.message);
       }
     } catch (error) {
-      console.error("Error creating event:", error);
-      alert("Failed to create event.");
+      console.error('Error creating event:', error);
+      alert('Failed to create event.');
     }
   };
   
-  
 
   // Handle cancel
-  const handleCancel = () => navigate(-1);
+  const handleCancel = () => navigate("/admin/event");
 
   const handleSubOrganizerChange = (idx, field, value) => {
     const updated = [...subOrganizers];
@@ -73,7 +76,38 @@ const CreateEvent = () => {
   const handleAddSubOrganizer = () => {
     setSubOrganizers([...subOrganizers, { email: "", role: "co-organizer" }]);
   };
-  
+
+  const handleSendInvite = async (idx) => {
+    const subOrg = subOrganizers[idx];
+    if (!subOrg.email) {
+      setInviteStatus("Please enter an email.");
+      setTimeout(() => setInviteStatus(""), 3000); // Clear after 3 seconds
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:5000/api/event/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: subOrg.email,
+          role: subOrg.role,
+          eventName,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setInviteStatus("Invitation sent!");
+        setTimeout(() => setInviteStatus(""), 3000); // Clear after 3 seconds
+      } else {
+        setInviteStatus(data.message || "Failed to send invitation.");
+        setTimeout(() => setInviteStatus(""), 3000); // Clear after 3 seconds
+      }
+    } catch (error) {
+      setInviteStatus("Error sending invitation.");
+      setTimeout(() => setInviteStatus(""), 3000); // Clear after 3 seconds
+    }
+  };
+
   const handleDeleteSubOrganizer = (idx) => {
     setSubOrganizers(subOrganizers.filter((_, i) => i !== idx));
   };
@@ -240,7 +274,13 @@ const CreateEvent = () => {
                         placeholder="Enter Email"
                       />
                     </label>
-          
+                    <button
+                      type="button"
+                      style={{ background: "#3E64AF", color: "white", borderRadius: "6px", padding: "6px 12px", border: "none", cursor: "pointer" }}
+                      onClick={() => handleSendInvite(idx)}
+                    >
+                      Send Invitation
+                    </button>
                     <button
                       type="button"
                       style={{ background: "#d32f2f", color: "white", borderRadius: "6px", padding: "6px 12px", border: "none", cursor: "pointer" }}

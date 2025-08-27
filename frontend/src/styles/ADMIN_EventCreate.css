@@ -14,7 +14,7 @@
 .event-form-container {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   font-family: Monteserrat, sans-serif;
   margin: 10px auto;
@@ -129,7 +129,7 @@ h4, p {
   padding: 20px;
   font-family: Monteserrat, sans-serif;
   text-align: center;
-  justify-content: center;;
+  justify-content: center;
   gap: 10px;
   align-items: center;
   width: 100%
@@ -142,7 +142,7 @@ h4, p {
   font-size: 0.95rem;
   font-weight: 500;
   color: #333;
-  font-family: inherit;
+  font-family: Montserrat, sans-seri;
 }
 
 .color-picker input[type="color"] {
