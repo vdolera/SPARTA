@@ -1,0 +1,47 @@
+.approval-table {
+    font-family: Monteserrat, sans-serif;
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+th {
+    background-color: #CE892C;
+    padding: 20px;
+    color: snow;
+}
+
+.approval-table table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.approval-table tbody tr:nth-child(even) {
+    background: #F2F0FF;
+}
+
+.approve-btn {
+    background-color: #06923E;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    margin: 0px 5px;
+}
+
+.decline-btn {
+    background-color: #FF0000;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.approve-btn:hover {
+    background-color: #386641;
+}
+
+.decline-btn:hover {
+    background-color: darkred;
+}

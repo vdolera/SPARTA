@@ -1,5 +1,6 @@
 import MainLayout from "../../components/MainLayout";
 import { useEffect, useState } from "react";
+import '../../styles/ADMIN_PlayerApproval.css';
 
 const Approval = () => {
   const [players, setPlayers] = useState([]);
@@ -59,32 +60,33 @@ const Approval = () => {
       {players.length === 0 ? (
         <p>No pending player registrations.</p>
       ) : (
-        <table border="1" cellPadding="10" style={{ borderCollapse: "collapse", width: "100%" }}>
-          <thead>
-            <tr>
-              <th>Email</th>
-              <th>Event</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {players.map((player) => (
-              <tr key={player._id}>
-                <td>{player.email}</td>
-                <td>{player.eventName}</td>
-                <td>
-                  <button onClick={() => handleApprove(player._id)}>Approve</button>
-                  <button
-                    onClick={() => handleDecline(player._id)}
-                    style={{ marginLeft: "10px", backgroundColor: "red", color: "white" }}
-                  >
-                    Decline
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className='approval-table'>
+          <table border="1" cellPadding="10" style={{ borderCollapse: "collapse", width: "100%" }}>
+                <thead>
+                  <tr style={{borderRadius: "10px"}}>
+                    <th>EMAIL</th>
+                    <th>EVENT</th>
+                    <th>ACTIONS</th>
+                  </tr>
+                </thead>
+              <tbody>
+                {players.map((player) => (
+                  <tr key={player._id}>
+                    <td>{player.email}</td>
+                    <td>{player.eventName}</td>
+                    <td>
+                      <button className='approve-btn' onClick={() => handleApprove(player._id)}>
+                        Approve
+                      </button>
+                      <button className='decline-btn' onClick={() => handleDecline(player._id)}>
+                        Decline
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+        </div>
       )}
     </MainLayout>
   );

@@ -8,15 +8,16 @@ const Header = () => {
   const navigate = useNavigate();
 
   const pageTitles = {
-    '/dashboard': 'DASHBOARD',
-    '/event': 'EVENT',
-    '/event/create': 'CREATE EVENT',
-    '/event/:eventName': 'EVENT DETAILS',
-    '/event/team': 'TEAM',
-    '/event/game': 'GAME',
-    '/liveScores': 'LIVE SCORES',
-    '/feedback': 'POST GAME FEEDBACKS',
-    '/pantheon': 'PANTHEON'
+    '/admin/dashboard': 'DASHBOARD',
+    '/admin/approval': 'APPROVAL',
+    '/admin/event': "ORGANIZER'S EVENT",
+    '/admin/event/create': 'CREATE EVENT',
+    '/admin/event/:eventName': 'EVENT DETAILS',
+    '/admin/event/team': 'TEAM',
+    '/admin/event/game': 'GAME',
+    '/admin/liveScores': 'LIVE SCORES',
+    '/admin/feedback': 'POST GAME FEEDBACKS',
+    '/admin/pantheon': 'PANTHEON'
   };
 
   const currentTitle = pageTitles[location.pathname] || 'SPARTA: Sports Planning And Resource Tracking Application';

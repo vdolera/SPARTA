@@ -58,8 +58,6 @@ const CreateEvent = () => {
       alert("Failed to create event.");
     }
   };
-  
-  
 
   // Handle cancel
   const handleCancel = () => navigate(-1);

@@ -1,9 +1,7 @@
 import { RxDashboard } from "react-icons/rx";
 import { AiOutlineFire } from "react-icons/ai";
-//import { MdOutlineScoreboard } from "react-icons/md";
 import { FaUserCheck } from "react-icons/fa";
 import { GiGreekTemple } from "react-icons/gi";
-//import { Link } from 'react-router-dom';
 import '../styles/SideMenu.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 

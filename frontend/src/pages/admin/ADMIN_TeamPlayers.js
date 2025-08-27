@@ -50,7 +50,7 @@ const TeamPlayers = () => {
           )}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`
         );
         const data = await res.json();
-        setTeamColor(data.teamColor || "#A96B24");
+        setTeamColor(data.teamColor || "#808080");
       } catch (err) {
         console.error("Error fetching team details:", err);
       }

@@ -49,38 +49,15 @@
 
 .sidemenu-list a:hover {
   color: white;
-  background-color: #CE892C; /*1A2A49 - navy blue*/ /*#CE892C - orange*/
-}
-
-/* Dropdown submenu */
-.dropdown .event-submenu {
-  display: none;
-  position: relative;
-  padding-left: 20px;
-  background-color: transparent;
-  list-style: none;
-}
-
-.dropdown:hover .event-submenu {
-  display: inline-block;
-}
-
-.event-submenu li a {
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  color:  black;
-}
-
-.event-submenu a:hover {
-  color: white;
-  background-color: #CE892C; /*1A2A49 - navy blue*/ /*#CE892C - orange*/
+  background-color: #1A2A49;
+  width: fit-content;
 }
 
 .sidemenu-list .active {
   background: #CE892C;
   color: white;
-  border-radius: 8px;
+  border-radius: 15px;
+  width: fit-content;
 }
 
 .sidemenu-list .active a {
