@@ -7,6 +7,9 @@ const Event = require('../models/Event');
 const Game = require('../models/Game');
 const Team = require('../models/Team');
 const router = express.Router();
+const nodemailer = require("nodemailer");
+const SubOrganizer = require("../models/SubOrganizer");
+
 
 // Check or Get User Role
 const getModelByRole = (role) => {
@@ -94,10 +97,22 @@ router.get('/institutions', async (req, res) => {
 });
 
 // POST Create Event
+// POST Create Event (with optional sub-organizers + invites)
 router.post('/event', async (req, res) => {
-  const { userName, email, institution, eventName, eventStartDate, eventEndDate, description, eventColor } = req.body;
+  const {
+    userName,
+    email,
+    institution,
+    eventName,
+    eventStartDate,
+    eventEndDate,
+    description,
+    eventColor,
+    subOrganizers = []  // 👈 array from frontend
+  } = req.body;
 
   try {
+    // 1. Create Event
     const event = new Event({
       userName,
       email,
@@ -110,13 +125,108 @@ router.post('/event', async (req, res) => {
     });
 
     await event.save();
-    console.log('Event saved successfully');
-    res.status(201).json({ message: 'Event created successfully' });
+    console.log('✅ Event saved successfully');
+
+    // 2. Process Sub-Organizers (if any)
+    let invites = [];
+    for (let sub of subOrganizers) {
+      if (sub.email) {
+        const accessKey = crypto.randomBytes(6).toString("hex").toUpperCase();
+
+        const subOrg = new SubOrganizer({
+          email: sub.email,
+          role: sub.role || "co-organizer",
+          accessKey,
+          eventId: event._id,
+        });
+        await subOrg.save();
+
+        // 3. Send invitation email
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        });
+
+        const mailOptions = {
+          from: `"Event Organizer" <${process.env.SMTP_USER}>`,
+          to: sub.email,
+          subject: `Invitation to ${eventName}`,
+          html: `
+            <h3>You have been invited as a ${sub.role} for ${eventName}</h3>
+            <p>Your Access Key: <b>${accessKey}</b></p>
+            <p>Use this key to log in and manage the event.</p>
+          `,
+        };
+
+        await transporter.sendMail(mailOptions);
+        invites.push({ email: sub.email, accessKey });
+      }
+    }
+
+    res.status(201).json({
+      message: "Event created successfully",
+      event,
+      invites, // return back which invites were sent
+    });
   } catch (err) {
     console.error('❌ Failed to create event:', err.message);
     res.status(500).json({ message: 'Event creation failed', error: err.message });
   }
 });
+
+
+/* POST /api/event/invite
+router.post("/event/invite", async (req, res) => {
+  try {
+    const { email, role, eventName } = req.body;
+
+    // Find event
+    const event = await Event.findOne({ eventName });
+    if (!event) return res.status(404).json({ message: "Event not found" });
+
+    // Generate unique access key
+    const accessKey = crypto.randomBytes(6).toString("hex").toUpperCase();
+
+    // Save sub-organizer
+    const subOrg = new SubOrganizer({
+      email,
+      role,
+      accessKey,
+      eventId: event._id,
+    });
+    await subOrg.save();
+
+    // Send email with Nodemailer
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.SMTP_USER, // set in .env
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Event Organizer" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: `Invitation to ${eventName}`,
+      html: `
+        <h3>You have been invited as a ${role} for ${eventName}</h3>
+        <p>Your Access Key: <b>${accessKey}</b></p>
+        <p>Use this key to log in and manage the event.</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.json({ message: "Invitation sent and access key created.", accessKey });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error." });
+  }
+}); */
 
 // GET Event
 router.get('/events', async (req, res) => {
