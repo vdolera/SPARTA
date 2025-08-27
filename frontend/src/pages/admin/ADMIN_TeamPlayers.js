@@ -13,12 +13,13 @@ const TeamPlayers = () => {
   const userInstitution = user?.institution;
 
   const [players, setPlayers] = useState([]);
-  const [eventColor, setEventColor] = useState(["#A96B24"]);
-
+  const [teamColor, setTeamColor] = useState("#A96B24");
+  
   const handleViewButton = (playerId) => {
     navigate(`/admin/event/${encodeURIComponent(decodedEvent)}/team/${encodeURIComponent(teamName)}/player/${playerId}/profile`);
   };
 
+  // Fetch players
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
@@ -39,25 +40,30 @@ const TeamPlayers = () => {
     fetchPlayers();
   }, [userInstitution, decodedEvent, decodedTeam]);
 
+  // Fetch team details
   useEffect(() => {
-    const fetchEventDetails = async () => {
-      const res = await fetch(
-        `http://localhost:5000/api/event/${encodeURIComponent(decodedEvent)}`
-      );
-      const data = await res.json();
-      setEventColor(data.eventColor || "#ccc");
+    const fetchTeamDetails = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/team?institution=${encodeURIComponent(
+            userInstitution
+          )}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`
+        );
+        const data = await res.json();
+        setTeamColor(data.teamColor || "#A96B24");
+      } catch (err) {
+        console.error("Error fetching team details:", err);
+      }
     };
-    fetchEventDetails();
-  }, [decodedEvent]);
+
+    fetchTeamDetails();
+  }, [userInstitution, decodedEvent, decodedTeam]);
 
   return (
     <MainLayout>
-
       <div className="team-players-container">
-
         <div className='team-players-header'>
-
-          <div className='team-players-team' style={{ background: "eventColor"}}>
+          <div className='team-players-team' style={{ background: teamColor }}>
             <h2>{decodedTeam}</h2>
           </div>
 
@@ -69,49 +75,41 @@ const TeamPlayers = () => {
           <div className='team-ranking-event'>
             <h3 style={{ textDecoration: "underline" }}> {decodedEvent} RANKING </h3>
           </div>
-
         </div>
 
         <div className='team-players-table'>
-
           {players.length === 0 ? (
-
-          <p>No players registered yet.</p>
-
+            <p>No players registered yet.</p>
           ) : (
-          
-          <div>
-
-            <table border="1" cellPadding="10" >
-              <thead>
-                <tr>
-                  <th>PLAYERS</th>
-                  <th>COURSE</th>
-                  <th>GAME</th>  
-                  <th>STATUS</th>
-                  <th>PROFILE</th>
-                </tr>
-              </thead>
-              <tbody>
-                {players.map((player) => (
-                  <tr key={player._id}>
-                    <td>{player.playerName}</td>
-                    <td>{player.course}</td>
-                    <td>{player.game}</td>
-                    <td>{player.eventName}</td>
-                    <td><button onClick={() => handleViewButton(player._id)}>View</button></td>
+            <div>
+              <table border="1" cellPadding="10">
+                <thead>
+                  <tr>
+                    <th>PLAYERS</th>
+                    <th>COURSE</th>
+                    <th>GAME</th>  
+                    <th>STATUS</th>
+                    <th>PROFILE</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-
-          </div>
+                </thead>
+                <tbody>
+                  {players.map((player) => (
+                    <tr key={player._id}>
+                      <td>{player.playerName}</td>
+                      <td>{player.course}</td>
+                      <td>{player.game}</td>
+                      <td>{player.eventName}</td>
+                      <td>
+                        <button onClick={() => handleViewButton(player._id)}>View</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
-
         </div>
-        
       </div>
- 
     </MainLayout>
   );
 };

@@ -385,6 +385,19 @@ router.get('/teams', async (req, res) => {
   }
 });
 
+// GET single team
+router.get('/team', async (req, res) => {
+  const { institution, event, teamName } = req.query;
+  try {
+    const team = await Team.findOne({ institution, eventName: event, teamName });
+    if (!team) return res.status(404).json({ message: "Team not found" });
+    res.json(team);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching team", error: err.message });
+  }
+});
+
+
 // GET pending players
 router.get("/players/pending", async (req, res) => {
   try {
