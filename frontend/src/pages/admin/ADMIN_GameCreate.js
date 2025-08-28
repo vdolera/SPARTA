@@ -53,6 +53,11 @@ const CreateGame = () => {
     e.preventDefault();
     const user = JSON.parse(localStorage.getItem("auth"));
 
+    if (selectedTeams.length < 2) {
+      alert("You must select at least 2 teams to create a bracket.");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:5000/api/games", {
         method: "POST",

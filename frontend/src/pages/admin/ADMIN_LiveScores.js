@@ -1,26 +1,28 @@
 import MainLayout from "../../components/MainLayout";
-import {useParams} from "react-router-dom";
-import React, {useState, useEffect} from "react";
-import "../../styles/LiveScores.css"
+import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import "../../styles/LiveScores.css";
 import { TbCalendarQuestion } from "react-icons/tb";
 
 const LiveScores = () => {
   const { eventName, teamName } = useParams();
-  const decodedName = decodeURIComponent(eventName);
   const decodedEvent = decodeURIComponent(eventName);
   const decodedTeam = decodeURIComponent(teamName);
-  
+
   const [teams, setTeams] = useState([]);
   const [teamColor, setTeamColor] = useState("#A96B24");
 
-  const user = JSON.parse(localStorage.getItem('auth'));
+  const user = JSON.parse(localStorage.getItem("auth"));
   const userInstitution = user?.institution;
 
+  // Fetch teams with scores
   useEffect(() => {
     const fetchTeams = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/teams?institution=${encodeURIComponent(userInstitution)}&event=${encodeURIComponent(decodedName)}`
+          `http://localhost:5000/api/teams-with-scores?institution=${encodeURIComponent(
+            userInstitution
+          )}&event=${encodeURIComponent(decodedEvent)}`
         );
         const data = await response.json();
         setTeams(data);
@@ -29,32 +31,38 @@ const LiveScores = () => {
       }
     };
 
-    if (userInstitution && decodedName) {
+    if (userInstitution && decodedEvent) {
       fetchTeams();
     }
-  }, [userInstitution, decodedName]);
+  }, [userInstitution, decodedEvent]);
 
-  // Fetch team details
-    useEffect(() => {
-      const fetchTeamDetails = async () => {
-        try {
-          const res = await fetch(
-            `http://localhost:5000/api/team?institution=${encodeURIComponent(
-              userInstitution
-            )}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`
-          );
-          const data = await res.json();
-          setTeamColor(data.teamColor || "#808080");
-        } catch (err) {
-          console.error("Error fetching team details:", err);
-        }
-      };
-  
+  // Fetch single team details
+  useEffect(() => {
+    const fetchTeamDetails = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/team?institution=${encodeURIComponent(
+            userInstitution
+          )}&event=${encodeURIComponent(
+            decodedEvent
+          )}&teamName=${encodeURIComponent(decodedTeam)}`
+        );
+        const data = await res.json();
+        setTeamColor(data.teamColor || "#808080");
+      } catch (err) {
+        console.error("Error fetching team details:", err);
+      }
+    };
+
+    if (decodedTeam) {
       fetchTeamDetails();
-    }, [userInstitution, decodedEvent, decodedTeam]);
+    }
+  }, [userInstitution, decodedEvent, decodedTeam]);
 
-  // Sort teams by score descending
-  const rankedTeams = [...teams].sort((a, b) => (b.score || 0) - (a.score || 0));
+  // Teams are already sorted by backend, but just in case
+  const rankedTeams = [...teams].sort(
+    (a, b) => (b.totalScore || 0) - (a.totalScore || 0)
+  );
 
   // Ordinal Ranking
   function getOrdinal(n) {
@@ -65,32 +73,38 @@ const LiveScores = () => {
 
   return (
     <MainLayout>
-      <h1>Live Scores for {decodedName}</h1>
+      <h1>Live Scores for {decodedEvent}</h1>
       <div className="live-scores-main-div">
         <div className="live-scores-container">
           {rankedTeams.length === 0 ? (
             <div className="no-matches-found">
               <TbCalendarQuestion size={48} />
-              <p> OOPS! <br /> There are no ongoing matches found under {decodedName} <br /> Please come back again soon :)</p>
+              <p>
+                OOPS! <br /> There are no ongoing matches found under {decodedEvent}{" "}
+                <br /> Please come back again soon :)
+              </p>
             </div>
           ) : (
             <div className="teams-list">
               {rankedTeams.map((team, idx) => (
-                <div className="team-score" key={team._id || idx} style={{backgroundColor: team.teamColor || "#A96B24"}}>
+                <div
+                  className="team-score"
+                  key={team._id || idx}
+                  style={{ backgroundColor: team.teamColor || "#A96B24" }}
+                >
                   <span className="rank-team">
                     <span>{getOrdinal(idx + 1)}</span>
                     <span>{team.teamName}</span>
                   </span>
-                  <span>{team.score ?? 0}</span>
+                  <span>{team.totalScore ?? 0}</span>
                 </div>
               ))}
             </div>
           )}
         </div>
-      </div>  
+      </div>
     </MainLayout>
-
-  )
+  );
 };
 
 export default LiveScores;

@@ -28,7 +28,7 @@
   text-align: center !important;
   transition: all 0.2s ease-in-out !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
-  color: #111827 !important;  /* Tailwind "gray-900" */
+  color: #111827 !important; /* Tailwind "gray-900" */
 }
 
 /* Hover */
@@ -45,3 +45,20 @@
   font-style: italic !important;
   border-color: #fca5a5 !important;
 }
+
+/* ✅ Winner highlight */
+.bracket-container .seed-team.winner {
+  background-color: #4caf50 !important; /* Green */
+  color: #ffffff !important;
+  border-color: #388e3c !important;
+  font-weight: 700 !important;
+}
+
+/* ❌ Loser highlight */
+.bracket-container .seed-team.loser {
+  background-color: #f87171 !important; /* Red-400 */
+  color: #ffffff !important;
+  border-color: #b91c1c !important;
+  font-weight: 700 !important;
+}
+

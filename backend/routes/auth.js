@@ -96,7 +96,6 @@ router.get('/institutions', async (req, res) => {
   }
 });
 
-// POST Create Event
 // POST Create Event (with optional sub-organizers + invites)
 router.post('/event', async (req, res) => {
   const {
@@ -178,55 +177,7 @@ router.post('/event', async (req, res) => {
 });
 
 
-/* POST /api/event/invite
-router.post("/event/invite", async (req, res) => {
-  try {
-    const { email, role, eventName } = req.body;
 
-    // Find event
-    const event = await Event.findOne({ eventName });
-    if (!event) return res.status(404).json({ message: "Event not found" });
-
-    // Generate unique access key
-    const accessKey = crypto.randomBytes(6).toString("hex").toUpperCase();
-
-    // Save sub-organizer
-    const subOrg = new SubOrganizer({
-      email,
-      role,
-      accessKey,
-      eventId: event._id,
-    });
-    await subOrg.save();
-
-    // Send email with Nodemailer
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.SMTP_USER, // set in .env
-        pass: process.env.SMTP_PASS,
-      },
-    });
-
-    const mailOptions = {
-      from: `"Event Organizer" <${process.env.SMTP_USER}>`,
-      to: email,
-      subject: `Invitation to ${eventName}`,
-      html: `
-        <h3>You have been invited as a ${role} for ${eventName}</h3>
-        <p>Your Access Key: <b>${accessKey}</b></p>
-        <p>Use this key to log in and manage the event.</p>
-      `,
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    res.json({ message: "Invitation sent and access key created.", accessKey });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error." });
-  }
-}); */
 
 // GET Event
 router.get('/events', async (req, res) => {
@@ -278,7 +229,43 @@ router.post('/games', async (req, res) => {
 
     if (!institution || !gameType || !category || !startDate || !endDate ||
       !teams?.length || !requirements?.length || !rules || !eventName || !bracketType) {
-      return res.status(400).json({ message: 'All fields are required.' });
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    const matches = [];
+    let round = 1;
+
+    // total rounds = log2(teams.length)
+    const totalRounds = Math.ceil(Math.log2(teams.length));
+
+    // Round 1 pairings
+for (let i = 0; i < teams.length; i += 2) {
+  matches.push({
+    round: 1,
+    matchIndex: i / 2,
+    teams: [
+      { name: teams[i] || "TBD", score: null },
+      { name: teams[i + 1] || "TBD", score: null }
+    ],
+    winner: null
+  });
+}
+
+
+    // Generate placeholder matches for later rounds
+    for (round = 2; round <= totalRounds; round++) {
+      const numMatches = Math.pow(2, totalRounds - round);
+      for (let i = 0; i < numMatches; i++) {
+        matches.push({
+          round,
+          matchIndex: i,
+          teams: [
+            { name: "TBD", score: null },
+            { name: "TBD", score: null }
+          ],
+          winner: null
+        });
+      }
     }
 
     const newGame = new Game({
@@ -291,16 +278,20 @@ router.post('/games', async (req, res) => {
       requirements,
       rules,
       eventName,
-      bracketType
+      bracketType,
+      matches
     });
 
     await newGame.save();
-    res.status(201).json({ message: 'Game created successfully.', game: newGame });
-  } catch (err) {
-    console.error("Error creating game:", err);
-    res.status(500).json({ message: 'Server error.' });
+    res.status(201).json(newGame);
+  } catch (error) {
+    console.error("Error creating game:", error);
+    res.status(500).json({ message: "Failed to create game" });
   }
 });
+
+
+
 
 
 // GET /api/games?institution=ADNU&event=Intramurals
@@ -334,6 +325,99 @@ router.get('/games/:id', async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 });
+
+// PUT update a match (scores + winner + bracket advance)
+router.put("/games/:id/matches/:matchId", async (req, res) => {
+  try {
+    const { id, matchId } = req.params;
+    let { score1, score2 } = req.body;
+
+    score1 = Number(score1);
+    score2 = Number(score2);
+
+    const game = await Game.findById(id);
+    if (!game) return res.status(404).json({ message: "Game not found" });
+
+    const match = game.matches.id(matchId);
+    if (!match) return res.status(404).json({ message: "Match not found" });
+
+    // old scores
+    const oldScore1 = match.teams[0].score || 0;
+    const oldScore2 = match.teams[1].score || 0;
+
+    // update scores
+    match.teams[0].score = score1;
+    match.teams[1].score = score2;
+
+    // winner
+    if (score1 > score2) {
+      match.winner = match.teams[0].name;
+    } else if (score2 > score1) {
+      match.winner = match.teams[1].name;
+    } else {
+      match.winner = null;
+    }
+
+    // advance
+    const nextRound = match.round + 1;
+    const nextMatchIndex = Math.floor(match.matchIndex / 2);
+
+    const nextMatch = game.matches.find(
+      (m) => m.round === nextRound && m.matchIndex === nextMatchIndex
+    );
+
+    if (nextMatch) {
+      const pos = match.matchIndex % 2;
+      if (match.winner) {
+        nextMatch.teams[pos] = { name: match.winner, score: null };
+      } else {
+        nextMatch.teams[pos] = { name: "TBD", score: null };
+      }
+    }
+
+    // update Team scores
+    const team1 = await Team.findOne({ teamName: match.teams[0].name, eventName: game.eventName });
+    const team2 = await Team.findOne({ teamName: match.teams[1].name, eventName: game.eventName });
+
+    const round = match.round;
+
+    if (team1) {
+      // adjust total
+      team1.totalScore = (team1.totalScore || 0) - oldScore1 + score1;
+
+      // update roundScores
+      const roundEntry = team1.roundScores.find(r => r.round === round);
+      if (roundEntry) {
+        roundEntry.score = score1;
+      } else {
+        team1.roundScores.push({ round, score: score1 });
+      }
+      await team1.save();
+    }
+
+    if (team2) {
+      team2.totalScore = (team2.totalScore || 0) - oldScore2 + score2;
+
+      const roundEntry = team2.roundScores.find(r => r.round === round);
+      if (roundEntry) {
+        roundEntry.score = score2;
+      } else {
+        team2.roundScores.push({ round, score: score2 });
+      }
+      await team2.save();
+    }
+
+    game.markModified("matches");
+    await game.save();
+
+    res.json(game);
+  } catch (err) {
+    console.error("Error updating match:", err);
+    res.status(500).json({ message: "Error updating match" });
+  }
+});
+
+
 
 
 
@@ -396,6 +480,93 @@ router.get('/team', async (req, res) => {
     res.status(500).json({ message: "Error fetching team", error: err.message });
   }
 });
+
+// GET teams with detailed scores (per round & game)
+router.get("/teams/scores", async (req, res) => {
+  try {
+    const { institution, event } = req.query;
+
+    if (!institution || !event) {
+      return res.status(400).json({ message: "Institution and event are required" });
+    }
+
+    // Get teams for this event/institution
+    const teams = await Team.find({ institution, eventName: event });
+
+    if (!teams.length) {
+      return res.status(404).json({ message: "No teams found for this event" });
+    }
+
+    // Map each team to their scores
+    const teamsWithScores = await Promise.all(
+      teams.map(async (team) => {
+        // Get only games where this team has played
+        const games = await Game.find({
+          eventName: event,
+          institution,
+          "matches.teams.name": team.teamName,
+        });
+
+        let grandTotal = 0;
+        let rounds = {};
+
+        games.forEach((game) => {
+          game.matches.forEach((match) => {
+            match.teams.forEach((t) => {
+              if (t.name === team.teamName && t.score != null) {
+                grandTotal += t.score;
+
+                if (!rounds[match.round]) {
+                  rounds[match.round] = { matches: [], total: 0 };
+                }
+
+                rounds[match.round].matches.push({
+                  matchId: match._id,
+                  gameId: game._id,
+                  score: t.score,
+                  opponent:
+                    match.teams.find((x) => x.name !== team.teamName)?.name ||
+                    "TBD",
+                  winner: match.winner,
+                });
+
+                rounds[match.round].total += t.score;
+              }
+            });
+          });
+        });
+
+        return {
+          teamName: team.teamName,
+          institution: team.institution,
+          eventName: team.eventName,
+          grandTotal,
+          rounds,
+        };
+      })
+    );
+
+    res.status(200).json(teamsWithScores);
+  } catch (err) {
+    console.error("Error fetching team scores:", err);
+    res.status(500).json({ message: "Error fetching team scores" });
+  }
+});
+
+// GET teams with scores directly from Team model
+router.get("/teams-with-scores", async (req, res) => {
+  try {
+    const { institution, event } = req.query;
+    const query = { institution, eventName: event };
+    const teams = await Team.find(query).sort({ totalScore: -1 }); // ✅ already has totalScore
+    res.json(teams);
+  } catch (err) {
+    console.error("Error fetching teams with scores:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 
 
 // GET pending players
