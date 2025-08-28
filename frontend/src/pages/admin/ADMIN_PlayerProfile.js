@@ -49,7 +49,6 @@ const PlayerProfile = () => {
 
   return (
     <MainLayout>
-      <h1>Player Profile</h1>
       <div className="player-profile-container">
         {isEditing ? (
           <div className="profile-form">
@@ -74,14 +73,35 @@ const PlayerProfile = () => {
           </div>
         ) : (
           <div className="profile-view">
+
             <div className="player-main-card">
-              <p><b>Full Name:</b> {player.playerName || "N/A"}</p>
-              <p><b>Team:</b> {player.team || "N/A"}</p>
-              <p><b>Sport:</b> {player.game || "N/A"}</p>
-              <p><b>Jersey Number:</b> {player.jerseyNumber || "N/A"}</p>
-              <p><b>Contact:</b> {player.contactNumber || "N/A"}</p>
+
+                <div className="profile-pic">
+                  <img src={player.profilePicture || "default-pic.png"} alt="Profile" />
+                  <p> <b>{player.playerName || "N/A"}</b> </p>
+                </div>
+
+              <div className="profile-details">
+                {[
+                  { label: "Team", value: player.team || "N/A" },
+                  { label: "Sport", value: player.game || "N/A" },
+                  { label: "Jersey Number", value: player.jerseyNumber || "N/A" },
+                ].map((field, idx) => (
+                  <div  className="profile-field" key={idx}>
+                    <span className="profile-label">
+                      {field.label}
+                    </span>
+                    <div className="profile-value-rect">
+                      {field.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
             </div>
-            <div className="player-others-card">
+
+            <div className="other-info-card">
+
               <div className="profile-tabs">
                 <button className={activeTab === "player" ? "active" : ""} onClick={() => setActiveTab("player")}> Player </button>
                 <button className={activeTab === "history" ? "active" : ""} onClick={() => setActiveTab("history")}> History </button>
@@ -90,6 +110,7 @@ const PlayerProfile = () => {
               {/* Tab content rendering */}
               {activeTab === "player" && (
                 <div>
+                  <p><b>Contact:</b> {player.contactNumber || "N/A"}</p>
                   <p><b>Address:</b> {player.permanentAddress || "N/A"}</p>
                   <p><b>Birth Date:</b> {player.birthDate ? player.birthDate.substring(0,10) : "N/A"}</p>
                   <p><b>Age:</b> {player.age || "N/A"}</p>
@@ -111,7 +132,7 @@ const PlayerProfile = () => {
                 </div>
               )}
             </div>
-            <button onClick={() => setIsEditing(true)}>Edit Profile</button>
+            {/* <button onClick={() => setIsEditing(true)}>Edit Profile</button> */}
           </div>
         )}
       </div>

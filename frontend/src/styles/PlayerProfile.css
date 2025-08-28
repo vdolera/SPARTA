@@ -1,17 +1,107 @@
 .player-profile-container {
     width: 1000px;
-    height: 800px;
     border: 2px solid #333333;
     margin: 25px;
+    display: flex;
+    flex-direction: column;
+    font-family: Poppins, Sans-Serif;
 }
 
-.profile-view {
-    border: 2px solid green;
+.profile-view { 
+    display: flex;
+    flex-direction: row;
 }
 
 .player-main-card {
-    border: 2px solid blue;
     padding: 10px;
-    width: 150px;
+    width: 200px;
+    min-height: 300px;
+}
+
+.other-info-card {
+    border: 2px solid orange;
+    padding: 10px;
+    width: 500px;
     height: 300px;
+}
+
+.player-main-card, .other-info-card {
+    margin: 10px;
+    border: 2px solid #6a61a2;
+    border-radius: 10px;
+}
+
+.profile-pic {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+    width: 150px;
+    height: 150px;
+    border: 2px solid #6a61a2;
+    border-radius: 15px;
+}
+
+.profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.profile-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.profile-label {
+    margin-bottom: 6px;
+    margin-left: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.profile-value-rect {
+  border: 2px solid #6a61a2;
+  border-radius: 10px;
+  width: 100px;
+  height: fit-content;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+
+.profile-tabs {
+    display: flex;
+    justify-content: start;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    margin-left: 15px;
+}
+
+.profile-tabs button {
+  background: none;
+  font-size: 1rem;
+  font-weight: 500;
+  color: black;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease-in-out;
+  border-radius: 5px 5px 0 0;
+}
+
+.profile-tabs button:hover {
+  color: white;
+
+}
+
+.profile-tabs button.active {
+  border-bottom: 3px solid #CE892C;
+  font-weight: bold;
 }

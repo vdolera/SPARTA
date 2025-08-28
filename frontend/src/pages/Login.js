@@ -81,7 +81,6 @@ export default function LoginPage() {
               required
               value={formData.email}
               onChange={handleChange}
-              style={{width: '100%'}}
             />
             <label className='label-login' htmlFor='email'>Email</label>
           </div>
@@ -94,7 +93,6 @@ export default function LoginPage() {
               required
               value={formData.password}
               onChange={handleChange}
-              style={{width: '100%'}}
             />
             <label className='label-login' htmlFor='password'>Password</label>
           </div>
@@ -108,7 +106,6 @@ export default function LoginPage() {
                 required
                 value={formData.accessKey}
                 onChange={handleChange}
-                style={{width: '100%'}}
               />
               <label className='label-login' htmlFor='accessKey'>Access Key</label>
             </div>
