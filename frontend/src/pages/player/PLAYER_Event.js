@@ -43,16 +43,15 @@ const PlayerEvent = () => {
 
       <div className="event-list">
         {filteredEvents.map((event) => (
-          <button
-            key={event._id}
-            className="event-item"
-            style={{ 
-              background: event.eventColor ? event.eventColor : '#A96B24',
-            }}
-            onClick={() => handleEventClick(event)}
-          >
-            {event.eventName}
-          </button>
+          <div className='event-item' key={event._id}>
+            <div className="event-color" style={{ background: event.eventColor ? event.eventColor : '#A96B24'}} onClick={() => handleEventClick(event)}>
+              
+            </div>
+
+            <div className="event-name" onClick={() => handleEventClick(event)}>
+              {event.eventName}
+            </div>
+          </div>
         ))}
       </div>
     </MainLayout>

@@ -34,7 +34,7 @@ const Event = () => {
 
   return (
     <MainLayout>
-      <div className="event-main-header">
+      <div className="event-main-header">  {/* Search Bar and Add Event Button */}
         <input
           type="text"
           className="event-search-bar"
@@ -49,12 +49,8 @@ const Event = () => {
       <div className="event-list">
           {filteredEvents.map((event) => (
             <div key={event._id} className="event-item">
-              <div className="event-color"
-                style={{
-                  background: event.eventColor ? event.eventColor : '#A96B24',
-                }}
-                onClick={() => handleEventClick(event)}
-              >
+              <div className="event-color" style={{ background: event.eventColor ? event.eventColor : '#A96B24' }} onClick={() => handleEventClick(event)}>
+              
               </div>
 
               <div className="event-name" onClick={() => handleEventClick(event)}>

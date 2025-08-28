@@ -64,7 +64,7 @@
 }
 
 .event-name {
-  padding: 10px 15px;
+  padding: 10px 15px 0 15px; /*top right bottom left*/
   font-size: 18px;
   font-weight: bold;
   border-radius: 0 0 15px 15px;

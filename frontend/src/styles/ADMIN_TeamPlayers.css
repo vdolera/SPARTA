@@ -26,14 +26,14 @@
 }
 
 .team-players-total {
-    border: 2px solid maroon;
+    border: 2px solid #333333;
     width: 200px;
     height: 125px;
     border-radius: 15px;
 }
 
 .team-ranking-event {
-    border: 2px solid cornflowerblue;
+    border: 2px solid #333333;
     width: 200px;
     height: 125px;
     border-radius: 15px;
@@ -51,6 +51,16 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
+    border-radius: 15px;
+    overflow: hidden;
+    border-left: 2px solid #6784b7;
+    border-right: 2px solid #6784b7;
+    border-bottom: 2px solid #6784b7;
+}
+
+table thead th {
+    background-color: #6784b7;
+    font-weight: bold;
 }
 
 th, td {

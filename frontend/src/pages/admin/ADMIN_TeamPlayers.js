@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import '../../styles/ADMIN_TeamPlayers.css'; 
+import { MdBorderLeft } from "react-icons/md";
 
 const TeamPlayers = () => {
   const { eventName, teamName } = useParams(); 
@@ -13,8 +14,8 @@ const TeamPlayers = () => {
   const userInstitution = user?.institution;
 
   const [players, setPlayers] = useState([]);
-  const [teamColor, setTeamColor] = useState("#A96B24");
-  
+  const [teamColor, setTeamColor] = useState("#808080");
+
   const handleViewButton = (playerId) => {
     navigate(`/admin/event/${encodeURIComponent(decodedEvent)}/team/${encodeURIComponent(teamName)}/player/${playerId}/profile`);
   };
@@ -93,7 +94,7 @@ const TeamPlayers = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {players.map((player) => (
+                  {players.map((player, idx) => (
                     <tr key={player._id}>
                       <td>{player.playerName}</td>
                       <td>{player.course}</td>

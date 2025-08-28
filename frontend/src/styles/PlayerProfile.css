@@ -1,0 +1,17 @@
+.player-profile-container {
+    width: 1000px;
+    height: 800px;
+    border: 2px solid #333333;
+    margin: 25px;
+}
+
+.profile-view {
+    border: 2px solid green;
+}
+
+.player-main-card {
+    border: 2px solid blue;
+    padding: 10px;
+    width: 150px;
+    height: 300px;
+}

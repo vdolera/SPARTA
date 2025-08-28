@@ -1,12 +1,14 @@
 import MainLayout from "../../components/MainLayout";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import "../../styles/PlayerProfile.css";
 
 const PlayerProfile = () => {
   //const user = JSON.parse(localStorage.getItem("auth"));
   const {playerId} = useParams();
   const [player, setPlayer] = useState({});
   const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState("player");
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -48,7 +50,7 @@ const PlayerProfile = () => {
   return (
     <MainLayout>
       <h1>Player Profile</h1>
-      <div className="profile-container">
+      <div className="player-profile-container">
         {isEditing ? (
           <div className="profile-form">
             <input name="fullName" value={player.playerName || ""} onChange={handleChange} placeholder="Full Name" />
@@ -72,17 +74,43 @@ const PlayerProfile = () => {
           </div>
         ) : (
           <div className="profile-view">
-            <p><b>Full Name:</b> {player.playerName || "N/A"}</p>
-            <p><b>Team:</b> {player.team || "N/A"}</p>
-            <p><b>Sport:</b> {player.game || "N/A"}</p>
-            <p><b>Jersey Number:</b> {player.jerseyNumber || "N/A"}</p>
-            <p><b>Contact:</b> {player.contactNumber || "N/A"}</p>
-            <p><b>Address:</b> {player.permanentAddress || "N/A"}</p>
-            <p><b>Birth Date:</b> {player.birthDate ? player.birthDate.substring(0,10) : "N/A"}</p>
-            <p><b>Age:</b> {player.age || "N/A"}</p>
-            <p><b>Weight:</b> {player.weight ? `${player.weight} kg` : "N/A"}</p>
-            <p><b>Height:</b> {player.height ? `${player.height} cm` : "N/A"}</p>
-            <p><b>Sex:</b> {player.sex || "N/A"}</p>
+            <div className="player-main-card">
+              <p><b>Full Name:</b> {player.playerName || "N/A"}</p>
+              <p><b>Team:</b> {player.team || "N/A"}</p>
+              <p><b>Sport:</b> {player.game || "N/A"}</p>
+              <p><b>Jersey Number:</b> {player.jerseyNumber || "N/A"}</p>
+              <p><b>Contact:</b> {player.contactNumber || "N/A"}</p>
+            </div>
+            <div className="player-others-card">
+              <div className="profile-tabs">
+                <button className={activeTab === "player" ? "active" : ""} onClick={() => setActiveTab("player")}> Player </button>
+                <button className={activeTab === "history" ? "active" : ""} onClick={() => setActiveTab("history")}> History </button>
+                <button className={activeTab === "documents" ? "active" : ""} onClick={() => setActiveTab("documents")}> Documents </button>
+              </div>
+              {/* Tab content rendering */}
+              {activeTab === "player" && (
+                <div>
+                  <p><b>Address:</b> {player.permanentAddress || "N/A"}</p>
+                  <p><b>Birth Date:</b> {player.birthDate ? player.birthDate.substring(0,10) : "N/A"}</p>
+                  <p><b>Age:</b> {player.age || "N/A"}</p>
+                  <p><b>Weight:</b> {player.weight ? `${player.weight} kg` : "N/A"}</p>
+                  <p><b>Height:</b> {player.height ? `${player.height} cm` : "N/A"}</p>
+                  <p><b>Sex:</b> {player.sex || "N/A"}</p>
+                </div>
+              )}
+              {activeTab === "history" && (
+                <div>
+                  {/* History tab content goes here */}
+                  <p>History content...</p>
+                </div>
+              )}
+              {activeTab === "documents" && (
+                <div>
+                  {/* Documents tab content goes here */}
+                  <p>Documents content...</p>
+                </div>
+              )}
+            </div>
             <button onClick={() => setIsEditing(true)}>Edit Profile</button>
           </div>
         )}
