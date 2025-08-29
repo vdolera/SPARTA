@@ -211,8 +211,18 @@ router.get('/event', async (req, res) => {
 });
 
 
+// Fisher-Yates Shuffle
+function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 // POST /api/games
-router.post('/games', async (req, res) => {
+router.post("/games", async (req, res) => {
   try {
     const {
       institution,
@@ -224,12 +234,22 @@ router.post('/games', async (req, res) => {
       requirements,
       rules,
       eventName,
-      bracketType
+      bracketType,
     } = req.body;
 
-    if (!institution || !gameType || !category || !startDate || !endDate ||
-      !teams?.length || !requirements?.length || !rules || !eventName || !bracketType) {
-      return res.status(400).json({ message: 'All fields are required' });
+    if (
+      !institution ||
+      !gameType ||
+      !category ||
+      !startDate ||
+      !endDate ||
+      !teams?.length ||
+      !requirements?.length ||
+      !rules ||
+      !eventName ||
+      !bracketType
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
     const matches = [];
@@ -238,19 +258,21 @@ router.post('/games', async (req, res) => {
     // total rounds = log2(teams.length)
     const totalRounds = Math.ceil(Math.log2(teams.length));
 
-    // Round 1 pairings
-for (let i = 0; i < teams.length; i += 2) {
-  matches.push({
-    round: 1,
-    matchIndex: i / 2,
-    teams: [
-      { name: teams[i] || "TBD", score: null },
-      { name: teams[i + 1] || "TBD", score: null }
-    ],
-    winner: null
-  });
-}
+    // ✅ Shuffle teams for randomized matchups
+    const shuffledTeams = shuffleArray(teams);
 
+    // Round 1 pairings
+    for (let i = 0; i < shuffledTeams.length; i += 2) {
+      matches.push({
+        round: 1,
+        matchIndex: i / 2,
+        teams: [
+          { name: shuffledTeams[i] || "TBD", score: null },
+          { name: shuffledTeams[i + 1] || "TBD", score: null },
+        ],
+        winner: null,
+      });
+    }
 
     // Generate placeholder matches for later rounds
     for (round = 2; round <= totalRounds; round++) {
@@ -261,9 +283,9 @@ for (let i = 0; i < teams.length; i += 2) {
           matchIndex: i,
           teams: [
             { name: "TBD", score: null },
-            { name: "TBD", score: null }
+            { name: "TBD", score: null },
           ],
-          winner: null
+          winner: null,
         });
       }
     }
@@ -274,12 +296,12 @@ for (let i = 0; i < teams.length; i += 2) {
       category,
       startDate,
       endDate,
-      teams,
+      teams: shuffledTeams, // ✅ store shuffled order
       requirements,
       rules,
       eventName,
       bracketType,
-      matches
+      matches,
     });
 
     await newGame.save();
@@ -289,6 +311,7 @@ for (let i = 0; i < teams.length; i += 2) {
     res.status(500).json({ message: "Failed to create game" });
   }
 });
+
 
 
 
