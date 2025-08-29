@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const matchSchema = new mongoose.Schema({
+  bracket: { type: String, enum: ["WB", "LB", "GF"], default: "WB" },
   round: { type: Number, required: true },
   matchIndex: { type: Number, required: true },
   teams: [{ 
@@ -8,8 +9,10 @@ const matchSchema = new mongoose.Schema({
     score: { type: Number, default: null }
   }],
   winner: { type: String, default: null },
-  finalizeWinner: { type: Boolean, default: false }, // <-- add this
+  finalizeWinner: { type: Boolean, default: false }, 
 }, { _id: true });
+
+
 
 
 const gameSchema = new mongoose.Schema({
