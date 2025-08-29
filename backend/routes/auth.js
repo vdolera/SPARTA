@@ -53,7 +53,7 @@ router.post('/register/:role', async (req, res) => {
 });
 
 // LOGIN Auth
-router.post('/login/:role', async (req, res) => {
+router.post('/auth/login/:role', async (req, res) => {
   const { role } = req.params;
   const { email, password, accessKey } = req.body;
 
@@ -350,10 +350,11 @@ router.get('/games/:id', async (req, res) => {
 });
 
 // PUT update a match (scores + winner + bracket advance)
+// PUT update a match (scores + winner + bracket advance)
 router.put("/games/:id/matches/:matchId", async (req, res) => {
   try {
     const { id, matchId } = req.params;
-    let { score1, score2 } = req.body;
+    let { score1, score2, finalizeWinner } = req.body;
 
     score1 = Number(score1);
     score2 = Number(score2);
@@ -364,7 +365,7 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
     const match = game.matches.id(matchId);
     if (!match) return res.status(404).json({ message: "Match not found" });
 
-    // old scores
+    // old scores for Team collection adjustment
     const oldScore1 = match.teams[0].score || 0;
     const oldScore2 = match.teams[1].score || 0;
 
@@ -372,65 +373,53 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
     match.teams[0].score = score1;
     match.teams[1].score = score2;
 
-    // winner
-    if (score1 > score2) {
-      match.winner = match.teams[0].name;
-    } else if (score2 > score1) {
-      match.winner = match.teams[1].name;
-    } else {
-      match.winner = null;
-    }
+    let winner = null;
+    if (finalizeWinner) {
+      // determine winner index
+      const winningTeamIndex = score1 > score2 ? 0 : score2 > score1 ? 1 : null;
+      if (winningTeamIndex !== null) winner = match.teams[winningTeamIndex].name;
 
-    // advance
-    const nextRound = match.round + 1;
-    const nextMatchIndex = Math.floor(match.matchIndex / 2);
+      match.winner = winner;
+      match.finalizeWinner = true;
 
-    const nextMatch = game.matches.find(
-      (m) => m.round === nextRound && m.matchIndex === nextMatchIndex
-    );
-
-    if (nextMatch) {
+      // advance winner to next round
+      const nextRound = match.round + 1;
+      const nextMatchIndex = Math.floor(match.matchIndex / 2);
       const pos = match.matchIndex % 2;
-      if (match.winner) {
-        nextMatch.teams[pos] = { name: match.winner, score: null };
-      } else {
-        nextMatch.teams[pos] = { name: "TBD", score: null };
+
+      const nextMatch = game.matches.find(
+        (m) => m.round === nextRound && m.matchIndex === nextMatchIndex
+      );
+
+      if (nextMatch) {
+        nextMatch.teams[pos] = winner
+          ? { name: winner, score: null }
+          : { name: "TBD", score: null };
       }
     }
 
-    // update Team scores
+    // update Team collection
+    const round = match.round;
     const team1 = await Team.findOne({ teamName: match.teams[0].name, eventName: game.eventName });
     const team2 = await Team.findOne({ teamName: match.teams[1].name, eventName: game.eventName });
 
-    const round = match.round;
-
     if (team1) {
-      // adjust total
       team1.totalScore = (team1.totalScore || 0) - oldScore1 + score1;
-
-      // update roundScores
       const roundEntry = team1.roundScores.find(r => r.round === round);
-      if (roundEntry) {
-        roundEntry.score = score1;
-      } else {
-        team1.roundScores.push({ round, score: score1 });
-      }
+      if (roundEntry) roundEntry.score = score1;
+      else team1.roundScores.push({ round, score: score1 });
       await team1.save();
     }
 
     if (team2) {
       team2.totalScore = (team2.totalScore || 0) - oldScore2 + score2;
-
       const roundEntry = team2.roundScores.find(r => r.round === round);
-      if (roundEntry) {
-        roundEntry.score = score2;
-      } else {
-        team2.roundScores.push({ round, score: score2 });
-      }
+      if (roundEntry) roundEntry.score = score2;
+      else team2.roundScores.push({ round, score: score2 });
       await team2.save();
     }
 
-    game.markModified("matches");
+    // save entire game document
     await game.save();
 
     res.json(game);
@@ -439,6 +428,9 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
     res.status(500).json({ message: "Error updating match" });
   }
 });
+
+
+
 
 
 

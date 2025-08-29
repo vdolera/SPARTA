@@ -1,14 +1,16 @@
 const mongoose = require('mongoose');
 
 const matchSchema = new mongoose.Schema({
-  round: { type: Number, required: true },         // Round number
-  matchIndex: { type: Number, required: true },    // Position in round
+  round: { type: Number, required: true },
+  matchIndex: { type: Number, required: true },
   teams: [{ 
     name: { type: String, default: "TBD" },
     score: { type: Number, default: null }
   }],
-  winner: { type: String, default: null },         // Winner name
-}, { _id: true }); // keep default _id for subdocs
+  winner: { type: String, default: null },
+  finalizeWinner: { type: Boolean, default: false }, // <-- add this
+}, { _id: true });
+
 
 const gameSchema = new mongoose.Schema({
   institution: { type: String, required: true },
