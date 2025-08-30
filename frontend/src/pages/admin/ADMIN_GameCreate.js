@@ -284,7 +284,7 @@ const CreateGame = () => {
       <div className="event-container"></div>
         <div className="lower-buttons">
           <button type="button" onClick={() => navigate(-1)}>Cancel</button>
-          <button type="submit">Create Game</button>
+          <button type="submit" onClick={handleSubmit}>Create Game</button>
         </div>
       </div>
 
