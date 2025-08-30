@@ -69,16 +69,27 @@ const Teams = () => {
             <p>No teams found.</p>
           </div>
         ) : (
-          <ul>
+          <ul className="team-list">
             {filteredTeams.map((team, idx) => (
-              <button
-                className="team-btn"
-                key={idx}
-                onClick={() => handleSelectTeam(team.teamName)}
-                style={{ background: team.teamColor ? team.teamColor : '#A96B24'}}
-              >
-                {team.teamName}
-              </button>
+              <li key={idx}>
+               <button
+  className="team-btn"
+  onClick={() => handleSelectTeam(team.teamName)}
+  style={{
+    backgroundImage: team.teamIcon
+      ? `url(http://localhost:5000${team.teamIcon})`
+      : "none",
+    backgroundColor: !team.teamIcon
+      ? team.teamColor || "#A96B24"
+      : "transparent",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+>
+  <span className="team-name-overlay">{team.teamName}</span>
+</button>
+
+              </li>
             ))}
           </ul>
         )}

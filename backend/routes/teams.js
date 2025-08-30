@@ -1,31 +1,51 @@
 const express = require("express");
 const Team = require("../models/Team");
 const Game = require("../models/Game");
+const multer = require("multer");
+const path = require("path");
 
 const router = express.Router();
 
-// CREATE team
-router.post('/team', async (req, res) => {
+// ✅ Setup multer storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/teams/"); // folder where images are stored
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // unique name
+  },
+});
+const upload = multer({ storage });
+
+// CREATE team with optional image
+router.post("/team", upload.single("teamIcon"), async (req, res) => {
   try {
     const { teamName, teamManager, managerEmail, institution, teamColor, eventName } = req.body;
 
     if (!teamName || !teamManager || !managerEmail || !institution) {
-      return res.status(400).json({ message: 'All fields are required.' });
+      return res.status(400).json({ message: "All fields are required." });
     }
 
-    // Optional: prevent duplicate team names per institution
     const existing = await Team.findOne({ teamName, institution });
     if (existing) {
-      return res.status(409).json({ message: 'Team already exists in this institution.' });
+      return res.status(409).json({ message: "Team already exists in this institution." });
     }
 
-    const team = new Team({ teamName, teamManager, managerEmail, institution, teamColor, eventName });
-    await team.save();
+    const team = new Team({
+      teamName,
+      teamManager,
+      managerEmail,
+      institution,
+      teamColor,
+      eventName,
+      teamIcon: req.file ? `/uploads/teams/${req.file.filename}` : null, // ✅ save image path
+    });
 
-    res.status(201).json({ message: 'Team created successfully.' });
+    await team.save();
+    res.status(201).json({ message: "Team created successfully.", team });
   } catch (err) {
     console.error("Error creating team:", err);
-    res.status(500).json({ message: 'Server error.' });
+    res.status(500).json({ message: "Server error." });
   }
 });
 

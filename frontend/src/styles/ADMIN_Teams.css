@@ -62,20 +62,40 @@ div button:hover {
 }
 
 .team-btn {
-    cursor: pointer;
-    padding: 8px 12px;
-    color: black;
-    border-radius: 6px;
-    margin: 10px 0;
-    padding: 10px;
-    min-width: 22vh;
-    min-height: 29vh;
-    font-family: Paytone One, sans-serif;
-    font-weight: bold;
-    color: white;
-    text-align: center;
-    align-items: center;
+  cursor: pointer;
+  border-radius: 12px;
+  margin: 10px 0;
+  min-width: 22vh;
+  min-height: 29vh;
+  font-family: "Paytone One", sans-serif;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  display: flex;
+  align-items: flex-end; /* put team name at the bottom */
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
+
+/* dark overlay so text is always readable */
+.team-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+}
+
+/* team name styling */
+.team-name-overlay {
+  position: relative;
+  z-index: 1;
+  padding: 6px 12px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
 
 .no-teams-found {
     display: flex;
