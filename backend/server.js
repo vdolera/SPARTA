@@ -28,6 +28,8 @@ app.use("/api", require("./routes/games"));
 app.use("/api", require("./routes/teams"));
 app.use("/api", require("./routes/players"));
 app.use("/api", require("./routes/feedback"));
+app.use("/uploads", express.static("./uploads"));
+
 
 // Default Route
 app.get("/", (req, res) => {

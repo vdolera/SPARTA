@@ -1,7 +1,7 @@
 import MainLayout from "../../components/MainLayout";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import '../../styles/ADMIN_TeamCreate.css';
+import "../../styles/ADMIN_TeamCreate.css";
 
 const CreateTeam = () => {
   const navigate = useNavigate();
@@ -9,12 +9,13 @@ const CreateTeam = () => {
   const [teamManager, setTeamManager] = useState("");
   const [managerEmail, setManagerEmail] = useState("");
   const [teamColor, setTeamColor] = useState("");
+  const [teamIcon, setTeamIcon] = useState(null);
   const { eventName } = useParams();
   const decodedEventName = decodeURIComponent(eventName);
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    const user = JSON.parse(localStorage.getItem('auth'));
+    const user = JSON.parse(localStorage.getItem("auth"));
     const institution = user?.institution;
 
     if (!institution) {
@@ -23,44 +24,45 @@ const CreateTeam = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/team', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          teamName,
-          teamManager,
-          managerEmail,
-          institution,
-          teamColor,
-          eventName: decodedEventName,
-        }),
+      const formData = new FormData();
+      formData.append("teamName", teamName);
+      formData.append("teamManager", teamManager);
+      formData.append("managerEmail", managerEmail);
+      formData.append("institution", institution);
+      formData.append("teamColor", teamColor);
+      formData.append("eventName", decodedEventName);
+      if (teamIcon) {
+        formData.append("teamIcon", teamIcon); // ✅ add file
+      }
+
+      const response = await fetch("http://localhost:5000/api/team", {
+        method: "POST",
+        body: formData, // ✅ send formData instead of JSON
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        alert('Team created!');
+        alert("Team created!");
         navigate(-1);
       } else {
         alert(`${data.message}`);
       }
     } catch (error) {
-      console.error('Error creating team:', error);
-      alert('Failed to create team.');
+      console.error("Error creating team:", error);
+      alert("Failed to create team.");
     }
   };
 
   return (
     <MainLayout>
-      <div className='team-create-maindiv'>
+      <div className="team-create-maindiv">
         <div className="team-form-header">
           <h2>Team Creation Form</h2>
         </div>
 
         <div className="team-form-container">
-
           <form className="team-form" onSubmit={handleCreate}>
-
             <div>
               <label>Team Name:
                 <input
@@ -69,7 +71,7 @@ const CreateTeam = () => {
                   onChange={(e) => setTeamName(e.target.value)}
                   required
                 />
-              </label> 
+              </label>
             </div>
 
             <div>
@@ -104,15 +106,21 @@ const CreateTeam = () => {
                   required
                 />
               </label>
- 
+            </div>
+
+            <div>
+              <label>Team Icon:
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setTeamIcon(e.target.files[0])}
+                />
+              </label>
             </div>
 
             <button type="submit">Create Team</button>
-
           </form>
-
         </div>
-        
       </div>
     </MainLayout>
   );
