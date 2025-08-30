@@ -16,12 +16,12 @@ app.use(
   })
 );
 
-// DB Connect
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-// Routes
+// API Routes
 app.use("/api", require("./routes/auth"));
 app.use("/api", require("./routes/events"));
 app.use("/api", require("./routes/games"));
