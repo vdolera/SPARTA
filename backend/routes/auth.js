@@ -522,6 +522,8 @@ if (match.bracket === "WB") {
 }
 
 
+
+
         // Handle Loser Bracket
         if (match.bracket === "LB") {
           const nextLB = game.matches.find(

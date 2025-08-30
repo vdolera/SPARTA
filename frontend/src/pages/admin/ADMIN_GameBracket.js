@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
+
 import "../../styles/bracket.css";
 
 const GameBracket = () => {
@@ -197,9 +198,41 @@ if (game.bracketType === "Round Robin") {
       }));
     rounds.push({ title: `Round ${r}`, seeds });
   }
+
+    // 🔥 Only calculate Champion if ALL matches are finalized
+  const allMatchesDone = rrMatches.every((m) => m.finalizeWinner);
+  if (allMatchesDone) {
+    const winCount = {};
+    rrMatches.forEach((m) => {
+      if (m.finalizeWinner && m.winner) {
+        winCount[m.winner] = (winCount[m.winner] || 0) + 1;
+      }
+    });
+
+    // Find team(s) with max wins
+    const maxWins = Math.max(...Object.values(winCount));
+    const champions = Object.entries(winCount)
+      .filter(([_, wins]) => wins === maxWins)
+      .map(([team]) => team);
+
+    // 🏆 Add Champion round
+    rounds.push({
+      title: "Champion",
+      seeds: champions.map((champ, idx) => ({
+        id: `champion-${idx}`,
+        date: game.endDate,
+        teams: [
+          {
+            name: champ,
+            score: `Wins: ${maxWins}`,
+            winner: true,
+          },
+        ],
+        finalizeWinner: true,
+      })),
+    });
+  }
 }
-
-
 
   return rounds;
 };
@@ -323,35 +356,35 @@ if (game.bracketType === "Round Robin") {
       <p><b>Bracket Type:</b> {game.bracketType}</p>
 
       <div className="bracket-container" style={{ display: "flex", flexDirection: "column", gap: "60px" }}>
-        {game.bracketType === "Single Elimination" && (
-          <Bracket rounds={roundsData} renderSeedComponent={renderSeed} />
-        )}
+  {game.bracketType === "Single Elimination" && (
+    <Bracket rounds={roundsData} renderSeedComponent={renderSeed} />
+  )}
 
-        {game.bracketType === "Double Elimination" && (
-          <>
-            <div>
-              <h2>Winner's Bracket</h2>
-              <Bracket rounds={roundsData.find(r => r.title === "WB")?.rounds || []} renderSeedComponent={renderSeed} />
+  {game.bracketType === "Double Elimination" && (
+    <>
+      <div>
+        <h2>Winner's Bracket</h2>
+        <Bracket rounds={roundsData.find(r => r.title === "WB")?.rounds || []} renderSeedComponent={renderSeed} />
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "center", gap: "80px", margin: "40px 0" }}>
+        {roundsData.filter(r => r.title === "Grand Final" || r.title === "Champion")
+          .map((round, i) => (
+            <div key={i} style={{ textAlign: "center" }}>
+              <h2>{round.title}</h2>
+              <Bracket rounds={round.seeds ? [round] : round.rounds} renderSeedComponent={renderSeed} />
             </div>
+          ))}
+      </div>
 
-            <div style={{ display: "flex", justifyContent: "center", gap: "80px", margin: "40px 0" }}>
-              {roundsData.filter(r => r.title === "Grand Final" || r.title === "Champion")
-                .map((round, i) => (
-                  <div key={i} style={{ textAlign: "center" }}>
-                    <h2>{round.title}</h2>
-                    <Bracket rounds={round.seeds ? [round] : round.rounds} renderSeedComponent={renderSeed} />
-                  </div>
-                ))}
-            </div>
+      <div>
+        <h2>Loser's Bracket</h2>
+        <Bracket rounds={roundsData.find(r => r.title === "LB")?.rounds || []} renderSeedComponent={renderSeed} />
+      </div>
+    </>
+  )}
 
-            <div>
-              <h2>Loser's Bracket</h2>
-              <Bracket rounds={roundsData.find(r => r.title === "LB")?.rounds || []} renderSeedComponent={renderSeed} />
-            </div>
-          </>
-        )}
-
-{game.bracketType === "Round Robin" ? (
+{game.bracketType === "Round Robin" && (
   <div className="round-robin bracket-container">
     <h2>Round Robin</h2>
     {roundsData.map((round, rIndex) => (
@@ -359,35 +392,16 @@ if (game.bracketType === "Round Robin") {
         <h3 className="rr-title">{round.title}</h3>
         <div className="rr-matches">
           {round.seeds.map((seed, sIndex) => (
-            <Seed key={sIndex} style={{ fontSize: "14px" }}>
-              <SeedItem className="seed-item">
-                {seed.teams.map((team, idx) => {
-                  let teamClass = "";
-                  if (seed.finalizeWinner)
-                    teamClass = team.winner ? "winner" : "loser";
-
-                  return (
-                    <SeedTeam key={idx} className={`seed-team ${teamClass}`}>
-                      {team.name || "TBD"}{" "}
-                      <span className="score-box">
-                        {team.score ?? "-"}
-                      </span>
-                    </SeedTeam>
-                  );
-                })}
-              </SeedItem>
-            </Seed>
+            <React.Fragment key={sIndex}>
+              {renderSeed({ seed })}
+            </React.Fragment>
           ))}
         </div>
       </div>
     ))}
   </div>
-) : (
-  <Bracket
-    rounds={roundsData}
-    renderSeedComponent={renderSeed}
-  />
 )}
+
 
 
 
