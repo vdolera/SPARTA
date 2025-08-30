@@ -178,6 +178,28 @@ if (game.bracketType === "Double Elimination") {
   }
 }
 
+if (game.bracketType === "Round Robin") {
+  const rrMatches = game.matches.filter((m) => m.bracket === "RR");
+  const maxRound = Math.max(...rrMatches.map((m) => m.round));
+
+  for (let r = 1; r <= maxRound; r++) {
+    const seeds = rrMatches
+      .filter((m) => m.round === r)
+      .map((m) => ({
+        id: m._id,
+        date: game.startDate,
+        teams: m.teams.map((t) => ({
+          name: t?.name || "TBD",
+          score: t?.score ?? null,
+          winner: m.finalizeWinner && t?.name === m.winner,
+        })),
+        finalizeWinner: m.finalizeWinner || false,
+      }));
+    rounds.push({ title: `Round ${r}`, seeds });
+  }
+}
+
+
 
   return rounds;
 };
@@ -328,6 +350,50 @@ if (game.bracketType === "Double Elimination") {
             </div>
           </>
         )}
+
+{game.bracketType === "Round Robin" ? (
+  <div className="round-robin bracket-container">
+    <h2>Round Robin</h2>
+    {roundsData.map((round, rIndex) => (
+      <div key={rIndex} className="rr-round">
+        <h3 className="rr-title">{round.title}</h3>
+        <div className="rr-matches">
+          {round.seeds.map((seed, sIndex) => (
+            <Seed key={sIndex} style={{ fontSize: "14px" }}>
+              <SeedItem className="seed-item">
+                {seed.teams.map((team, idx) => {
+                  let teamClass = "";
+                  if (seed.finalizeWinner)
+                    teamClass = team.winner ? "winner" : "loser";
+
+                  return (
+                    <SeedTeam key={idx} className={`seed-team ${teamClass}`}>
+                      {team.name || "TBD"}{" "}
+                      <span className="score-box">
+                        {team.score ?? "-"}
+                      </span>
+                    </SeedTeam>
+                  );
+                })}
+              </SeedItem>
+            </Seed>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+) : (
+  <Bracket
+    rounds={roundsData}
+    renderSeedComponent={renderSeed}
+  />
+)}
+
+
+
+
+
+
       </div>
 
       {selectedMatch && (

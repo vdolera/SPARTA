@@ -348,6 +348,42 @@ router.post("/games", async (req, res) => {
       matches.push(...wbMatches, ...lbMatches);
     }
 
+    if (bracketType === "Round Robin") {
+      const rrMatches = [];
+      const teamCount = shuffledTeams.length;
+    
+      // If odd number of teams, add a dummy "BYE"
+      const teamsList = teamCount % 2 === 0 ? [...shuffledTeams] : [...shuffledTeams, "BYE"];
+      const n = teamsList.length;
+      const rounds = n - 1;
+    
+      for (let r = 0; r < rounds; r++) {
+        for (let i = 0; i < n / 2; i++) {
+          const home = teamsList[i];
+          const away = teamsList[n - 1 - i];
+    
+          if (home !== "BYE" && away !== "BYE") {
+            rrMatches.push({
+              bracket: "RR",
+              round: r + 1,
+              matchIndex: i,
+              teams: [
+                { name: home, score: null },
+                { name: away, score: null },
+              ],
+              winner: null,
+              finalizeWinner: false,
+            });
+          }
+        }
+        // Rotate teams (keep first fixed)
+        teamsList.splice(1, 0, teamsList.pop());
+      }
+    
+      matches.push(...rrMatches);
+    }
+    
+
     const newGame = new Game({
       institution,
       gameType,

@@ -62,4 +62,35 @@
   font-weight: 700 !important;
 }
 
+.round-robin {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.round-robin .rr-round {
+  display: flex;
+  flex-direction: column; /* keep title above, matches below */
+  align-items: center;
+  gap: 10px;
+}
+
+.round-robin .rr-matches {
+  display: flex;
+  flex-direction: row;   /* horizontal layout */
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;       /* wrap if too many matches */
+}
+
+.round-robin .seed-item {
+  max-width: 220px;
+  min-width: 180px;
+}
+
+
+
+
+
+
 
