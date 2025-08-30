@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const matchSchema = new mongoose.Schema({
-  bracket: { type: String, enum: ["WB", "LB", "GF", "RR"], default: "WB" },
+  bracket: { type: String, enum: ["WB", "LB", "GF", "RR", "Swiss"], default: "WB" },
   round: { type: Number, required: true },
   matchIndex: { type: Number, required: true },
   teams: [{ 

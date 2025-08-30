@@ -10,7 +10,7 @@ const LiveScores = () => {
   const decodedTeam = decodeURIComponent(teamName);
 
   const [teams, setTeams] = useState([]);
-  const [teamColor, setTeamColor] = useState("#A96B24");
+  const [, setTeamColor] = useState("#A96B24");
 
   const user = JSON.parse(localStorage.getItem("auth"));
   const userInstitution = user?.institution;

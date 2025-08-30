@@ -1,11 +1,11 @@
 import React from 'react';
-import { FaUserCircle, FaCog } from 'react-icons/fa';
-import { useLocation, useNavigate } from 'react-router-dom'
+import { FaUserCircle } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom'
 import '../styles/Header.css';
 
 const Header = () => {
   const location = useLocation();
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const pageTitles = {
     '/admin/dashboard': 'DASHBOARD',
