@@ -31,7 +31,10 @@ const LiveScores = () => {
 
   return (
     <MainLayout>
-      <h1>Live Scores for {decodedName}</h1>
+      
+      <div className="live-scores-header">
+        <h1>Live Scores for {decodedName}</h1>
+      </div>
 
       <div style={{ marginTop: "20px" }}>
         {teams.length === 0 ? (

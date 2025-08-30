@@ -13,6 +13,14 @@
   box-sizing: border-box;
 }
 
+.game-header {
+  font-family: Monteserrat, sans-serif;
+  font-size: 18px;
+  text-align: center;
+  border: 2px solid #1A2A49;
+  margin: 10px;
+}
+
 .game-header-row {
   display: flex;
   align-items: center;
