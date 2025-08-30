@@ -37,19 +37,13 @@ const GameBracket = () => {
     );
   }
 
-  // Helper to check if a match is ready to be shown (at least one team known)
-const isMatchReady = (match) => {
-  return match.teams.some((t) => t?.name && t.name !== "TBD");
-};
+
 
 const makeRoundsFromMatches = () => {
   if (!game) return [];
   const rounds = [];
 
-  // Helper to check if a match has at least one team assigned
-  const isMatchReady = (match) => {
-    return match.teams.some((t) => t.name && t.name !== "TBD");
-  };
+ 
 
   if (game.bracketType === "Single Elimination") {
     const totalRounds = Math.ceil(Math.log2(game.teams.length));

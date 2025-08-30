@@ -2,7 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import '../../styles/ADMIN_TeamPlayers.css'; 
-import { MdBorderLeft } from "react-icons/md";
+//import { MdBorderLeft } from "react-icons/md";
 
 const TeamPlayers = () => {
   const { eventName, teamName } = useParams(); 

@@ -16,19 +16,23 @@ app.use(
   })
 );
 
-// MongoDB Connection
+// DB Connect
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
+
+// Routes
+app.use("/api", require("./routes/auth"));
+app.use("/api", require("./routes/events"));
+app.use("/api", require("./routes/games"));
+app.use("/api", require("./routes/teams"));
+app.use("/api", require("./routes/players"));
+app.use("/api", require("./routes/feedback"));
 
 // Default Route
 app.get("/", (req, res) => {
   res.send("Server is running...");
 });
 
-// ✅ Use auth.js for ALL routes
-const authRoutes = require("./routes/auth");
-app.use("/api", authRoutes);
-
-// Server Start
+// Start Server
 app.listen(PORT, "0.0.0.0", () => console.log(`Server running on port ${PORT}`));
