@@ -75,10 +75,11 @@ const Game = () => {
           onChange={e => setSearchQuery(e.target.value)}
           style={{ marginRight: "16px" }}
         />
-        <button onClick={handleAddGame}> + Add Game </button>
+        <button className="new-game-btn" onClick={handleAddGame}> + Add Game </button>
       </div>
 
       <div className="game-main-div">
+
         {filteredGames.length === 0 ? (
           <div className="no-games-found">
             <FaCircleQuestion size={48} />
@@ -90,16 +91,20 @@ const Game = () => {
             const icon = gameIcons[gameType] || gameIcons.Default;
           
             return (
-              <button
-                className="game-button"
-                key={combinedType}
-                onClick={() => navigate(`/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`)}
-                style={{ display: "flex", alignItems: "center", gap: "8px" }}
-              >
-                {icon}
-                {combinedType}
-              </button>
+            
+              <div className="game-button-container">
 
+                <button
+                  className="game-button"
+                  key={combinedType}
+                  onClick={() => navigate(`/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`)}
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  {React.cloneElement(icon, { size: 50 })}
+                  {combinedType}
+                </button>
+
+              </div>
             );
           })
         )}

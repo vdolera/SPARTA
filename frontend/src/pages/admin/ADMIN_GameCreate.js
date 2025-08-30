@@ -1,6 +1,7 @@
 import MainLayout from "../../components/MainLayout";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import '../../styles/ADMIN_GameCreate.css'
 
 const CreateGame = () => {
   const [gameType, setGameType] = useState("Basketball");
@@ -92,170 +93,202 @@ const CreateGame = () => {
 
   return (
     <MainLayout>
-      <div className="event-form-header">
-        <h1>Game Details</h1>
-      </div>
+    
+    <div className="game-container">
 
-      <div className="event-form-container">
-        <div className="event-form-title">
-          <h4>All Fields Are REQUIRED To Be Filled Up</h4>
+      
+      <div className="game-create-maindiv">
+
+        <div className="game-form-header">
+          <h1>Game Details</h1>
         </div>
 
-        <form className="event-forms" onSubmit={handleSubmit}>
-          {/* Game Type */}
-          <label>
-            Game Type:
-            <select
-              value={gameType}
-              onChange={(e) => setGameType(e.target.value)}
-              required
-            >
-              <option value="Basketball">Basketball</option>
-              <option value="Volleyball">Volleyball</option>
-              <option value="Soccer">Soccer</option>
-              <option value="Badminton">Badminton</option>
-              <option value="Table Tennis">Table Tennis</option>
-              <option value="Chess">Chess</option>
-              <option value="Track and Field">Track and Field</option>
-            </select>
-          </label>
+        <div className="game-form-container">
+          
+          <form className="game-forms" onSubmit={handleSubmit}>
+            
+              {/* Game Type */}
+              
+              <div className="game-details">
 
-          {/* Game Category */}
-          <label>
-            Category:
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-            >
-              <option value="Men">Men</option>
-              <option value="Women">Women</option>
-              <option value="Mixed">Mixed</option>
-            </select>
-          </label>
+                <h4>GAME DETAILS</h4>
 
-          {/* Game Duration */}
-          <label>
-            Game Start Date:
-            <input
-              type="datetime-local"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Game End Date:
-            <input
-              type="datetime-local"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              required
-            />
-          </label>
+              <div>
 
-          {/* Participating Teams */}
-          <label>Participating Teams:</label>
-          <div className="team-selection">
-            {availableTeams.length === 0 ? (
-              <p>No teams available for this event.</p>
-            ) : (
-              availableTeams.map((team) => (
-                <button
-                  key={team._id}
-                  type="button"
-                  onClick={() => toggleTeamSelection(team.teamName)}
-                  style={{
-                    margin: "5px",
-                    padding: "8px 12px",
-                    backgroundColor: selectedTeams.includes(team.teamName)
-                      ? "#4caf50"
-                      : "#ccc",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  {team.teamName}
-                </button>
-              ))
-            )}
-          </div>
+                <label className="game-label">
+                  Game Type: 
+                  <select
+                    value={gameType}
+                    onChange={(e) => setGameType(e.target.value)}
+                    required
+                  >
+                    <option value="Basketball">Basketball</option>
+                    <option value="Volleyball">Volleyball</option>
+                    <option value="Soccer">Soccer</option>
+                    <option value="Badminton">Badminton</option>
+                    <option value="Table Tennis">Table Tennis</option>
+                    <option value="Chess">Chess</option>
+                    <option value="Track and Field">Track and Field</option>
+                  </select>
+                </label> 
 
-          {/* Requirements */}
-          <label>Requirements:</label>
-          <button type="button" onClick={handleAddRequirement}>
-            + Add Requirement
-          </button>
-          {requirements.map((req, idx) => (
-            <div key={idx}>
-              <input
-                type="text"
-                value={req}
-                onChange={(e) => handleRequirementChange(idx, e.target.value)}
-                required
-                placeholder={`Requirement ${idx + 1}`}
-              />
-              {requirements.length > 1 && (
-                <button type="button" onClick={() => handleRemoveRequirement(idx)}>
-                  Remove
-                </button>
-              )}
+                {/* Game Category */}
+                <label className="game-label">
+                  Category: 
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    required
+                  >
+                    <option value="Men">Men</option>
+                    <option value="Women">Women</option>
+                    <option value="Mixed">Mixed</option>
+                  </select>
+                </label>
+
+                {/* Game Duration */}
+                <label className="game-label">
+                  Game Start Date: 
+                  <input
+                    type="datetime-local"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    required
+                  />
+                </label>
+
+                <label className="game-label">
+                  Game End Date: 
+                  <input
+                    type="datetime-local"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    required
+                  />
+                </label>
+              </div>
+
+              {/* Participating Teams */}
+              <div>
+                <label className="game-label"><b>Participating Teams:</b></label>
+                <div className="team-selection">
+                  {availableTeams.length === 0 ? (
+                    <p>No teams available for this event.</p>
+                  ) : (
+                    availableTeams.map((team) => (
+                      <button
+                        key={team._id}
+                        type="button"
+                        onClick={() => toggleTeamSelection(team.teamName)}
+                        style={{
+                          margin: "5px",
+                          padding: "8px 12px",
+                          backgroundColor: selectedTeams.includes(team.teamName)
+                            ? "#4caf50"
+                            : "#ccc",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {team.teamName}
+                      </button>
+                    ))
+                  )}
+                  </div>
+                </div>
+
+              {/* Bracket Type */}
+              <div>
+                <label className="game-label"><b>Bracket Type:</b></label>
+
+                <div className="bracket-selection">
+                  {[
+                    "Single Elimination",
+                    "Double Elimination",
+                    "Round Robin",
+                    "Swiss",
+                    "Free for All"
+                  ].map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setBracketType(type)}
+                      style={{
+                        margin: "5px",
+                        padding: "8px 12px",
+                        backgroundColor: bracketType === type ? "#4caf50" : "#ccc",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {type}
+                    </button>
+                    ))}
+                  </div>
+                </div>
             </div>
-          ))}
-        
-
-          {/* Rules */}
-          <label>
-            Rules and Guidelines:
-            <textarea
-              value={rules}
-              onChange={(e) => setRules(e.target.value)}
-              required
-              placeholder="Enter game rules and guidelines..."
-              rows={5}
-            />
-          </label>
-
-          {/* Bracket Type */}
-          <label>Bracket Type:</label>
-          <div className="bracket-selection">
-            {[
-              "Single Elimination",
-              "Double Elimination",
-              "Round Robin",
-              "Swiss",
-              "Free for All"
-            ].map((type) => (
-              <button
-                key={type}
-                type="button"
-                onClick={() => setBracketType(type)}
-                style={{
-                  margin: "5px",
-                  padding: "8px 12px",
-                  backgroundColor: bracketType === type ? "#4caf50" : "#ccc",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                {type}
+            
+            <div className="game-organizers">
+              <h4>SUB-ORGANIZERS</h4>
+            </div>
+            
+            <div className="game-requirements-rules">
+              {/* Requirements */}
+              <label className="game-label">Requirements:</label>
+              <button type="button" onClick={handleAddRequirement}>
+                + Add Requirement
               </button>
-            ))}
-          </div>
+              {requirements.map((req, idx) => (
+                <div key={idx}>
+                  <input
+                    type="text"
+                    value={req}
+                    onChange={(e) => handleRequirementChange(idx, e.target.value)}
+                    required
+                    placeholder={`Requirement ${idx + 1}`}
+                  />
+                  {requirements.length > 1 && (
+                    <button type="button" onClick={() => handleRemoveRequirement(idx)}>
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+          
+              {/* Rules */}
+              <label className="game-label">
+                Rules and Guidelines:
+                <textarea
+                  value={rules}
+                  onChange={(e) => setRules(e.target.value)}
+                  required
+                  placeholder="Enter game rules and guidelines..."
+                  rows={5}
+                />
+              </label>
+            </div>
 
-          {/* Buttons */}
-          <div className="lower-buttons">
-            <button type="button" onClick={() => navigate(-1)}>
-              Cancel
-            </button>
-            <button type="submit">Create Game</button>
-          </div>
-        </form>
+            
+
+            
+
+          </form>
+
+        </div>
       </div>
+        
+      <div className="event-container"></div>
+        <div className="lower-buttons">
+          <button type="button" onClick={() => navigate(-1)}>Cancel</button>
+          <button type="submit">Create Game</button>
+        </div>
+      </div>
+
+    
     </MainLayout>
   );
 };

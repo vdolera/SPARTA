@@ -1,36 +1,16 @@
 .game-header {
   width: 100%;
   padding: 18px 0;
-  margin-bottom: 18px;
   border-radius: 16px;
   background: white;
   position: relative;
   overflow: hidden;
 }
 
-/* Gradient border using ::before */
-.game-header::before {
-  content: "";
-  position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
-  border-radius: 19px;
-  pointer-events: none;
-  z-index: 0;
-  border: 3px solid;
-  border-image: linear-gradient(90deg, #FF9800 0%, #1A2A49 100%);
-  border-image-slice: 1;
-}
-
 .game-main-div {
-  padding: 25px 50px;
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  box-sizing: border-box;
 }
 
 .game-header-row {
@@ -38,6 +18,17 @@
   align-items: center;
   justify-content: space-between;
   margin: 0px 20px;
+}
+
+.new-game-btn {
+  background-color: #1A2A49;
+  color: white;
+  padding: 5px 10px;
+  font-size: 15px;
+  border: none;
+  border-radius: 20px;
+  max-width: fit-content;
+  cursor: pointer;
 }
 
 .game-search-bar {
@@ -60,18 +51,30 @@
   box-shadow: 0 0 0 2px rgba(255,152,0,0.15);
 }
 
-.game-button {
-    display: block;
-    margin: 10px 0;
+button.game-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 15px;
+
+    margin: 5px 0;
     padding: 10px;
-    min-width: 22vh;
-    min-height: 29vh;
+    width: 170px;
+    height: 250px;
     background-color: #1A2A49;
     color: white;
     border: none;
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s;
+
+    box-sizing: border-box;
+
+    transition: all 0.2s ease-in-out;
+    overflow-wrap: break-word;
+    word-break: break-word;
 
 }
 
@@ -87,4 +90,12 @@
   text-align: center;
   padding: 15px;
   margin: 20px;
+}
+
+.game-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  text-align: center;
 }

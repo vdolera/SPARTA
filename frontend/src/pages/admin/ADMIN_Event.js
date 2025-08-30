@@ -43,7 +43,7 @@ const Event = () => {
           onChange={e => setSearchQuery(e.target.value)}
           style={{ marginRight: "16px", padding: "8px 12px", borderRadius: "6px", border: "1px solid #ccc", fontSize: "16px" }}
         />
-        <button onClick={handleAddEvent}> + New Event </button>
+        <button className="new-event-btn" onClick={handleAddEvent}> + New Event </button>
       </div>
 
       <div className="event-list">

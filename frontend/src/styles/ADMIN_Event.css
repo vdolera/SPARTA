@@ -28,16 +28,15 @@
   box-shadow: 0 0 0 2px rgba(255,152,0,0.15);
 }
 
-.event-header button {
+.new-event-btn {
   background-color: #1A2A49;
   color: white;
   padding: 5px 10px;
   font-size: 15px;
-  border-radius: 25px;
+  border: none;
+  border-radius: 20px;
   max-width: fit-content;
   cursor: pointer;
-  display: flex;
-  align-items: center;
 }
 
 .event-header button:hover {

@@ -83,9 +83,9 @@ const CreateEvent = () => {
     <div className="event-container">
       <div className='event-create-maindiv'>
 
-      <div className='event-form-header'>
-        <h1>Event Creation Form</h1>
-      </div>
+        <div className='event-form-header'>
+          <h1>Event Creation Form</h1>
+        </div>
 
         <div className='event-form-container'>
 
@@ -260,7 +260,7 @@ const CreateEvent = () => {
           </div>
         
         </div>
-    </div>
+      </div>
 
     </div>
 
