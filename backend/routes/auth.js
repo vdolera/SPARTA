@@ -383,6 +383,30 @@ router.post("/games", async (req, res) => {
       matches.push(...rrMatches);
     }
     
+    if (bracketType === "Swiss") {
+      const swissMatches = [];
+      const rounds = Math.ceil(Math.log2(shuffledTeams.length)); // Common Swiss: log2(N) rounds
+    
+      for (let r = 1; r <= rounds; r++) {
+        // Initial random pairings for round 1
+        for (let i = 0; i < shuffledTeams.length; i += 2) {
+          swissMatches.push({
+            bracket: "Swiss",
+            round: r,
+            matchIndex: i / 2,
+            teams: [
+              { name: shuffledTeams[i] || "TBD", score: null },
+              { name: shuffledTeams[i + 1] || "TBD", score: null },
+            ],
+            winner: null,
+            finalizeWinner: false,
+          });
+        }
+      }
+    
+      matches.push(...swissMatches);
+    }
+    
 
     const newGame = new Game({
       institution,

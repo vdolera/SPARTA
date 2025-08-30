@@ -234,6 +234,56 @@ if (game.bracketType === "Round Robin") {
   }
 }
 
+if (game.bracketType === "Swiss") {
+  const swissMatches = game.matches.filter((m) => m.bracket === "Swiss");
+  const maxRound = Math.max(...swissMatches.map((m) => m.round));
+
+  for (let r = 1; r <= maxRound; r++) {
+    const seeds = swissMatches
+      .filter((m) => m.round === r)
+      .map((m) => ({
+        id: m._id,
+        date: game.startDate,
+        teams: m.teams.map((t) => ({
+          name: t?.name || "TBD",
+          score: t?.score ?? null,
+          winner: m.finalizeWinner && t?.name === m.winner,
+        })),
+        finalizeWinner: m.finalizeWinner || false,
+      }));
+    rounds.push({ title: `Round ${r}`, seeds });
+  }
+
+  // Optional standings
+  const allMatchesDone = swissMatches.every((m) => m.finalizeWinner);
+  if (allMatchesDone) {
+    const winCount = {};
+    swissMatches.forEach((m) => {
+      if (m.finalizeWinner && m.winner) {
+        winCount[m.winner] = (winCount[m.winner] || 0) + 1;
+      }
+    });
+
+    const sorted = Object.entries(winCount).sort((a, b) => b[1] - a[1]);
+    rounds.push({
+      title: "Swiss Standings",
+      seeds: sorted.map(([team, wins], idx) => ({
+        id: `swiss-${idx}`,
+        date: game.endDate,
+        teams: [
+          {
+            name: team,
+            score: `Wins: ${wins}`,
+            winner: idx === 0, // leader marked as winner
+          },
+        ],
+        finalizeWinner: true,
+      })),
+    });
+  }
+}
+
+
   return rounds;
 };
 
@@ -401,6 +451,25 @@ if (game.bracketType === "Round Robin") {
     ))}
   </div>
 )}
+
+{game.bracketType === "Swiss" && (
+  <div className="swiss bracket-container">
+    <h2>Swiss Bracket</h2>
+    {roundsData.map((round, rIndex) => (
+      <div key={rIndex} className="swiss-round">
+        <h3 className="swiss-title">{round.title}</h3>
+        <div className="swiss-matches">
+          {round.seeds.map((seed, sIndex) => (
+            <React.Fragment key={sIndex}>
+              {renderSeed({ seed })}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
 
 
 
