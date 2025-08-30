@@ -50,9 +50,12 @@ const Teams = () => {
   return (
     <MainLayout>
 
-      <h1>Teams for {decodedName}</h1>
+      
 
       <div className="teams-header-row">
+
+        <h3>TEAMS FOR {decodedName}</h3>
+
         <input
           type="text"
           className="team-search-bar"

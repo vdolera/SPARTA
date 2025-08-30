@@ -17,7 +17,7 @@ const Header = () => {
     '/admin/event/game': 'GAME',
     '/admin/liveScores': 'LIVE SCORES',
     '/admin/feedback': 'POST GAME FEEDBACKS',
-    '/admin/pantheon': 'PANTHEON'
+    '/admin/pantheon': 'PANTHEON',
   };
 
   const currentTitle = pageTitles[location.pathname] || 'SPARTA: Sports Planning And Resource Tracking Application';
