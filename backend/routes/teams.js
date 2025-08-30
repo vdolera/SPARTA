@@ -143,6 +143,7 @@ router.get("/teams/scores", async (req, res) => {
           teamName: team.teamName,
           institution: team.institution,
           eventName: team.eventName,
+          teamColor: team.teamColor || "#A96B24",
           grandTotal,
           rounds,
         };

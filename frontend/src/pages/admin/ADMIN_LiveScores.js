@@ -20,21 +20,23 @@ const LiveScores = () => {
     const fetchTeams = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/teams-with-scores?institution=${encodeURIComponent(
+          `http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(
             userInstitution
           )}&event=${encodeURIComponent(decodedEvent)}`
         );
         const data = await response.json();
-        setTeams(data);
+        // Sort by grandTotal
+        setTeams(data.sort((a, b) => b.grandTotal - a.grandTotal));
       } catch (error) {
         console.error("Error fetching teams:", error);
       }
     };
-
+  
     if (userInstitution && decodedEvent) {
       fetchTeams();
     }
   }, [userInstitution, decodedEvent]);
+  
 
   // Fetch single team details
   useEffect(() => {
@@ -96,7 +98,7 @@ const LiveScores = () => {
                     <span>{getOrdinal(idx + 1)}</span>
                     <span>{team.teamName}</span>
                   </span>
-                  <span>{team.totalScore ?? 0}</span>
+                  <span>{team.grandTotal ?? 0}</span>
                 </div>
               ))}
             </div>
