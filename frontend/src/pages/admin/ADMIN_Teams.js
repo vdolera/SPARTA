@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import '../../styles/ADMIN_Teams.css';
 import { VscSearchStop } from "react-icons/vsc";
+import { FaAlignCenter } from "react-icons/fa";
 
 const Teams = () => {
   const { eventName } = useParams();
@@ -48,6 +49,7 @@ const Teams = () => {
 
   return (
     <MainLayout>
+
       <h1>Teams for {decodedName}</h1>
 
       <div className="teams-header-row">
@@ -59,15 +61,17 @@ const Teams = () => {
           onChange={e => setSearchQuery(e.target.value)}
           style={{ marginRight: "16px" }}
         />
-        <button onClick={handleAddTeam}> + New Team </button>
+        <button className="new-team-btn" onClick={handleAddTeam}> + New Team </button>
       </div>
 
       <div className="teams-event">
         {filteredTeams.length === 0 ? (
+
           <div className="no-teams-found">
             <VscSearchStop size={48}/>
             <p>No teams found.</p>
           </div>
+
         ) : (
           <ul>
             {filteredTeams.map((team, idx) => (
@@ -83,6 +87,7 @@ const Teams = () => {
           </ul>
         )}
       </div>
+
     </MainLayout>
   );
 };

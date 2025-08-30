@@ -4,25 +4,28 @@ h1 {
 }
 
 .teams-event {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 20px auto;
 }
 
 .teams-event ul{
-    margin: 20px;
-    display: flex;
-    flex-direction: row;
-    gap: 24px;
-    padding: 0px;
-    list-style: none;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
 }
 
 .teams-header-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 0px 20px;
+    margin: 5px 20px;
 }
 
 .team-search-bar {
@@ -40,7 +43,7 @@ h1 {
   max-width: 300px;
 }
 
-div button {
+.new-team-btn {
   background-color: #1A2A49;
   color: white;
   padding: 5px 10px;
@@ -64,13 +67,15 @@ div button:hover {
 .team-btn {
     cursor: pointer;
     padding: 8px 12px;
-    color: black;
+    border: 1px solid rgb(255, 255, 255);
     border-radius: 6px;
     margin: 10px 0;
     padding: 10px;
     min-width: 22vh;
     min-height: 29vh;
     font-family: Paytone One, sans-serif;
+    font-size: 20px;
+    text-transform: uppercase;
     font-weight: bold;
     color: white;
     text-align: center;
