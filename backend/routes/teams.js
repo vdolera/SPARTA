@@ -157,17 +157,4 @@ router.get("/teams/scores", async (req, res) => {
   }
 });
 
-// GET teams with scores directly
-router.get("/teams-with-scores", async (req, res) => {
-  try {
-    const { institution, event } = req.query;
-    const query = { institution, eventName: event };
-    const teams = await Team.find(query).sort({ totalScore: -1 }); // ✅ already has totalScore
-    res.json(teams);
-  } catch (err) {
-    console.error("Error fetching teams with scores:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
 module.exports = router;

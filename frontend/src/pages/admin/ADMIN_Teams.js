@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import '../../styles/ADMIN_Teams.css';
 import { VscSearchStop } from "react-icons/vsc";
-import { FaAlignCenter } from "react-icons/fa";
+//import { FaAlignCenter } from "react-icons/fa";
 
 const Teams = () => {
   const { eventName } = useParams();
@@ -80,18 +80,18 @@ const Teams = () => {
   className="team-btn"
   onClick={() => handleSelectTeam(team.teamName)}
   style={{
+    backgroundColor: team.teamColor || "#A96B24", // always show selected color
     backgroundImage: team.teamIcon
       ? `url(http://localhost:5000${team.teamIcon})`
       : "none",
-    backgroundColor: !team.teamIcon
-      ? team.teamColor || "#A96B24"
-      : "transparent",
     backgroundSize: "cover",
     backgroundPosition: "center",
+    color: "#fff",
   }}
 >
   <span className="team-name-overlay">{team.teamName}</span>
 </button>
+
 
               </li>
             ))}
