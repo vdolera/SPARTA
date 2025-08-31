@@ -2,23 +2,50 @@ const express = require('express');
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const Event = require('../models/Event');
-const SubOrganizer = require("../models/SubOrganizer");
+const Coordinator = require("../models/Coordinator");
 
 const router = express.Router();
 
 // CREATE Event (with optional sub-organizers)
 router.post('/event', async (req, res) => {
-  const { userName, email, institution, eventName, eventStartDate, eventEndDate, description, eventColor, subOrganizers = [] } = req.body;
+  const { 
+    userName, 
+    email, 
+    institution, 
+    eventName, 
+    eventStartDate, 
+    eventEndDate, 
+    description, 
+    eventColor, 
+    coordinators = []   // ✅ changed
+  } = req.body;
+
   try {
-    const event = new Event({ userName, email, institution, eventName, eventStartDate, eventEndDate, description, eventColor });
+    const event = new Event({ 
+      userName, 
+      email, 
+      institution, 
+      eventName, 
+      eventStartDate, 
+      eventEndDate, 
+      description, 
+      eventColor 
+    });
     await event.save();
 
-    const invites = [];
-    for (let sub of subOrganizers) {
-      if (sub.email) {
+    const coordinatorInvites = [];   // ✅ changed
+    for (let coord of coordinators) {
+      if (coord.email) {
         const accessKey = crypto.randomBytes(6).toString("hex").toUpperCase();
-        const subOrg = new SubOrganizer({ email: sub.email, role: sub.role || "co-organizer", accessKey, eventId: event._id });
-        await subOrg.save();
+        const coordinator = new Coordinator({   // ✅ changed
+          email: coord.email, 
+          name: coord.name,
+          role: coord.role || "coordinator", 
+          accessKey, 
+          institution,
+          eventId: event._id 
+        });
+        await coordinator.save();
 
         const transporter = nodemailer.createTransport({
           service: "gmail",
@@ -26,20 +53,25 @@ router.post('/event', async (req, res) => {
         });
 
         await transporter.sendMail({
-          from: `"Event Organizer" <${process.env.SMTP_USER}>`,
-          to: sub.email,
+          from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
+          to: coord.email,
           subject: `Invitation to ${eventName}`,
-          html: `<h3>You are invited as ${sub.role} for ${eventName}</h3><p>Your Access Key: <b>${accessKey}</b></p>`,
+          html: `<h3>You are invited as ${coord.role || "coordinator"} for ${eventName} in ${institution}</h3>
+                 <p>Your Access Key: <b>${accessKey}</b></p>`,
         });
 
-        invites.push({ email: sub.email, accessKey });
+        coordinatorInvites.push({ email: coord.email, accessKey });
       }
     }
 
-    res.status(201).json({ message: "Event created successfully", event, invites });
+    res.status(201).json({ 
+      message: "Event created successfully", 
+      event, 
+      coordinators: coordinatorInvites   // ✅ changed
+    });
   } catch (err) {
     res.status(500).json({ message: 'Event creation failed', error: err.message });
-  }
+  } 
 });
 
 // GET all events for institution

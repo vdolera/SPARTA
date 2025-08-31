@@ -6,24 +6,40 @@ const router = express.Router();
 
 // GET pending players
 router.get("/players/pending", async (req, res) => {
-  const players = await Player.find({ accessKey: null });
-  res.json(players);
+  const { institution } = req.query; 
+  try {
+    const players = await Player.find({ approved: false, institution });
+    res.json(players);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching players", error: err.message });
+  }
 });
 
 // APPROVE player
 router.put("/players/approve/:id", async (req, res) => {
-  const accessKey = crypto.randomBytes(8).toString("hex");
-  const updatedPlayer = await Player.findByIdAndUpdate(req.params.id, { approved: true, accessKey }, { new: true });
-  if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });
-  res.json({ message: "Player approved", accessKey });
+  try {
+    const updatedPlayer = await Player.findByIdAndUpdate(
+      req.params.id,
+      { approved: true },
+      { new: true }
+    );
+    if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });
+    res.json({ message: "Player approved", player: updatedPlayer });
+  } catch (err) {
+    res.status(500).json({ message: "Error approving player", error: err.message });
+  }
 });
 
 // DELETE player
 router.delete("/players/:id", async (req, res) => {
-  const deleted = await Player.findByIdAndDelete(req.params.id);
-  if (!deleted) return res.status(404).json({ message: "Player not found" });
-  res.json({ message: "Player deleted" });
-});
+  try {
+    const deleted = await Player.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "Player not found" });
+    res.json({ message: "Player deleted" });
+  } catch (err) {
+    res.status(500).json({ message: "Error deleting player", error: err.message });
+  }
+})
 
 // REGISTER game for player
 router.put("/players/:id/register-game", async (req, res) => {

@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const Admin = require('../models/Admin');
+const Coordinator = require('../models/Coordinator')
 const Player = require('../models/Player');
 const Institution = require('../models/Institution');
 
@@ -9,12 +10,13 @@ const router = express.Router();
 // helper: get model by role
 const getModelByRole = (role) => {
   if (role === 'admin') return Admin;
+  if (role === 'sub-organizer' || role === 'co-organizer') return Coordinator;
   if (role === 'player') return Player;
   return null;
 };
 
 // REGISTER
-router.post('/register/:role', async (req, res) => {
+router.post('/auth/register/:role', async (req, res) => {
   const { role } = req.params;
   const { email, password, institution, eventName } = req.body;
   const Model = getModelByRole(role);
@@ -43,13 +45,30 @@ router.post('/auth/login/:role', async (req, res) => {
   if (!Model) return res.status(400).json({ message: 'Invalid role' });
 
   try {
-    const user = await Model.findOne({ email });
+    const query = { email };
+    if (role === 'co-organizer' || role === 'sub-organizer') query.role = role;
+
+    const user = await Model.findOne(query);
     if (!user) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).json({ message: 'Invalid credentials' });
+    // ADMIN → password
+    if (role === 'admin') {
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) return res.status(401).json({ message: 'Invalid password' });
+    }
 
-    if (role === 'player') {
+    // PLAYER → password
+       if (role === 'player') {
+      if (!user.approved) {
+        return res.status(403).json({ message: 'Your account is not approved yet. Please wait for approval.' });
+      }
+
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) return res.status(401).json({ message: 'Invalid password' });
+    }
+
+    // COORDINATORS (Co/Sub) → accessKey
+    if (role === 'co-organizer' || role === 'sub-organizer') {
       if (!user.accessKey) return res.status(403).json({ message: 'Your account is not approved yet.' });
       if (user.accessKey !== accessKey) return res.status(403).json({ message: 'Invalid access key' });
     }
@@ -59,6 +78,7 @@ router.post('/auth/login/:role', async (req, res) => {
     res.status(500).json({ message: 'Login failed', error: err.message });
   }
 });
+
 
 // INSTITUTIONS
 router.get('/institutions', async (req, res) => {

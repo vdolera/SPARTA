@@ -7,7 +7,7 @@ const playerSchema = new mongoose.Schema({
   eventName: { type: String, required: true },
 
   //User Registration
-  accessKey: { type: String, required: null },
+  approved: { type: Boolean, default: false },
 
   //Game Registration
   playerName: { type: String, trim: true },
