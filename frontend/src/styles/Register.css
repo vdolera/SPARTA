@@ -89,6 +89,20 @@
     gap: 0.5rem;
   }
   
+  .form-group select {
+  appearance: none; /* removes default browser arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 0.6rem 2.5rem 0.6rem 1rem; /* padding leaves space for custom arrow */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: border 0.2s, box-shadow 0.2s;
+  }
+
   .register-form label {
     font-size: 0.875rem;
     font-weight: 500;
