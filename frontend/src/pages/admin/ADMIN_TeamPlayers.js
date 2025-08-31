@@ -2,7 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import '../../styles/ADMIN_TeamPlayers.css'; 
-//import { MdBorderLeft } from "react-icons/md";
+import { LiaGhostSolid } from "react-icons/lia";
 
 const TeamPlayers = () => {
   const { eventName, teamName } = useParams(); 
@@ -80,7 +80,10 @@ const TeamPlayers = () => {
 
         <div className='team-players-table'>
           {players.length === 0 ? (
-            <p>No players registered yet.</p>
+            <div className='no-players-found'>
+              <LiaGhostSolid size={48}/>
+              <p>No players registered yet.</p>
+            </div>
           ) : (
             <div>
               <table border="1" cellPadding="10">

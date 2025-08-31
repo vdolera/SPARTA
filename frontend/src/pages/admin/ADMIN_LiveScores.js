@@ -75,8 +75,14 @@ const LiveScores = () => {
 
   return (
     <MainLayout>
-      <h1>Live Scores for {decodedEvent}</h1>
+      
+      <div className="live-scores-header">
+        <h1>Live Scores for {decodedEvent}</h1>
+      </div>
+      
       <div className="live-scores-main-div">
+
+
         <div className="live-scores-container">
           {rankedTeams.length === 0 ? (
             <div className="no-matches-found">
