@@ -128,16 +128,18 @@
   .switch-button {
     margin-top: 0.5rem;
     background-color: transparent;
-    color: #2563eb;
+    color: #05215e;
     font-size: 0.9rem;
     font-weight: 500;
     border: none;
     cursor: pointer;
     text-decoration: underline;
     transition: color 0.3s ease;
+    border-radius: 15px;
+    padding: 5px;
   }
   
   .switch-button:hover {
-    color: #CE892C;
+    color: #ffffff;
   }
   

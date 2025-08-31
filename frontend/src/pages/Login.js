@@ -75,7 +75,8 @@ export default function LoginPage() {
                 ['admin', 'co-organizer', 'sub-organizer'].includes(role) ? 'active' : 'inactive'
               }`}
             >
-              Admin
+              Admin <span className={`arrow ${showAdminRoles ? 'open' : ''}`}>▼</span>
+              
             </button>
 
             {showAdminRoles && (
