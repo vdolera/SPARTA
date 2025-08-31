@@ -1,24 +1,20 @@
 .game-header {
   width: 100%;
   padding: 18px 0;
-  border-radius: 16px;
+  border-radius: 15px;
   background: white;
   position: relative;
   overflow: hidden;
+  font-family: Monteserrat, sans-serif;
+  font-size: 18px;
+  text-align: center;
+  margin: 10px;
 }
 
 .game-main-div {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   box-sizing: border-box;
-}
-
-.game-header {
-  font-family: Monteserrat, sans-serif;
-  font-size: 18px;
-  text-align: center;
-  border: 2px solid #1A2A49;
-  margin: 10px;
 }
 
 .game-header-row {
@@ -96,8 +92,14 @@ button.game-button {
   align-items: center;
   font-family: Montserrat, sans-serif;
   text-align: center;
+  justify-content: center;
   padding: 15px;
+  width: 81vw;
   margin: 20px;
+  height: 50vh;
+  border: 2px solid #82859c;
+  border-radius: 15px;
+  background-color: #f8f8ff;
 }
 
 .game-button-container {

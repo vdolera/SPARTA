@@ -63,7 +63,7 @@ const Game = () => {
   return (
     <MainLayout>
       <div className="game-header">
-        <h1>All Games for {userInstitution}</h1>
+        <h2>All Games for {eventName}</h2>
       </div>
 
       <div className="game-header-row">

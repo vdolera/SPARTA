@@ -6,8 +6,6 @@
   width: 100%;
   text-align: center;
   font-family: Montserrat, sans-serif;
-  border: 2px solid #3374a9;
-  border-radius: 10px;
 }
 
 .live-scores-container {
@@ -60,6 +58,11 @@
   align-items: center;
   font-family: Montserrat, sans-serif;
   text-align: center;
+  justify-content: center;
   padding: 15px;
   margin: 20px;
+  height: 50vh;
+  min-width: 80vw;
+  border: 2px solid #a8cdec;
+  border-radius: 15px;
 }

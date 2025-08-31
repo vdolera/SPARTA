@@ -59,9 +59,13 @@ const Approval = () => {
 
   return (
     <MainLayout>
-      <h1>Player Approvals</h1>
+      <div className="approval-header">
+        <h2>PLAYER APPROVALS</h2>
+      </div>
       {players.length === 0 ? (
-        <p>No pending player registrations for your institution.</p>
+        <div className="no-players-message">
+          <p>No pending player registrations for your institution.</p>
+        </div>
       ) : (
         <div className='approval-table'>
           <table border="1" cellPadding="10" style={{ borderCollapse: "collapse", width: "100%" }}>

@@ -50,8 +50,6 @@ const Teams = () => {
   return (
     <MainLayout>
 
-      
-
       <div className="teams-header-row">
 
         <h3>TEAMS FOR {decodedName}</h3>
@@ -80,18 +78,18 @@ const Teams = () => {
             {filteredTeams.map((team, idx) => (
               <li key={idx}>
                <button
-  className="team-btn"
-  onClick={() => handleSelectTeam(team.teamName)}
-  style={{
-    backgroundColor: team.teamColor || "#A96B24", // always show selected color
-    backgroundImage: team.teamIcon
-      ? `url(http://localhost:5000${team.teamIcon})`
-      : "none",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    color: "#fff",
-  }}
->
+            className="team-btn"
+            onClick={() => handleSelectTeam(team.teamName)}
+            style={{
+              backgroundColor: team.teamColor || "#A96B24", // always show selected color
+              backgroundImage: team.teamIcon
+                ? `url(http://localhost:5000${team.teamIcon})`
+                : "none",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              color: "#fff",
+                  }}
+              >
   <span className="team-name-overlay">{team.teamName}</span>
 </button>
 

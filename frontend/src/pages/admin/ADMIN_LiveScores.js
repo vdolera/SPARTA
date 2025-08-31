@@ -82,7 +82,6 @@ const LiveScores = () => {
       
       <div className="live-scores-main-div">
 
-
         <div className="live-scores-container">
           {rankedTeams.length === 0 ? (
             <div className="no-matches-found">

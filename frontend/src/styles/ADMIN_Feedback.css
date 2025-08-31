@@ -41,4 +41,6 @@
     padding: 15px;
     margin: 20px;
     justify-content: center;
+    height: 50vh;
+    min-width: 80vw;
 }
