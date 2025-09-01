@@ -13,6 +13,8 @@ const CreateGame = () => {
   const [rules, setRules] = useState("");
   const [availableTeams, setAvailableTeams] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
+  const [subOrganizers, setSubOrganizers] = useState([{ name: "", email: "", role: "sub-organizer" }]);
+  const [invitedSubOrganizers, setInvitedSubOrganizers] = useState([]);
 
   const navigate = useNavigate();
   const { eventName } = useParams();
@@ -40,6 +42,33 @@ const CreateGame = () => {
     );
   };
 
+  //SUB-ORGANIZER HANDLING
+
+  const handleAddSubOrganizer = () => {
+    setSubOrganizers([...subOrganizers, { name: "", email: "", role: "co-organizer" }]);
+  };
+
+// Update values of a specific sub-organizer by index
+  const handleSubOrganizerChange = (index, field, value) => {
+    const updated = [...subOrganizers];
+    updated[index][field] = value;
+    setSubOrganizers(updated);
+  };
+
+  // Add a new blank row
+  const handleAddSubOrganizerRow = () => {
+    setSubOrganizers((prev) => [
+      ...prev,
+      { name: "", email: "", role: "co-organizer" }
+    ]);
+  };
+
+// Remove a sub-organizer row
+  const handleRemoveSubOrganizerRow = (index) => {
+    setSubOrganizers((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // REQUIREMENT HANDLING
   const handleAddRequirement = () => setRequirements([...requirements, ""]);
   const handleRequirementChange = (idx, value) => {
     const updated = [...requirements];
@@ -234,29 +263,24 @@ const CreateGame = () => {
 
               <div className="game-organizers">
                 <h4>SUB-ORGANIZERS</h4>
+                    <button type="button" onClick={handleAddSubOrganizer}>
+                        + Add Sub-Organizer
+                    </button>
+
                     <div className="sub-organizer">
                       <input
                         type="text"
-                        value={subOrganizer.name}
+                        value={subOrganizers.name}
                         onChange={(e) => handleSubOrganizerChange("name", e.target.value)}
                         placeholder="Name"
                       />
                       <input
                         type="email"
-                        value={subOrganizer.email}
+                        value={subOrganizers.email}
                         onChange={(e) => handleSubOrganizerChange("email", e.target.value)}
                         placeholder="Email"
                       />
-                      <select
-                        value={subOrganizer.role}
-                        onChange={(e) => handleSubOrganizerChange("role", e.target.value)}
-                      >
-                        <option value="co-organizer">Co-Organizer</option>
-                        <option value="assistant">Assistant</option>
-                      </select>
-                      <button type="button" onClick={handleAddSubOrganizer}>
-                        + Add Sub-Organizer
-                      </button>
+                      
                     </div>
 
               </div>
