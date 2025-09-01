@@ -24,7 +24,11 @@ import PlayerProfile from "./pages/admin/ADMIN_PlayerProfile";
 import PlayerFeedback from "./pages/player/PLAYER_Feedback";
 import PlayerTeams from "./pages/player/PLAYER_Teams";
 import PlayerTeamPlayers from "./pages/player/PLAYER_TeamPlayerList";
+<<<<<<< Updated upstream
 import PlayerLiveScores from "./pages/player/PLAYER_LiveScores"; 
+=======
+import PlayerLiveScores from "./pages/player/PLAYER_LiveScores";
+>>>>>>> Stashed changes
 import BlockRoute from "../src/BlockRoute";
 
 export default function App() {
@@ -48,6 +52,7 @@ export default function App() {
         <Route path="/admin/event/:eventName/game/:game" element={<BlockRoute> <GameBracket /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/liveScores" element={<BlockRoute> <LiveScores /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/feedback" element={<BlockRoute> <Feedback /> </BlockRoute>} />
+        <Route path="/admin/event/:eventName/liveScores" element={<BlockRoute> <LiveScores /> </BlockRoute>} />
         {/*Player*/}
         <Route path="/dashboard" element={<BlockRoute> <PlayerDashboard /> </BlockRoute>} />
         <Route path="/event" element={<BlockRoute> <PlayerEvent /> </BlockRoute>} />
