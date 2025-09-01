@@ -1,5 +1,5 @@
 import MainLayout from "../../components/MainLayout";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../../styles/ADMIN_TeamCreate.css";
 
@@ -11,6 +11,11 @@ const CreateTeam = () => {
   const [teamColor, setTeamColor] = useState("");
   const [teamIcon, setTeamIcon] = useState(null);
   const { eventName } = useParams();
+  const [coordinators, setCoordinators] = useState([]);
+  const [selectedCoordinators, setSelectedCoordinators] = useState([]);
+  const [search, setSearch] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+
   const decodedEventName = decodeURIComponent(eventName);
 
   const handleCreate = async (e) => {
@@ -31,6 +36,7 @@ const CreateTeam = () => {
       formData.append("institution", institution);
       formData.append("teamColor", teamColor);
       formData.append("eventName", decodedEventName);
+      formData.append("coordinators", JSON.stringify(selectedCoordinators));
       if (teamIcon) {
         formData.append("teamIcon", teamIcon); // ✅ add file
       }
@@ -53,6 +59,42 @@ const CreateTeam = () => {
       alert("Failed to create team.");
     }
   };
+
+  useEffect(() => {
+    const fetchCoordinators = async () => {
+      const user = JSON.parse(localStorage.getItem("auth"));
+      const institution = user?.institution;
+  
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/coordinators?institution=${institution}&event=${decodedEventName}`
+        );
+        const data = await res.json();
+        setCoordinators(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error fetching coordinators:", err);
+      }
+    };
+  
+    fetchCoordinators();
+  }, [decodedEventName]);
+  
+  const handleSelectCoordinator = (coord) => {
+    if (!selectedCoordinators.some((c) => c._id === coord._id)) {
+      setSelectedCoordinators((prev) => [...prev, coord]);
+    }
+    setSearch("");
+  };
+
+  const handleRemoveCoordinator = (id) => {
+    setSelectedCoordinators((prev) => prev.filter((c) => c._id !== id));
+  };
+
+  const filteredCoordinators = coordinators.filter(
+    (c) =>
+      c.name.toLowerCase().includes(search.toLowerCase()) &&
+      !selectedCoordinators.some((sel) => sel._id === c._id)
+  );
 
   return (
     <MainLayout>
@@ -117,6 +159,52 @@ const CreateTeam = () => {
                 />
               </label>
             </div>
+
+            {/* Coordinators Multi-select */}
+<div>
+  <label>Assign Sub-Organizer/s</label>
+  <div className="multi-select">
+    <input
+      type="text"
+      placeholder="Enter Name or Select"
+      value={search}
+      onFocus={() => setShowDropdown(true)}   // show on click/focus
+      onBlur={() => setTimeout(() => setShowDropdown(false), 150)} 
+      onChange={(e) => setSearch(e.target.value)}
+    />
+
+    {showDropdown &&
+      (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
+        <ul className="dropdown">
+          {(search ? filteredCoordinators : coordinators.filter(
+            (c) => !selectedCoordinators.some((sel) => sel._id === c._id)
+          )).map((c) => (
+            <li
+              key={c._id}
+              onClick={() => handleSelectCoordinator(c)}
+            >
+              {c.name} ({c.role})
+            </li>
+          ))}
+        </ul>
+      )}
+  </div>
+
+              <div className="selected-tags">
+                {selectedCoordinators.map((c) => (
+                  <span key={c._id} className="tag">
+                    {c.name}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCoordinator(c._id)}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+
 
             <button type="submit">Create Team</button>
           </form>

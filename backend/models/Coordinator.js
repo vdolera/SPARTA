@@ -6,7 +6,7 @@ const CoordinatorSchema = new mongoose.Schema({
   institution: { type: String, required: true },
   role: { type: String, enum: ["co-organizer", "sub-organizer"], required: true },
   accessKey: { type: String, required: true },
-  eventId: { type: mongoose.Schema.Types.ObjectId, ref: "Event" }
+  eventName: { type: String, required: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Coordinator", CoordinatorSchema);

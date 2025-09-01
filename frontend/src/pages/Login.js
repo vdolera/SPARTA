@@ -25,12 +25,12 @@ export default function LoginPage() {
       email: formData.email,
     };
 
-    // add password only for admin and player
+    // Password check for admin and player
     if (role === 'admin' || role === 'player') {
       payload.password = formData.password;
     }
 
-    // add accessKey only for co-organizer or sub-organizer
+    // AccessKey for co-organizer or sub-organizer
     if (role === 'co-organizer' || role === 'sub-organizer') {
       payload.accessKey = formData.accessKey;
     }

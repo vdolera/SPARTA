@@ -43,7 +43,7 @@ router.post('/event', async (req, res) => {
           role: coord.role || "coordinator", 
           accessKey, 
           institution,
-          eventId: event._id 
+          eventName
         });
         await coordinator.save();
 

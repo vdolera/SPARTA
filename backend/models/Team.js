@@ -8,7 +8,8 @@ const teamSchema = new mongoose.Schema(
     institution: { type: String, required: true },
     teamColor: { type: String, required: true },
     eventName: { type: String, required: true },
-    teamIcon: { type: String, default: null },  // ✅ Add this field
+    teamIcon: { type: String, default: null },
+
     totalScore: { type: Number, default: 0 }, 
     roundScores: [
       {
@@ -16,6 +17,9 @@ const teamSchema = new mongoose.Schema(
         score: { type: Number, default: 0 },
       },
     ],
+
+    coordinators: { type: [String], default: [] }
+
   },
   { timestamps: true }
 );

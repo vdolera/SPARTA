@@ -1,6 +1,8 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const Team = require("../models/Team");
 const Game = require("../models/Game");
+const Coordinator = require("../models/Coordinator")
 const multer = require("multer");
 const path = require("path");
 
@@ -17,10 +19,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// CREATE team with optional image
+// CREATE team 
 router.post("/team", upload.single("teamIcon"), async (req, res) => {
   try {
-    const { teamName, teamManager, managerEmail, institution, teamColor, eventName } = req.body;
+    const { teamName, teamManager, managerEmail, institution, teamColor, eventName, coordinators } = req.body;
 
     if (!teamName || !teamManager || !managerEmail || !institution) {
       return res.status(400).json({ message: "All fields are required." });
@@ -39,6 +41,7 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
       teamColor,
       eventName,
       teamIcon: req.file ? `/uploads/teams/${req.file.filename}` : null, // ✅ save image path
+      coordinators: coordinators ? JSON.parse(coordinators) : []
     });
 
     await team.save();
@@ -156,5 +159,26 @@ router.get("/teams/scores", async (req, res) => {
     res.status(500).json({ message: "Error fetching team scores" });
   }
 });
+
+router.get("/coordinators", async (req, res) => {
+  try {
+    const { institution, event } = req.query;
+
+    if (!institution || !event) {
+      return res.status(400).json({ message: "Institution and event are required" });
+    }
+
+    const coordinators = await Coordinator.find({ institution, eventName: event });
+
+    res.json(coordinators);
+  } catch (err) {
+    console.error("Error fetching coordinators:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
+
 
 module.exports = router;

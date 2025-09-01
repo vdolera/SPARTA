@@ -76,3 +76,60 @@
 .color-picker input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
 }
+
+.multi-select {
+  position: relative;
+  width: 300px;
+}
+
+.multi-select input {
+  width: 100%;
+  padding: 6px;
+}
+
+.dropdown {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-height: 150px;
+  overflow-y: auto;
+  margin-top: 2px;
+  z-index: 1000;
+  list-style: none;
+  padding: 0;
+}
+
+.dropdown li {
+  padding: 6px;
+  cursor: pointer;
+}
+
+.dropdown li:hover {
+  background: #f0f0f0;
+}
+
+.selected-tags {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  background: #d68b1d;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tag button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
