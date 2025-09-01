@@ -1,8 +1,8 @@
-import MainLayout from "../../components/MainLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import '../../styles/ADMIN_Teams.css';
 import { VscSearchStop } from "react-icons/vsc";
+import P_MainLayout from "../../components/P_MainLayout";
 
 const PlayerTeams = () => {
   const { eventName } = useParams();
@@ -43,7 +43,7 @@ const PlayerTeams = () => {
   };
 
   return (
-    <MainLayout>
+    <P_MainLayout>
       <h1>Teams for {decodedName}</h1>
 
       <div className="teams-header-row">
@@ -78,7 +78,7 @@ const PlayerTeams = () => {
           </ul>
         )}
       </div>
-    </MainLayout>
+    </P_MainLayout>
   );
 };
 

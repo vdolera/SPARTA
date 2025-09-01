@@ -1,4 +1,4 @@
-import MainLayout from "../../components/MainLayout";
+import P_MainLayout from "../../components/P_MainLayout";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -33,7 +33,7 @@ const PlayerTeamPlayers = () => {
   }, [userInstitution, decodedEvent, decodedTeam]);
 
   return (
-    <MainLayout>
+    <P_MainLayout>
       <h2>
         Players in {decodedTeam} - {decodedEvent}
       </h2>
@@ -61,7 +61,7 @@ const PlayerTeamPlayers = () => {
           </tbody>
         </table>
       )}
-    </MainLayout>
+    </P_MainLayout>
   );
 };
 

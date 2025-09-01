@@ -90,7 +90,7 @@
   }
   
   .form-group select {
-  appearance: none; /* removes default browser arrow */
+  appearance: none; 
   -webkit-appearance: none;
   -moz-appearance: none;
   padding: 0.6rem 2.5rem 0.6rem 1rem; /* padding leaves space for custom arrow */
@@ -120,6 +120,10 @@
     outline: none;
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+  }
+  
+  .form-group select option {
+    border-radius: 10px;
   }
   
   .register-button {

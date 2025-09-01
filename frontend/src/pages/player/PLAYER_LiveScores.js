@@ -1,4 +1,4 @@
-import MainLayout from "../../components/MainLayout";
+import P_MainLayout from "../../components/P_MainLayout";
 import {useParams} from "react-router-dom";
 import React, {useState, useEffect} from "react";
 import "../../styles/LiveScores.css"
@@ -30,7 +30,7 @@ const LiveScores = () => {
   }, [userInstitution, decodedName]);
 
   return (
-    <MainLayout>
+    <P_MainLayout>
       
       <div className="live-scores-header">
         <h1>Live Scores for {decodedName}</h1>
@@ -61,7 +61,7 @@ const LiveScores = () => {
           </ul>
         )}
       </div>
-    </MainLayout>
+    </P_MainLayout>
 
   )
 };

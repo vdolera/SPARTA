@@ -1,4 +1,4 @@
-import MainLayout from "../../components/P_MainLayout";
+import P_MainLayout from "../../components/P_MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import '../../styles/ADMIN_Event.css'; 
@@ -29,7 +29,7 @@ const PlayerEvent = () => {
   );
 
   return (
-    <MainLayout>
+    <P_MainLayout>
       <div className="event-main-header">
         <input
           type="text"
@@ -54,7 +54,7 @@ const PlayerEvent = () => {
           </div>
         ))}
       </div>
-    </MainLayout>
+    </P_MainLayout>
   )
 };
 

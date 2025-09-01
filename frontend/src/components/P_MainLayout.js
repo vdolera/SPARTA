@@ -1,12 +1,12 @@
 import React from 'react';
-import SideMenu from './P_SideMenu';
+import P_SideMenu from './P_SideMenu';
 import Header from './Header';
 import '../styles/MainLayout.css';
 
-const MainLayout = ({ children }) => {
+const P_MainLayout = ({ children }) => {
   return (
     <>
-      <SideMenu />
+      <P_SideMenu />
       <Header />
       <div className="main-content">
         {children}
@@ -15,4 +15,4 @@ const MainLayout = ({ children }) => {
   );
 };
 
-export default MainLayout;
+export default P_MainLayout;

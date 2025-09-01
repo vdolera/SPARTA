@@ -1,4 +1,4 @@
-import MainLayout from "../../components/MainLayout";
+import P_MainLayout from "../../components/P_MainLayout";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import '../../styles/ADMIN_Feedback.css';
@@ -53,7 +53,7 @@ const PlayerFeedback = () => {
   };
 
   return (
-    <MainLayout>
+    <P_MainLayout>
       <div className="feedback-maindiv">
         <div className="feedback-container">
           {feedbacks.length === 0 ? (
@@ -91,7 +91,7 @@ const PlayerFeedback = () => {
           </div>
         </div>
       )}
-    </MainLayout>
+    </P_MainLayout>
   );
 };
 

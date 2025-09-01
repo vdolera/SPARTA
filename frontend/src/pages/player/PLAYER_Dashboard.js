@@ -2,6 +2,7 @@ import MainLayout from "../../components/P_MainLayout";
 import { useState } from "react";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Default calendar styling
+import P_MainLayout from "../../components/P_MainLayout";
 
 
 const PlayerDashboard = () => {
@@ -34,7 +35,7 @@ const PlayerDashboard = () => {
   };
 
   return (
-    <MainLayout> 
+    <P_MainLayout> 
       <h1>Dashboard</h1>
       <div className="dashboard-container">
         <div className="calendar-container">
@@ -62,7 +63,7 @@ const PlayerDashboard = () => {
           </div>
         </div>
       </div>
-    </MainLayout>
+    </P_MainLayout>
   );
 };
 

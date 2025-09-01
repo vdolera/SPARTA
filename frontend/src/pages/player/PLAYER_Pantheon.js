@@ -1,11 +1,11 @@
-import MainLayout from "../../components/MainLayout";
+import P_MainLayout from "../../components/P_MainLayout";
 
 const Pantheon = () => {
   return (
 
-    <MainLayout>
+    <P_MainLayout>
       <h1>Pantheon</h1>
-    </MainLayout>
+    </P_MainLayout>
 
   )
 };
