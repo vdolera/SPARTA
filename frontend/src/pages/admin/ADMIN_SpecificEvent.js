@@ -39,7 +39,7 @@ const SpecificEvent = () => {
       };  
 
     const handleScoreClick = (event) => {
-        navigate(`/event/${encodeURIComponent(decodedName)}/liveScores`);
+        navigate(`/admin/event/${encodeURIComponent(decodedName)}/liveScores`);
       };
 
     const handleFeedbackClick = (event) => {
