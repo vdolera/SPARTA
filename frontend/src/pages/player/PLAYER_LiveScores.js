@@ -1,9 +1,10 @@
 import P_MainLayout from "../../components/P_MainLayout";
 import {useParams} from "react-router-dom";
 import React, {useState, useEffect} from "react";
-import "../../styles/LiveScores.css"
+import "../../styles/LiveScores.css";
+import { TbCalendar, TbCalendarQuestion } from "react-icons/tb";
 
-const LiveScores = () => {
+const PlayerLiveScores = () => {
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
   const [teams, setTeams] = useState([]);
@@ -29,6 +30,18 @@ const LiveScores = () => {
     }
   }, [userInstitution, decodedName]);
 
+  // Teams are already sorted by backend, but just in case
+  const rankedTeams = [...teams].sort(
+    (a, b) => (b.totalScore || 0) - (a.totalScore || 0)
+  );
+
+  // Ordinal Ranking
+  function getOrdinal(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
   return (
     <P_MainLayout>
       
@@ -36,34 +49,35 @@ const LiveScores = () => {
         <h1>Live Scores for {decodedName}</h1>
       </div>
 
-      <div style={{ marginTop: "20px" }}>
-        {teams.length === 0 ? (
-          <p>No teams found.</p>
-        ) : (
-          <ul style={{ listStyle: "none", padding: 0 }}>
-            {teams.map((team, idx) => (
-              <li
-                key={idx}
-                style={{
-                  cursor: "pointer",
-                  padding: "8px 12px",
-                  background: team.teamColor 
-                  ? `linear-gradient(to right, white, ${team.teamColor})`
-                  : 'linear-gradient(to right, white, #A96B24)',
-                  color: 'black',
-                  marginBottom: "6px",
-                  borderRadius: "6px"
-                }}
-              >
-                {team.teamName}
-              </li>
-            ))}
-          </ul>
-        )}
+      <div className="live-scores-maindiv">
+        <div className="live-scores-container">
+          {teams.length === 0 ? (
+            <div className="no-matches-found">
+              <TbCalendarQuestion size={48} />
+              <p>Come back again soon for updates</p>
+            </div>
+          ) : (
+              <div className="teams-list">
+                {rankedTeams.map((team, idx) => (
+                  <div
+                    className="team-score"
+                    key={team._id || idx}
+                    style={{ backgroundColor: team.teamColor || "#A96B24" }}
+                  >
+                    <span className="rank-team">
+                      <span>{getOrdinal(idx + 1)}</span>
+                      <span>{team.teamName}</span>
+                    </span>
+                    <span>{team.grandTotal ?? 0}</span>
+                  </div>
+                ))}
+              </div>
+              )}
+        </div>
       </div>
     </P_MainLayout>
 
   )
 };
 
-export default LiveScores;
+export default PlayerLiveScores;
