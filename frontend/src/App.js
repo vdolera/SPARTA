@@ -24,6 +24,7 @@ import PlayerProfile from "./pages/admin/ADMIN_PlayerProfile";
 import PlayerFeedback from "./pages/player/PLAYER_Feedback";
 import PlayerTeams from "./pages/player/PLAYER_Teams";
 import PlayerTeamPlayers from "./pages/player/PLAYER_TeamPlayerList";
+import PlayerLiveScores from "./pages/player/PLAYER_LiveScores"; 
 import BlockRoute from "../src/BlockRoute";
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
         <Route path="/admin/event/:eventName/game" element={<BlockRoute> <Game /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/addgame" element={<BlockRoute> <CreateGame /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/game/:game" element={<BlockRoute> <GameBracket /> </BlockRoute>} />
+        <Route path="/admin/event/:eventName/liveScores" element={<BlockRoute> <LiveScores /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/feedback" element={<BlockRoute> <Feedback /> </BlockRoute>} />
         {/*Player*/}
         <Route path="/dashboard" element={<BlockRoute> <PlayerDashboard /> </BlockRoute>} />
@@ -55,7 +57,7 @@ export default function App() {
         <Route path="/event/:eventName/game" element={<BlockRoute> <PlayerGame /> </BlockRoute>} />
         <Route path="/event/:eventName/registration" element={<BlockRoute> <PlayerRegistration /> </BlockRoute>} />
         <Route path="/event/:eventName/feedback" element={<BlockRoute> <PlayerFeedback /> </BlockRoute>} />
-        <Route path="/event/:eventName/liveScores" element={<BlockRoute> <LiveScores /> </BlockRoute>} />
+        <Route path="/event/:eventName/liveScores" element={<BlockRoute> <PlayerLiveScores /> </BlockRoute>} />
         <Route path="/pantheon" element={<BlockRoute> <Pantheon /> </BlockRoute>} />
       </Routes>
     </Router>
