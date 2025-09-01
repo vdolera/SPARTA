@@ -64,7 +64,7 @@ const CreateTeam = () => {
     const fetchCoordinators = async () => {
       const user = JSON.parse(localStorage.getItem("auth"));
       const institution = user?.institution;
-  
+
       try {
         const res = await fetch(
           `http://localhost:5000/api/coordinators?institution=${institution}&event=${decodedEventName}`
@@ -75,10 +75,10 @@ const CreateTeam = () => {
         console.error("Error fetching coordinators:", err);
       }
     };
-  
+
     fetchCoordinators();
   }, [decodedEventName]);
-  
+
   const handleSelectCoordinator = (coord) => {
     if (!selectedCoordinators.some((c) => c._id === coord._id)) {
       setSelectedCoordinators((prev) => [...prev, coord]);
@@ -95,6 +95,8 @@ const CreateTeam = () => {
       c.name.toLowerCase().includes(search.toLowerCase()) &&
       !selectedCoordinators.some((sel) => sel._id === c._id)
   );
+
+  const handleCancel = () => navigate (-1);
 
   return (
     <MainLayout>
@@ -161,34 +163,34 @@ const CreateTeam = () => {
             </div>
 
             {/* Coordinators Multi-select */}
-<div>
-  <label>Assign Sub-Organizer/s</label>
-  <div className="multi-select">
-    <input
-      type="text"
-      placeholder="Enter Name or Select"
-      value={search}
-      onFocus={() => setShowDropdown(true)}   // show on click/focus
-      onBlur={() => setTimeout(() => setShowDropdown(false), 150)} 
-      onChange={(e) => setSearch(e.target.value)}
-    />
+            <div>
+              <label>Assign Sub-Organizer/s</label>
+              <div className="multi-select">
+                <input
+                  type="text"
+                  placeholder="Enter Name or Select"
+                  value={search}
+                  onFocus={() => setShowDropdown(true)}   // show on click/focus
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
 
-    {showDropdown &&
-      (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
-        <ul className="dropdown">
-          {(search ? filteredCoordinators : coordinators.filter(
-            (c) => !selectedCoordinators.some((sel) => sel._id === c._id)
-          )).map((c) => (
-            <li
-              key={c._id}
-              onClick={() => handleSelectCoordinator(c)}
-            >
-              {c.name} ({c.role})
-            </li>
-          ))}
-        </ul>
-      )}
-  </div>
+                {showDropdown &&
+                  (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
+                    <ul className="dropdown">
+                      {(search ? filteredCoordinators : coordinators.filter(
+                        (c) => !selectedCoordinators.some((sel) => sel._id === c._id)
+                      )).map((c) => (
+                        <li
+                          key={c._id}
+                          onClick={() => handleSelectCoordinator(c)}
+                        >
+                          {c.name} ({c.role})
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+              </div>
 
               <div className="selected-tags">
                 {selectedCoordinators.map((c) => (
@@ -207,6 +209,7 @@ const CreateTeam = () => {
 
 
             <button type="submit">Create Team</button>
+            <button onClick={handleCancel}>Cancel</button>
           </form>
         </div>
       </div>
