@@ -15,7 +15,6 @@
   padding-top: 15px;
   padding-bottom: 5px;
   padding-left: 15px;
-  position: center;
 }
 
 .SideMenu-Admin-Pic {
@@ -27,7 +26,7 @@
 .sidemenu-list {
   list-style: none;
   padding: 0;
-  margin-left: 15px;
+  margin-left: 20px;
 }
 
 .sidemenu-list li {
@@ -62,4 +61,39 @@
 
 .sidemenu-list .active a {
   color: white;
+}
+
+.logout-button {
+  position: absolute;
+  bottom: 25px;
+  left: 45px;
+}
+
+/* Logout button container */
+.logout-button {
+  list-style: none;
+  margin-top: 1rem;
+}
+
+/* Actual button */
+.logout-button button {
+  width: 100%;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background-color: #dc3545; /* red tone for danger/logout */
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+/* Hover effect */
+.logout-button button:hover {
+  background-color: #CE892C;
+}
+
+/* Pressed state */
+.logout-button button:active {
+  transform: scale(0.97);
 }

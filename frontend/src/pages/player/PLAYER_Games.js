@@ -2,6 +2,9 @@ import P_MainLayout from "../../components/P_MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight } from "react-icons/gi";
+import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
+import { FaCircleQuestion } from "react-icons/fa6";
 import '../../styles/ADMIN_Games.css';
 
 const PlayerGame = () => {
@@ -16,6 +19,16 @@ const PlayerGame = () => {
   const filteredGames = Object.entries(gamesByType).filter(([combinedType]) =>
     combinedType.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const gameIcons = {
+      Basketball: <GiBasketballBall size={20} />,
+      Volleyball: <MdSportsVolleyball size={20} />,
+      Soccer: <GiSoccerBall size={20} />,
+      Badminton: <GiTennisRacket size={20} />,
+      "Table Tennis": <MdSportsKabaddi size={20} />,
+      Chess: <GiChessKnight size={20} />,
+      "Track and Field": "🏃‍♂️",
+    };
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -51,7 +64,7 @@ const PlayerGame = () => {
   return (
     <P_MainLayout>
       <div className="game-header"> 
-        <h1>All Games for {userInstitution}</h1>
+        <h1>All Games for {eventName}</h1>
       </div>
 
       <div className="game-header-row">
@@ -61,24 +74,39 @@ const PlayerGame = () => {
           placeholder="Search for a game..."
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          style={{ marginRight: "16px" }}
         />
-        <button onClick={handleRegistration}> Register for a game here </button>
+        <button
+          className="game-register-button"
+          onClick={handleRegistration}> 
+          REGISTER FOR A GAME 
+        </button>
       </div>  
 
       <div className="game-main-div">
         {filteredGames.length === 0 ? (
-          <p style={{ textAlign: "center", width: "100%" }}>No games found.</p>
+          <div className="no-games-found">
+            <FaCircleQuestion size={48} />
+            <p style={{ textAlign: "center", width: "100%" }}>No games found.</p>
+          </div>
         ) : (
-          filteredGames.map(([combinedType, games]) => (
-            <button
-              className="game-button"
-              key={combinedType}
-              onClick={() => navigate(`/event/game/${encodeURIComponent(combinedType)}`)}
-            >
-              {combinedType}
-            </button>
-          ))
+          filteredGames.map(([combinedType, games]) => {
+            const gameType = games[0]?.gameType || "Default";
+            const icon = gameIcons[gameType] || gameIcons.Default;
+
+            return (
+              <div className="game-button-container">
+                <button
+                  className="game-button"
+                  key={combinedType}
+                  onClick={() => navigate(`/event/game/${encodeURIComponent(combinedType)}`)}
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  {React.cloneElement(icon, { size: 50 })}
+                  {combinedType}
+                </button>
+              </div>
+            );
+          })
         )}
       </div>
 

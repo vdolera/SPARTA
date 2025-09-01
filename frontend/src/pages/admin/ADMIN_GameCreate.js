@@ -234,6 +234,31 @@ const CreateGame = () => {
 
               <div className="game-organizers">
                 <h4>SUB-ORGANIZERS</h4>
+                    <div className="sub-organizer">
+                      <input
+                        type="text"
+                        value={subOrganizer.name}
+                        onChange={(e) => handleSubOrganizerChange("name", e.target.value)}
+                        placeholder="Name"
+                      />
+                      <input
+                        type="email"
+                        value={subOrganizer.email}
+                        onChange={(e) => handleSubOrganizerChange("email", e.target.value)}
+                        placeholder="Email"
+                      />
+                      <select
+                        value={subOrganizer.role}
+                        onChange={(e) => handleSubOrganizerChange("role", e.target.value)}
+                      >
+                        <option value="co-organizer">Co-Organizer</option>
+                        <option value="assistant">Assistant</option>
+                      </select>
+                      <button type="button" onClick={handleAddSubOrganizer}>
+                        + Add Sub-Organizer
+                      </button>
+                    </div>
+
               </div>
 
               <div className="game-requirements-rules">

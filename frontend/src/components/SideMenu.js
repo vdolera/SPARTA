@@ -32,7 +32,7 @@ const SideMenu = () => {
         <li className={location.pathname === "/pantheon" ? "active" : ""}>
           <a href="/pantheon"><GiGreekTemple /> Pantheon </a>
         </li>
-        <li>
+        <li className="logout-button">
           <button onClick={handleLogout}> Logout </button>
         </li>
       </ul>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaUserCircle } from 'react-icons/fa';
+
 import { useLocation } from 'react-router-dom'
 import '../styles/Header.css';
 
@@ -26,9 +26,6 @@ const Header = () => {
     <div className="header">
       <div className="header-content">
         <h2>{currentTitle}</h2>
-        <div className="header-icons">
-          <FaUserCircle size={24} />
-        </div>
       </div>
     </div>
   );

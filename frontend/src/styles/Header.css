@@ -20,13 +20,3 @@
   width: 100%;
   font-family: poppins, sans-serif;
 }
-
-.header-icons > * {
-  margin-left: 20px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.header-icons > *:hover {
-  color: #00eaff;
-}

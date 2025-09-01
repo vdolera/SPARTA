@@ -73,7 +73,6 @@ const Game = () => {
           placeholder="Search for a game..."
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          style={{ marginRight: "16px" }}
         />
         <button className="new-game-btn" onClick={handleAddGame}> + Add Game </button>
       </div>

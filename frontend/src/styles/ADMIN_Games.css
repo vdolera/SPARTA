@@ -109,3 +109,20 @@ button.game-button {
   margin: 1rem 0;
   text-align: center;
 }
+
+/* PLAYER CSS */
+
+.game-register-button {
+  background-color: #1A2A49;
+  color: white;
+  padding: 8px 16px;
+  font-size: 13px;
+  border: none;
+  border-radius: 20px;
+  max-width: fit-content;
+  cursor: pointer;
+}
+
+.game-register-button:hover {
+  background-color: #CE892C;
+}

@@ -140,7 +140,7 @@ const CreateEvent = () => {
                 </label>
 
                 <label className="color-picker">
-                  Event Color:
+                  <span className="color-label">Event Color:</span>
                   <input
                     type="color"
                     value={eventColor}
@@ -204,8 +204,8 @@ const CreateEvent = () => {
                     <p style={{ color: '#3E64AF', fontSize: '10px' }}> *Fields are Optional To Be Filled Up* </p>
                   </div>
                   <button
+                    className="add-coordinator-button"
                     type="button"
-                    style={{ fontSize: "14px", background: "#CE892C", color: "white", borderRadius: "6px", padding: "6px 12px", border: "none", cursor: "pointer", marginLeft: "16px" }}
                     onClick={handleAddCoordinator}
                   >
                     + Add Coordinator

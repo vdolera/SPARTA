@@ -93,12 +93,21 @@ h4, p {
   font-family: Monteserrat, sans-serif;
 }
 
-.lower-buttons button{
-  padding: 10px 15px;
+.add-coordinator-button {
+  font-size: 14px;
+  background-color: #CE892C;
+  color: white;
   border: none;
-  border-radius: 20px;
+  border-radius: 5px;
+  padding: 5px 10px;
   cursor: pointer;
-  max-width: fit-content;
+  margin-left: 16px;
+}
+
+.add-coordinator-button:hover {
+  background-color: #1A2A49;
+  color: white;
+  transition: background 0.2s ease, transform 0.1s ease;
 }
 
 .lower-buttons button[type="submit"] {
@@ -113,10 +122,12 @@ h4, p {
 
 .lower-buttons button[type="button"] {
   background-color: #a70000;
+  color: white;
 }
 
 .lower-buttons button[type="button"] {
   background-color: #CD1C18;
+  color: white;
 }
 
 .lower-buttons button[type="button"]:hover {
@@ -129,29 +140,23 @@ h4, p {
   padding: 20px;
   font-family: Monteserrat, sans-serif;
   text-align: center;
+  font-size: 15px;
   justify-content: center;
   gap: 10px;
   align-items: center;
-  width: 100%
 }
 
-.color-picker {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #333;
-  font-family: Montserrat, sans-seri;
+.color-label {
+  font-family: Monteserrat, sans-serif;
+  font-size: inherit;
 }
+
 
 .color-picker input[type="color"] {
   appearance: none;
   -webkit-appearance: none;
   background: none;
   border: none;
-  width: 28px;
-  height: 28px;
   cursor: pointer;
   padding: 0;
   border-radius: 50%;
@@ -161,7 +166,7 @@ h4, p {
 
 .color-picker input[type="color"]::-webkit-color-swatch {
   border: none;
-  border-radius: 50%;
+  border-radius: 25%;
 }
 
 .color-picker input[type="color"]::-webkit-color-swatch-wrapper {
