@@ -15,6 +15,7 @@ import Feedback from "./pages/admin/ADMIN_Feedback";
 import LiveScores from "./pages/admin/ADMIN_LiveScores";
 import Pantheon from "./pages/admin/ADMIN_Pantheon";
 import Approval from "./pages/admin/ADMIN_PlayerApproval";
+import TeamPlayerApproval from "./pages/admin/ADMIN_TeamPendingPlayers";
 import PlayerDashboard from "./pages/player/PLAYER_Dashboard";
 import PlayerEvent from "./pages/player/PLAYER_Event";
 import PlayerSpecificEvent from "./pages/player/PLAYER_SpecificEvent";
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="/admin/event/:eventName" element={<SpecificEvent />} />
         <Route path="/admin/event/:eventName/team" element={<BlockRoute> <Team /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/team/:teamName/players" element={<BlockRoute> <TeamPlayers /> </BlockRoute>} />
+        <Route path="/admin/event/:eventName/team/:teamName/pending" element={<BlockRoute> <TeamPlayerApproval /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/team/:teamName/player/:playerId/profile" element={<BlockRoute> <PlayerProfile /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/addteam" element={<BlockRoute> <CreateTeam /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/game" element={<BlockRoute> <Game /> </BlockRoute>} />

@@ -25,6 +25,7 @@ const gameSchema = new mongoose.Schema({
   requirements: { type: [String], required: true },// Multiple requirements
   rules: { type: [String], required: true },       // Multiple rules (fixed)
   eventName: { type: String, required: true },
+  coordinators: { type: [String], default: [] },
   bracketType: {
     type: String,
     enum: [

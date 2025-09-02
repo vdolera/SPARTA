@@ -13,6 +13,7 @@ const playerSchema = new mongoose.Schema({
   playerName: { type: String, trim: true },
   team: { type: String, trim: true },
   game: { type: String, trim: true },
+  teamApproval: { type: Boolean, default:false },
 
   //Extras for Profile
   jerseyNumber: { type: String },

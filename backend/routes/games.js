@@ -28,6 +28,7 @@ router.post("/games", async (req, res) => {
       rules,
       eventName,
       bracketType,
+      coordinators,
     } = req.body;
 
     if (
@@ -213,6 +214,7 @@ router.post("/games", async (req, res) => {
       eventName,
       bracketType,
       matches,
+      coordinators,
     });
 
     await newGame.save();

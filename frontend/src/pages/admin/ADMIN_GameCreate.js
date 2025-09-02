@@ -13,12 +13,14 @@ const CreateGame = () => {
   const [rules, setRules] = useState("");
   const [availableTeams, setAvailableTeams] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
-  const [subOrganizers, setSubOrganizers] = useState([{ name: "", email: "", role: "sub-organizer" }]);
-  const [invitedSubOrganizers, setInvitedSubOrganizers] = useState([]);
-
+  const [coordinators, setCoordinators] = useState([]);
+  const [selectedCoordinators, setSelectedCoordinators] = useState([]);
+  const [search, setSearch] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  
   const navigate = useNavigate();
   const { eventName } = useParams();
-  const decodedName = decodeURIComponent(eventName);
+  const decodedEventName = decodeURIComponent(eventName);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("auth"));
@@ -27,12 +29,12 @@ const CreateGame = () => {
     fetch(
       `http://localhost:5000/api/teams?institution=${encodeURIComponent(
         user.institution
-      )}&event=${encodeURIComponent(decodedName)}`
+      )}&event=${encodeURIComponent(decodedEventName)}`
     )
       .then((res) => res.json())
       .then((data) => setAvailableTeams(data))
       .catch((err) => console.error("Error fetching teams:", err));
-  }, [decodedName]);
+  }, [decodedEventName]);
 
   const toggleTeamSelection = (teamName) => {
     setSelectedTeams((prev) =>
@@ -42,31 +44,7 @@ const CreateGame = () => {
     );
   };
 
-  //SUB-ORGANIZER HANDLING
-
-  const handleAddSubOrganizer = () => {
-    setSubOrganizers([...subOrganizers, { name: "", email: "", role: "co-organizer" }]);
-  };
-
-// Update values of a specific sub-organizer by index
-  const handleSubOrganizerChange = (index, field, value) => {
-    const updated = [...subOrganizers];
-    updated[index][field] = value;
-    setSubOrganizers(updated);
-  };
-
-  // Add a new blank row
-  const handleAddSubOrganizerRow = () => {
-    setSubOrganizers((prev) => [
-      ...prev,
-      { name: "", email: "", role: "co-organizer" }
-    ]);
-  };
-
-// Remove a sub-organizer row
-  const handleRemoveSubOrganizerRow = (index) => {
-    setSubOrganizers((prev) => prev.filter((_, i) => i !== index));
-  };
+ 
 
   // REQUIREMENT HANDLING
   const handleAddRequirement = () => setRequirements([...requirements, ""]);
@@ -102,7 +80,8 @@ const CreateGame = () => {
           teams: selectedTeams,
           requirements,
           rules,
-          eventName: decodedName,
+          eventName: decodedEventName,
+          coordinators,
         }),
       });
 
@@ -119,6 +98,42 @@ const CreateGame = () => {
       alert("Failed to create game.");
     }
   };
+
+  useEffect(() => {
+    const fetchCoordinators = async () => {
+      const user = JSON.parse(localStorage.getItem("auth"));
+      const institution = user?.institution;
+
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/coordinators?institution=${institution}&event=${decodedEventName}`
+        );
+        const data = await res.json();
+        setCoordinators(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error fetching coordinators:", err);
+      }
+    };
+
+    fetchCoordinators();
+  }, [decodedEventName]);
+
+  const handleSelectCoordinator = (coord) => {
+    if (!selectedCoordinators.some((c) => c._id === coord._id)) {
+      setSelectedCoordinators((prev) => [...prev, coord]);
+    }
+    setSearch("");
+  };
+
+  const handleRemoveCoordinator = (id) => {
+    setSelectedCoordinators((prev) => prev.filter((c) => c._id !== id));
+  };
+
+  const filteredCoordinators = coordinators.filter(
+    (c) =>
+      c.name.toLowerCase().includes(search.toLowerCase()) &&
+      !selectedCoordinators.some((sel) => sel._id === c._id)
+  );
 
   return (
     <MainLayout>
@@ -263,26 +278,47 @@ const CreateGame = () => {
 
               <div className="game-organizers">
                 <h4>SUB-ORGANIZERS</h4>
-                    <button type="button" onClick={handleAddSubOrganizer}>
-                        + Add Sub-Organizer
+                <label>Assign Sub-Organizer/s</label>
+              <div className="multi-select">
+                <input
+                  type="text"
+                  placeholder="Enter Name or Select"
+                  value={search}
+                  onFocus={() => setShowDropdown(true)}   // show on click/focus
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+
+                {showDropdown &&
+                  (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
+                    <ul className="dropdown">
+                      {(search ? filteredCoordinators : coordinators.filter(
+                        (c) => !selectedCoordinators.some((sel) => sel._id === c._id)
+                      )).map((c) => (
+                        <li
+                          key={c._id}
+                          onClick={() => handleSelectCoordinator(c)}
+                        >
+                          {c.name} ({c.role})
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+              </div>
+
+              <div className="selected-tags">
+                {selectedCoordinators.map((c) => (
+                  <span key={c._id} className="tag">
+                    {c.name}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCoordinator(c._id)}
+                    >
+                      ×
                     </button>
-
-                    <div className="sub-organizer">
-                      <input
-                        type="text"
-                        value={subOrganizers.name}
-                        onChange={(e) => handleSubOrganizerChange("name", e.target.value)}
-                        placeholder="Name"
-                      />
-                      <input
-                        type="email"
-                        value={subOrganizers.email}
-                        onChange={(e) => handleSubOrganizerChange("email", e.target.value)}
-                        placeholder="Email"
-                      />
-                      
-                    </div>
-
+                  </span>
+                ))}
+              </div>
               </div>
 
               <div className="game-requirements-rules">

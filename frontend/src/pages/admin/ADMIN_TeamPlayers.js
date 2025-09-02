@@ -20,6 +20,10 @@ const TeamPlayers = () => {
     navigate(`/admin/event/${encodeURIComponent(decodedEvent)}/team/${encodeURIComponent(teamName)}/player/${playerId}/profile`);
   };
 
+  const handlePending = () => {
+    navigate(`/admin/event/${encodeURIComponent(decodedEvent)}/team/${encodeURIComponent(teamName)}/pending`);
+  }
+
   // Fetch players
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -74,9 +78,11 @@ const TeamPlayers = () => {
           </div>
 
           <div className='team-ranking-event'>
-            <h3 style={{ textDecoration: "underline" }}> {decodedEvent} RANKING </h3>
+            <h3 style={{ textDecoration: "underline" }}> {decodedEvent} RANK </h3>
           </div>
         </div>
+
+        <button onClick={handlePending}>Pending Players</button>
 
         <div className='team-players-table'>
           {players.length === 0 ? (
