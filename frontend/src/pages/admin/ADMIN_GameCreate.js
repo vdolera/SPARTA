@@ -17,7 +17,7 @@ const CreateGame = () => {
   const [selectedCoordinators, setSelectedCoordinators] = useState([]);
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-  
+
   const navigate = useNavigate();
   const { eventName } = useParams();
   const decodedEventName = decodeURIComponent(eventName);
@@ -44,7 +44,7 @@ const CreateGame = () => {
     );
   };
 
- 
+
 
   // REQUIREMENT HANDLING
   const handleAddRequirement = () => setRequirements([...requirements, ""]);
@@ -67,22 +67,27 @@ const CreateGame = () => {
     }
 
     try {
+      const formData = new FormData();
+      formData.append("institution", user.institution);
+      formData.append("gameType", gameType);
+      formData.append("category", category);
+      formData.append("startDate", startDate);
+      formData.append("endDate", endDate);
+      formData.append("bracketType", bracketType);
+      formData.append("eventName", decodedEventName);
+      formData.append("teams", JSON.stringify(selectedTeams));
+      formData.append("requirements", JSON.stringify(requirements));
+      formData.append("coordinators", JSON.stringify(selectedCoordinators));
+
+      if (rules instanceof File) {
+        formData.append("rules", rules);
+      } else {
+        formData.append("rules", rules);
+      }
+
       const response = await fetch("http://localhost:5000/api/games", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          institution: user.institution,
-          gameType,
-          category,
-          startDate,
-          endDate,
-          bracketType,
-          teams: selectedTeams,
-          requirements,
-          rules,
-          eventName: decodedEventName,
-          coordinators,
-        }),
+        body: formData,
       });
 
       const data = await response.json();
@@ -279,46 +284,46 @@ const CreateGame = () => {
               <div className="game-organizers">
                 <h4>SUB-ORGANIZERS</h4>
                 <label>Assign Sub-Organizer/s</label>
-              <div className="multi-select">
-                <input
-                  type="text"
-                  placeholder="Enter Name or Select"
-                  value={search}
-                  onFocus={() => setShowDropdown(true)}   // show on click/focus
-                  onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+                <div className="multi-select">
+                  <input
+                    type="text"
+                    placeholder="Enter Name or Select"
+                    value={search}
+                    onFocus={() => setShowDropdown(true)}   // show on click/focus
+                    onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
 
-                {showDropdown &&
-                  (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
-                    <ul className="dropdown">
-                      {(search ? filteredCoordinators : coordinators.filter(
-                        (c) => !selectedCoordinators.some((sel) => sel._id === c._id)
-                      )).map((c) => (
-                        <li
-                          key={c._id}
-                          onClick={() => handleSelectCoordinator(c)}
-                        >
-                          {c.name} ({c.role})
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-              </div>
+                  {showDropdown &&
+                    (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
+                      <ul className="dropdown">
+                        {(search ? filteredCoordinators : coordinators.filter(
+                          (c) => !selectedCoordinators.some((sel) => sel._id === c._id)
+                        )).map((c) => (
+                          <li
+                            key={c._id}
+                            onClick={() => handleSelectCoordinator(c)}
+                          >
+                            {c.name} ({c.role})
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                </div>
 
-              <div className="selected-tags">
-                {selectedCoordinators.map((c) => (
-                  <span key={c._id} className="tag">
-                    {c.name}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveCoordinator(c._id)}
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
+                <div className="selected-tags">
+                  {selectedCoordinators.map((c) => (
+                    <span key={c._id} className="tag">
+                      {c.name}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveCoordinator(c._id)}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
               </div>
 
               <div className="game-requirements-rules">
@@ -347,14 +352,23 @@ const CreateGame = () => {
                 {/* Rules */}
                 <label className="game-label">
                   Rules and Guidelines:
+                </label>
+
+                <div>
                   <textarea
                     value={rules}
                     onChange={(e) => setRules(e.target.value)}
-                    required
-                    placeholder="Enter game rules and guidelines..."
+                    placeholder="Enter rules (if not uploading file)..."
                     rows={5}
                   />
-                </label>
+                  <h1>or</h1>
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => setRules(e.target.files[0])}
+                  />
+                </div>
+
               </div>
             </form>
           </div>
@@ -366,7 +380,7 @@ const CreateGame = () => {
           <button type="submit" onClick={handleSubmit}>Create Game</button>
         </div>
       </div>
-      
+
     </MainLayout>
   );
 };

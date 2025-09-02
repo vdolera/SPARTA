@@ -162,7 +162,7 @@ const CreateTeam = () => {
               </label>
             </div>
 
-            {/* Coordinators Multi-select */}
+            {/* Coordinators */}
             <div>
               <label>Assign Sub-Organizer/s</label>
               <div className="multi-select">

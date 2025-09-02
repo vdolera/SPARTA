@@ -1,4 +1,6 @@
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
 const Game = require("../models/Game");
 const Team = require("../models/Team");
 
@@ -14,8 +16,20 @@ function shuffleArray(array) {
   return arr;
 }
 
+// storage for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/rules"); 
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
+
 // CREATE Game (supports all bracket types)
-router.post("/games", async (req, res) => {
+router.post("/games", upload.single("rules"), async (req, res) => {
   try {
     const {
       institution,
@@ -31,6 +45,19 @@ router.post("/games", async (req, res) => {
       coordinators,
     } = req.body;
 
+    // Parse arrays from JSON strings
+    const parsedTeams = JSON.parse(teams || "[]");
+    const parsedRequirements = JSON.parse(requirements || "[]");
+    const parsedCoordinators = JSON.parse(coordinators || "[]");
+    
+    // Text or Uploaded Rules
+    let finalRules = null;
+    if (req.file) {
+      finalRules = `/uploads/rules/${req.file.filename}`; // file 
+    } else if (rules) {
+      finalRules = rules; // plain text
+    }
+
     if (
       !institution ||
       !gameType ||
@@ -39,7 +66,7 @@ router.post("/games", async (req, res) => {
       !endDate ||
       !teams?.length ||
       !requirements?.length ||
-      !rules ||
+      (!rules && !req.file) ||
       !eventName ||
       !bracketType
     ) {
@@ -47,8 +74,8 @@ router.post("/games", async (req, res) => {
     }
 
     const matches = [];
-    const totalRounds = Math.ceil(Math.log2(teams.length));
-    const shuffledTeams = shuffleArray(teams);
+    const totalRounds = Math.ceil(Math.log2(parsedTeams.length));
+    const shuffledTeams = shuffleArray(parsedTeams);
 
     if (bracketType === "Single Elimination") {
       // Round 1
@@ -209,12 +236,13 @@ router.post("/games", async (req, res) => {
       startDate,
       endDate,
       teams: shuffledTeams,
-      requirements,
+      requirements: parsedRequirements,
       rules,
       eventName,
       bracketType,
       matches,
-      coordinators,
+      coordinators: parsedCoordinators,
+      rules: finalRules,
     });
 
     await newGame.save();

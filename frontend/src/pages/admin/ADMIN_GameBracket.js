@@ -2,7 +2,6 @@ import MainLayout from "../../components/MainLayout";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
-
 import "../../styles/bracket.css";
 
 const GameBracket = () => {
@@ -37,252 +36,245 @@ const GameBracket = () => {
     );
   }
 
+  const makeRoundsFromMatches = () => {
+    if (!game) return [];
+    const rounds = [];
 
+    if (game.bracketType === "Single Elimination") {
+      const totalRounds = Math.ceil(Math.log2(game.teams.length));
+      for (let r = 1; r <= totalRounds; r++) {
+        const seeds = game.matches
+          .filter((m) => m.round === r)
+          .map((m) => ({
+            id: m._id,
+            date: game.startDate,
+            teams: m.teams.map((t) => ({
+              name: t?.name || "TBD",
+              score: t?.score ?? null,
+              winner: m.finalizeWinner && t?.name === m.winner,
+            })),
+            finalizeWinner: m.finalizeWinner || false,
+          }));
+        rounds.push({ title: `Round ${r}`, seeds });
+      }
 
-const makeRoundsFromMatches = () => {
-  if (!game) return [];
-  const rounds = [];
-
- 
-
-  if (game.bracketType === "Single Elimination") {
-    const totalRounds = Math.ceil(Math.log2(game.teams.length));
-    for (let r = 1; r <= totalRounds; r++) {
-      const seeds = game.matches
-        .filter((m) => m.round === r)
-        .map((m) => ({
-          id: m._id,
-          date: game.startDate,
-          teams: m.teams.map((t) => ({
-            name: t?.name || "TBD",
-            score: t?.score ?? null,
-            winner: m.finalizeWinner && t?.name === m.winner,
-          })),
-          finalizeWinner: m.finalizeWinner || false,
-        }));
-      rounds.push({ title: `Round ${r}`, seeds });
+      const finalMatch = game.matches.find(
+        (m) => m.round === totalRounds && m.finalizeWinner
+      );
+      if (finalMatch?.winner) {
+        rounds.push({
+          title: "Champion",
+          seeds: [
+            {
+              id: "champion",
+              date: finalMatch.date,
+              teams: [
+                {
+                  name: finalMatch.winner,
+                  score:
+                    finalMatch.teams.find((t) => t.name === finalMatch.winner)
+                      ?.score ?? null,
+                  winner: true,
+                },
+              ],
+              finalizeWinner: true,
+            },
+          ],
+        });
+      }
     }
 
-    const finalMatch = game.matches.find(
-      (m) => m.round === totalRounds && m.finalizeWinner
-    );
-    if (finalMatch?.winner) {
-      rounds.push({
-        title: "Champion",
-        seeds: [
-          {
-            id: "champion",
-            date: finalMatch.date,
+    // Inside makeRoundsFromMatches
+    if (game.bracketType === "Double Elimination") {
+      const wbMatches = game.matches.filter((m) => m.bracket === "WB");
+      const lbMatches = game.matches.filter((m) => m.bracket === "LB");
+      const gfMatches = game.matches.filter((m) => m.bracket === "GF");
+
+      const makeBracketRounds = (matches, skipIncompleteFirstRound = false) => {
+        if (!matches.length) return [];
+        const maxRound = Math.max(...matches.map((m) => m.round));
+        const bracketRounds = [];
+
+        for (let r = 1; r <= maxRound; r++) {
+          let seeds = matches
+            .filter((m) => m.round === r)
+            .map((m) => ({
+              id: m._id,
+              date: game.startDate,
+              teams: m.teams.map((t) => ({
+                name: t?.name || "TBD",
+                score: t?.score ?? null,
+                winner: m.finalizeWinner && t?.name === m.winner,
+              })),
+              finalizeWinner: m.finalizeWinner || false,
+            }));
+
+          // Skip incomplete first round matches in LB
+          if (r === 1 && skipIncompleteFirstRound) {
+            seeds = seeds.filter((s) => s.teams.every((t) => t.name !== "TBD"));
+          }
+
+          if (seeds.length) bracketRounds.push({ title: `Round ${r}`, seeds });
+        }
+
+        return bracketRounds;
+      };
+
+      const wbRounds = makeBracketRounds(wbMatches);
+      const lbRounds = makeBracketRounds(lbMatches, true); // first LB round only fully known matches
+
+      rounds.push({ title: "WB", rounds: wbRounds });
+      rounds.push({ title: "LB", rounds: lbRounds });
+
+      if (gfMatches.length > 0) {
+        const grandFinal = gfMatches[0];
+        rounds.push({
+          title: "Grand Final",
+          seeds: [
+            {
+              id: grandFinal._id,
+              date: grandFinal.date || new Date(),
+              teams: grandFinal.teams.map((t) => ({
+                name: t.name,
+                score: t.score ?? null,
+                winner: grandFinal.finalizeWinner && t.name === grandFinal.winner,
+              })),
+              finalizeWinner: grandFinal.finalizeWinner || false,
+            },
+          ],
+        });
+
+        if (grandFinal.finalizeWinner && grandFinal.winner) {
+          rounds.push({
+            title: "Champion",
+            seeds: [
+              {
+                id: "champion",
+                date: grandFinal.date || new Date(),
+                teams: [
+                  {
+                    name: grandFinal.winner,
+                    score:
+                      grandFinal.teams.find((t) => t.name === grandFinal.winner)
+                        ?.score ?? null,
+                    winner: true,
+                  },
+                ],
+                finalizeWinner: true,
+              },
+            ],
+          });
+        }
+      }
+    }
+
+    if (game.bracketType === "Round Robin") {
+      const rrMatches = game.matches.filter((m) => m.bracket === "RR");
+      const maxRound = Math.max(...rrMatches.map((m) => m.round));
+
+      for (let r = 1; r <= maxRound; r++) {
+        const seeds = rrMatches
+          .filter((m) => m.round === r)
+          .map((m) => ({
+            id: m._id,
+            date: game.startDate,
+            teams: m.teams.map((t) => ({
+              name: t?.name || "TBD",
+              score: t?.score ?? null,
+              winner: m.finalizeWinner && t?.name === m.winner,
+            })),
+            finalizeWinner: m.finalizeWinner || false,
+          }));
+        rounds.push({ title: `Round ${r}`, seeds });
+      }
+
+      // 🔥 Only calculate Champion if ALL matches are finalized
+      const allMatchesDone = rrMatches.every((m) => m.finalizeWinner);
+      if (allMatchesDone) {
+        const winCount = {};
+        rrMatches.forEach((m) => {
+          if (m.finalizeWinner && m.winner) {
+            winCount[m.winner] = (winCount[m.winner] || 0) + 1;
+          }
+        });
+
+        // Find team(s) with max wins
+        const maxWins = Math.max(...Object.values(winCount));
+        const champions = Object.entries(winCount)
+          .filter(([_, wins]) => wins === maxWins)
+          .map(([team]) => team);
+
+        // 🏆 Add Champion round
+        rounds.push({
+          title: "Champion",
+          seeds: champions.map((champ, idx) => ({
+            id: `champion-${idx}`,
+            date: game.endDate,
             teams: [
               {
-                name: finalMatch.winner,
-                score:
-                  finalMatch.teams.find((t) => t.name === finalMatch.winner)
-                    ?.score ?? null,
+                name: champ,
+                score: `Wins: ${maxWins}`,
                 winner: true,
               },
             ],
             finalizeWinner: true,
-          },
-        ],
-      });
-    }
-  }
-
-  // Inside makeRoundsFromMatches
-if (game.bracketType === "Double Elimination") {
-  const wbMatches = game.matches.filter((m) => m.bracket === "WB");
-  const lbMatches = game.matches.filter((m) => m.bracket === "LB");
-  const gfMatches = game.matches.filter((m) => m.bracket === "GF");
-
-  const makeBracketRounds = (matches, skipIncompleteFirstRound = false) => {
-    if (!matches.length) return [];
-    const maxRound = Math.max(...matches.map((m) => m.round));
-    const bracketRounds = [];
-
-    for (let r = 1; r <= maxRound; r++) {
-      let seeds = matches
-        .filter((m) => m.round === r)
-        .map((m) => ({
-          id: m._id,
-          date: game.startDate,
-          teams: m.teams.map((t) => ({
-            name: t?.name || "TBD",
-            score: t?.score ?? null,
-            winner: m.finalizeWinner && t?.name === m.winner,
           })),
-          finalizeWinner: m.finalizeWinner || false,
-        }));
+        });
+      }
+    }
 
-      // Skip incomplete first round matches in LB
-      if (r === 1 && skipIncompleteFirstRound) {
-        seeds = seeds.filter((s) => s.teams.every((t) => t.name !== "TBD"));
+    if (game.bracketType === "Swiss") {
+      const swissMatches = game.matches.filter((m) => m.bracket === "Swiss");
+      const maxRound = Math.max(...swissMatches.map((m) => m.round));
+
+      for (let r = 1; r <= maxRound; r++) {
+        const seeds = swissMatches
+          .filter((m) => m.round === r)
+          .map((m) => ({
+            id: m._id,
+            date: game.startDate,
+            teams: m.teams.map((t) => ({
+              name: t?.name || "TBD",
+              score: t?.score ?? null,
+              winner: m.finalizeWinner && t?.name === m.winner,
+            })),
+            finalizeWinner: m.finalizeWinner || false,
+          }));
+        rounds.push({ title: `Round ${r}`, seeds });
       }
 
-      if (seeds.length) bracketRounds.push({ title: `Round ${r}`, seeds });
+      // Optional standings
+      const allMatchesDone = swissMatches.every((m) => m.finalizeWinner);
+      if (allMatchesDone) {
+        const winCount = {};
+        swissMatches.forEach((m) => {
+          if (m.finalizeWinner && m.winner) {
+            winCount[m.winner] = (winCount[m.winner] || 0) + 1;
+          }
+        });
+
+        const sorted = Object.entries(winCount).sort((a, b) => b[1] - a[1]);
+        rounds.push({
+          title: "Swiss Standings",
+          seeds: sorted.map(([team, wins], idx) => ({
+            id: `swiss-${idx}`,
+            date: game.endDate,
+            teams: [
+              {
+                name: team,
+                score: `Wins: ${wins}`,
+                winner: idx === 0, // leader marked as winner
+              },
+            ],
+            finalizeWinner: true,
+          })),
+        });
+      }
     }
 
-    return bracketRounds;
+
+    return rounds;
   };
-
-  const wbRounds = makeBracketRounds(wbMatches);
-  const lbRounds = makeBracketRounds(lbMatches, true); // first LB round only fully known matches
-
-  rounds.push({ title: "WB", rounds: wbRounds });
-  rounds.push({ title: "LB", rounds: lbRounds });
-
-  if (gfMatches.length > 0) {
-    const grandFinal = gfMatches[0];
-    rounds.push({
-      title: "Grand Final",
-      seeds: [
-        {
-          id: grandFinal._id,
-          date: grandFinal.date || new Date(),
-          teams: grandFinal.teams.map((t) => ({
-            name: t.name,
-            score: t.score ?? null,
-            winner: grandFinal.finalizeWinner && t.name === grandFinal.winner,
-          })),
-          finalizeWinner: grandFinal.finalizeWinner || false,
-        },
-      ],
-    });
-
-    if (grandFinal.finalizeWinner && grandFinal.winner) {
-      rounds.push({
-        title: "Champion",
-        seeds: [
-          {
-            id: "champion",
-            date: grandFinal.date || new Date(),
-            teams: [
-              {
-                name: grandFinal.winner,
-                score:
-                  grandFinal.teams.find((t) => t.name === grandFinal.winner)
-                    ?.score ?? null,
-                winner: true,
-              },
-            ],
-            finalizeWinner: true,
-          },
-        ],
-      });
-    }
-  }
-}
-
-if (game.bracketType === "Round Robin") {
-  const rrMatches = game.matches.filter((m) => m.bracket === "RR");
-  const maxRound = Math.max(...rrMatches.map((m) => m.round));
-
-  for (let r = 1; r <= maxRound; r++) {
-    const seeds = rrMatches
-      .filter((m) => m.round === r)
-      .map((m) => ({
-        id: m._id,
-        date: game.startDate,
-        teams: m.teams.map((t) => ({
-          name: t?.name || "TBD",
-          score: t?.score ?? null,
-          winner: m.finalizeWinner && t?.name === m.winner,
-        })),
-        finalizeWinner: m.finalizeWinner || false,
-      }));
-    rounds.push({ title: `Round ${r}`, seeds });
-  }
-
-    // 🔥 Only calculate Champion if ALL matches are finalized
-  const allMatchesDone = rrMatches.every((m) => m.finalizeWinner);
-  if (allMatchesDone) {
-    const winCount = {};
-    rrMatches.forEach((m) => {
-      if (m.finalizeWinner && m.winner) {
-        winCount[m.winner] = (winCount[m.winner] || 0) + 1;
-      }
-    });
-
-    // Find team(s) with max wins
-    const maxWins = Math.max(...Object.values(winCount));
-    const champions = Object.entries(winCount)
-      .filter(([_, wins]) => wins === maxWins)
-      .map(([team]) => team);
-
-    // 🏆 Add Champion round
-    rounds.push({
-      title: "Champion",
-      seeds: champions.map((champ, idx) => ({
-        id: `champion-${idx}`,
-        date: game.endDate,
-        teams: [
-          {
-            name: champ,
-            score: `Wins: ${maxWins}`,
-            winner: true,
-          },
-        ],
-        finalizeWinner: true,
-      })),
-    });
-  }
-}
-
-if (game.bracketType === "Swiss") {
-  const swissMatches = game.matches.filter((m) => m.bracket === "Swiss");
-  const maxRound = Math.max(...swissMatches.map((m) => m.round));
-
-  for (let r = 1; r <= maxRound; r++) {
-    const seeds = swissMatches
-      .filter((m) => m.round === r)
-      .map((m) => ({
-        id: m._id,
-        date: game.startDate,
-        teams: m.teams.map((t) => ({
-          name: t?.name || "TBD",
-          score: t?.score ?? null,
-          winner: m.finalizeWinner && t?.name === m.winner,
-        })),
-        finalizeWinner: m.finalizeWinner || false,
-      }));
-    rounds.push({ title: `Round ${r}`, seeds });
-  }
-
-  // Optional standings
-  const allMatchesDone = swissMatches.every((m) => m.finalizeWinner);
-  if (allMatchesDone) {
-    const winCount = {};
-    swissMatches.forEach((m) => {
-      if (m.finalizeWinner && m.winner) {
-        winCount[m.winner] = (winCount[m.winner] || 0) + 1;
-      }
-    });
-
-    const sorted = Object.entries(winCount).sort((a, b) => b[1] - a[1]);
-    rounds.push({
-      title: "Swiss Standings",
-      seeds: sorted.map(([team, wins], idx) => ({
-        id: `swiss-${idx}`,
-        date: game.endDate,
-        teams: [
-          {
-            name: team,
-            score: `Wins: ${wins}`,
-            winner: idx === 0, // leader marked as winner
-          },
-        ],
-        finalizeWinner: true,
-      })),
-    });
-  }
-}
-
-
-  return rounds;
-};
-
-
-  
 
   const handleTempScoreChange = async (idx, newScore) => {
     setTempScores((prev) => {
@@ -333,8 +325,8 @@ if (game.bracketType === "Swiss") {
             tempScores[0] > tempScores[1]
               ? selectedMatch.teams[0].name
               : tempScores[1] > tempScores[0]
-              ? selectedMatch.teams[1].name
-              : null;
+                ? selectedMatch.teams[1].name
+                : null;
           return {
             ...m,
             teams: m.teams.map((t, idx) => ({
@@ -373,8 +365,8 @@ if (game.bracketType === "Swiss") {
             props.seed.id === "champion"
               ? "👑"
               : selectedMatch?.id === props.seed.id
-              ? tempScores[idx]
-              : team.score;
+                ? tempScores[idx]
+                : team.score;
 
           let teamClass = "";
           if (props.seed.finalizeWinner) teamClass = team.winner ? "winner" : "loser";
@@ -400,98 +392,131 @@ if (game.bracketType === "Swiss") {
       <p><b>Bracket Type:</b> {game.bracketType}</p>
 
       <div className="bracket-container" style={{ display: "flex", flexDirection: "column", gap: "60px" }}>
-  {game.bracketType === "Single Elimination" && (
-    <Bracket rounds={roundsData} renderSeedComponent={renderSeed} />
-  )}
+        {game.bracketType === "Single Elimination" && (
+          <Bracket rounds={roundsData} renderSeedComponent={renderSeed} />
+        )}
 
-  {game.bracketType === "Double Elimination" && (
-    <>
-      <div>
-        <h2>Winner's Bracket</h2>
-        <Bracket rounds={roundsData.find(r => r.title === "WB")?.rounds || []} renderSeedComponent={renderSeed} />
-      </div>
-
-      <div style={{ display: "flex", justifyContent: "center", gap: "80px", margin: "40px 0" }}>
-        {roundsData.filter(r => r.title === "Grand Final" || r.title === "Champion")
-          .map((round, i) => (
-            <div key={i} style={{ textAlign: "center" }}>
-              <h2>{round.title}</h2>
-              <Bracket rounds={round.seeds ? [round] : round.rounds} renderSeedComponent={renderSeed} />
+        {game.bracketType === "Double Elimination" && (
+          <>
+            <div>
+              <h2>Winner's Bracket</h2>
+              <Bracket rounds={roundsData.find(r => r.title === "WB")?.rounds || []} renderSeedComponent={renderSeed} />
             </div>
-          ))}
-      </div>
 
-      <div>
-        <h2>Loser's Bracket</h2>
-        <Bracket rounds={roundsData.find(r => r.title === "LB")?.rounds || []} renderSeedComponent={renderSeed} />
-      </div>
-    </>
-  )}
+            <div style={{ display: "flex", justifyContent: "center", gap: "80px", margin: "40px 0" }}>
+              {roundsData.filter(r => r.title === "Grand Final" || r.title === "Champion")
+                .map((round, i) => (
+                  <div key={i} style={{ textAlign: "center" }}>
+                    <h2>{round.title}</h2>
+                    <Bracket rounds={round.seeds ? [round] : round.rounds} renderSeedComponent={renderSeed} />
+                  </div>
+                ))}
+            </div>
 
-{game.bracketType === "Round Robin" && (
-  <div className="round-robin bracket-container">
-    <h2>Round Robin</h2>
-    {roundsData.map((round, rIndex) => (
-      <div key={rIndex} className="rr-round">
-        <h3 className="rr-title">{round.title}</h3>
-        <div className="rr-matches">
-          {round.seeds.map((seed, sIndex) => (
-            <React.Fragment key={sIndex}>
-              {renderSeed({ seed })}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-    ))}
-  </div>
-)}
+            <div>
+              <h2>Loser's Bracket</h2>
+              <Bracket rounds={roundsData.find(r => r.title === "LB")?.rounds || []} renderSeedComponent={renderSeed} />
+            </div>
+          </>
+        )}
 
-{game.bracketType === "Swiss" && (
-  <div className="swiss bracket-container">
-    <h2>Swiss Bracket</h2>
-    {roundsData.map((round, rIndex) => (
-      <div key={rIndex} className="swiss-round">
-        <h3 className="swiss-title">{round.title}</h3>
-        <div className="swiss-matches">
-          {round.seeds.map((seed, sIndex) => (
-            <React.Fragment key={sIndex}>
-              {renderSeed({ seed })}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-    ))}
-  </div>
-)}
+        {game.bracketType === "Round Robin" && (
+          <div className="round-robin bracket-container">
+            <h2>Round Robin</h2>
+            {roundsData.map((round, rIndex) => (
+              <div key={rIndex} className="rr-round">
+                <h3 className="rr-title">{round.title}</h3>
+                <div className="rr-matches">
+                  {round.seeds.map((seed, sIndex) => (
+                    <React.Fragment key={sIndex}>
+                      {renderSeed({ seed })}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-
-
-
-
-
-
-
+        {game.bracketType === "Swiss" && (
+          <div className="swiss bracket-container">
+            <h2>Swiss Bracket</h2>
+            {roundsData.map((round, rIndex) => (
+              <div key={rIndex} className="swiss-round">
+                <h3 className="swiss-title">{round.title}</h3>
+                <div className="swiss-matches">
+                  {round.seeds.map((seed, sIndex) => (
+                    <React.Fragment key={sIndex}>
+                      {renderSeed({ seed })}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {selectedMatch && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>Update Match Scores</h3>
-            {selectedMatch.teams.map((team, idx) => (
-              <div key={idx} className="score-input">
-                <label>
-                  {team.name} Score:
-                  <input type="number" value={tempScores[idx]} onChange={(e) => handleTempScoreChange(idx, Number(e.target.value))} />
-                </label>
-              </div>
-            ))}
-            <div className="modal-actions">
-              <button type="button" onClick={saveScores}>Save</button>
-              <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
-            </div>
+            {selectedMatch.type === "rules" ? (
+              <>
+                <h3>Rules PDF</h3>
+                <iframe
+                  src={`http://localhost:5000${game.rules}`}
+                  title="Rules PDF"
+                  className="w-full h-[80vh] rounded-md"
+                />
+                <div className="modal-actions">
+                  <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3>Update Match Scores</h3>
+                {selectedMatch.teams.map((team, idx) => (
+                  <div key={idx} className="score-input">
+                    <label>
+                      {team.name} Score:
+                      <input
+                        type="number"
+                        value={tempScores[idx]}
+                        onChange={(e) => handleTempScoreChange(idx, Number(e.target.value))}
+                      />
+                    </label>
+                  </div>
+                ))}
+                <div className="modal-actions">
+                  <button type="button" onClick={saveScores}>Save</button>
+                  <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
+
+      <div className="rules-section">
+        <h3>Rules</h3>
+        {game.rules ? (
+          game.rules.endsWith(".pdf") || game.rules.startsWith("/uploads/") ? (
+            <>
+              <button
+                onClick={() => setSelectedMatch({ type: "rules" })}
+                
+              >
+                View Rules PDF
+              </button>
+            </>
+          ) : (
+            <p>{game.rules}</p>
+          )
+        ) : (
+          <p>No rules provided.</p>
+        )}
+      </div>
+
     </MainLayout>
   );
 };

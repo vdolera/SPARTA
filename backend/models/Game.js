@@ -23,7 +23,7 @@ const gameSchema = new mongoose.Schema({
   endDate: { type: Date, required: true },
   teams: { type: [String], required: true },       // List of team names
   requirements: { type: [String], required: true },// Multiple requirements
-  rules: { type: [String], required: true },       // Multiple rules (fixed)
+  rules: { type: String, required: true },       
   eventName: { type: String, required: true },
   coordinators: { type: [String], default: [] },
   bracketType: {
