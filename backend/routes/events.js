@@ -78,7 +78,35 @@ router.post('/event', async (req, res) => {
 router.get('/events', async (req, res) => {
   try {
     const { institution } = req.query;
-    const events = await Event.find({ institution });
+    const today = new Date();
+    const events = await Event.find({ institution, eventEndDate: {$gte:today} });
+
+    res.json(events);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch events', error: err.message });
+  }
+});
+
+// GET all active events by Institution
+router.get('/active-events', async (req, res) => {
+  try {
+    const { institution } = req.query;
+    const today = new Date();
+    const events = await Event.find({ institution, eventEndDate: {$gte:today} });
+    
+    res.json(events);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch events', error: err.message });
+  }
+});
+
+// GET all past events by Institution
+router.get('/past-events', async (req, res) => {
+  try {
+    const { institution } = req.query;
+    const today = new Date();
+    const events = await Event.find({ institution, eventEndDate: {$lt:today} });
+    
     res.json(events);
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch events', error: err.message });
