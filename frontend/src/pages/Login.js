@@ -11,6 +11,9 @@ export default function LoginPage() {
     accessKey: ''
   });
 
+  const [showLoginSuccess, setShowLoginSuccess] = useState(false);
+  const [showLoginFailed, setShowLoginFailed] = useState(false);
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -45,24 +48,53 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        alert(`Login successful as ${role}`);
+        // alert(`Login successful as ${role}`);
+        setShowLoginSuccess(true);
         localStorage.setItem('auth', JSON.stringify(data.user));
-
+        
+        setTimeout(() => {
         if (['admin', 'co-organizer', 'sub-organizer'].includes(role)) {
           navigate('/admin/dashboard');
         } else if (role === 'player') {
           navigate('/dashboard');
-        }
+          }
+          }, 3000);
       } else {
-        alert(data.message || 'Login failed');
+        setShowLoginFailed(true);
+        // alert(data.message || 'Login failed');
       }
     } catch (error) {
+      
       console.error('Login error:', error);
       alert('Something went wrong!');
     }
   };
 
   return (
+
+    <>
+    {/* Success Modal */}
+    {showLoginSuccess && (
+      <div className="modal-overlay">
+        <div className="modal">
+          <h2>Login Successful 🎉</h2>
+          <p>Welcome back!</p>
+          <button onClick={() => setShowLoginSuccess(false)}>Continue</button>
+        </div>
+      </div>
+    )}
+
+    {/* Failure Modal */}
+    {showLoginFailed && (
+      <div className="modal-overlay">
+        <div className="modal">
+          <h3>❌ Login Failed</h3>
+          <p>Invalid email, password, or access key. Please try again.</p>
+          <button onClick={() => setShowLoginFailed(false)}>Close</button>
+        </div>
+      </div>
+    )}
+
     <div className="login-container">
       <div className="login-box">
         <div className="login-left">
@@ -79,13 +111,28 @@ export default function LoginPage() {
               
             </button>
 
-            {showAdminRoles && (
-              <div className="admin-role-options">
-                <button type="button" onClick={() => setRole('admin')}>Main Admin</button>
-                <button type="button" onClick={() => setRole('co-organizer')}>Co-Organizer</button>
-                <button type="button" onClick={() => setRole('sub-organizer')}>Sub-Organizer</button>
-              </div>
-            )}
+           <div className={`admin-role-options ${showAdminRoles ? "open" : "closed"}`}>
+              <button type="button" 
+                onClick={() => {
+                  setRole('admin');
+                  setShowAdminRoles(false);
+                }}
+              > Main Admin </button>
+
+              <button type="button" 
+                onClick={() => {
+                  setRole('co-organizer');
+                  setShowAdminRoles(false);
+                }}
+              > Co-Organizer </button>
+
+              <button type="button" 
+                onClick={() => {
+                  setRole('sub-organizer');
+                  setShowAdminRoles(false);
+                }}
+              > Sub-Organizer </button>
+            </div>
 
             {/* Player button */}
             <button
@@ -160,5 +207,6 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  </>
   );
 }

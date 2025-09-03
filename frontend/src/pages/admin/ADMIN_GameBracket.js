@@ -386,12 +386,14 @@ const GameBracket = () => {
 
   return (
     <MainLayout>
-      <h1>{game.category} {game.gameType} Bracket</h1>
-      <p><b>Event:</b> {decodedEvent}</p>
-      <p><b>Schedule:</b> {new Date(game.startDate).toLocaleString()} - {new Date(game.endDate).toLocaleString()}</p>
-      <p><b>Bracket Type:</b> {game.bracketType}</p>
+      <div className="game-bracket-info">
+        <h1>{game.category} {game.gameType} Bracket</h1>
+        <p><b>Event:</b> {decodedEvent}</p>
+        <p><b>Schedule:</b> {new Date(game.startDate).toLocaleString()} - {new Date(game.endDate).toLocaleString()}</p>
+        <p><b>Bracket Type:</b> {game.bracketType}</p>
+      </div>
 
-      <div className="bracket-container" style={{ display: "flex", flexDirection: "column", gap: "60px" }}>
+      <div className="bracket-container">
         {game.bracketType === "Single Elimination" && (
           <Bracket rounds={roundsData} renderSeedComponent={renderSeed} />
         )}

@@ -1,9 +1,14 @@
 /* Container */
 .bracket-container {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
   overflow-x: auto;
   padding: 20px;
-  background: #f3f4f6;
+  color: white;
+  text-transform: uppercase;
   border-radius: 12px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Override SeedItem default */
@@ -166,6 +171,20 @@
   to   { transform: scale(1); opacity: 1; }
 }
 
+.game-bracket-info {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #111827;
+  margin: 10px;
+  text-align: center;
+  border: 1px solid #1A2A49;
+  border-radius: 15px;
+  padding: 10px 20px;
+}
+
+.game-bracket-info p {
+  display: inline-block;
+  margin-left: 15px;
+}
 
 
 
