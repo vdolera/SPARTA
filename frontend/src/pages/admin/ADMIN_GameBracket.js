@@ -395,7 +395,8 @@ const GameBracket = () => {
 
       <div className="bracket-container">
         {game.bracketType === "Single Elimination" && (
-          <Bracket rounds={roundsData} renderSeedComponent={renderSeed} />
+          <div className="single-elim">
+            <Bracket rounds={roundsData} renderSeedComponent={renderSeed} /></div>
         )}
 
         {game.bracketType === "Double Elimination" && (
