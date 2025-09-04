@@ -36,7 +36,7 @@
   color: #111827 !important; /* Tailwind "gray-900" */
 }
 
-.single-elim {
+.single-elim, .double-elim, .round-robin, .swiss {
   position: relative;
   border: 2px solid;
   border-radius: 12px;
@@ -44,7 +44,7 @@
   z-index: 1;
 }
 
-.single-elim::before{
+.single-elim::before, .double-elim::before, .round-robin::before, .swiss::before {
   content: "";
   position: absolute;
   top: 0;
@@ -146,6 +146,36 @@
   margin-bottom: 16px;
 }
 
+.modal.rules-modal {
+  background: #fff;
+  padding: 20px;
+  width: 80%;
+  max-width: 900px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.rules-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.rules-section > button {
+  background-color: #1A2A49;
+  color: white;
+  padding: 6px 12px;
+  font-size: 13px;
+  border: none;
+  border-radius: 20px;
+  max-width: fit-content;
+  cursor: pointer;
+}
+
+.rules-section > button:hover {
+  background-color: #CE892C;
+  color: white;
+}
+
 .score-input {
   display: flex;
   justify-content: space-between;
@@ -202,7 +232,7 @@
   color: #111827;
   margin: 10px;
   text-align: center;
-  border: 1px solid #1A2A49;
+  border: 2px solid #1A2A49;
   border-radius: 15px;
   padding: 10px 20px;
 }
@@ -210,6 +240,11 @@
 .game-bracket-info p {
   display: inline-block;
   margin-left: 15px;
+}
+
+.game-bracket-info h1 {
+  text-transform: uppercase;
+  text-decoration: underline;
 }
 
 
