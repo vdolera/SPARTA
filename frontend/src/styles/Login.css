@@ -131,9 +131,17 @@
     color: white;
   }
 
-  .role-button.inactive {
-    background-color: #e5e7eb;
-  }
+  .admin-role-options.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.admin-role-options.closed {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
 
   /* Form inputs */
   .login-form {
@@ -220,3 +228,38 @@
     background-color: #1e40af;
     background-color: #CE892C;
   }
+
+
+  .modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal {
+  /* background: #fff; */
+  border-radius: 12px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  font-family: 'Poppins', sans-serif;
+}
+
+.modal button {
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #CE892C;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal button:hover { background: #1e40af; }
