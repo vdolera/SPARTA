@@ -84,7 +84,6 @@ const GameBracket = () => {
       }
     }
 
-    // Inside makeRoundsFromMatches
     if (game.bracketType === "Double Elimination") {
       const wbMatches = game.matches.filter((m) => m.bracket === "WB");
       const lbMatches = game.matches.filter((m) => m.bracket === "LB");
@@ -503,8 +502,7 @@ const GameBracket = () => {
           game.rules.endsWith(".pdf") || game.rules.startsWith("/uploads/") ? (
             <>
               <button
-                onClick={() => setSelectedMatch({ type: "rules" })}
-                
+                onClick={() => setSelectedMatch({ type: "rules" })}     
               >
                 View Rules PDF
               </button>

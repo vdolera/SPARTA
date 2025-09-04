@@ -14,6 +14,8 @@ import GameBracket from "./pages/admin/ADMIN_GameBracket";
 import Feedback from "./pages/admin/ADMIN_Feedback";
 import LiveScores from "./pages/admin/ADMIN_LiveScores";
 import Pantheon from "./pages/admin/ADMIN_Pantheon";
+import PantheonRanks from "./pages/admin/ADMIN_PantheonRanks";
+import PantheonTeam from "./pages/admin/ADMIN_PantheonTeam";
 import Approval from "./pages/admin/ADMIN_PlayerApproval";
 import TeamPlayerApproval from "./pages/admin/ADMIN_TeamPendingPlayers";
 import PlayerDashboard from "./pages/player/PLAYER_Dashboard";
@@ -51,6 +53,8 @@ export default function App() {
         <Route path="/admin/event/:eventName/liveScores" element={<BlockRoute> <LiveScores /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/feedback" element={<BlockRoute> <Feedback /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/liveScores" element={<BlockRoute> <LiveScores /> </BlockRoute>} />
+        <Route path="/admin/pantheon/:eventName/ranking" element={<BlockRoute> <PantheonRanks /> </BlockRoute>} />
+        <Route path="/admin/pantheon/:eventName/:teamName/players" element={<BlockRoute> <PantheonTeam /> </BlockRoute>} />
         {/*Player*/}
         <Route path="/dashboard" element={<BlockRoute> <PlayerDashboard /> </BlockRoute>} />
         <Route path="/event" element={<BlockRoute> <PlayerEvent /> </BlockRoute>} />

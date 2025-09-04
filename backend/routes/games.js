@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// CREATE Game (supports all bracket types)
+// CREATE Game
 router.post("/games", upload.single("rules"), async (req, res) => {
   try {
     const {
@@ -45,12 +45,12 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       coordinators,
     } = req.body;
 
-    // Parse arrays from JSON strings
+    // Translation(Parsing) thingy chuchu
     const parsedTeams = JSON.parse(teams || "[]");
     const parsedRequirements = JSON.parse(requirements || "[]");
     const parsedCoordinators = JSON.parse(coordinators || "[]");
     
-    // Text or Uploaded Rules
+    // Check if Text or Uploaded Rules
     let finalRules = null;
     if (req.file) {
       finalRules = `/uploads/rules/${req.file.filename}`; // file 
@@ -271,6 +271,11 @@ router.post("/games", upload.single("rules"), async (req, res) => {
 router.get('/games', async (req, res) => {
   try {
     const { institution, event } = req.query;
+
+    if (!institution) {
+      return res.status(400).json({ message: 'Institution is required' });
+    }
+    
     const query = { institution, ...(event && { eventName: event }) };
     const games = await Game.find(query);
     res.json(games);
