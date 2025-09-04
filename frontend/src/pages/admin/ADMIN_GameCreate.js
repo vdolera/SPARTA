@@ -50,7 +50,7 @@ const CreateGame = () => {
   const handleAddRequirement = () => setRequirements([...requirements, ""]);
   const handleRequirementChange = (idx, value) => {
     const updated = [...requirements];
-    updated[idx] = value;
+    updated.splice[idx] = value;
     setRequirements(updated);
   };
   const handleRemoveRequirement = (idx) => {
@@ -160,9 +160,8 @@ const CreateGame = () => {
 
               <div className="game-details">
 
-                <h4>GAME DETAILS</h4>
-
                 <div>
+                  <h4>GAME DETAILS</h4>
 
                   <label className="game-label">
                     Game Type:
@@ -219,7 +218,7 @@ const CreateGame = () => {
 
                 {/* Participating Teams */}
                 <div>
-                  <label className="game-label"><b>Participating Teams:</b></label>
+                  <h4>PARTICIPATING TEAMS</h4>
                   <div className="team-selection">
                     {availableTeams.length === 0 ? (
                       <p>No teams available for this event.</p>
@@ -233,7 +232,7 @@ const CreateGame = () => {
                             margin: "5px",
                             padding: "8px 12px",
                             backgroundColor: selectedTeams.includes(team.teamName)
-                              ? "#4caf50"
+                              ? "#181b59"
                               : "#ccc",
                             color: "white",
                             border: "none",
@@ -250,8 +249,8 @@ const CreateGame = () => {
 
                 {/* Bracket Type */}
                 <div>
-                  <label className="game-label"><b>Bracket Type:</b></label>
-
+                  <h4>BRACKETING TYPE</h4>
+                  <label>Please choose one type of bracketing</label>
                   <div className="bracket-selection">
                     {[
                       "Single Elimination",
@@ -267,7 +266,7 @@ const CreateGame = () => {
                         style={{
                           margin: "5px",
                           padding: "8px 12px",
-                          backgroundColor: bracketType === type ? "#4caf50" : "#ccc",
+                          backgroundColor: bracketType === type ? "#181b59" : "#ccc",
                           color: "white",
                           border: "none",
                           borderRadius: "5px",
@@ -283,16 +282,17 @@ const CreateGame = () => {
 
               <div className="game-organizers">
                 <h4>SUB-ORGANIZERS</h4>
-                <label>Assign Sub-Organizer/s</label>
-                <div className="multi-select">
-                  <input
-                    type="text"
-                    placeholder="Enter Name or Select"
-                    value={search}
-                    onFocus={() => setShowDropdown(true)}   // show on click/focus
-                    onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
+                
+                <div className="game-org-field">
+                  <label>Assign Sub-Organizer/s for this game</label>
+                    <input
+                      type="text"
+                      placeholder="Enter Name or Select"
+                      value={search}
+                      onFocus={() => setShowDropdown(true)}   // show on click/focus
+                      onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
 
                   {showDropdown &&
                     (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
@@ -326,47 +326,57 @@ const CreateGame = () => {
                 </div>
               </div>
 
-              <div className="game-requirements-rules">
-                {/* Requirements */}
-                <label className="game-label">Requirements:</label>
-                <button type="button" onClick={handleAddRequirement}>
-                  + Add Requirement
-                </button>
-                {requirements.map((req, idx) => (
-                  <div key={idx}>
-                    <input
-                      type="text"
-                      value={req}
-                      onChange={(e) => handleRequirementChange(idx, e.target.value)}
-                      required
-                      placeholder={`Requirement ${idx + 1}`}
-                    />
-                    {requirements.length > 1 && (
-                      <button type="button" onClick={() => handleRemoveRequirement(idx)}>
-                        Remove
-                      </button>
-                    )}
-                  </div>
-                ))}
+              <div className="game-reqs-rules">
+
+              <div className="game-reqs">
+                <h4>REQUIREMENTS</h4>
+                  <button type="button" onClick={handleAddRequirement}>
+                    + ADD REQUIREMENT
+                  </button>
+                  {requirements.map((req, idx) => (
+                    <div key={idx}>
+                      <input
+                        type="text"
+                        value={req}
+                        onChange={(e) => handleRequirementChange(idx, e.target.value)}
+                        required
+                        placeholder={`Requirement ${idx + 1}`}
+                      />
+                      {requirements.length > 1 && (
+                        <button className="remove-req" type="button" onClick={() => handleRemoveRequirement(idx)}>
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ))}
+              </div>
 
                 {/* Rules */}
-                <label className="game-label">
-                  Rules and Guidelines:
-                </label>
-
-                <div>
+                <div className="game-rules">
+                  <h4>RULES</h4>
                   <textarea
                     value={rules}
                     onChange={(e) => setRules(e.target.value)}
-                    placeholder="Enter rules (if not uploading file)..."
+                    placeholder="Enter rules (if not uploading file). Please make sure that it is already formatted."
                     rows={5}
                   />
-                  <h1>or</h1>
+
+                <div className="file-upload">
+
+                  <span className="file-name">
+                    {rules ? rules.name || "1 file selected" : "No file chosen"}
+                  </span>
+                  <label htmlFor="rulesFile" className="upload-btn">
+                    Choose File
+                  </label>
                   <input
+                    id="rulesFile"
                     type="file"
                     accept=".pdf,.doc,.docx"
                     onChange={(e) => setRules(e.target.files[0])}
                   />
+                </div>
+
                 </div>
 
               </div>
@@ -374,7 +384,6 @@ const CreateGame = () => {
           </div>
         </div>
 
-        <div className="event-container"></div>
         <div className="lower-buttons">
           <button type="button" onClick={() => navigate(-1)}>Cancel</button>
           <button type="submit" onClick={handleSubmit}>Create Game</button>

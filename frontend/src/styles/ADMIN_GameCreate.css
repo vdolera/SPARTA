@@ -37,49 +37,56 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    width: 500px;
+    width: 450px;
     height: fit-content;
     margin: 10px;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 1rem;
 
 }
 
-.game-details select {
+.game-details select, input {
   width: fit-content;
-  font-size: 1rem;
+  font-size: 13px;
   padding: 0.5rem 1rem;
   border-radius: 5px;
+  margin-top: 5px;
 }
 
 .game-organizers {
     border: 2px solid #9dbbd9;
     border-radius: 10px;
-    margin: 5px;
     display: flex;
     flex-direction: column;
-    width: 500px;
-    height: 450px;
+    width: 450px;
+    height: inherit;
     margin: 10px;
     padding: 10px;
 }
 
-.game-requirements-rules {
-    border: 2px solid #9dbbd9;
-    border-radius: 10px;
-    margin: 5px;
-    display: flex;
-    flex-direction: column;
-    width: 400px;
-    margin: 20px;
-    padding: 10px;
+.game-organizers input {
+  padding: 5px;
+  margin-top: 5px;
+  border: 2px solid #181b59;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.game-org-field {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .game-label {
   font-size: 14px;
-  font-weight: 500;
   color: #333;
   font-family: Montserrat, sans-serif;
   margin: 5px 0px;
@@ -89,7 +96,6 @@
   display: flex;
   flex-direction: column;
   margin: 5px 0;
-  font-weight: 600;
   color: #333;
 }
 
@@ -128,10 +134,6 @@
   width: 100%;
 }
 
-.game-form-container label > input {
-  margin-left: 10px;
-}
-
 .game-form-container input {
   padding: 8px;
   border: 1px solid #ccc;
@@ -143,6 +145,117 @@
   align-items: center;
   gap: 10px;
   font-family: Monteserrat, sans-serif;
+}
+
+
+.game-reqs-rules {
+  border: 2px solid #9dbbd9;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  margin: 10px;
+  padding: 10px;
+}
+
+.game-reqs > button[type="button"] {
+  margin-top: 5px;
+  display: inline-block;
+  background-color: #1A2A49;
+  text-align: center;
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 10px;
+  max-width: fit-content;
+  cursor: pointer;
+}
+
+.remove-req {
+  background-color: #CE892C;
+  color: white;
+  margin-left: 10px;
+  font-size: 12px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 10px;  
+  max-width: fit-content;
+  cursor: pointer;
+}
+
+.game-rules {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+textarea {
+  width: 90%;
+  padding: 12px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 120px;
+  max-height: 300px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Placeholder styling */
+textarea::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* Focus effect */
+textarea:focus {
+  border-color: #CE892C;
+  box-shadow: 0 0 6px rgba(0, 86, 179, 0.3);
+  outline: none;
+}
+
+/* Wrapper */
+.file-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  font-size: 14px;
+  border: 2px solid #9dbbd9;
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hidden input */
+.file-upload input[type="file"] {
+  display: none;
+}
+
+/* Upload button */
+.upload-btn {
+  background: #0056b3;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.upload-btn:hover {
+  background: #004494;
+}
+
+/* File name text */
+.file-name {
+  font-size: 14px;
+  color: #555;
+  font-style: italic;
 }
 
 .lower-buttons button{
