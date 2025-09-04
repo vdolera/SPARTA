@@ -1,7 +1,9 @@
 .team-create-maindiv {
     border: 0.5px solid gray;
     border-radius: 10px;
-    /* width: 500px; */
+    width: 1200px;
+    align-items: center;
+    justify-content: center;
 }
 
 .team-form-container {

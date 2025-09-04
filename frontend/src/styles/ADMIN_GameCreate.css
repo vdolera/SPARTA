@@ -257,11 +257,10 @@ textarea:focus {
   color: #555;
   font-style: italic;
 }
-
 .lower-buttons button{
   padding: 10px 15px;
   border: none;
-  border-radius: 20px;
+  border-radius: 10px;
   cursor: pointer;
   max-width: fit-content;
 }
@@ -274,10 +273,6 @@ textarea:focus {
 .lower-buttons button[type="submit"]:hover {
   background-color: #0F4D0F;
   color: white;
-}
-
-.lower-buttons button[type="button"] {
-  background-color: #a70000;
 }
 
 .lower-buttons button[type="button"] {

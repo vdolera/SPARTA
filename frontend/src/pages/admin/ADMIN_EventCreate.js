@@ -272,15 +272,15 @@ const CreateEvent = () => {
             </div>
 
           </div>
-        </div>
 
-      </div>
+            <div className="event-container">
+              <div className="lower-buttons">
+              <button type="button" onClick={handleCancel}>Cancel</button>
+              <button type="submit" onClick={handleCreate}>Create Event</button>
+            </div>
 
 
-      <div className="event-container">
-        <div className="lower-buttons">
-          <button type="button" onClick={handleCancel}>Cancel</button>
-          <button type="submit" onClick={handleCreate}>Create Event</button>
+          </div>
         </div>
       </div>
 
