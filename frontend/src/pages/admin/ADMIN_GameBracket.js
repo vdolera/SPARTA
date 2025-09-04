@@ -12,8 +12,6 @@ const GameBracket = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [tempScores, setTempScores] = useState([]);
 
-  const [showRulesModal, setShowRulesModal] = useState(false); // Showing of Rules in a Modal
-
   useEffect(() => {
     const fetchGame = async () => {
       try {
@@ -86,7 +84,6 @@ const GameBracket = () => {
       }
     }
 
-    // Inside makeRoundsFromMatches
     if (game.bracketType === "Double Elimination") {
       const wbMatches = game.matches.filter((m) => m.bracket === "WB");
       const lbMatches = game.matches.filter((m) => m.bracket === "LB");
@@ -386,9 +383,6 @@ const GameBracket = () => {
 
   const roundsData = makeRoundsFromMatches();
 
-  
-  
-
   return (
     <MainLayout>
       <div className="game-bracket-info">
@@ -396,52 +390,7 @@ const GameBracket = () => {
         <p><b>Event:</b> {decodedEvent}</p>
         <p><b>Schedule:</b> {new Date(game.startDate).toLocaleString()} - {new Date(game.endDate).toLocaleString()}</p>
         <p><b>Bracket Type:</b> {game.bracketType}</p>
-
-      <div className="rules-section">
-              {game.rules ? (
-                game.rules.endsWith(".pdf") || game.rules.startsWith("/uploads/") ? (
-                  <>
-                    <button onClick={() => setShowRulesModal(true)}>
-                      View Rules
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button onClick={() => setShowRulesModal(true)}>
-                      View Rules
-                    </button>
-                  </>
-                )
-              ) : (
-                <p>No rules provided.</p>
-              )}
-            </div>
-
       </div>
-
-      
-
-      {showRulesModal && (
-        <div className="modal-overlay">
-          <div className="modal rules-modal">
-            <h2>Game Rules</h2>
-
-            {game.rules.endsWith(".pdf") || game.rules.startsWith("/uploads/") ? (
-              <iframe
-                src={game.rules}
-                title="Rules PDF"
-                width="100%"
-                height="500px"
-                style={{ border: "none" }}
-              />
-            ) : (
-              <p>{game.rules}</p>
-            )}
-
-            <button onClick={() => setShowRulesModal(false)}>Close</button>
-          </div>
-        </div>
-      )}
 
       <div className="bracket-container">
         {game.bracketType === "Single Elimination" && (
@@ -451,12 +400,12 @@ const GameBracket = () => {
 
         {game.bracketType === "Double Elimination" && (
           <>
-            <div className="double-elim">
+            <div>
               <h2>Winner's Bracket</h2>
               <Bracket rounds={roundsData.find(r => r.title === "WB")?.rounds || []} renderSeedComponent={renderSeed} />
             </div>
 
-            <div className="double-elim" style={{ display: "flex", justifyContent: "center", gap: "80px", margin: "40px 0" }}>
+            <div style={{ display: "flex", justifyContent: "center", gap: "80px", margin: "40px 0" }}>
               {roundsData.filter(r => r.title === "Grand Final" || r.title === "Champion")
                 .map((round, i) => (
                   <div key={i} style={{ textAlign: "center" }}>
@@ -466,7 +415,7 @@ const GameBracket = () => {
                 ))}
             </div>
 
-            <div className="double-elim">
+            <div>
               <h2>Loser's Bracket</h2>
               <Bracket rounds={roundsData.find(r => r.title === "LB")?.rounds || []} renderSeedComponent={renderSeed} />
             </div>
@@ -550,9 +499,24 @@ const GameBracket = () => {
         </div>
       )}
 
-
-
-
+      <div className="rules-section">
+        <h3>Rules</h3>
+        {game.rules ? (
+          game.rules.endsWith(".pdf") || game.rules.startsWith("/uploads/") ? (
+            <>
+              <button
+                onClick={() => setSelectedMatch({ type: "rules" })}     
+              >
+                View Rules PDF
+              </button>
+            </>
+          ) : (
+            <p>{game.rules}</p>
+          )
+        ) : (
+          <p>No rules provided.</p>
+        )}
+      </div>
 
     </MainLayout>
   );

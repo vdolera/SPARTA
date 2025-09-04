@@ -60,7 +60,6 @@ const Event = () => {
               </div>  
             </div>
           ))}
-
       </div>
     </MainLayout>
   )

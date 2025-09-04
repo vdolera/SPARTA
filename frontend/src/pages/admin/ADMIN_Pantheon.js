@@ -1,10 +1,13 @@
 import MainLayout from "../../components/MainLayout";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Pantheon = () => {
+  const navigate= useNavigate();
   const [events, setEvents] = useState([]);
   const user = JSON.parse(localStorage.getItem('auth'));
   const userInstitution = user?.institution;
+
   useEffect(() => {
     const fetchEvents = async () => {
       const response = await fetch(`http://localhost:5000/api/past-events?institution=${userInstitution}`);
@@ -13,14 +16,20 @@ const Pantheon = () => {
     };
     fetchEvents();
   }, [userInstitution]);
+
+  const handleClickEvent = (event) => {
+    navigate(`/admin/pantheon/${encodeURIComponent(event.eventName)}/ranking`);
+  };
+
+
   return (
 
     <MainLayout>
       <h1>Pantheon</h1>
 
       <div className="event-list">
-        {events.length > 0 ? (
-          events.map((event) => (
+       
+          {events.map((event) => (
             <div key={event._id} className="event-item">
               <div
                 className="event-color"
@@ -29,7 +38,7 @@ const Pantheon = () => {
                 }}
               ></div>
 
-              <div className="event-name">
+              <div className="event-name" onClick={() => handleClickEvent(event)}>
                 {event.eventName}
                 <p>
                   {event?.eventStartDate
@@ -42,12 +51,9 @@ const Pantheon = () => {
                 </p>
               </div>
             </div>
-          ))
-        ) : (
-          <p>No past events available.</p>
-        )}
+          ))}
+       
       </div>
-      
     </MainLayout>
 
   )
