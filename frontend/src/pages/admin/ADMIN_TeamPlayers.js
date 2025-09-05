@@ -1,11 +1,11 @@
 import MainLayout from "../../components/MainLayout";
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import '../../styles/ADMIN_TeamPlayers.css'; 
+import '../../styles/ADMIN_TeamPlayers.css';
 import { LiaGhostSolid } from "react-icons/lia";
 
 const TeamPlayers = () => {
-  const { eventName, teamName } = useParams(); 
+  const { eventName, teamName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
   const decodedTeam = decodeURIComponent(teamName);
   const navigate = useNavigate();
@@ -87,7 +87,7 @@ const TeamPlayers = () => {
         <div className='team-players-table'>
           {players.length === 0 ? (
             <div className='no-players-found'>
-              <LiaGhostSolid size={48}/>
+              <LiaGhostSolid size={48} />
               <p>No players registered yet.</p>
             </div>
           ) : (
@@ -97,7 +97,7 @@ const TeamPlayers = () => {
                   <tr>
                     <th>PLAYERS</th>
                     <th>COURSE</th>
-                    <th>GAME</th>  
+                    <th>GAME</th>
                     <th>STATUS</th>
                     <th>PROFILE</th>
                   </tr>
