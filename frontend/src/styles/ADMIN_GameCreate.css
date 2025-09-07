@@ -47,7 +47,7 @@
 
 }
 
-.game-details select, input {
+.game-details select, .game-details > input {
   width: fit-content;
   font-size: 13px;
   padding: 0.5rem 1rem;

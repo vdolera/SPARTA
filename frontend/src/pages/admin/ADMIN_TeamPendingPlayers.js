@@ -61,10 +61,10 @@ const handleApprove = async (id) => {
   return (
     <MainLayout>
       <div className="approval-header">
-        <h2>PENDING LIST</h2>
+        <h3>PENDING LIST</h3>
       </div>
 
-      <div className="approval-list">
+      <div className="no-players-found">
         {players.length > 0 ? (
           players.map((player) => (
             <div key={player._id} className="player-card">

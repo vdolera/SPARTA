@@ -39,6 +39,30 @@
     border-radius: 15px;
 }
 
+.team-pending-players {
+    width: 200px;
+    height: 125px;
+    border-radius: 15px;
+    width: 90%;
+    height: fit-content;
+    margin: 0 auto;
+    margin: 5px auto;
+    display: flex;
+    align-items: right;
+    justify-content: end;
+}
+
+.team-pending-players > button {
+    background-color: #595c62;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: Montserrat, sans-serif;
+    font-size: 14px;
+}
+
 .team-players-table {
   width: 90%;
   margin: 0 auto;

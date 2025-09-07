@@ -18,6 +18,10 @@ const Event = () => {
     };
     fetchEvents();
   }, [userInstitution]);
+
+    useEffect(() => {
+    document.title = "SPARTA | Event";
+  }, []);
   
   const handleAddEvent = () => {
     navigate("./create");

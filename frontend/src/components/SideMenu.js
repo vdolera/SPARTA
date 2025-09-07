@@ -23,7 +23,7 @@ const SideMenu = () => {
         <li className={location.pathname === "/admin/dashboard" ? "active" : ""}>
           <a href="/admin/dashboard"><RxDashboard /> Dashboard</a>
         </li>
-        <li className={location.pathname === "/admin/event" ? "active" : ""}>
+        <li className={location.pathname.startsWith("/admin/event") ? "active" : ""}>
           <a href="/admin/event"><AiOutlineFire /> Event </a>
         </li>
         <li className={location.pathname === "/admin/approval" ? "active" : ""}>

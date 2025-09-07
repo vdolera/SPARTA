@@ -6,6 +6,10 @@ const Approval = () => {
   const [players, setPlayers] = useState([]);
   const auth = JSON.parse(localStorage.getItem("auth")); // logged-in user
 
+    useEffect(() => {
+    document.title = "SPARTA | Approvals";
+  }, []);
+
   // Fetch all unapproved players for the same institution
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -64,7 +68,7 @@ const Approval = () => {
       </div>
       {players.length === 0 ? (
         <div className="no-players-message">
-          <p>No pending player registrations for your institution.</p>
+          <p>No pending user registrations for your institution.</p>
         </div>
       ) : (
         <div className='approval-table'>
