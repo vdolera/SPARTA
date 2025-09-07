@@ -98,3 +98,54 @@ div button:hover {
     background-color: #f8f8ff;
     border-radius: 15px;
 }
+
+.team-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* space between fields */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* Force modal form to stack */
+.modal .team-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+}
+
+/* Force form groups to stack */
+.modal .form-group {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+}
+
+/* Inputs full width */
+.modal .form-group input,
+.modal .form-group select,
+.modal .form-group textarea {
+  width: 100% !important;
+  margin-top: 6px !important;
+}
+

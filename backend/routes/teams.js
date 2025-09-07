@@ -177,6 +177,44 @@ router.get("/coordinators", async (req, res) => {
   }
 });
 
+// UPDATE team
+router.put("/team/:id", upload.single("teamIcon"), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = { ...req.body };
+
+    if (req.file) {
+      updates.teamIcon = `/uploads/teams/${req.file.filename}`;
+    }
+
+    if (updates.coordinators) {
+      updates.coordinators = JSON.parse(updates.coordinators);
+    }
+
+    const team = await Team.findByIdAndUpdate(id, updates, { new: true });
+    if (!team) return res.status(404).json({ message: "Team not found" });
+
+    res.json({ message: "Team updated successfully", team });
+  } catch (err) {
+    console.error("Error updating team:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// DELETE team
+router.delete("/team/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const team = await Team.findByIdAndDelete(id);
+
+    if (!team) return res.status(404).json({ message: "Team not found" });
+
+    res.json({ message: "Team deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting team:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 
 

@@ -9,6 +9,14 @@ const eventSchema = new mongoose.Schema({
   eventEndDate: { type: Date, required: true },
   description: { type: String, required: false },
   eventColor: { type: String, required: true },
+  location: { type: String, required: true },
+  coordinators: [
+    {
+      name: String,
+      email: String,
+      role: { type: String, enum: ["co-organizer", "sub-organizer"], default: "co-organizer" }
+    }
+  ],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Event', eventSchema);
