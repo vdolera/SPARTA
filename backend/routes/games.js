@@ -6,7 +6,7 @@ const Team = require("../models/Team");
 
 const router = express.Router();
 
-// shuffle utility
+// Randomize Team Matchup
 function shuffleArray(array) {
   const arr = [...array];
   for (let i = arr.length - 1; i > 0; i--) {
@@ -14,12 +14,12 @@ function shuffleArray(array) {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
-}
+};
 
 // storage for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/rules"); 
+    cb(null, "uploads/rules");
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -49,7 +49,7 @@ router.post("/games", upload.single("rules"), async (req, res) => {
     const parsedTeams = JSON.parse(teams || "[]");
     const parsedRequirements = JSON.parse(requirements || "[]");
     const parsedCoordinators = JSON.parse(coordinators || "[]");
-    
+
     // Check if Text or Uploaded Rules
     let finalRules = null;
     if (req.file) {
@@ -147,7 +147,7 @@ router.post("/games", upload.single("rules"), async (req, res) => {
         }
       }
 
-      // LB placeholders: max rounds = 2*(totalRounds-1)
+      // LB placeholders
       const lbTotalRounds = 2 * (totalRounds - 1);
       for (let r = 1; r <= lbTotalRounds; r++) {
         const numMatches = Math.pow(2, lbTotalRounds - r);
@@ -172,18 +172,18 @@ router.post("/games", upload.single("rules"), async (req, res) => {
     if (bracketType === "Round Robin") {
       const rrMatches = [];
       const teamCount = shuffledTeams.length;
-    
-      // If odd number of teams, add a dummy "BYE"
-      const teamsList = teamCount % 2 === 0 ? [...shuffledTeams] : [...shuffledTeams, "BYE"];
+
+      // If odd number of teams, add a dummy "BLANK"
+      const teamsList = teamCount % 2 === 0 ? [...shuffledTeams] : [...shuffledTeams, "BLANK"];
       const n = teamsList.length;
       const rounds = n - 1;
-    
+
       for (let r = 0; r < rounds; r++) {
         for (let i = 0; i < n / 2; i++) {
           const home = teamsList[i];
           const away = teamsList[n - 1 - i];
-    
-          if (home !== "BYE" && away !== "BYE") {
+
+          if (home !== "BLANK" && away !== "BLANK") {
             rrMatches.push({
               bracket: "RR",
               round: r + 1,
@@ -200,14 +200,14 @@ router.post("/games", upload.single("rules"), async (req, res) => {
         // Rotate teams (keep first fixed)
         teamsList.splice(1, 0, teamsList.pop());
       }
-    
+
       matches.push(...rrMatches);
     }
-    
+
     if (bracketType === "Swiss") {
       const swissMatches = [];
       const rounds = Math.ceil(Math.log2(shuffledTeams.length)); // Common Swiss: log2(N) rounds
-    
+
       for (let r = 1; r <= rounds; r++) {
         // Initial random pairings for round 1
         for (let i = 0; i < shuffledTeams.length; i += 2) {
@@ -224,10 +224,9 @@ router.post("/games", upload.single("rules"), async (req, res) => {
           });
         }
       }
-    
+
       matches.push(...swissMatches);
     }
-    
 
     const newGame = new Game({
       institution,
@@ -275,7 +274,7 @@ router.get('/games', async (req, res) => {
     if (!institution) {
       return res.status(400).json({ message: 'Institution is required' });
     }
-    
+
     const query = { institution, ...(event && { eventName: event }) };
     const games = await Game.find(query);
     res.json(games);
@@ -329,41 +328,37 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
         match.finalizeWinner = true;
 
         // Handle Winner Bracket
-       // Handle Winner Bracket → Loser Bracket
-if (match.bracket === "WB") {
-  // Find LB matches in the correct LB round
-  const lbRound = match.round; // WB round N loser goes to LB round N
-  const lbNextMatches = game.matches.filter(
-    (m) => m.bracket === "LB" && m.round === lbRound
-  );
+        if (match.bracket === "WB") {
+          // Find LB matches in the correct LB round
+          const lbRound = match.round; // WB round N loser goes to LB round N
+          const lbNextMatches = game.matches.filter(
+            (m) => m.bracket === "LB" && m.round === lbRound
+          );
 
-  // Find the LB match slot based on WB matchIndex
-  const lbTarget = lbNextMatches.find(
-    (m) => m.matchIndex === Math.floor(match.matchIndex / 2)
-  );
+          // Find the LB match slot based on WB matchIndex
+          const lbTarget = lbNextMatches.find(
+            (m) => m.matchIndex === Math.floor(match.matchIndex / 2)
+          );
 
-  if (lbTarget) {
-    // Assign to first empty slot
-    const emptySlot = lbTarget.teams.findIndex(t => !t?.name || t.name === "TBD");
-    if (emptySlot !== -1) {
-      lbTarget.teams[emptySlot] = { name: loserName, score: null };
-    }
-  }
+          if (lbTarget) {
+            // Assign to first empty slot
+            const emptySlot = lbTarget.teams.findIndex(t => !t?.name || t.name === "TBD");
+            if (emptySlot !== -1) {
+              lbTarget.teams[emptySlot] = { name: loserName, score: null };
+            }
+          }
 
-  // WB next round winner slot (already correct)
-  const nextWB = game.matches.find(
-    (m) =>
-      m.bracket === "WB" &&
-      m.round === match.round + 1 &&
-      m.matchIndex === Math.floor(match.matchIndex / 2)
-  );
-  if (nextWB) {
-    nextWB.teams[match.matchIndex % 2] = { name: winnerName, score: null };
-  }
-}
-
-
-
+          // WB next round winner slot (already correct)
+          const nextWB = game.matches.find(
+            (m) =>
+              m.bracket === "WB" &&
+              m.round === match.round + 1 &&
+              m.matchIndex === Math.floor(match.matchIndex / 2)
+          );
+          if (nextWB) {
+            nextWB.teams[match.matchIndex % 2] = { name: winnerName, score: null };
+          }
+        }
 
         // Handle Loser Bracket
         if (match.bracket === "LB") {

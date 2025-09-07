@@ -1,8 +1,8 @@
-import P_MainLayout from "../../components/P_MainLayout";
+import PlayerMainLayout from "../../components/P_MainLayout";
 import {useParams} from "react-router-dom";
 import React, {useState, useEffect} from "react";
 import "../../styles/LiveScores.css";
-import { TbCalendar, TbCalendarQuestion } from "react-icons/tb";
+import {TbCalendarQuestion} from "react-icons/tb";
 
 const PlayerLiveScores = () => {
   const { eventName } = useParams();
@@ -43,7 +43,7 @@ const PlayerLiveScores = () => {
   }
 
   return (
-    <P_MainLayout>
+    <PlayerMainLayout>
       
       <div className="live-scores-header">
         <h1>Live Scores for {decodedName}</h1>
@@ -75,7 +75,7 @@ const PlayerLiveScores = () => {
               )}
         </div>
       </div>
-    </P_MainLayout>
+    </PlayerMainLayout>
 
   )
 };

@@ -1,12 +1,12 @@
 import React from 'react';
-import P_SideMenu from './P_SideMenu';
+import PlayerSideMenu from './P_SideMenu';
 import Header from './Header';
 import '../styles/MainLayout.css';
 
-const P_MainLayout = ({ children }) => {
+const PlayerMainLayout = ({ children }) => {
   return (
     <>
-      <P_SideMenu />
+      <PlayerSideMenu />
       <Header />
       <div className="main-content">
         {children}
@@ -15,4 +15,4 @@ const P_MainLayout = ({ children }) => {
   );
 };
 
-export default P_MainLayout;
+export default PlayerMainLayout;

@@ -16,7 +16,7 @@ const fetchPlayers = async () => {
         `http://localhost:5000/api/players/team-pending?institution=${institution}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(teamName)}`
       );
       const data = await res.json();
-      setPlayers(data); // ✅ backend already filters, no need to filter again
+      setPlayers(data);
     } catch (err) {
       console.error("Error fetching pending players:", err);
     }
@@ -24,7 +24,8 @@ const fetchPlayers = async () => {
 
   useEffect(() => {
     fetchPlayers();
-  }, []);
+  }, // eslint-disable-next-line 
+  [institution, eventName, teamName]);
 
   // Approve player
 const handleApprove = async (id) => {
@@ -34,7 +35,7 @@ const handleApprove = async (id) => {
       });
       if (res.ok) {
         alert("Player approved by team!");
-        fetchPlayers(); // refresh list
+        fetchPlayers(); // refreshes the list
       }
     } catch (err) {
       console.error("Error approving player:", err);
@@ -51,7 +52,7 @@ const handleApprove = async (id) => {
       });
       if (res.ok) {
         alert("Player declined!");
-        fetchPlayers(); // refresh list
+        fetchPlayers(); // refreshes the list
       }
     } catch (err) {
       console.error("Error declining player:", err);
@@ -72,8 +73,8 @@ const handleApprove = async (id) => {
               <p>Team: {player.team}</p>
               <p>Game: {player.game}</p>
               <div className="actions">
-                <button className="approve-btn" onClick={() => handleApprove(player._id)}>Accept ✅</button>
-                <button className="decline-btn" onClick={() => handleDecline(player._id)}>Decline ❌</button>
+                <button className="approve-btn" onClick={() => handleApprove(player._id)}>Accept</button>
+                <button className="decline-btn" onClick={() => handleDecline(player._id)}>Decline</button>
               </div>
             </div>
           ))

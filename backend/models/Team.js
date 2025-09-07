@@ -9,7 +9,9 @@ const teamSchema = new mongoose.Schema(
     teamColor: { type: String, required: true },
     eventName: { type: String, required: true },
     teamIcon: { type: String, default: null },
+    coordinators: { type: [String], default: [] },
 
+    //Scores during every matches
     totalScore: { type: Number, default: 0 }, 
     roundScores: [
       {
@@ -17,9 +19,6 @@ const teamSchema = new mongoose.Schema(
         score: { type: Number, default: 0 },
       },
     ],
-
-    coordinators: { type: [String], default: [] }
-
   },
   { timestamps: true }
 );

@@ -6,7 +6,7 @@ import '../styles/SideMenu.css';
 import { useNavigate,useLocation } from 'react-router-dom';
 
 
-const SideMenu = () => {
+const PlayerSideMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -30,4 +30,4 @@ const SideMenu = () => {
   );
 };
 
-export default SideMenu;
+export default PlayerSideMenu;

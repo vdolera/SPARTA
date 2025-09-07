@@ -6,7 +6,7 @@ const Coordinator = require("../models/Coordinator");
 
 const router = express.Router();
 
-// CREATE Event (with optional coordinators)
+// CREATE Event
 router.post('/event', async (req, res) => {
   const { 
     userName, 
@@ -22,7 +22,6 @@ router.post('/event', async (req, res) => {
   } = req.body;
 
   try {
-    // Save event with lightweight coordinators (no accessKey)
     const event = new Event({ 
       userName, 
       email, 
@@ -33,6 +32,7 @@ router.post('/event', async (req, res) => {
       description, 
       eventColor,
       location,
+      //For editing
       coordinators: coordinators.map(c => ({
         name: c.name,
         email: c.email,
@@ -46,7 +46,7 @@ router.post('/event', async (req, res) => {
       if (coord.email) {
         const accessKey = crypto.randomBytes(6).toString("hex").toUpperCase();
 
-        // Save full coordinator details in separate collection
+        // Save to Coordinator table
         const coordinator = new Coordinator({
           email: coord.email,
           name: coord.name,
@@ -157,7 +157,7 @@ router.put('/event/:id', async (req, res) => {
     const { id } = req.params;
     const { coordinators, ...eventData } = req.body;
 
-    // Update Event with lightweight coordinators
+    // Update Event 
     const updatedEvent = await Event.findByIdAndUpdate(
       id,
       { 
@@ -181,13 +181,14 @@ router.put('/event/:id', async (req, res) => {
       for (let coord of coordinators) {
         if (!coord.email) continue;
 
-        // check if this coordinator already exists
+        // check if coordinator already exists
         const alreadyExists = existingCoords.some(c => c.email === coord.email);
 
         if (!alreadyExists) {
-          // new coordinator → assign accessKey + send email
+          // new coordinator receives access key in email
           const accessKey = crypto.randomBytes(6).toString("hex").toUpperCase();
 
+          // Save to Coordinator table
           const newCoord = new Coordinator({
             email: coord.email,
             name: coord.name,

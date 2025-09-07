@@ -1,4 +1,4 @@
-import P_MainLayout from "../../components/P_MainLayout";
+import PlayerMainLayout from "../../components/P_MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -47,7 +47,7 @@ const PlayerSpecificEvent = () => {
       };
 
     return (
-        <P_MainLayout>
+        <PlayerMainLayout>
 
             <div className="specific-event-container">
                     
@@ -109,7 +109,7 @@ const PlayerSpecificEvent = () => {
                 
             </div>
         
-        </P_MainLayout>
+        </PlayerMainLayout>
     );
 };
 

@@ -1,10 +1,9 @@
 const express = require("express");
 const Player = require("../models/Player");
-const crypto = require("crypto");
 
 const router = express.Router();
 
-// GET pending players
+// GET pending players to enter the insitution
 router.get("/players/pending", async (req, res) => {
   const { institution } = req.query; 
   try {
@@ -15,7 +14,7 @@ router.get("/players/pending", async (req, res) => {
   }
 });
 
-// GET pending players
+// GET pending players that are regesting for a team
 router.get("/players/team-pending", async (req, res) => {
   const { institution, eventName, team } = req.query; 
   try {
@@ -31,7 +30,7 @@ router.put("/players/team-approve/:id", async (req, res) => {
   try {
     const updatedPlayer = await Player.findByIdAndUpdate(
       req.params.id,
-      { teamApproval: true }, // ✅ mark teamApproval
+      { teamApproval: true },
       { new: true }
     );
     if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });

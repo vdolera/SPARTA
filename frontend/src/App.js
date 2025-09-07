@@ -1,4 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import BlockRoute from "../src/BlockRoute";
+
+//ADMIN
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/admin/ADMIN_Dashboard";
@@ -18,6 +21,8 @@ import PantheonRanks from "./pages/admin/ADMIN_PantheonRanks";
 import PantheonTeam from "./pages/admin/ADMIN_PantheonTeam";
 import Approval from "./pages/admin/ADMIN_PlayerApproval";
 import TeamPlayerApproval from "./pages/admin/ADMIN_TeamPendingPlayers";
+
+//PLAYER
 import PlayerDashboard from "./pages/player/PLAYER_Dashboard";
 import PlayerEvent from "./pages/player/PLAYER_Event";
 import PlayerSpecificEvent from "./pages/player/PLAYER_SpecificEvent";
@@ -28,7 +33,7 @@ import PlayerFeedback from "./pages/player/PLAYER_Feedback";
 import PlayerTeams from "./pages/player/PLAYER_Teams";
 import PlayerTeamPlayers from "./pages/player/PLAYER_TeamPlayerList";
 import PlayerLiveScores from "./pages/player/PLAYER_LiveScores"; 
-import BlockRoute from "../src/BlockRoute";
+
 
 export default function App() {
   return (

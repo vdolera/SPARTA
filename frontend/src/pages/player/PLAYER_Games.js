@@ -1,4 +1,4 @@
-import P_MainLayout from "../../components/P_MainLayout";
+import PlayerMainLayout from "../../components/P_MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -62,7 +62,7 @@ const PlayerGame = () => {
   };
 
   return (
-    <P_MainLayout>
+    <PlayerMainLayout>
       <div className="game-header"> 
         <h1>All Games for {eventName}</h1>
       </div>
@@ -110,7 +110,7 @@ const PlayerGame = () => {
         )}
       </div>
 
-    </P_MainLayout>
+    </PlayerMainLayout>
   );
 };
 

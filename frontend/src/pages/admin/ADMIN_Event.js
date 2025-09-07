@@ -10,21 +10,21 @@ const Event = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(null);
   const [editEvent, setEditEvent] = useState(null);
-  const [newSubOrganizer, setNewSubOrganizer] = useState(""); // for adding
+  const [, setNewSubOrganizer] = useState(""); // for adding
   const user = JSON.parse(localStorage.getItem("auth"));
   const userInstitution = user?.institution;
 
   useEffect(() => {
+    const fetchEvents = async () => {
+      const response = await fetch(
+        `http://localhost:5000/api/active-events?institution=${userInstitution}`
+      );
+      const data = await response.json();
+      setEvents(data);
+    }; 
+
     fetchEvents();
   }, [userInstitution]);
-
-  const fetchEvents = async () => {
-    const response = await fetch(
-      `http://localhost:5000/api/active-events?institution=${userInstitution}`
-    );
-    const data = await response.json();
-    setEvents(data);
-  };
 
   const handleAddEvent = () => {
     navigate("./create");
@@ -61,21 +61,6 @@ const Event = () => {
     } catch (err) {
       console.error("Update failed:", err);
     }
-  };
-
-  const handleAddSubOrganizer = () => {
-    if (!newSubOrganizer.trim()) return;
-    setEditEvent({
-      ...editEvent,
-      subOrganizers: [...(editEvent.subOrganizers || []), newSubOrganizer],
-    });
-    setNewSubOrganizer("");
-  };
-
-  const handleRemoveSubOrganizer = (index) => {
-    const updatedSubs = [...(editEvent.subOrganizers || [])];
-    updatedSubs.splice(index, 1);
-    setEditEvent({ ...editEvent, subOrganizers: updatedSubs });
   };
 
   // Filter events

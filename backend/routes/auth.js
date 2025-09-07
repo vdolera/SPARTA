@@ -7,7 +7,7 @@ const Institution = require('../models/Institution');
 
 const router = express.Router();
 
-// helper: get model by role
+// Helps get model by role
 const getModelByRole = (role) => {
   if (role === 'admin') return Admin;
   if (role === 'sub-organizer' || role === 'co-organizer') return Coordinator;
@@ -58,7 +58,7 @@ router.post('/auth/login/:role', async (req, res) => {
     }
 
     // PLAYER → password
-       if (role === 'player') {
+    if (role === 'player') {
       if (!user.approved) {
         return res.status(403).json({ message: 'Your account is not approved yet. Please wait for approval.' });
       }

@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const Team = require("../models/Team");
 const Game = require("../models/Game");
 const Coordinator = require("../models/Coordinator")
@@ -8,13 +7,13 @@ const path = require("path");
 
 const router = express.Router();
 
-// ✅ Setup multer storage
+// Setup multer storage(uplaoding thingz to a storage)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/teams/"); // folder where images are stored
+    cb(null, "uploads/teams/"); // folder to store images or files
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // unique name
+    cb(null, Date.now() + path.extname(file.originalname)); 
   },
 });
 const upload = multer({ storage });
@@ -40,7 +39,7 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
       institution,
       teamColor,
       eventName,
-      teamIcon: req.file ? `/uploads/teams/${req.file.filename}` : null, // ✅ save image path
+      teamIcon: req.file ? `/uploads/teams/${req.file.filename}` : null, // save image path
       coordinators: coordinators ? JSON.parse(coordinators) : []
     });
 
@@ -160,6 +159,7 @@ router.get("/teams/scores", async (req, res) => {
   }
 });
 
+// Get Coordinators to put assign in teams
 router.get("/coordinators", async (req, res) => {
   try {
     const { institution, event } = req.query;

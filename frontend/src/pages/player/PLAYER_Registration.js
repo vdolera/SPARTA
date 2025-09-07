@@ -1,4 +1,4 @@
-import P_MainLayout from "../../components/P_MainLayout";
+import PlayerMainLayout from "../../components/P_MainLayout";
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -82,7 +82,7 @@ const PlayerRegistration = () => {
   };
 
   return (
-    <P_MainLayout>
+    <PlayerMainLayout>
       <div className="registration-container">
         <h2>Register for a Game - {decodedName}</h2>
         <form onSubmit={handleSubmit} className="registration-form">
@@ -123,7 +123,7 @@ const PlayerRegistration = () => {
           <button type="submit">Register</button>
         </form>
       </div>
-    </P_MainLayout>
+    </PlayerMainLayout>
   );
 };
 
