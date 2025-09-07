@@ -14,6 +14,8 @@ const CreateGame = () => {
   const [availableTeams, setAvailableTeams] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
   const [coordinators, setCoordinators] = useState([]);
+  const [referees, setReferees] = useState([]);
+  const [refereeInput, setRefereeInput] = useState("");
   const [selectedCoordinators, setSelectedCoordinators] = useState([]);
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -44,13 +46,11 @@ const CreateGame = () => {
     );
   };
 
-
-
   // REQUIREMENT HANDLING
   const handleAddRequirement = () => setRequirements([...requirements, ""]);
   const handleRequirementChange = (idx, value) => {
     const updated = [...requirements];
-    updated.splice[idx] = value;
+    updated[idx] = value;
     setRequirements(updated);
   };
   const handleRemoveRequirement = (idx) => {
@@ -78,6 +78,7 @@ const CreateGame = () => {
       formData.append("teams", JSON.stringify(selectedTeams));
       formData.append("requirements", JSON.stringify(requirements));
       formData.append("coordinators", JSON.stringify(selectedCoordinators));
+      formData.append("referees", JSON.stringify(referees));
 
       if (rules instanceof File) {
         formData.append("rules", rules);
@@ -139,6 +140,19 @@ const CreateGame = () => {
       c.name.toLowerCase().includes(search.toLowerCase()) &&
       !selectedCoordinators.some((sel) => sel._id === c._id)
   );
+  
+  //Referee
+  const handleAddReferee = () => {
+    if (refereeInput.trim() && !referees.includes(refereeInput.trim())) {
+      setReferees((prev) => [...prev, refereeInput.trim()]);
+      setRefereeInput("");
+    }
+  };
+  
+  const handleRemoveReferee = (name) => {
+    setReferees((prev) => prev.filter((r) => r !== name));
+  };
+  
 
   return (
     <MainLayout>
@@ -280,9 +294,9 @@ const CreateGame = () => {
                 </div>
               </div>
 
+              {/* Add Coordinator */}
               <div className="game-organizers">
                 <h4>SUB-ORGANIZERS</h4>
-                
                 <div className="game-org-field">
                   <label>Assign Sub-Organizer/s for this game</label>
                     <input
@@ -324,10 +338,38 @@ const CreateGame = () => {
                     </span>
                   ))}
                 </div>
+
+                {/* Referee */}
+                <h4>Referee Name</h4>
+                <div className="game-ref-field">
+                  <label>Referee Name</label>
+                  <input
+                    type="text"
+                    placeholder="Type referee name and press Add"
+                    value={refereeInput}
+                    onChange={(e) => setRefereeInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" ? (e.preventDefault(), handleAddReferee()) : null}
+                  />
+                  <button type="button" onClick={handleAddReferee}>+ Add</button>
+                </div>
+
+                <div className="selected-tags">
+                  {referees.map((name, idx) => (
+                    <span key={idx} className="tag">
+                      {name}
+                      <button type="button" onClick={() => handleRemoveReferee(name)}>×</button>
+                    </span>
+                  ))}
+                </div>
               </div>
 
-              <div className="game-reqs-rules">
+             {/* <div className="game-referees">  
+              </div>
+              */}
+             
 
+               {/* Requirements */}
+              <div className="game-reqs-rules">
               <div className="game-reqs">
                 <h4>REQUIREMENTS</h4>
                   <button type="button" onClick={handleAddRequirement}>
@@ -376,9 +418,7 @@ const CreateGame = () => {
                     onChange={(e) => setRules(e.target.files[0])}
                   />
                 </div>
-
                 </div>
-
               </div>
             </form>
           </div>
@@ -387,13 +427,8 @@ const CreateGame = () => {
             <button type="button" onClick={() => navigate(-1)}>Cancel</button>
             <button type="submit" onClick={handleSubmit}>Create Game</button>
           </div>
-
-
-        </div>
-
-        
+        </div>     
       </div>
-
     </MainLayout>
   );
 };

@@ -23,6 +23,7 @@ const gameSchema = new mongoose.Schema({
   rules: { type: String, required: true },       
   eventName: { type: String, required: true },
   coordinators: { type: [String], default: [] },
+  referees: { type: [String], default: [] },
   bracketType: {
     type: String,
     enum: [

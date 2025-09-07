@@ -43,6 +43,7 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       eventName,
       bracketType,
       coordinators,
+      referees,
     } = req.body;
 
     // Translation(Parsing) thingy chuchu
@@ -241,6 +242,7 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       bracketType,
       matches,
       coordinators: parsedCoordinators,
+      referees,
       rules: finalRules,
     });
 
