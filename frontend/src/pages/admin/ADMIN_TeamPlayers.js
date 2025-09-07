@@ -82,7 +82,9 @@ const TeamPlayers = () => {
           </div>
         </div>
 
-        <button onClick={handlePending}>Pending Players</button>
+        <div className='team-pending-players'>
+          <button onClick={handlePending}>Pending Players</button>
+        </div>
 
         <div className='team-players-table'>
           {players.length === 0 ? (

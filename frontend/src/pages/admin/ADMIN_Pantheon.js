@@ -8,6 +8,10 @@ const Pantheon = () => {
   const user = JSON.parse(localStorage.getItem('auth'));
   const userInstitution = user?.institution;
 
+    useEffect(() => {
+    document.title = "SPARTA | Pantheon";
+  }, []);
+
   useEffect(() => {
     const fetchEvents = async () => {
       const response = await fetch(`http://localhost:5000/api/past-events?institution=${userInstitution}`);
@@ -25,7 +29,6 @@ const Pantheon = () => {
   return (
 
     <MainLayout>
-      <h1>Pantheon</h1>
 
       <div className="event-list">
        

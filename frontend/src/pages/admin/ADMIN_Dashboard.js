@@ -1,11 +1,16 @@
 import MainLayout from "../../components/MainLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Calendar from 'react-calendar';
 import Breadcrumbs from "../../components/Breadcrumbs";
 import 'react-calendar/dist/Calendar.css'; // Default calendar styling
 
 
 const Dashboard = () => {
+
+  useEffect(() => {
+    document.title = "SPARTA | Dashboard";
+  }, []);
+  
   const [date, setDate] = useState(new Date());
   const [events] = useState([
     { date: new Date(2023, 10, 15), title: "Team Meeting" },
