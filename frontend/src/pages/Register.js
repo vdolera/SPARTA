@@ -13,7 +13,11 @@ export default function RegisterPage() {
     eventName: '',
   });
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    document.title = "SPARTA | Register";
+  }, []);
 
   useEffect(() => {
     const fetchInstitutions = async () => {

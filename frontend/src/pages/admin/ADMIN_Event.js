@@ -14,6 +14,10 @@ const Event = () => {
   const user = JSON.parse(localStorage.getItem("auth"));
   const userInstitution = user?.institution;
 
+    useEffect(() => {
+    document.title = "SPARTA | Events";
+  }, []);
+
   useEffect(() => {
     const fetchEvents = async () => {
       const response = await fetch(
@@ -86,21 +90,15 @@ const Event = () => {
       <div className="event-list">
         {filteredEvents.map((event) => (
           <div key={event._id} className="event-item">
-            <div
-              className="event-color"
-              style={{ background: event.eventColor || "#A96B24" }}         
+
+            <div className="event-color" style={{ background: event.eventColor || "#A96B24" }}         
             >
                {/* Menu button */}
-              <MoreVertical
-                className="menu-icon"
-                onClick={() =>
-                  setMenuOpen(menuOpen === event._id ? null : event._id)
-                }
-              />
+              <MoreVertical size={20} className="menu-icon" onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)} />
               {menuOpen === event._id && (
                 <div className="menu-dropdown">
-                  <button onClick={() => setEditEvent(event)}>Edit</button>
-                  <button onClick={() => handleDelete(event._id)}>Delete</button>
+                  <button onClick={() => setEditEvent(event)}>EDIT</button>
+                  <button onClick={() => handleDelete(event._id)}>DELETE</button>
                 </div>
               )}
             </div>
@@ -122,11 +120,11 @@ const Event = () => {
       </div>
       {/* Edit Modal */}
       {editEvent && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>Edit Event</h2>
+        <div className="modal-event-overlay">
+          <div className="event-modal">
+            <h2>EDIT EVENT</h2>
             <form
-              className="event-forms"
+              className="event-forms-modal"
               onSubmit={(e) => {
                 e.preventDefault();
                 handleEditSave();
@@ -217,6 +215,7 @@ const Event = () => {
               </p>
               <button
                 type="button"
+                className="add-coordinator-btn"
                 onClick={() =>
                   setEditEvent({
                     ...editEvent,
@@ -227,19 +226,14 @@ const Event = () => {
                   })
                 }
               >
-                + Add Coordinator
+                + ADD COORDINATOR
               </button>
 
               <div>
                 {(editEvent.coordinators || []).map((coord, idx) => (
                   <div
                     key={idx}
-                    style={{
-                      marginBottom: "10px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                    }}
+                    className="coordinator-row"
                   >
                     <label>
                       Role:
@@ -305,9 +299,9 @@ const Event = () => {
                 ))}
               </div>
 
-              <div className="modal-actions">
-                <button type="submit">Save</button>
-                <button type="button" onClick={() => setEditEvent(null)}>
+              <div className="event-modal-actions">
+                <button className="modal-save-btn" type="submit">Save</button>
+                <button className="modal-cancel-btn" type="button" onClick={() => setEditEvent(null)}>
                   Cancel
                 </button>
               </div>

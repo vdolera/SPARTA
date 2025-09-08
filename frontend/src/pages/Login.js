@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css';
 
@@ -15,6 +15,10 @@ export default function LoginPage() {
   const [showLoginFailed, setShowLoginFailed] = useState(false);
 
   const navigate = useNavigate();
+
+    useEffect(() => {
+      document.title = "SPARTA | Login";
+    }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
