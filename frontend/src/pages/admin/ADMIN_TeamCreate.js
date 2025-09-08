@@ -177,7 +177,7 @@ const CreateTeam = () => {
 
                 {showDropdown &&
                   (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
-                    <ul className="dropdown">
+                    <ul className="dropdown" style={{listStyle: "none", paddingLeft: "0"}}>
                       {(search ? filteredCoordinators : coordinators.filter(
                         (c) => !selectedCoordinators.some((sel) => sel._id === c._id)
                       )).map((c) => (
@@ -207,9 +207,11 @@ const CreateTeam = () => {
               </div>
             </div>
 
-
+          <div className="lower-buttons">
             <button type="submit">Create Team</button>
-            <button onClick={handleCancel}>Cancel</button>
+              <button type="button" onClick={handleCancel}>Cancel</button>
+          </div>
+            
           </form>
         </div>
       </div>
