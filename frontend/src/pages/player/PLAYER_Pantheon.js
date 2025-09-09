@@ -1,6 +1,6 @@
 import PlayerMainLayout from "../../components/P_MainLayout";
 
-const Pantheon = () => {
+const PlayerPantheon = () => {
   return (
 
     <PlayerMainLayout>
@@ -10,4 +10,4 @@ const Pantheon = () => {
   )
 };
 
-export default Pantheon;
+export default PlayerPantheon;

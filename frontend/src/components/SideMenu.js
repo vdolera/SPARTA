@@ -30,7 +30,7 @@ const SideMenu = () => {
           <a href="/admin/approval"><FaUserCheck /> Approvals </a>
         </li>
         <li className={location.pathname === "/pantheon" ? "active" : ""}>
-          <a href="/pantheon"><GiGreekTemple /> Pantheon </a>
+          <a href="/admin/pantheon"><GiGreekTemple /> Pantheon </a>
         </li>
         <li className="logout-button">
           <button onClick={handleLogout}> Logout </button>
