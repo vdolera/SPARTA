@@ -107,66 +107,74 @@ const CreateTeam = () => {
 
         <div className="team-form-container">
           <form className="team-form" onSubmit={handleCreate}>
-            <div>
-              <label>Team Name:
-                <input
-                  type="text"
-                  value={teamName}
-                  onChange={(e) => setTeamName(e.target.value)}
-                  required
-                />
-              </label>
-            </div>
 
-            <div>
-              <label>Team Manager:
-                <input
-                  type="text"
-                  value={teamManager}
-                  onChange={(e) => setTeamManager(e.target.value)}
-                  required
-                />
-              </label>
-            </div>
+          <div style={{display:"flex", flexDirection:"row", gap:"5px"}}>
+              <div style={{display:"flex", flexDirection:"column", width:"250px", margin:"5px", padding:"5px", border:"2px solid green"}}>
+                <div>
+                  <label>Team Name:
+                    <input
+                      type="text"
+                      value={teamName}
+                      onChange={(e) => setTeamName(e.target.value)}
+                      required
+                    />
+                  </label>
+                </div>
 
-            <div>
-              <label>Manager Email:
-                <input
-                  type="email"
-                  value={managerEmail}
-                  onChange={(e) => setManagerEmail(e.target.value)}
-                  required
-                />
-              </label>
-            </div>
+                <div>
+                  <label>Team Manager:
+                    <input
+                      type="text"
+                      value={teamManager}
+                      onChange={(e) => setTeamManager(e.target.value)}
+                      required
+                    />
+                  </label>
+                </div>
 
-            <div>
-              <label className="color-picker">
-                Team Color:
-                <input
-                  type="color"
-                  value={teamColor}
-                  onChange={(e) => setTeamColor(e.target.value)}
-                  required
-                />
-              </label>
-            </div>
+                <div>
+                  <label>Manager Email:
+                    <input
+                      type="email"
+                      value={managerEmail}
+                      onChange={(e) => setManagerEmail(e.target.value)}
+                      required
+                    />
+                  </label>
+                </div>
+              </div>
 
-            <div>
-              <label>Team Icon:
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setTeamIcon(e.target.files[0])}
-                />
-              </label>
-            </div>
+              <div style={{display:"flex", flexDirection:"column", width:"250px", margin:"5px", padding:"5px", border:"2px solid green"}}>
+                <div>
+                  <label className="color-picker">
+                    Team Color:
+                    <input
+                      type="color"
+                      value={teamColor}
+                      onChange={(e) => setTeamColor(e.target.value)}
+                      required
+                    />
+                  </label>
+                </div>
 
+                <div>
+                  <label>Team Icon:
+                    <input
+                      style={{width:"250px"}}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setTeamIcon(e.target.files[0])}
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
             {/* Coordinators */}
-            <div>
+            <div style={{width:"500px", margin:"5px", padding:"5px", border:"2px solid green"}}>
               <label>Assign Sub-Organizer/s</label>
               <div className="multi-select">
                 <input
+                  style={{width:"250px"}}
                   type="text"
                   placeholder="Enter Name or Select"
                   value={search}

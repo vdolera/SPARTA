@@ -1,7 +1,8 @@
 import MainLayout from "../../components/MainLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight } from "react-icons/gi";
+import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight} from "react-icons/gi";
+import { FaRunning } from "react-icons/fa";
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
 import '../../styles/ADMIN_Games.css';
 import { FaCircleQuestion } from "react-icons/fa6";
@@ -26,7 +27,7 @@ const Game = () => {
     Badminton: <GiTennisRacket size={20} />,
     "Table Tennis": <MdSportsKabaddi size={20} />,
     Chess: <GiChessKnight size={20} />,
-    "Track and Field": "🏃‍♂️",
+    "Track and Field": <FaRunning size={20}/>,
   };
 
   useEffect(() => {

@@ -417,6 +417,7 @@ const CreateGame = () => {
                     accept=".pdf,.doc,.docx"
                     onChange={(e) => setRules(e.target.files[0])}
                   />
+                  
                 </div>
                 </div>
               </div>

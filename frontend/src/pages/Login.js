@@ -81,7 +81,7 @@ export default function LoginPage() {
     {showLoginSuccess && (
       <div className="modal-overlay">
         <div className="modal">
-          <h2>Login Successful 🎉</h2>
+          <h2>Login Successful</h2>
           <p>Welcome back!</p>
           <button onClick={() => setShowLoginSuccess(false)}>Continue</button>
         </div>
@@ -92,7 +92,7 @@ export default function LoginPage() {
     {showLoginFailed && (
       <div className="modal-overlay">
         <div className="modal">
-          <h3>❌ Login Failed</h3>
+          <h3>Login Failed</h3>
           <p>Invalid email, password, or access key. Please try again.</p>
           <button onClick={() => setShowLoginFailed(false)}>Close</button>
         </div>
