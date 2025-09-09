@@ -30,6 +30,10 @@ const Game = () => {
     "Track and Field": <FaRunning size={20}/>,
   };
 
+    useEffect(() => {
+      document.title = "SPARTA | Games";
+    }, []);
+
   useEffect(() => {
     const fetchGames = async () => {
       try {

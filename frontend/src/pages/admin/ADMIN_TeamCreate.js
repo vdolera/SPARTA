@@ -106,45 +106,46 @@ const CreateTeam = () => {
         </div>
 
         <div className="team-form-container">
+
           <form className="team-form" onSubmit={handleCreate}>
 
-          <div style={{display:"flex", flexDirection:"row", gap:"5px"}}>
-              <div style={{display:"flex", flexDirection:"column", width:"250px", margin:"5px", padding:"5px", border:"2px solid green"}}>
-                <div>
-                  <label>Team Name:
+          <div style={{display:"flex", flexDirection:"row", gap:"50px"}}>
+              <div style={{display:"flex", flexDirection:"column", width:"250px", margin:"5px", padding:"5px"}}>
+                <div className="input-group">
                     <input
                       type="text"
                       value={teamName}
                       onChange={(e) => setTeamName(e.target.value)}
                       required
+                      placeholder=" "
                     />
-                  </label>
+                  <label>Team Name</label>
                 </div>
 
-                <div>
-                  <label>Team Manager:
+                <div className="input-group">
                     <input
                       type="text"
                       value={teamManager}
                       onChange={(e) => setTeamManager(e.target.value)}
                       required
+                      placeholder=" "
                     />
-                  </label>
+                  <label>Team Manager</label>
                 </div>
 
-                <div>
-                  <label>Manager Email:
+                <div className="input-group">
                     <input
                       type="email"
                       value={managerEmail}
                       onChange={(e) => setManagerEmail(e.target.value)}
                       required
+                      placeholder=" "
                     />
-                  </label>
+                  <label>Manager Email</label>
                 </div>
               </div>
 
-              <div style={{display:"flex", flexDirection:"column", width:"250px", margin:"5px", padding:"5px", border:"2px solid green"}}>
+              <div style={{display:"flex", flexDirection:"column", width:"250px", margin:"5px", padding:"5px"}}>
                 <div>
                   <label className="color-picker">
                     Team Color:
@@ -156,21 +157,26 @@ const CreateTeam = () => {
                     />
                   </label>
                 </div>
+                  <h6> or you may upload the team logo</h6>
+                <div className="file-upload">
 
-                <div>
-                  <label>Team Icon:
+                  <span className="file-name">
+                     {teamIcon ? teamIcon.name : "No File Chosen"}
+                  </span>
+
+                  <label className="upload-btn">Choose File</label>
                     <input
                       style={{width:"250px"}}
                       type="file"
                       accept="image/*"
                       onChange={(e) => setTeamIcon(e.target.files[0])}
                     />
-                  </label>
+                  
                 </div>
               </div>
             </div>
             {/* Coordinators */}
-            <div style={{width:"500px", margin:"5px", padding:"5px", border:"2px solid green"}}>
+            <div style={{width:"90%", margin:"10px auto", paddingTop:"20px", borderTop:"1px solid #ccc"}}>
               <label>Assign Sub-Organizer/s</label>
               <div className="multi-select">
                 <input
@@ -185,7 +191,7 @@ const CreateTeam = () => {
 
                 {showDropdown &&
                   (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
-                    <ul className="dropdown" style={{listStyle: "none", paddingLeft: "0"}}>
+                    <ul className="dropdown">
                       {(search ? filteredCoordinators : coordinators.filter(
                         (c) => !selectedCoordinators.some((sel) => sel._id === c._id)
                       )).map((c) => (

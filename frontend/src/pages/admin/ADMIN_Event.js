@@ -14,7 +14,7 @@ const Event = () => {
   const user = JSON.parse(localStorage.getItem("auth"));
   const userInstitution = user?.institution;
 
-    useEffect(() => {
+  useEffect(() => {
     document.title = "SPARTA | Events";
   }, []);
 
