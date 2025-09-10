@@ -1,11 +1,11 @@
 import MainLayout from "../../components/MainLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight} from "react-icons/gi";
-import { FaRunning } from "react-icons/fa";
+import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennisBall} from "react-icons/gi";
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
-import '../../styles/ADMIN_Games.css';
+import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
+import '../../styles/ADMIN_Games.css';
 
 const Game = () => {
   const navigate = useNavigate();
@@ -21,13 +21,16 @@ const Game = () => {
   );
 
   const gameIcons = {
-    Basketball: <GiBasketballBall size={20} />,
-    Volleyball: <MdSportsVolleyball size={20} />,
-    Soccer: <GiSoccerBall size={20} />,
-    Badminton: <GiTennisRacket size={20} />,
-    "Table Tennis": <MdSportsKabaddi size={20} />,
-    Chess: <GiChessKnight size={20} />,
-    "Track and Field": <FaRunning size={20}/>,
+    basketball: <GiBasketballBall size={20} />,
+    volleyball: <MdSportsVolleyball size={20} />,
+    soccer: <GiSoccerBall size={20} />,
+    futsal: <GiSoccerBall size={20} />,
+    badminton: <GiTennisRacket size={20} />,
+    baseball: <BiSolidBaseball size={20} />,
+    softball: <BiBaseball size={20}/>,
+    'table tennis': <MdSportsKabaddi size={20} />,
+    tennis: <GiTennisBall size={20} />,
+    chess: <GiChessKnight size={20} />,
   };
 
     useEffect(() => {

@@ -179,18 +179,19 @@ const CreateGame = () => {
 
                   <label className="game-label">
                     Game Type:
-                    <select
-                      value={gameType}
-                      onChange={(e) => setGameType(e.target.value)}
-                      required
-                    >
+                    <select value={gameType} onChange={(e) => setGameType(e.target.value)} required >
+                      
                       <option value="Basketball">Basketball</option>
                       <option value="Volleyball">Volleyball</option>
                       <option value="Soccer">Soccer</option>
+                      <option value="Futsal">Futsal</option>  
                       <option value="Badminton">Badminton</option>
+                      <option value="Badminton">Baseball</option>                      
+                      <option value="Baseball">Softball</option>
                       <option value="Table Tennis">Table Tennis</option>
+                      <option value="Tennis">Tennis</option>
                       <option value="Chess">Chess</option>
-                      <option value="Track and Field">Track and Field</option>
+
                     </select>
                   </label>
 
