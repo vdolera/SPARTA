@@ -21,16 +21,16 @@ const Game = () => {
   );
 
   const gameIcons = {
-    basketball: <GiBasketballBall size={20} />,
-    volleyball: <MdSportsVolleyball size={20} />,
-    soccer: <GiSoccerBall size={20} />,
-    futsal: <GiSoccerBall size={20} />,
-    badminton: <GiTennisRacket size={20} />,
-    baseball: <BiSolidBaseball size={20} />,
-    softball: <BiBaseball size={20}/>,
-    'table tennis': <MdSportsKabaddi size={20} />,
-    tennis: <GiTennisBall size={20} />,
-    chess: <GiChessKnight size={20} />,
+    Basketball: GiBasketballBall,
+    Volleyball: MdSportsVolleyball,
+    Soccer: GiSoccerBall,
+    Futsal: GiSoccerBall,
+    Badminton: GiTennisRacket,
+    Baseball: BiSolidBaseball,
+    Softball: BiBaseball,
+    "Table Tennis": MdSportsKabaddi,
+    Tennis: GiTennisBall,
+    Chess: GiChessKnight,
   };
 
     useEffect(() => {
@@ -107,7 +107,7 @@ const Game = () => {
                   onClick={() => navigate(`/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`)}
                   style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >
-                  {React.cloneElement(icon, { size: 50 })}
+                  {icon && React.createElement(icon, { size: 50 })}
                   {combinedType}
                 </button>
 
