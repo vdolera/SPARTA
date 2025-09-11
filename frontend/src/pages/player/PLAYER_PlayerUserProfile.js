@@ -1,4 +1,4 @@
-import MainLayout from "../../components/MainLayout";
+import PlayerMainLayout from "../../components/P_MainLayout";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/PlayerProfile.css";
@@ -48,7 +48,7 @@ const PlayerUserProfile = () => {
   };
 
   return (
-    <MainLayout>
+    <PlayerMainLayout>
       <div className="player-profile-container">
         {isEditing ? (
           <div className="profile-form">
@@ -132,11 +132,11 @@ const PlayerUserProfile = () => {
                 </div>
               )}
             </div>
-            {/* <button onClick={() => setIsEditing(true)}>Edit Profile</button> */}
+            <button onClick={() => setIsEditing(true)}>Edit Profile</button> 
           </div>
         )}
       </div>
-    </MainLayout>
+    </PlayerMainLayout>
   );
 };
 

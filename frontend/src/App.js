@@ -25,11 +25,11 @@ import TeamPlayerApproval from "./pages/admin/ADMIN_TeamPendingPlayers";
 
 //PLAYER
 import PlayerDashboard from "./pages/player/PLAYER_Dashboard";
+import PlayerUserProfile from "./pages/player/PLAYER_PlayerUserProfile";
 import PlayerEvent from "./pages/player/PLAYER_Event";
 import PlayerSpecificEvent from "./pages/player/PLAYER_SpecificEvent";
 import PlayerGame from "./pages/player/PLAYER_Games";
 import PlayerRegistration from "./pages/player/PLAYER_Registration";
-import PlayerUserProfile from "./pages/player/PLAYER_PlayerUserProfile";
 import PlayerFeedback from "./pages/player/PLAYER_Feedback";
 import PlayerTeams from "./pages/player/PLAYER_Teams";
 import PlayerTeamPlayers from "./pages/player/PLAYER_TeamPlayerList";
@@ -65,6 +65,7 @@ export default function App() {
         <Route path="/admin/pantheon/:eventName/:teamName/players" element={<BlockRoute> <PantheonTeam /> </BlockRoute>} />
         {/*Player*/}
         <Route path="/dashboard" element={<BlockRoute> <PlayerDashboard /> </BlockRoute>} />
+        <Route path="/profile" element={<BlockRoute> <PlayerUserProfile /> </BlockRoute>} />
         <Route path="/event" element={<BlockRoute> <PlayerEvent /> </BlockRoute>} />
         <Route path="/event/:eventName" element={<PlayerSpecificEvent />} />
         <Route path="/event/:eventName/team" element={<BlockRoute> <PlayerTeams /> </BlockRoute>} />
