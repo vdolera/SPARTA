@@ -5,7 +5,7 @@ import "../../styles/PlayerProfile.css";
 
 const PlayerUserProfile = () => {
   //const user = JSON.parse(localStorage.getItem("auth"));
-  const {playerId} = useParams();
+  const {userId} = useParams();
   const [player, setPlayer] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("player");
@@ -13,7 +13,7 @@ const PlayerUserProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/players/${playerId}`);
+        const res = await fetch(`http://localhost:5000/api/players/${userId}`);
         const data = await res.json();
         setPlayer(data);
       } catch (err) {
@@ -21,7 +21,7 @@ const PlayerUserProfile = () => {
       }
     };
     fetchProfile();
-  }, [playerId]);
+  }, [userId]);
 
   const handleChange = (e) => {
     setPlayer({ ...player, [e.target.name]: e.target.value });
@@ -29,7 +29,7 @@ const PlayerUserProfile = () => {
 
   const handleSave = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/players/${playerId}/profile`, {
+      const res = await fetch(`http://localhost:5000/api/players/${userId}/profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(player),
