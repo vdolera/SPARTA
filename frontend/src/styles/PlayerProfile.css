@@ -1,107 +1,226 @@
 .player-profile-container {
-    width: 1000px;
-    border: 2px solid #333333;
-    margin: 25px;
-    display: flex;
-    flex-direction: column;
-    font-family: Poppins, Sans-Serif;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
-.profile-view { 
-    display: flex;
+.profile-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .profile-view {
     flex-direction: row;
+  }
+}
+
+/* Cards */
+.player-main-card,
+.other-info-card,
+.profile-form {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  flex: 1;
 }
 
 .player-main-card {
-    padding: 10px;
-    width: 200px;
-    min-height: 300px;
+    max-width: 15vw;
+    height: 55vh;
 }
 
 .other-info-card {
-    border: 2px solid orange;
-    padding: 10px;
-    width: 500px;
-    height: 300px;
+    width: 50vw;
+    height: 55vh;
 }
 
-.player-main-card, .other-info-card {
-    margin: 10px;
-    border: 2px solid #6a61a2;
-    border-radius: 10px;
+.other-info-card .profile-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px 20px;
+  align-items: start;
 }
 
+/* Make address wider */
+.other-info-card .profile-field.address-field {
+  grid-column: 1 / -1; /* spans across all columns */
+}
+
+.other-info-card .profile-field.address-field .profile-value-rect {
+  white-space: normal; /* allow wrapping */
+  word-wrap: break-word;
+}
+
+
+/* Profile picture */
 .profile-pic {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 10px;
-    margin: 10px;
-    width: 150px;
-    height: 150px;
-    border: 2px solid #6a61a2;
-    border-radius: 15px;
-}
-
-.profile-details {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.profile-field {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.profile-label {
-    margin-bottom: 6px;
-    margin-left: 4px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.profile-value-rect {
-  border: 2px solid #6a61a2;
-  border-radius: 10px;
-  width: 100px;
-  height: fit-content;
-  padding: 10px 12px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
+  text-align: center;
+  padding: 15px;
+  margin: 10px auto;
+  width: 200px;   /* bigger container */
+  height: auto;
+  border: none;   /* remove extra border, cleaner look */
+}
+
+.profile-pic img {
+  width: 100px;   /* large, fills most of the container */
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;   /* circular image */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  text-align: center;
 }
 
 
+.profile-pic p:first-of-type {
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Profile fields */
+.profile-details {
+  margin-top: 10px;
+}
+.profile-field {
+  margin-bottom: 12px;
+}
+.profile-label {
+  display: block;
+  font-size: 14px;
+  color: #666;
+}
+.profile-value-rect {
+  background: #f7f7f7;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 15px;
+  margin-top: 4px;
+}
+
+/* Tabs */
 .profile-tabs {
-    display: flex;
-    justify-content: start;
-    gap: 2rem;
-    margin-bottom: 1rem;
-    margin-left: 15px;
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
 }
-
 .profile-tabs button {
-  background: none;
-  font-size: 1rem;
-  font-weight: 500;
-  color: black;
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s ease-in-out;
+  font-weight: 700;
+}
+.profile-tabs button.active {
   border-radius: 5px 5px 0 0;
+  color: white;
+  font-weight: 500px;
+  background-color: #ce892c;
 }
 
 .profile-tabs button:hover {
-  color: white;
-
+ background-color: #1A2A49;
+ color: white;
+ border-radius: 5px 5px 0 0;
 }
 
-.profile-tabs button.active {
-  border-bottom: 3px solid #CE892C;
-  font-weight: bold;
+.tab-content p {
+  margin: 6px 0;
+}
+
+/* Form */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.form-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+/* Keep inputs styled like your rect values */
+.profile-input {
+  background: #f7f7f7;              /* same as .profile-value-rect */
+  border: 2px solid transparent;    /* invisible border by default */
+  border-radius: 6px;
+  padding: 6px 10px;                /* same spacing */
+  font-size: 15px;                  /* match */
+  margin-top: 4px;                  /* same vertical rhythm */
+  width: 100%;                      /* follow grid width, not expand */
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* Highlight inputs when editing */
+.is-editing .profile-input {
+  border-color: rgb(17, 20, 189);
+  outline: none;
+}
+
+/* Make address span full width */
+.address-field .profile-input {
+  width: 100%;                      /* use grid width */
+}
+
+/* Buttons */
+.profile-actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.edit-btn {
+  background-color: #c4c4c4;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #c99326;
+}
+
+.save-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #218838;
+}
+
+.cancel-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #b02a37;
 }

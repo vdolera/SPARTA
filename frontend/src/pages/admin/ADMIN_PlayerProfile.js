@@ -11,6 +11,10 @@ const PlayerProfile = () => {
   const [activeTab, setActiveTab] = useState("player");
 
   useEffect(() => {
+    document.title = "SPARTA | User Profile";
+  }, []);
+
+  useEffect(() => {
     const fetchProfile = async () => {
       try {
         const res = await fetch(`http://localhost:5000/api/players/${playerId}`);
@@ -77,8 +81,10 @@ const PlayerProfile = () => {
             <div className="player-main-card">
 
                 <div className="profile-pic">
-                  <img src={player.profilePicture || "default-pic.png"} alt="Profile" />
+                  <img src={player.profilePicture || "/default-pfp.jpg"} alt="Profile" onError={(e) => { e.target.src = "default-pic.png"; }} 
+/>
                   <p> <b>{player.playerName || "N/A"}</b> </p>
+                  <p> {player.institution}</p>
                 </div>
 
               <div className="profile-details">
@@ -87,7 +93,7 @@ const PlayerProfile = () => {
                   { label: "Sport", value: player.game || "N/A" },
                   { label: "Jersey Number", value: player.jerseyNumber || "N/A" },
                 ].map((field, idx) => (
-                  <div  className="profile-field" key={idx}>
+                  <div className="profile-field" key={idx}>
                     <span className="profile-label">
                       {field.label}
                     </span>
@@ -103,20 +109,28 @@ const PlayerProfile = () => {
             <div className="other-info-card">
 
               <div className="profile-tabs">
-                <button className={activeTab === "player" ? "active" : ""} onClick={() => setActiveTab("player")}> Player </button>
-                <button className={activeTab === "history" ? "active" : ""} onClick={() => setActiveTab("history")}> History </button>
-                <button className={activeTab === "documents" ? "active" : ""} onClick={() => setActiveTab("documents")}> Documents </button>
+                <button className={activeTab === "player" ? "active" : ""} onClick={() => setActiveTab("player")}> BASIC INFO </button>
+                <button className={activeTab === "history" ? "active" : ""} onClick={() => setActiveTab("history")}> HISTORY </button>
+                <button className={activeTab === "documents" ? "active" : ""} onClick={() => setActiveTab("documents")}> DOCUMENTS </button>
               </div>
               {/* Tab content rendering */}
               {activeTab === "player" && (
-                <div>
-                  <p><b>Contact:</b> {player.contactNumber || "N/A"}</p>
-                  <p><b>Address:</b> {player.permanentAddress || "N/A"}</p>
-                  <p><b>Birth Date:</b> {player.birthDate ? player.birthDate.substring(0,10) : "N/A"}</p>
-                  <p><b>Age:</b> {player.age || "N/A"}</p>
-                  <p><b>Weight:</b> {player.weight ? `${player.weight} kg` : "N/A"}</p>
-                  <p><b>Height:</b> {player.height ? `${player.height} cm` : "N/A"}</p>
-                  <p><b>Sex:</b> {player.sex || "N/A"}</p>
+                <div className="profile-details">
+                  {[
+                    { label: "Birth Date", value: player.birthDate ? player.birthDate.substring(0,10) : "N/A" },
+                    { label: "Age", value: player.age || "N/A" },
+                    { label: "Sex", value: player.sex || "N/A" },
+                    { label: "Contact", value: player.contactNumber || "N/A" },
+                    { label: "Address", value: player.permanentAddress || "N/A", className: "address-field" },
+                    { label: "Weight", value: player.weight ? `${player.weight} kg` : "N/A" },
+                    { label: "Height", value: player.height ? `${player.height} cm` : "N/A" },
+                    
+                  ].map((field, idx) => (
+                    <div className={`profile-field ${field.className || ""}`} key={idx}>
+                      <span className="profile-label">{field.label}</span>
+                      <div className="profile-value-rect">{field.value}</div>
+                    </div>
+                  ))}
                 </div>
               )}
               {activeTab === "history" && (

@@ -121,6 +121,7 @@ export default function RegisterPage() {
                 type="email"
                 name="email"
                 required
+                style={{width:"250px"}}
                 value={formData.email}
                 onChange={handleChange}
               />
@@ -132,6 +133,7 @@ export default function RegisterPage() {
                 type="password"
                 name="password"
                 required
+                style={{width:"250px"}}
                 value={formData.password}
                 onChange={handleChange}
               />
@@ -144,6 +146,7 @@ export default function RegisterPage() {
                  value={formData.institution}
                  onChange={handleChange}
                  required
+                 style={{width:"250px"}}
                 >
                 <option value="">Select Institution</option>
                  {institutions.map((inst) => (
