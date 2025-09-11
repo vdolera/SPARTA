@@ -11,7 +11,7 @@ const PlayerProfile = () => {
   const [activeTab, setActiveTab] = useState("player");
 
   useEffect(() => {
-    document.title = "SPARTA | User Profile";
+    document.title = "SPARTA | Player Profile";
   }, []);
 
   useEffect(() => {

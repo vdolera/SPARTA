@@ -82,18 +82,19 @@ const PlayerUserProfile = () => {
 
       <div className="profile-details">
         {[
-          { label: "Team", value: player.team || "N/A", name: "team" },
+          { label: "Team", value: player.team || "N/A", name: "team", editable: false },
           { label: "Sport", value: player.game || "N/A", name: "sport" },
-          { label: "Jersey Number", value: player.jerseyNumber || "N/A", name: "jerseyNumber" },
+          { label: "Jersey Number", value: player.jerseyNumber || "N/A", name: "jerseyNumber", editable: true },
         ].map((field, idx) => (
           <div className="profile-field" key={idx}>
             <span className="profile-label">{field.label}</span>
-            {isEditing ? (
+            {isEditing && field.editable ? (
               <input
                 name={field.name}
                 value={player[field.name] || ""}
                 onChange={handleChange}
                 className="profile-input"
+                placeholder={`Enter ${field.label}`}
               />
             ) : (
               <div className="profile-value-rect">{field.value}</div> )}
