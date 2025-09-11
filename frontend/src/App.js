@@ -65,12 +65,11 @@ export default function App() {
         <Route path="/admin/pantheon/:eventName/:teamName/players" element={<BlockRoute> <PantheonTeam /> </BlockRoute>} />
         {/*Player*/}
         <Route path="/dashboard" element={<BlockRoute> <PlayerDashboard /> </BlockRoute>} />
-        <Route path="/profile" element={<BlockRoute> <PlayerUserProfile /> </BlockRoute>} />
+        <Route path=":userId/profile" element={<BlockRoute> <PlayerUserProfile /> </BlockRoute>} />
         <Route path="/event" element={<BlockRoute> <PlayerEvent /> </BlockRoute>} />
         <Route path="/event/:eventName" element={<PlayerSpecificEvent />} />
         <Route path="/event/:eventName/team" element={<BlockRoute> <PlayerTeams /> </BlockRoute>} />
         <Route path="/event/:eventName/team/:teamName/players" element={<BlockRoute> <PlayerTeamPlayers /> </BlockRoute>} />
-        <Route path="/player/:playerId/userprofile" element={<BlockRoute> <PlayerUserProfile /> </BlockRoute>} />
         <Route path="/event/:eventName/game" element={<BlockRoute> <PlayerGame /> </BlockRoute>} />
         <Route path="/event/:eventName/registration" element={<BlockRoute> <PlayerRegistration /> </BlockRoute>} />
         <Route path="/event/:eventName/feedback" element={<BlockRoute> <PlayerFeedback /> </BlockRoute>} />
