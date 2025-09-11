@@ -154,10 +154,11 @@
     text-decoration: underline;
     transition: color 0.3s ease;
     border-radius: 15px;
-    padding: 5px;
+    padding: 5px 15px;
   }
   
   .switch-button:hover {
+    background-color: #CE892C;
     color: #ffffff;
   }
   

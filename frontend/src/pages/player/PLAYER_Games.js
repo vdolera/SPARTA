@@ -2,8 +2,9 @@ import PlayerMainLayout from "../../components/P_MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight } from "react-icons/gi";
+import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennisBall} from "react-icons/gi";
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
+import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
 import '../../styles/ADMIN_Games.css';
 
@@ -21,13 +22,16 @@ const PlayerGame = () => {
   );
 
   const gameIcons = {
-      Basketball: <GiBasketballBall size={20} />,
-      Volleyball: <MdSportsVolleyball size={20} />,
-      Soccer: <GiSoccerBall size={20} />,
-      Badminton: <GiTennisRacket size={20} />,
-      "Table Tennis": <MdSportsKabaddi size={20} />,
-      Chess: <GiChessKnight size={20} />,
-      "Track and Field": "🏃‍♂️",
+      Basketball: GiBasketballBall,
+      Volleyball: MdSportsVolleyball,
+      Soccer: GiSoccerBall,
+      Futsal: GiSoccerBall,
+      Badminton: GiTennisRacket,
+      Baseball: BiSolidBaseball,
+      Softball: BiBaseball,
+      "Table Tennis": MdSportsKabaddi,
+      Tennis: GiTennisBall,
+      Chess: GiChessKnight,
     };
 
   useEffect(() => {
@@ -101,7 +105,7 @@ const PlayerGame = () => {
                   onClick={() => navigate(`/event/game/${encodeURIComponent(combinedType)}`)}
                   style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >
-                  {React.cloneElement(icon, { size: 50 })}
+                  {icon && React.createElement(icon, { size: 50 })}
                   {combinedType}
                 </button>
               </div>
