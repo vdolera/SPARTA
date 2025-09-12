@@ -17,7 +17,7 @@ const PlayerTeams = () => {
 
   // Filter teams based on search query
   const filteredTeams = teams.filter(team =>
-    team.teamName.toLowerCase().includes(searchQuery.toLowerCase())
+    team.teamName().includes(searchQuery.toLowerCase())
   );
 
   useEffect(() => {
@@ -44,9 +44,11 @@ const PlayerTeams = () => {
 
   return (
     <PLayerMainLayout>
-      <h1>Teams for {decodedName}</h1>
+      
 
       <div className="teams-header-row">
+        <h3>Teams for {decodedName}</h3>
+
         <input
           type="text"
           className="team-search-bar"

@@ -1,6 +1,5 @@
 import PlayerMainLayout from "../../components/P_MainLayout";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { TiGroupOutline } from "react-icons/ti";
 import { LuSwords } from "react-icons/lu";
@@ -10,10 +9,14 @@ import '../../styles/ADMIN_SpecificEvents.css';
 
 const PlayerSpecificEvent = () => {
     const navigate = useNavigate();
-    const { eventName } = useParams();
+    const { eventName, teamName } = useParams();
     const decodedName = decodeURIComponent(eventName);
+    const decodedTeam = decodeURIComponent(teamName);
 
     const [event, setEventDetails] = useState(null);
+    const [teams, setTeams] = useState([]);
+    const user = JSON.parse(localStorage.getItem('auth'));
+    const userInstitution = user?.institution;
 
     useEffect(() => {
     const fetchEventDetails = async () => {
@@ -30,13 +33,31 @@ const PlayerSpecificEvent = () => {
       fetchEventDetails();
     }, [decodedName]);
 
+    useEffect(() => {
+      const fetchTeams = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/api/teams?institution=${encodeURIComponent(userInstitution)}&event=${encodeURIComponent(decodedName)}&teamName=${encodeURIComponent(decodedTeam)}`
+          );
+          const data = await response.json();
+          setTeams(data);
+        } catch (error) {
+          console.error("Error fetching teams:", error);
+        }
+      };
+
+    if (userInstitution && decodedName) {
+      fetchTeams();
+    }
+  }, [userInstitution, decodedName]);    
+
     const handleGameClick = (event) => {
         navigate(`/event/${encodeURIComponent(decodedName)}/game`);
       };
 
-    const handleTeamClick = (event) => {
-        navigate(`/event/${encodeURIComponent(decodedName)}/team`);
-      };  
+    const handleSelectTeam = (teamName) => {
+        navigate(`/event/${encodeURIComponent(decodedName)}/team/${encodeURIComponent(teamName)}/players`);
+    };
 
     const handleScoreClick = (event) => {
         navigate(`/event/${encodeURIComponent(decodedName)}/liveScores`);
@@ -51,8 +72,8 @@ const PlayerSpecificEvent = () => {
 
             <div className="specific-event-container">
                     
-                <div className="event-header" >
-                    <h2>{decodedName}</h2>
+                <div className="event-header">
+                    <h2>{decodedTeam}</h2>
                 </div>
                 
                 <div className="event-details">
@@ -77,30 +98,30 @@ const PlayerSpecificEvent = () => {
 
                 <div className="event-specifics">
 
-                    <button className="btn-team" onClick={handleTeamClick}>
+                    <button className="btn-team" onClick={() => handleSelectTeam(teams.teamName)}>
                       <div className="btn-content">
-                        <TiGroupOutline size={48} /> {/* Larger icon */}
+                        <TiGroupOutline size={48} />
                         <span>Team</span>
                       </div>
                     </button>
 
                     <button className="btn-game" onClick={handleGameClick}>
                       <div className="btn-content">
-                        <LuSwords size={48} /> {/* Larger icon */}
+                        <LuSwords size={48} />
                         <span>Game</span>
                       </div>
                     </button>
 
                     <button className="btn-score" onClick={handleScoreClick}>
                       <div className="btn-content">
-                        <MdOutlineScoreboard size={48} /> {/* Larger icon */}
+                        <MdOutlineScoreboard size={48} />
                         <span>Live Score</span>
                       </div>
                     </button>
 
                     <button className="btn-feedback" onClick={handleFeedbackClick}>
                       <div className="btn-content">
-                        <MdOutlineFeedback size={42} /> {/* Larger icon */}
+                        <MdOutlineFeedback size={42} />
                         <span>Feedback</span>
                       </div>
                     </button>

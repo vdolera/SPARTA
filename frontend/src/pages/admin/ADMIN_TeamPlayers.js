@@ -67,6 +67,7 @@ const TeamPlayers = () => {
   return (
     <MainLayout>
       <div className="team-players-container">
+
         <div className='team-players-header'>
           <div className='team-players-team' style={{ background: teamColor }}>
             <h2>{decodedTeam}</h2>
@@ -108,7 +109,7 @@ const TeamPlayers = () => {
                   {players.map((player, idx) => (
                     <tr key={player._id}>
                       <td>{player.playerName}</td>
-                      <td>{player.course}</td>
+                      <td>{player.course || "N/A"}</td>
                       <td>{player.game}</td>
                       <td>{player.eventName}</td>
                       <td>
