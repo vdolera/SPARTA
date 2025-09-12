@@ -10,7 +10,7 @@ import '../../styles/ADMIN_SpecificEvents.css';
 const PlayerSpecificEvent = () => {
     const navigate = useNavigate();
     const { eventName, teamName } = useParams();
-    const decodedName = decodeURIComponent(eventName);
+    const decodedEvent = decodeURIComponent(eventName);
     const decodedTeam = decodeURIComponent(teamName);
 
     const [event, setEventDetails] = useState(null);
@@ -22,7 +22,7 @@ const PlayerSpecificEvent = () => {
     const fetchEventDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/event?eventName=${encodeURIComponent(decodedName)}`
+          `http://localhost:5000/api/event?eventName=${encodeURIComponent(decodedEvent)}`
         );
         const data = await response.json();
         setEventDetails(data);
@@ -31,14 +31,16 @@ const PlayerSpecificEvent = () => {
        }
       };
       fetchEventDetails();
-    }, [decodedName]);
+    }, [decodedEvent]);
 
     useEffect(() => {
       const fetchTeams = async () => {
         try {
           const response = await fetch(
-            `http://localhost:5000/api/teams?institution=${encodeURIComponent(userInstitution)}&event=${encodeURIComponent(decodedName)}&teamName=${encodeURIComponent(decodedTeam)}`
-          );
+          `http://localhost:5000/api/team?institution=${encodeURIComponent(
+            userInstitution
+          )}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`
+        );
           const data = await response.json();
           setTeams(data);
         } catch (error) {
@@ -46,25 +48,25 @@ const PlayerSpecificEvent = () => {
         }
       };
 
-    if (userInstitution && decodedName) {
+    if (userInstitution && decodedEvent) {
       fetchTeams();
     }
-  }, [userInstitution, decodedName]);    
+  }, [userInstitution, decodedEvent, decodedEvent, decodedTeam]);    
 
     const handleGameClick = (event) => {
-        navigate(`/event/${encodeURIComponent(decodedName)}/game`);
+        navigate(`/event/${encodeURIComponent(decodedEvent)}/game`);
       };
 
     const handleSelectTeam = (teamName) => {
-        navigate(`/event/${encodeURIComponent(decodedName)}/team/${encodeURIComponent(teamName)}/players`);
+        navigate(`/event/${encodeURIComponent(decodedEvent)}/team/${encodeURIComponent(decodedTeam)}/players`);
     };
 
     const handleScoreClick = (event) => {
-        navigate(`/event/${encodeURIComponent(decodedName)}/liveScores`);
+        navigate(`/event/${encodeURIComponent(decodedEvent)}/liveScores`);
       };
 
     const handleFeedbackClick = (event) => {
-        navigate(`/event/${encodeURIComponent(decodedName)}/feedback`);
+        navigate(`/event/${encodeURIComponent(decodedEvent)}/feedback`);
       };
 
     return (
@@ -73,7 +75,7 @@ const PlayerSpecificEvent = () => {
             <div className="specific-event-container">
                     
                 <div className="event-header">
-                    <h2>{decodedTeam}</h2>
+                    <h2>{decodedEvent}</h2>
                 </div>
                 
                 <div className="event-details">
