@@ -18,52 +18,62 @@ const PlayerTeamPlayers = () => {
     document.title = "SPARTA | User Team";
   }, []);
 
-  useEffect(() => {
-    const fetchPlayers = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:5000/api/players?institution=${encodeURIComponent(
-            userInstitution
-          )}&eventName=${encodeURIComponent(
-            decodedEvent
-          )}&team=${encodeURIComponent(decodedTeam)}`
-        );
-        const data = await res.json();
-        setPlayers(data);
-      
-      } catch (err) {
-        console.error("Error fetching players:", err);
-      }
-    };
+  // Fetch players
+useEffect(() => {
+  const fetchPlayers = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/players?institution=${encodeURIComponent(
+          userInstitution
+        )}&eventName=${encodeURIComponent(
+          decodedEvent
+        )}&teamName=${encodeURIComponent(decodedTeam)}`
+      );
+      const data = await res.json();
+      setPlayers(data);
+    } catch (err) {
+      console.error("Error fetching players:", err);
+    }
+  };
 
+  if (userInstitution && decodedEvent && decodedTeam) {
     fetchPlayers();
-  }, [userInstitution, decodedEvent, decodedTeam]);
+  }
+}, [userInstitution, decodedEvent, decodedTeam]);
 
-    // Fetch team details
-    useEffect(() => {
-      const fetchTeamDetails = async () => {
-        try {
-          const res = await fetch(
-            `http://localhost:5000/api/team?institution=${encodeURIComponent(
-              userInstitution
-            )}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`
-          );
-          const data = await res.json();
-          setTeamColor(data.teamColor || "#808080");
-        } catch (err) {
-          console.error("Error fetching team details:", err);
-        }
-      };
-  
-      fetchTeamDetails();
-    }, [userInstitution, decodedEvent, decodedTeam]);
+// Fetch team details
+useEffect(() => {
+  const fetchTeamDetails = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/team?institution=${encodeURIComponent(
+          userInstitution
+        )}&eventName=${encodeURIComponent(
+          decodedEvent
+        )}&teamName=${encodeURIComponent(decodedTeam)}`
+      );
+      const data = await res.json();
+
+      // Handle both object or array response
+      const team = Array.isArray(data) ? data[0] : data;
+      setTeamColor(team?.teamColor || "#808080");
+    } catch (err) {
+      console.error("Error fetching team details:", err);
+    }
+  };
+
+  if (userInstitution && decodedEvent && decodedTeam) {
+    fetchTeamDetails();
+  }
+}, [userInstitution, decodedEvent, decodedTeam]);
+
 
   return (
     <PlayerMainLayout>
 
       <div className='team-players-header'>
           <div className='team-players-team' style={{ background: teamColor }}>
-            <h2>{decodedTeam}</h2>
+            <h2>{decodedTeam || players[0]?.teamName}</h2>
           </div>
 
           <div className='team-players-total'>
