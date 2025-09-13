@@ -30,19 +30,19 @@ const SpecificEvent = () => {
       fetchEventDetails();
     }, [decodedName]);
 
-    const handleGameClick = (event) => {
+    const handleGameClick = () => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/game`);
       };
 
-    const handleTeamClick = (event) => {
+    const handleTeamClick = () => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/team`);
       };  
 
-    const handleScoreClick = (event) => {
+    const handleScoreClick = () => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/liveScores`);
       };
 
-    const handleFeedbackClick = (event) => {
+    const handleFeedbackClick = () => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/feedback`);
       };
 
