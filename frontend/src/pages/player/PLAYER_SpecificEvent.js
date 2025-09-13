@@ -49,19 +49,19 @@ const PlayerSpecificEvent = () => {
     fetchPlayer();
   }, [user]);
 
-    const handleGameClick = (event) => {
+    const handleGameClick = () => {
         navigate(`/event/${encodeURIComponent(decodedName)}/game`);
       };
 
-    const handleTeamClick = (event) => {
+    const handleTeamClick = () => {
       navigate(`/event/${encodeURIComponent(decodedName)}/team/${encodeURIComponent(player.team)}/players`);
       };  
 
-    const handleScoreClick = (event) => {
+    const handleScoreClick = () => {
         navigate(`/event/${encodeURIComponent(decodedName)}/liveScores`);
       };
 
-    const handleFeedbackClick = (event) => {
+    const handleFeedbackClick = () => {
         navigate(`/event/${encodeURIComponent(decodedName)}/feedback`);
       };
 
