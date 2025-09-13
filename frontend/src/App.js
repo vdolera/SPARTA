@@ -68,7 +68,7 @@ export default function App() {
         <Route path=":userId/profile" element={<BlockRoute> <PlayerUserProfile /> </BlockRoute>} />
         <Route path="/event" element={<BlockRoute> <PlayerEvent /> </BlockRoute>} />
         <Route path="/event/:eventName" element={<PlayerSpecificEvent />} />
-        <Route path="/event/:eventName/team" element={<BlockRoute> <PlayerTeams /> </BlockRoute>} />
+        <Route path="/event/:eventName/team/:teamName" element={<BlockRoute> <PlayerTeams /> </BlockRoute>} />
         <Route path="/event/:eventName/team/:teamName/players" element={<BlockRoute> <PlayerTeamPlayers /> </BlockRoute>} />
         <Route path="/event/:eventName/game" element={<BlockRoute> <PlayerGame /> </BlockRoute>} />
         <Route path="/event/:eventName/registration" element={<BlockRoute> <PlayerRegistration /> </BlockRoute>} />
