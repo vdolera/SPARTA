@@ -14,7 +14,11 @@ const PlayerSpecificEvent = () => {
     const decodedName = decodeURIComponent(eventName);
 
     const [event, setEventDetails] = useState(null);
+    const [player, setPlayer] = useState(null);
 
+    const user = JSON.parse(localStorage.getItem("auth"));
+
+    // Fetch Event details
     useEffect(() => {
     const fetchEventDetails = async () => {
       try {
@@ -30,12 +34,27 @@ const PlayerSpecificEvent = () => {
       fetchEventDetails();
     }, [decodedName]);
 
+    // Fetch player details(To get the team name)
+  useEffect(() => {
+    const fetchPlayer = async () => {
+      try {
+        if (!user?._id) return;
+        const response = await fetch(`http://localhost:5000/api/players/${user._id}`);
+        const data = await response.json();
+        setPlayer(data);
+      } catch (error) {
+        console.error("Error fetching player details:", error);
+      }
+    };
+    fetchPlayer();
+  }, [user]);
+
     const handleGameClick = (event) => {
         navigate(`/event/${encodeURIComponent(decodedName)}/game`);
       };
 
     const handleTeamClick = (event) => {
-        navigate(`/event/${encodeURIComponent(decodedName)}/team`);
+      navigate(`/event/${encodeURIComponent(decodedName)}/team/${encodeURIComponent(player.team)}/players`);
       };  
 
     const handleScoreClick = (event) => {

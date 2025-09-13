@@ -27,7 +27,7 @@ const PlayerSideMenu = () => {
         </li>
 
         <li className={location.pathname.includes("/profile") ? "active" : ""}>
-          <Link to={`/${user?._id}/profile`}> <FaUserCircle /> User Profile </Link>
+          <Link to={`/${user._id}/profile`}> <FaUserCircle /> User Profile </Link>
         </li>
 
         <li className={location.pathname === "/event" ? "active" : ""}>
