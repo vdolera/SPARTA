@@ -1,6 +1,6 @@
 .header {
-  height: 95px;
-  background-color: #1A2A49;
+  height: 100px;
+  background-color: #a3620c;
   color: white;
   display: flex;
   align-items: center;
@@ -9,7 +9,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  left: 177px;
+  left: 195px;
   z-index: 1;
 }
 

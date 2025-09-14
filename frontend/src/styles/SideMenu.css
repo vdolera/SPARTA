@@ -1,25 +1,27 @@
 .sidemenu {
-  width: 170px;
+  width: 190px;
   height: 100vh;
-  background-image: url('./SideMenuBG.png');
-  background-size: cover;        /* cover the whole sidebar */
-  background-position: top left;   /* center the image */
-  background-repeat: no-repeat;
+  /* background-image: url('./SideMenuBG.png'); */
+  /* background-size: cover;
+  background-position: top left;
+  background-repeat: no-repeat; */
   position: fixed;
   left: 0;
   top: 0;
+  border-radius: 5px;
 }
 
 .SideMenu-Header-Pic {
   width: 160px;
   padding-top: 15px;
   padding-bottom: 5px;
-  padding-left: 15px;
+  padding-left: 10px;
 }
 
-.SideMenu-Admin-Pic {
-  width: 100px;
-  padding-left: 40px;
+.SideMenu-Admin-Pic, .SideMenu-Player-Pic {
+  width: 150px;
+  padding: 5px 40px 5px 25px;
+  background-color: #1A2A49;
   border-radius: 15px;
 }
 
@@ -34,7 +36,7 @@
 }
 
 .sidemenu-list a {
-  color: black;
+  color: white;
   display: inline-flex;
   padding: 5px 15px;
   padding-right: 20px;
@@ -44,6 +46,12 @@
   text-decoration: none;
   transition: 0.3s;
   border-radius: 15px;
+}
+
+.menu-buttons {
+  background-color: #1A2A49;
+  height: 100%;
+  padding-top: 10px;
 }
 
 .sidemenu-list a:hover {
@@ -73,6 +81,7 @@
 .logout-button {
   list-style: none;
   margin-top: 1rem;
+  margin-right: auto;
 }
 
 /* Actual button */

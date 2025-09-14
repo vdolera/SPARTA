@@ -41,7 +41,7 @@ const Dashboard = () => {
 
   return (
     <MainLayout>
-      <Breadcrumbs />
+      {/* <Breadcrumbs /> */}
       <h1>Dashboard</h1>
       <div className="dashboard-container">
         <div className="calendar-container">
