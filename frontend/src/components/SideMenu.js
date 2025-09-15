@@ -4,6 +4,7 @@ import { FaUserCheck } from "react-icons/fa";
 import { GiGreekTemple } from "react-icons/gi";
 import '../styles/SideMenu.css';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 
 const SideMenu = () => {
@@ -15,10 +16,13 @@ const SideMenu = () => {
     navigate('/');
   };
 
-  return (
+   return (
     <div className="sidemenu">
-      <img src="/SPARTA_HeadBar.png" alt="SPARTA_HeadBar" className="SideMenu-Header-Pic"/>
-      <img src="/SPARTA_admin.png" alt="SPARTA_AdminLabel" className="SideMenu-Admin-Pic"/>
+
+      <div className="sidemenu-logo">
+        <img src="/SPARTA-Logo2.png" alt="Logo" className="logo-img" />
+      </div>
+
       <ul className="sidemenu-list">
         <li className={location.pathname === "/admin/dashboard" ? "active" : ""}>
           <a href="/admin/dashboard"><RxDashboard /> Dashboard</a>
@@ -29,13 +33,27 @@ const SideMenu = () => {
         <li className={location.pathname === "/admin/approval" ? "active" : ""}>
           <a href="/admin/approval"><FaUserCheck /> Approvals </a>
         </li>
-        <li className={location.pathname === "/pantheon" ? "active" : ""}>
+        <li className={location.pathname === "/admin/pantheon" ? "active" : ""}>
           <a href="/admin/pantheon"><GiGreekTemple /> Pantheon </a>
         </li>
-        <li className="logout-button">
-          <button onClick={handleLogout}> Logout </button>
-        </li>
       </ul>
+
+      {/* Bottom user info */}
+      <div className="bottom-info">
+        <div>
+          <h2>ADMIN</h2>
+        </div>
+      
+        <div className="user-info">
+          {/* <span className="user-name">{currentUser.name}</span> */}
+          <span className="user-name"> USERNAME / EMAIL HERE </span>
+
+        </div>
+
+        <button className="s-logout-button" onClick={handleLogout}>Logout</button>
+
+      </div>
+
     </div>
   );
 };

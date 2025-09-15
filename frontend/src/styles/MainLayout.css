@@ -1,5 +1,5 @@
 .main-content {
-  margin-left: 190px; /* Pushes content to the right of sidebar */
+  margin-left: 200px; /* Pushes content to the right of sidebar */
   margin-top: 100px;   /* Pushes content below header */
   padding: 20px;
   min-height: calc(100vh - 95px);

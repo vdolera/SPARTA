@@ -1,34 +1,32 @@
 .sidemenu {
-  width: 190px;
+  width: 200px;
   height: 100vh;
-  /* background-image: url('./SideMenuBG.png'); */
-  /* background-size: cover;
-  background-position: top left;
-  background-repeat: no-repeat; */
+  background-color: #1A2A49;
   position: fixed;
   left: 0;
   top: 0;
-  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.SideMenu-Header-Pic {
-  width: 160px;
-  padding-top: 15px;
-  padding-bottom: 5px;
-  padding-left: 10px;
+.sidemenu-logo {
+  text-align: left;
+  padding-top: 10px;
+  padding-left: 10px;;
 }
 
-.SideMenu-Admin-Pic, .SideMenu-Player-Pic {
-  width: 150px;
-  padding: 5px 40px 5px 25px;
-  background-color: #1A2A49;
-  border-radius: 15px;
+.logo-img {
+  width: 100px;
+  height: auto;
 }
 
 .sidemenu-list {
   list-style: none;
   padding: 0;
-  margin-left: 20px;
+  margin: 0 0 0 20px; 
+  flex-grow: 1;
+  border-top: 2px solid white;
 }
 
 .sidemenu-list li {
@@ -38,9 +36,9 @@
 .sidemenu-list a {
   color: white;
   display: inline-flex;
+  align-items: center;
   padding: 5px 15px;
-  padding-right: 20px;
-  font-size: 15px;
+  font-size: 17px;
   gap: 5px;
   font-family: Poppins, sans-serif;
   text-decoration: none;
@@ -48,61 +46,70 @@
   border-radius: 15px;
 }
 
-.menu-buttons {
-  background-color: #1A2A49;
-  height: 100%;
-  padding-top: 10px;
-}
-
 .sidemenu-list a:hover {
+  background-color: #CE892C;
   color: white;
-  background-color: #1A2A49;
-  width: fit-content;
 }
 
 .sidemenu-list .active {
   background: #CE892C;
-  color: white;
   border-radius: 15px;
   width: fit-content;
 }
 
-.sidemenu-list .active a {
+.bottom-info {
+  border-top: 1px solid white;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+}
+
+.bottom-info h2 {
+  font-family:Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  text-align: center;
+  color: white;
+  border: 2px solid white;
+  padding: 5px 20px;
+  border-radius: 5px;
+  background-color: #063d73;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: white;
 }
 
-.logout-button {
-  position: absolute;
-  bottom: 25px;
-  left: 45px;
+.user-name {
+  font-size: 14px;
+  font-family: Poppins, sans-serif;
+  white-space: nowrap;
 }
 
-/* Logout button container */
-.logout-button {
-  list-style: none;
-  margin-top: 1rem;
-  margin-right: auto;
-}
-
-/* Actual button */
-.logout-button button {
-  width: 100%;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 8px;
-  background-color: #dc3545; /* red tone for danger/logout */
-  color: #fff;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
-}
-
-/* Hover effect */
-.logout-button button:hover {
-  background-color: #CE892C;
-}
-
-/* Pressed state */
-.logout-button button:active {
-  transform: scale(0.97);
-}
+/* Actual button */ 
+.s-logout-button {
+  margin-top: 20px;
+  border: none; 
+  padding: 5px 10px; 
+  border-radius: 5px; 
+  background-color: #dc3545; /* red tone for danger/logout */ 
+  color: #fff; 
+  font-size: 15px; 
+  cursor: pointer; 
+  transition: background 
+  0.2s ease, transform 0.1s ease; }
+  
+  /* Hover effect */ 
+  .s-logout-button button:hover {
+    background-color: #CE892C;
+  } 
+  
+  /* Pressed state */ 
+  .s-logout-button button:active {
+    transform: scale(0.97);
+  }
