@@ -28,7 +28,7 @@ useEffect(() => {
           userInstitution
         )}&eventName=${encodeURIComponent(
           decodedEvent
-        )}&teamName=${encodeURIComponent(decodedTeam)}`
+        )}&team=${encodeURIComponent(decodedTeam)}`
       );
       const data = await res.json();
       setPlayers(data);

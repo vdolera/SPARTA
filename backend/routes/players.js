@@ -78,7 +78,7 @@ router.put("/players/:id/register-game", async (req, res) => {
 // GET players by team
 router.get("/players", async (req, res) => {
   const { institution, eventName, team, teamApproval } = req.query;
-  const players = await Player.find({ institution, eventName, teamApproval: true });
+  const players = await Player.find({ institution, team, eventName, teamApproval: true });
   res.json(players);
 });
 

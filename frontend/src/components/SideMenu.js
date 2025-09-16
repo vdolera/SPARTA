@@ -21,6 +21,8 @@ const SideMenu = () => {
     navigate('/');
   };
 
+  const user = JSON.parse(localStorage.getItem("auth"));
+
    return (
     <div className="sidemenu">
 
@@ -51,7 +53,7 @@ const SideMenu = () => {
       
         <div className="user-info">
           {/* <span className="user-name">{currentUser.name}</span> */}
-          <span className="user-name"> USERNAME | EMAIL HERE </span>
+          {user?.playerName || "User Name"} | {user?.email || "No Email"}
 
         </div>
 
