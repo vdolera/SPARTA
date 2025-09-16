@@ -113,7 +113,7 @@ const TeamPlayers = () => {
                       <td>{player.game}</td>
                       <td>{player.eventName}</td>
                       <td>
-                        <button onClick={() => handleViewButton(player._id)}>View</button>
+                        <button onClick={() => handleViewButton(player._id)}> View Profile </button>
                       </td>
                     </tr>
                   ))}

@@ -114,3 +114,14 @@ th {
     background-color: #f4f4f4;
     font-weight: bold;
 }
+
+td > button {
+    background-color: #1a2a4978;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: Montserrat, sans-serif;
+    font-size: 14px;
+}
