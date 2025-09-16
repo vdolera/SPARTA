@@ -1,0 +1,99 @@
+.dashboard-container {
+  padding: 5px 0px;
+  margin: 5px 0px;
+  display: flex;
+  gap: 10px; 
+  flex-direction: row;
+}
+
+/* Container */
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  flex: 1;
+  justify-content: center;
+  padding: 0 20px;
+  margin: 0 25px;
+  width: 700px !important;
+  height: 300px;
+}
+
+/* Custom calendar */
+.custom-calendar {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  padding: 10px;
+  width: 800px !important;
+  margin: 25px 50px;
+  transform: scale(1.2);
+  transform-origin: top center;
+}
+
+/* Header */
+.react-calendar__navigation {
+  background: #1A2A49;
+  color: white;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+
+.react-calendar__navigation button {
+  color: white;
+  font-weight: bold;
+}
+
+.react-calendar__navigation button:hover {
+  color: #ffffff;
+  background: #ce892c !important ;
+}
+
+/* Days */
+.react-calendar__tile {
+  padding: 12px;
+  border-radius: 12px;
+  transition: background 0.2s ease;
+}
+
+.react-calendar__tile:hover {
+  background-color: #1a2a49 !important;
+  color: rgb(255, 255, 255);
+}
+
+/* Selected day */
+.react-calendar__tile--active {
+  background: #CE892c !important;
+  color: white;
+  font-weight: bold;
+  border-radius: 12px;
+}
+
+.selected-date {
+  border: 2px solid red;
+  margin: 10px;
+  padding: 10px 15px;
+}
+
+.upcoming-events {
+  border:none;
+  margin: 10px;
+  padding: 5px 15px;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.185);
+}
+
+.upcoming-events h3 {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #374151;
+  text-decoration: underline;
+}
+
+.upcoming-events ul li {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}

@@ -2,7 +2,8 @@ import MainLayout from "../../components/MainLayout";
 import { useState, useEffect } from "react";
 import Calendar from 'react-calendar';
 import Breadcrumbs from "../../components/Breadcrumbs";
-import 'react-calendar/dist/Calendar.css'; // Default calendar styling
+// import 'react-calendar/dist/Calendar.css';
+import "../../styles/Calendar.css"
 
 
 const Dashboard = () => {
@@ -41,20 +42,20 @@ const Dashboard = () => {
 
   return (
     <MainLayout>
-      {/* <Breadcrumbs /> */}
-      <h1>Dashboard</h1>
+
       <div className="dashboard-container">
         <div className="calendar-container">
-          <Calendar
-            onChange={onChange}
-            value={date}
-            tileContent={tileContent}
-          />
-          <div className="selected-date">
+
+          {/* <div className="selected-date">
             Selected Date: {date.toDateString()}
-          </div>
-          <div className="upcoming-events">
-            <h3>Upcoming Events</h3>
+          </div> */}
+
+          <Calendar onChange={onChange} value={date} tileContent={tileContent} className="custom-calendar" />
+          
+        </div>
+
+         <div className="upcoming-events">
+          <h3>UPCOMING EVENTS</h3>
             <ul>
               {events
                 .filter(event => event.date >= new Date())
@@ -65,9 +66,9 @@ const Dashboard = () => {
                     {event.date.toDateString()}: {event.title}
                   </li>
                 ))}
-            </ul>
-          </div>
+          </ul>
         </div>
+
       </div>
     </MainLayout>
   );
