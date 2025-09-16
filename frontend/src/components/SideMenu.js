@@ -52,9 +52,8 @@ const SideMenu = () => {
         </div>
       
         <div className="user-info">
-          {/* <span className="user-name">{currentUser.name}</span> */}
-          {user?.playerName || "User Name"} | {user?.email || "No Email"}
-
+          <span>{user?.playerName || "No Username Found"}</span>
+          <span>{user?.email || "No Email"} </span>
         </div>
 
         <button className="s-logout-button" onClick={handleLogout}>Logout</button>

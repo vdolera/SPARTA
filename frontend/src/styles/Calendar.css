@@ -2,7 +2,6 @@
   padding: 5px 0px;
   margin: 5px 0px;
   display: flex;
-  gap: 10px; 
   flex-direction: row;
 }
 
@@ -13,8 +12,7 @@
   text-align: center;
   flex: 1;
   justify-content: center;
-  padding: 0 20px;
-  margin: 0 25px;
+  margin: 0 0 25px 25px;
   width: 700px !important;
   height: 300px;
 }

@@ -81,8 +81,13 @@
 .user-info {
   display: flex;
   align-items: center;
+  text-align: center;
+  flex-direction: column;
   gap: 10px;
+  font-size: 12px;
+  font-family: Monteserrat, Sans-Serif;
   color: white;
+
 }
 
 .user-name {
