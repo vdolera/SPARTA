@@ -2,12 +2,17 @@ import { RxDashboard } from "react-icons/rx";
 import { AiOutlineFire } from "react-icons/ai";
 import { FaUserCheck } from "react-icons/fa";
 import { GiGreekTemple } from "react-icons/gi";
-import '../styles/SideMenu.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { BsThreeDotsVertical } from "react-icons/bs";
-
+import { useEffect } from "react";
+import '../styles/SideMenu.css';
 
 const SideMenu = () => {
+
+      useEffect(() => {
+      document.title = "SPARTA | Dashboard";
+    }, []);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -46,7 +51,7 @@ const SideMenu = () => {
       
         <div className="user-info">
           {/* <span className="user-name">{currentUser.name}</span> */}
-          <span className="user-name"> USERNAME / EMAIL HERE </span>
+          <span className="user-name"> USERNAME | EMAIL HERE </span>
 
         </div>
 

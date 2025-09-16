@@ -3,8 +3,9 @@ import { AiOutlineFire } from "react-icons/ai";
 import { GiGreekTemple } from "react-icons/gi";
 import { FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate, useLocation } from "react-router-dom"; 
-import "../styles/SideMenu.css";
 import { useEffect } from "react";
+import "../styles/SideMenu.css";
+
 
 const PlayerSideMenu = () => {
 
@@ -24,34 +25,43 @@ const PlayerSideMenu = () => {
 
   return (
     <div className="sidemenu">
-    <div>
-      {/* <img src="/SPARTA_HeadBar.png" alt="SPARTA_HeadBar" className="SideMenu-Header-Pic"/> */}
-      <img src="/Player-Tag.png" alt="SPARTA_PlayerLabel" className="SideMenu-Player-Pic"/>
-    </div>
-
-    <div className="menu-buttons">
-        <ul className="sidemenu-list">
-          <li className={location.pathname === "/dashboard" ? "active" : ""}>
-            <Link to="/dashboard"> <RxDashboard /> Dashboard </Link>
-          </li>
-
-          <li className={location.pathname.includes("/profile") ? "active" : ""}>
-            <Link to={`/${user._id}/profile`}> <FaUserCircle /> User Profile </Link>
-          </li>
-
-          <li className={location.pathname === "/event" ? "active" : ""}>
-            <Link to="/event"> <AiOutlineFire /> Event </Link>
-          </li>
-
-          <li className={location.pathname === "/pantheon" ? "active" : ""}>
-            <Link to="/pantheon"> <GiGreekTemple /> Pantheon </Link>
-          </li>
-
-          <li className="logout-button">
-            <button onClick={handleLogout}>Logout</button>
-          </li>
-        </ul>
+      
+      <div className="sidemenu-logo">
+        <img src="/SPARTA-Logo2.png" alt="Logo" className="logo-img"/>
       </div>
+
+      <ul className="sidemenu-list">
+        <li className={location.pathname === "/dashboard" ? "active" : ""}>
+          <Link to="/dashboard"> <RxDashboard /> Dashboard </Link>
+        </li>
+
+        <li className={location.pathname.includes("/profile") ? "active" : ""}>
+          <Link to={`/${user._id}/profile`}> <FaUserCircle /> User Profile </Link>
+        </li>
+
+        <li className={location.pathname === "/event" ? "active" : ""}>
+          <Link to="/event"> <AiOutlineFire /> Event </Link>
+        </li>
+
+        <li className={location.pathname === "/pantheon" ? "active" : ""}>
+          <Link to="/pantheon"> <GiGreekTemple /> Pantheon </Link>
+        </li>
+      </ul>
+
+
+        <div className="bottom-info">
+          <div>
+            <h2 style={{backgroundColor:"#CE892C"}}>PLAYER</h2>
+          </div>
+
+          <div className="user-info">
+            <span className="user-name"> USERNAME | EMAIL HERE </span>
+          </div>
+
+          <button className="s-logout-button" onClick={handleLogout}>Logout</button>
+        
+        </div>
+         
     </div>
   );
 };

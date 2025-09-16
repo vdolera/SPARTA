@@ -3,9 +3,10 @@
   flex-direction: column;
   gap: 20px;
   max-width: 1000px;
-  margin: auto;
+  margin: 25px auto;
   padding: 20px;
   font-family: Arial, sans-serif;
+  border-radius: 5px;
 }
 
 .profile-view {
@@ -27,7 +28,7 @@
   background: #fff;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.215);
   flex: 1;
 }
 
@@ -67,16 +68,16 @@
   text-align: center;
   padding: 15px;
   margin: 10px auto;
-  width: 200px;   /* bigger container */
+  width: 200px;
   height: auto;
-  border: none;   /* remove extra border, cleaner look */
+  border: none;
 }
 
 .profile-pic img {
-  width: 100px;   /* large, fills most of the container */
+  width: 100px;
   height: 100px;
   object-fit: cover;
-  border-radius: 50%;   /* circular image */
+  border-radius: 50%;
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
   text-align: center;
 }
@@ -158,13 +159,13 @@
 
 /* Keep inputs styled like your rect values */
 .profile-input {
-  background: #f7f7f7;              /* same as .profile-value-rect */
-  border: 2px solid transparent;    /* invisible border by default */
+  background: #f7f7f7;
+  border: 2px solid transparent;
   border-radius: 6px;
-  padding: 6px 10px;                /* same spacing */
-  font-size: 15px;                  /* match */
-  margin-top: 4px;                  /* same vertical rhythm */
-  width: 100%;                      /* follow grid width, not expand */
+  padding: 6px 10px;
+  font-size: 15px;
+  margin-top: 4px;
+  width: 100%;
   box-sizing: border-box;
   font-family: inherit;
 }
@@ -177,7 +178,7 @@
 
 /* Make address span full width */
 .address-field .profile-input {
-  width: 100%;                      /* use grid width */
+  width: 100%;
 }
 
 /* Buttons */
