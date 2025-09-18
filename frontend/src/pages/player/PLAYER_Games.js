@@ -116,7 +116,7 @@ const PlayerGame = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
+    /*const formData = new FormData();
       formData.append("playerName", playerName);
       formData.append("team", team);
       formData.append("game", game);
@@ -133,6 +133,23 @@ const PlayerGame = () => {
             body: formData,
           }
         );
+        */
+
+        const payload = {
+          playerName,
+          team,
+          game,
+        };
+        
+        try {
+          const res = await fetch(
+            `http://localhost:5000/api/players/${user._id}/register-game`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            }
+          );
 
         const data = await res.json();
 
