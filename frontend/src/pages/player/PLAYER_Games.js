@@ -226,7 +226,7 @@ const PlayerGame = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h2 className="modal-title">
-                Register for a Game <br /> {decodedName}
+                REGISTER FOR A GAME UNDER <br /> {decodedName}
               </h2>
               <button
                 className="modal-close"
@@ -283,6 +283,7 @@ const PlayerGame = () => {
               </div>
 
             {/* Requirements Section */}
+            <h3 className="requirements-title" style={{textAlign:"left"}}>Requirements:</h3>
             {requirements.length > 0 && (
               <div className="requirements-section">
                 <h3 className="requirements-title">Requirements</h3>
@@ -295,8 +296,13 @@ const PlayerGame = () => {
             )}
 
             {/* File Uploader */}
-            <div className="form-group">
-              <label className="form-label">Upload Requirements:</label>
+            <div className="file-upload">
+
+              <span className="file-name">Upload Game Requirements Here</span>
+              <label htmlFor="rulesFile" className="upload-btn">
+                Choose File
+              </label>
+              
               <input
                 type="file"
                 multiple
