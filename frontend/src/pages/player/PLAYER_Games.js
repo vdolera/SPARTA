@@ -19,6 +19,8 @@ const PlayerGame = () => {
 
   const [teams, setTeams] = useState([]);
   const [games, setGames] = useState([]);
+  const [requirements, setRequirements] = useState([]);
+  const [requirementFiles, setRequirementFiles] = useState([]);
 
   const [playerName, setPlayerName] = useState("");
   const [team, setTeam] = useState("");
@@ -91,48 +93,65 @@ const PlayerGame = () => {
     fetchTeams();
   }, [userInstitution, decodedName]);
 
+  // Fetch requirements whenever a game is selected
+    useEffect(() => {
+      if (!game) return;
+
+      const fetchRequirements = async () => {
+        try {
+          const res = await fetch(
+            `http://localhost:5000/api/games/requirements?game=${encodeURIComponent(game)}&event=${encodeURIComponent(decodedName)}`
+          );
+          const data = await res.json();
+          setRequirements(data.requirements || []);
+        } catch (err) {
+          console.error("Error fetching requirements:", err);
+        }
+      };
+
+      fetchRequirements();
+    }, [game, decodedName]);
+
   // Handle registration
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const payload = {
-      playerName,
-      team,
-      game,
-    };
+    const formData = new FormData();
+      formData.append("playerName", playerName);
+      formData.append("team", team);
+      formData.append("game", game);
 
-    try {
-      const res = await fetch(
-        `http://localhost:5000/api/players/${user._id}/register-game`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+      requirementFiles.forEach((file) => {
+        formData.append("requirements", file);
+      });
+
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/players/${user._id}/register-game`,
+          {
+            method: "PUT",
+            body: formData,
+          }
+        );
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert("Successfully registered for the game!");
+          setModalOpen(false);
+        } else {
+          alert(data.message || "Registration failed");
         }
-      );
-
-      const data = await res.json();
-
-      if (res.ok) {
-        alert("Successfully registered for the game!");
-        setModalOpen(false); // close modal
-        // reset form
-        setPlayerName("");
-        setTeam("");
-        setGame("");
-      } else {
-        alert(data.message || "Registration failed");
+      } catch (err) {
+        console.error("Error registering player:", err);
+        alert("Something went wrong.");
       }
-    } catch (err) {
-      console.error("Error registering player:", err);
-      alert("Something went wrong.");
-    }
-  };
+    };
 
   return (
     <PlayerMainLayout>
       <div className="game-header">
-        <h1>All Games for {eventName}</h1>
+        <h2>All Games for {eventName}</h2>
       </div>
 
       <div className="game-header-row">
@@ -188,30 +207,37 @@ const PlayerGame = () => {
       {modalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
-
             <div className="modal-header">
-               <button className="modal-close" onClick={() => setModalOpen(false)} > ✖ </button>
-              <h2>Register for a Game <br /> {decodedName}</h2>
+              <h2 className="modal-title">
+                Register for a Game <br /> {decodedName}
+              </h2>
+              <button
+                className="modal-close"
+                onClick={() => setModalOpen(false)}
+              >
+                ✖
+              </button>
             </div>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium">Player Name:</label>
+
+            <form onSubmit={handleSubmit} className="modal-form">
+              <div className="form-group">
+                <label className="form-label">Player Name:</label>
                 <input
                   type="text"
                   value={playerName}
                   onChange={(e) => setPlayerName(e.target.value)}
                   required
-                  className="w-full border rounded-lg p-2"
+                  className="form-input"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium">Team:</label>
+              <div className="form-group">
+                <label className="form-label">Team:</label>
                 <select
                   value={team}
                   onChange={(e) => setTeam(e.target.value)}
                   required
-                  className="w-full border rounded-lg p-2"
+                  className="form-input"
                 >
                   <option value="">Select Team</option>
                   {teams.map((t) => (
@@ -222,13 +248,13 @@ const PlayerGame = () => {
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium">Game:</label>
+              <div className="form-group">
+                <label className="form-label">Game:</label>
                 <select
                   value={game}
                   onChange={(e) => setGame(e.target.value)}
                   required
-                  className="w-full border rounded-lg p-2"
+                  className="form-input"
                 >
                   <option value="">Select Game</option>
                   {games.map((g) => (
@@ -239,12 +265,36 @@ const PlayerGame = () => {
                 </select>
               </div>
 
-              <button type="submit" className="game-register-button w-full">
-                Register
+            {/* Requirements Section */}
+            {requirements.length > 0 && (
+              <div className="requirements-section">
+                <h3 className="requirements-title">Requirements</h3>
+                <ul className="requirements-list">
+                  {requirements.map((req, index) => (
+                    <li key={index}>{req}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* File Uploader */}
+            <div className="form-group">
+              <label className="form-label">Upload Requirements:</label>
+              <input
+                type="file"
+                multiple
+                onChange={(e) => setRequirementFiles(Array.from(e.target.files))}
+                className="form-input-file"
+              />
+            </div>
+
+              <button type="submit" className="form-submit">
+                Register for Game
               </button>
             </form>
           </div>
         </div>
+
       )}
     </PlayerMainLayout>
   );

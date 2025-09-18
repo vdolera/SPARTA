@@ -46,10 +46,6 @@ const Dashboard = () => {
       <div className="dashboard-container">
         <div className="calendar-container">
 
-          {/* <div className="selected-date">
-            Selected Date: {date.toDateString()}
-          </div> */}
-
           <Calendar onChange={onChange} value={date} tileContent={tileContent} className="custom-calendar" />
           
         </div>

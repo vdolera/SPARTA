@@ -167,7 +167,7 @@ button.game-button {
   flex-direction: column;
   text-align: center;
   font-family: Arial, Helvetica, sans-serif;
-  border: 2px solid red;
+  width: 400px;
 }
 
 /* Smooth pop-up animation */
@@ -198,7 +198,7 @@ button.game-button {
 }
 
 .modal-content button[type="submit"] {
-  background-color: #2563eb; /* blue */
+  background-color: #1A2A49; /* blue */
   color: white;
   padding: 0.75rem;
   border: none;
@@ -209,5 +209,31 @@ button.game-button {
 }
 
 .modal-content button[type="submit"]:hover {
-  background-color: #1e4fd7; /* darker blue on hover */
+  background-color: #ce892c; /* darker blue on hover */
+}
+
+.requirements-section {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f9fafb;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.requirements-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.requirements-list {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin: 0;
+}
+
+.form-input-file {
+  border: 1px solid #ccc;
+  padding: 0.4rem;
+  border-radius: 6px;
 }
