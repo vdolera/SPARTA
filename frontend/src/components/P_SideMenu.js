@@ -55,7 +55,8 @@ const PlayerSideMenu = () => {
           </div>
 
           <div className="user-info">
-          {user?.playerName || "User Name"} | {user?.email || "No Email"}
+          <span> {user?.playerName || "User Name"} </span>
+          <span> {user?.email || "No Email"} </span> 
           </div>
 
           <button className="s-logout-button" onClick={handleLogout}>Logout</button>
