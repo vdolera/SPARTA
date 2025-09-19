@@ -21,7 +21,7 @@ const Event = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       const response = await fetch(
-        `http://localhost:5000/api/active-events?institution=${userInstitution}`
+        `http://localhost:5000/api/active-events?institution=${userInstitution}&email=${user.email}&role=${user.role}`
       );
       const data = await response.json();
       setEvents(data);
@@ -58,8 +58,8 @@ const Event = () => {
           body: JSON.stringify(editEvent),
         }
       );
-      const updated = await res.json();
-      setEvents(events.map((e) => (e._id === updated._id ? updated : e)));
+      const { updatedEvent } = await res.json();
+      setEvents(events.map((e) => (e._id === updatedEvent._id ? updatedEvent : e)));
       setEditEvent(null);
       setNewSubOrganizer("");
     } catch (err) {

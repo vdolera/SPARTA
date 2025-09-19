@@ -100,7 +100,7 @@ router.get('/events', async (req, res) => {
 });
 
 // GET all active events by Institution
-router.get('/active-events', async (req, res) => {
+/*router.get('/active-events', async (req, res) => {
   try {
     const { institution } = req.query;
     const today = new Date();
@@ -110,7 +110,35 @@ router.get('/active-events', async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch events', error: err.message });
   }
+});*/
+
+// GET all active events by Institution 
+router.get("/active-events", async (req, res) => {
+  try {
+    const { institution, email, role } = req.query;
+    const today = new Date();
+    let events = [];
+
+    if (role === "admin") {
+      events = await Event.find({
+        institution,
+        eventEndDate: { $gte: today },
+      });
+    } else if (role === "co-organizer" || role === "sub-organizer") {
+      events = await Event.find({
+        institution,
+        eventEndDate: { $gte: today },
+        "coordinators.email": { $regex: new RegExp(`^${email}$`, "i") },
+        "coordinators.role": role
+      });
+    }
+
+    res.json(events);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch events", error: err.message });
+  }
 });
+
 
 // GET all past events by Institution
 router.get('/past-events', async (req, res) => {
