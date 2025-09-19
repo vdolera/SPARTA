@@ -47,7 +47,7 @@
 
 }
 
-.game-details select, .game-details > input {
+.game-details select > input, .game-details > input {
   width: fit-content;
   font-size: 13px;
   padding: 0.5rem 1rem;
@@ -158,8 +158,8 @@
   padding: 10px;
 }
 
-.game-reqs > button[type="button"] {
-  margin-top: 5px;
+.game-reqs > button[type="button"], .game-ref-field > button[type="button"] {
+  margin: 5px auto;
   display: inline-block;
   background-color: #1A2A49;
   text-align: center;
@@ -257,6 +257,7 @@ textarea:focus {
   color: #555;
   font-style: italic;
 }
+
 .lower-buttons button{
   padding: 10px 15px;
   border: none;

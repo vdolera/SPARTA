@@ -343,10 +343,10 @@ const CreateGame = () => {
                 {/* Referee */}
                 <h4>Referee Name</h4>
                 <div className="game-ref-field">
-                  <label>Referee Name</label>
                   <input
                     type="text"
                     placeholder="Type referee name and press Add"
+                    style={{margin: "5px"}}
                     value={refereeInput}
                     onChange={(e) => setRefereeInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" ? (e.preventDefault(), handleAddReferee()) : null}
@@ -363,12 +363,7 @@ const CreateGame = () => {
                   ))}
                 </div>
               </div>
-
-             {/* <div className="game-referees">  
-              </div>
-              */}
              
-
                {/* Requirements */}
               <div className="game-reqs-rules">
               <div className="game-reqs">
@@ -381,6 +376,7 @@ const CreateGame = () => {
                       <input
                         type="text"
                         value={req}
+                        style={{margin: "5px"}}
                         onChange={(e) => handleRequirementChange(idx, e.target.value)}
                         required
                         placeholder={`Requirement ${idx + 1}`}
