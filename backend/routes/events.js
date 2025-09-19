@@ -113,23 +113,30 @@ router.get('/events', async (req, res) => {
 });*/
 
 // GET all active events by Institution 
+// GET all active events by Institution 
 router.get("/active-events", async (req, res) => {
   try {
     const { institution, email, role } = req.query;
     const today = new Date();
+
     let events = [];
 
     if (role === "admin") {
+      // Admins can see all events
       events = await Event.find({
         institution,
         eventEndDate: { $gte: today },
       });
     } else if (role === "co-organizer" || role === "sub-organizer") {
+      // Coordinators only see events they are assigned to
+      const coords = await Coordinator.find({ email, institution});
+
+      const eventName = coords.map(c => c.eventName);
+
       events = await Event.find({
         institution,
         eventEndDate: { $gte: today },
-        "coordinators.email": { $regex: new RegExp(`^${email}$`, "i") },
-        "coordinators.role": role
+        eventName: { $in: eventName }
       });
     }
 
@@ -138,6 +145,7 @@ router.get("/active-events", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch events", error: err.message });
   }
 });
+
 
 
 // GET all past events by Institution
