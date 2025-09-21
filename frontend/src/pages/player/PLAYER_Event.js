@@ -17,7 +17,7 @@ const PlayerEvent = () => {
       setEvents(data);
     };
     fetchEvents();
-  }, [userInstitution]);
+  }, [userInstitution, user.email, user.role]);
   
   const handleEventClick = (event) => {
     navigate(`/event/${encodeURIComponent(event.eventName)}`);

@@ -20,7 +20,7 @@ const PlayerGame = () => {
   const [teams, setTeams] = useState([]);
   const [games, setGames] = useState([]);
   const [requirements, setRequirements] = useState([]);
-  const [requirementFiles, setRequirementFiles] = useState([]);
+  const [, setRequirementFiles] = useState([]);
 
   const [playerName, setPlayerName] = useState("");
   const [team, setTeam] = useState("");

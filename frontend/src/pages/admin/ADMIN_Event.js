@@ -26,7 +26,7 @@ const Event = () => {
       setEvents(data);
     }; 
     fetchEvents();
-  }, [userInstitution]);
+  }, [userInstitution, user.email, user.role]);
 
   const handleAddEvent = () => {
     navigate("./create");
