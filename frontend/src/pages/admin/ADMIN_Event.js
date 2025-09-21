@@ -80,9 +80,11 @@ const Event = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+        {user.role === "admin" && (
         <button className="new-event-btn" onClick={handleAddEvent}>
           + New Event
         </button>
+        )}
       </div>
 
       <div className="event-list">
@@ -91,13 +93,17 @@ const Event = () => {
 
             <div className="event-color" style={{ background: event.eventColor || "#A96B24" }}         
             >
-               {/* Menu button */}
-              <MoreVertical size={20} className="menu-icon" onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)} />
-              {menuOpen === event._id && (
-                <div className="menu-dropdown">
-                  <button onClick={() => setEditEvent(event)}>EDIT</button>
-                  <button onClick={() => handleDelete(event._id)}>DELETE</button>
-                </div>
+              {/* Menu button */}
+              {user.role === "admin" && (
+                <>
+                  <MoreVertical size={20} className="menu-icon" onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)} />
+                  {menuOpen === event._id && (
+                    <div className="menu-dropdown">
+                      <button onClick={() => setEditEvent(event)}>EDIT</button>
+                      <button onClick={() => handleDelete(event._id)}>DELETE</button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
 

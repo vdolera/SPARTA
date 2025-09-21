@@ -35,7 +35,7 @@ const Teams = () => {
       }
     };
     fetchCoordinators();
-  }, [decodedName]);
+  }, [userInstitution, decodedName]);
 
 
   const filteredTeams = teams.filter((team) =>
@@ -48,22 +48,21 @@ const Teams = () => {
       !editTeam?.coordinators?.some((sel) => sel._id === c._id)
   );
 
-
-  const fetchTeams = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/teams?institution=${encodeURIComponent(
-          userInstitution
-        )}&event=${encodeURIComponent(decodedName)}`
-      );
-      const data = await response.json();
-      setTeams(data);
-    } catch (error) {
-      console.error("Error fetching teams:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/teams?institution=${encodeURIComponent(
+            userInstitution
+          )}&event=${encodeURIComponent(decodedName)}`
+        );
+        const data = await response.json();
+        setTeams(data);
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+      }
+    };
+
     if (userInstitution && decodedName) {
       fetchTeams();
     }
@@ -136,9 +135,11 @@ const Teams = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{ marginRight: "16px" }}
         />
+        {(user.role === "admin" || user.role === "co-organizer") && (
         <button className="new-team-btn" onClick={handleAddTeam}>
           + New Team
         </button>
+        )}
       </div>
 
       <div className="teams-event">

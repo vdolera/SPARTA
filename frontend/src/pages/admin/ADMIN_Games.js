@@ -82,7 +82,9 @@ const Game = () => {
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
         />
+        {(user.role === "admin" || user.role === "co-organizer") && (
         <button className="new-game-btn" onClick={handleAddGame}> + Add Game </button>
+        )}
       </div>
 
       <div className="game-main-div">
