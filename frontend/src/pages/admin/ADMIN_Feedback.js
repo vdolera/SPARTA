@@ -25,6 +25,10 @@ const Feedback = () => {
 
   return (
     <MainLayout>
+
+      <div className="feedback-header-row">
+        <h3>Feedbacks for {decodedEvent}</h3>
+      </div>
       <div className="feedback-maindiv">
         
           {feedbacks.length === 0 ? (
@@ -37,19 +41,9 @@ const Feedback = () => {
               <div className="feedback-item" key={fb._id}>
                 <div className="feedback-container">  
                   <div className="feedback-contents" >
-
-                      <div className="feedback-playername">
-                        <h4>{fb.playerName || "Anonymous"}</h4>
-                      </div>
-
-                      <div className="feedback-date">
-                        <p style={{ fontStyle: "italic", fontSize: "10px", fontFamily: "Monteserrat, Sans-Serif" }}>{new Date(fb.createdAt).toLocaleString()}</p>
-                      </div>
-
-                      <div className="feedback-content">
-                        <p>{fb.message}</p>
-                      </div>
-  
+                    <h5 style={{ fontStyle: "italic", textAlign: "right", margin: 0}}>{new Date(fb.createdAt).toLocaleString()}</h5>
+                    <h4 style={{ textAlign: "left", marginBottom: "5px" }}>{fb.playerName || "Anonymous"}</h4>
+                    <p>{fb.message}</p>
                   </div>
                 </div>
               </div>

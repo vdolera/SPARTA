@@ -54,43 +54,54 @@ const PlayerFeedback = () => {
 
   return (
     <PlayerMainLayout>
-      <div className="feedback-maindiv">
-        <div className="feedback-container">
-          {feedbacks.length === 0 ? (
-            <p>No feedback yet for {decodedEvent}.</p>
-          ) : (
-            feedbacks.map((fb) => (
-              <div className="feedback-contents" key={fb._id}>
-                <div className="feedback-header-row">
-                  <h3>{fb.playerName}</h3>
-                  <h5 style={{ fontStyle: "italic" }}>{new Date(fb.createdAt).toLocaleString()}</h5>
-                </div>
-                <p>{fb.message}</p>
-              </div>
-            ))
-          )}
-        </div>
+
+      <div className="feedback-header-row">
         <button onClick={() => setShowOverlay(true)}>Post Feedback</button>
+      </div>
+
+      <div className="feedback-maindiv">
+        
+          {feedbacks.length === 0 ? (
+            <div className="no-feedback-message">
+              <p>You have not submitted any feedbacks for {decodedEvent}.</p>
+            </div>
+          ) : (
+            feedbacks.map((fb) => (   
+                <div className="feedback-container" key={fb._id}>
+                  <div className="feedback-contents" key={fb._id}>
+                    <h5 style={{ fontStyle: "italic", textAlign: "right", margin: 0 }}>{new Date(fb.createdAt).toLocaleString()}</h5>
+                    <h4 style={{ textAlign: "left", marginBottom: "5px" }}>{fb.playerName}</h4>
+                    <p>{fb.message}</p>
+                  </div>
+            </div>
+            ))
+          )} 
       </div>
 
       {showOverlay && (
         <div className="feedback-overlay">
           <div className="feedback-modal">
             <h2>Post Feedback for {decodedEvent}</h2>
+
             <textarea
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
               placeholder="Write your feedback..."
               rows="5"
-              style={{ width: "100%", padding: "10px" }}
             />
+
             <div className="feedback-actions">
-              <button onClick={handlePost}>Submit</button>
-              <button onClick={() => setShowOverlay(false)}>Cancel</button>
+              <button className="cancel" onClick={() => setShowOverlay(false)}>
+                Cancel
+              </button>
+              <button className="submit" onClick={handlePost}>
+                Submit
+              </button>
             </div>
           </div>
         </div>
       )}
+
     </PlayerMainLayout>
   );
 };
