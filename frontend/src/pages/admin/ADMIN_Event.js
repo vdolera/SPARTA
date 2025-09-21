@@ -21,12 +21,10 @@ const Event = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       const response = await fetch(
-        `http://localhost:5000/api/active-events?institution=${userInstitution}&email=${user.email}&role=${user.role}`
-      );
+        `http://localhost:5000/api/active-events?institution=${userInstitution}&email=${user.email}&role=${user.role}`);
       const data = await response.json();
       setEvents(data);
     }; 
-
     fetchEvents();
   }, [userInstitution]);
 

@@ -3,6 +3,7 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const Event = require('../models/Event');
 const Coordinator = require("../models/Coordinator");
+const Player = require("../models/Player");
 
 const router = express.Router();
 
@@ -122,15 +123,14 @@ router.get("/active-events", async (req, res) => {
     let events = [];
 
     if (role === "admin") {
-      // Admins can see all events
+      // Admins can see all events(same insitution events)
       events = await Event.find({
         institution,
         eventEndDate: { $gte: today },
       });
     } else if (role === "co-organizer" || role === "sub-organizer") {
-      // Coordinators only see events they are assigned to
+      // Coordinators only see event they are assigned to
       const coords = await Coordinator.find({ email, institution});
-
       const eventName = coords.map(c => c.eventName);
 
       events = await Event.find({
@@ -138,8 +138,18 @@ router.get("/active-events", async (req, res) => {
         eventEndDate: { $gte: today },
         eventName: { $in: eventName }
       });
+    } else if (role === "player") {
+      // Players only see the event they registered to
+      const player = await Player.findOne({ email, institution });
+    
+      events = await Event.find({
+        institution,
+        eventEndDate: { $gte: today },
+        eventName: player.eventName
+      });
     }
-
+    
+    console.log("Events fetched:", events);
     res.json(events);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch events", error: err.message });

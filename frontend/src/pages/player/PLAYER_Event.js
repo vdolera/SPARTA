@@ -12,7 +12,7 @@ const PlayerEvent = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`http://localhost:5000/api/events?institution=${userInstitution}`);
+      const response = await fetch(`http://localhost:5000/api/active-events?institution=${userInstitution}&email=${user.email}&role=${user.role}`);
       const data = await response.json();
       setEvents(data);
     };
@@ -25,7 +25,7 @@ const PlayerEvent = () => {
 
   // Filter events based on search query
   const filteredEvents = events.filter(event =>
-    event.eventName.toLowerCase().includes(searchQuery.toLowerCase())
+    event.eventName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (

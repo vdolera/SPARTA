@@ -5,8 +5,9 @@ const playerSchema = new mongoose.Schema({
   password: { type: String, required: true },
   institution: { type: String, required: true },
   eventName: { type: String, required: true },
+  role: {type:String, default: "player"},
 
-  //User Registration
+  //User Registration 
   approved: { type: Boolean, default: false },
 
   //Game Registration
