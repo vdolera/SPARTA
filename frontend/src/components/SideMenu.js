@@ -2,8 +2,7 @@ import { RxDashboard } from "react-icons/rx";
 import { AiOutlineFire } from "react-icons/ai";
 import { FaUserCheck } from "react-icons/fa";
 import { GiGreekTemple } from "react-icons/gi";
-import { useNavigate, useLocation } from 'react-router-dom';
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from "react";
 import '../styles/SideMenu.css';
 
@@ -32,16 +31,16 @@ const SideMenu = () => {
 
       <ul className="sidemenu-list">
         <li className={location.pathname === "/admin/dashboard" ? "active" : ""}>
-          <a href="/admin/dashboard"><RxDashboard /> Dashboard</a>
+          <Link to="/admin/dashboard"><RxDashboard /> Dashboard</Link>
         </li>
         <li className={location.pathname.startsWith("/admin/event") ? "active" : ""}>
-          <a href="/admin/event"><AiOutlineFire /> Event </a>
+          <Link to="/admin/event"><AiOutlineFire /> Event </Link>
         </li>
         <li className={location.pathname === "/admin/approval" ? "active" : ""}>
-          <a href="/admin/approval"><FaUserCheck /> Approvals </a>
+          <Link to="/admin/approval"><FaUserCheck /> Approvals </Link>
         </li>
         <li className={location.pathname === "/admin/pantheon" ? "active" : ""}>
-          <a href="/admin/pantheon"><GiGreekTemple /> Pantheon </a>
+          <Link to="/admin/pantheon"><GiGreekTemple /> Pantheon </Link>
         </li>
       </ul>
 
