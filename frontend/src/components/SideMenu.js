@@ -47,7 +47,7 @@ const SideMenu = () => {
       {/* Bottom user info */}
       <div className="bottom-info">
         <div>
-          <h2>ADMIN</h2>
+          <h2>{user.role.toUpperCase()}</h2>
         </div>
       
         <div className="user-info">
