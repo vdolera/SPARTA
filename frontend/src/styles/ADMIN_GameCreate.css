@@ -227,7 +227,6 @@ textarea:focus {
   border: 2px solid #9dbbd9;
   border-radius: 10px;
   padding: 8px 12px;
-  display: flex;
   flex-direction: column;
 }
 

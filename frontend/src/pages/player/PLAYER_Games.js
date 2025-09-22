@@ -221,48 +221,64 @@ const PlayerGame = () => {
               <div className="form-group">
                 <label className="form-label">Game:</label>
                 <select
-    value={game}
-    onChange={(e) => {
-      setGame(e.target.value);
-      const selectedGame = games.find((g) => g._id === e.target.value);
-      setRequirements(selectedGame ? selectedGame.requirements : []);
-    }}
-    required
-    className="form-input"
-  >
-    <option value="">Select Game</option>
-    {games.map((g) => (
-      <option key={g._id} value={g._id}>
-        {g.category} {g.gameType}
-      </option>
-    ))}
-  </select>
+                  value={game}
+                  onChange={(e) => {
+                    setGame(e.target.value);
+                    const selectedGame = games.find((g) => g._id === e.target.value);
+                    setRequirements(selectedGame ? selectedGame.requirements : []);
+                  }}
+                  required
+                  className="form-input"
+                >
+                  <option value="">Select Game</option>
+                  {games.map((g) => (
+                    <option key={g._id} value={g._id}>
+                      {g.category} {g.gameType}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <h3 className="requirements-title" style={{ textAlign: "left" }}>
                 Requirements:
               </h3>
 
-              {requirements.length === 0 ? (
-  <p style={{ fontStyle: "italic" }}>No requirements for this game.</p>
-) : (
-  requirements.map((req, index) => (
-    <div className="form-group" key={index}>
-      <label className="form-label">{req}:</label>
-      <input
-        type="file"
-        className="form-input"
-        onChange={(e) =>
-          setRequirementFiles((prev) => ({
-            ...prev,
-            [req]: e.target.files[0],
-          }))
-        }
-        required
-      />
-    </div>
-  ))
-)}
+                {requirements.length === 0 ? (
+                  <p style={{ fontStyle: "italic" }}>No requirements for this game.</p>
+                ) : (
+                  requirements.map((req, index) => (
+                    <div key={index}>
+                      <label htmlFor={`rulesFile_${index}`} className="req-label">
+                        {req}
+                      </label>
+                    
+                      <div className="req-group" key={index}>
+
+                      {/* File name display */}
+                      <div className="req-filename">
+                        {requirementFiles[req] ? requirementFiles[req].name : "No file chosen"}
+                      </div>
+
+                      {/* Hidden input + custom button */}
+                      <input
+                        id={`rulesFile_${index}`}
+                        type="file"
+                        className="req-input"
+                        onChange={(e) =>
+                          setRequirementFiles((prev) => ({
+                            ...prev,
+                            [req]: e.target.files[0],
+                          }))
+                        }
+                        required
+                      />
+                      <label htmlFor={`rulesFile_${index}`} className="req-button">
+                        Upload File
+                      </label>
+                    </div>
+                  </div>
+                  ))
+                )}
 
               <button type="submit" className="form-submit">
                 Register for Game
