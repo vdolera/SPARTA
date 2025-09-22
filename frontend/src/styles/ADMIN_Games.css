@@ -307,6 +307,7 @@ button.game-button {
   font-weight: 600;
   text-align: left;
   gap: 5px;
+  text-transform: capitalize;
 }
 
 .req-input {
@@ -318,27 +319,11 @@ button.game-button {
   display: none;
 }
 
-/* Style the file upload button */
-.req-input::file-selector-button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
-  background-color: #f0f4ff;
-  color: #2b5cd6;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.req-input::file-selector-button:hover {
-  background-color: #dbe5ff;
-}
-
 .req-button {
   display: inline-block;
   padding: 0.6rem 1rem;
   border-radius: 6px;
-  background-color: #1A2A49;
+  background-color: #6f81a5;
   color: #fff;
   width: 25%;
   cursor: pointer;
