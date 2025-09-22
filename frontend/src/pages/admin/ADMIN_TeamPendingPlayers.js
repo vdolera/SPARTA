@@ -1,16 +1,16 @@
 import MainLayout from "../../components/MainLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import '../../styles/ADMIN_PlayerApproval.css';
 
 const TeamPlayerApproval = () => {
   const [players, setPlayers] = useState([]);
-  const { eventName, teamName } = useParams(); // assuming you pass these via route
+  const { eventName, teamName } = useParams();
   const user = JSON.parse(localStorage.getItem("auth"));
   const institution = user?.institution;
 
- // Fetch pending players
-const fetchPlayers = async () => {
+  // Fetch pending players (memoized)
+  const fetchPlayers = useCallback(async () => {
     try {
       const res = await fetch(
         `http://localhost:5000/api/players/team-pending?institution=${institution}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(teamName)}`
@@ -20,28 +20,26 @@ const fetchPlayers = async () => {
     } catch (err) {
       console.error("Error fetching pending players:", err);
     }
-  };
+  }, [institution, eventName, teamName]);
 
   useEffect(() => {
     fetchPlayers();
-  }, // eslint-disable-next-line 
-  [institution, eventName, teamName]);
+  }, [fetchPlayers]);
 
   // Approve player
-const handleApprove = async (id) => {
+  const handleApprove = async (id) => {
     try {
       const res = await fetch(`http://localhost:5000/api/players/team-approve/${id}`, {
         method: "PUT",
       });
       if (res.ok) {
         alert("Player approved by team!");
-        fetchPlayers(); // refreshes the list
+        fetchPlayers(); // refresh list
       }
     } catch (err) {
       console.error("Error approving player:", err);
     }
   };
-  
 
   // Decline (delete) player
   const handleDecline = async (id) => {
@@ -52,7 +50,7 @@ const handleApprove = async (id) => {
       });
       if (res.ok) {
         alert("Player declined!");
-        fetchPlayers(); // refreshes the list
+        fetchPlayers(); // refresh list
       }
     } catch (err) {
       console.error("Error declining player:", err);
@@ -65,23 +63,56 @@ const handleApprove = async (id) => {
         <h3>PENDING LIST</h3>
       </div>
 
-      <div className="no-players-found">
-        {players.length > 0 ? (
-          players.map((player) => (
-            <div key={player._id} className="player-card">
-              <p><b>{player.playerName}</b> ({player.email})</p>
-              <p>Team: {player.team}</p>
-              <p>Game: {player.game}</p>
-              <div className="actions">
-                <button className="approve-btn" onClick={() => handleApprove(player._id)}>Accept</button>
-                <button className="decline-btn" onClick={() => handleDecline(player._id)}>Decline</button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>No pending players found.</p>
-        )}
-      </div>
+      {players.length > 0 ? (
+        <table>
+          <thead>
+            <tr>
+              <th>Player Name</th>
+              <th>Email</th>
+              <th>Team</th>
+              <th>Game</th>
+              <th>Uploaded Requirements</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {players.map((player) => (
+              <tr key={player._id}>
+                <td>{player.playerName}</td>
+                <td>{player.email}</td>
+                <td>{player.team}</td>
+                <td>{player.game}</td>
+                <td>
+                  {player.uploadedRequirements && player.uploadedRequirements.length > 0 ? (
+                    <ul>
+                      {player.uploadedRequirements.map((req, idx) => (
+                        <li key={idx}>
+                          {req.name}:{" "}
+                          <a
+                            href={`http://localhost:5000${req.filePath}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            View File
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    "No requirements uploaded."
+                  )}
+                </td>
+                <td>
+                  <button onClick={() => handleApprove(player._id)}>Accept</button>
+                  <button onClick={() => handleDecline(player._id)}>Decline</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No pending players found.</p>
+      )}
     </MainLayout>
   );
 };

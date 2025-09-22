@@ -1,11 +1,12 @@
 import PlayerMainLayout from "../../components/P_MainLayout";
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennisBall} from "react-icons/gi";
+import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennisBall } from "react-icons/gi";
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
 import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
 import "../../styles/ADMIN_Games.css";
+
 
 const PlayerGame = () => {
   const user = JSON.parse(localStorage.getItem("auth"));
@@ -20,7 +21,7 @@ const PlayerGame = () => {
   const [teams, setTeams] = useState([]);
   const [games, setGames] = useState([]);
   const [requirements, setRequirements] = useState([]);
-  const [, setRequirementFiles] = useState([]);
+  const [requirementFiles, setRequirementFiles] = useState({});
 
   const [playerName, setPlayerName] = useState("");
   const [team, setTeam] = useState("");
@@ -44,7 +45,7 @@ const PlayerGame = () => {
     Chess: GiChessKnight,
   };
 
-  // Fetch grouped games for display
+  // Fetch grouped games
   useEffect(() => {
     const fetchGames = async () => {
       try {
@@ -58,23 +59,20 @@ const PlayerGame = () => {
         const grouped = {};
         data.forEach((game) => {
           const key = `${game.category} ${game.gameType}`;
-          if (!grouped[key]) {
-            grouped[key] = [];
-          }
+          if (!grouped[key]) grouped[key] = [];
           grouped[key].push(game);
         });
 
         setGamesByType(grouped);
-        setGames(data); // keep flat list for registration form
+        setGames(data);
       } catch (error) {
         console.error("Error fetching games:", error);
       }
     };
-
     fetchGames();
   }, [userInstitution, decodedName]);
 
-  // Fetch teams for registration form
+  // Fetch teams
   useEffect(() => {
     const fetchTeams = async () => {
       try {
@@ -89,81 +87,44 @@ const PlayerGame = () => {
         console.error("Error fetching teams:", err);
       }
     };
-
     fetchTeams();
   }, [userInstitution, decodedName]);
 
-  // Fetch requirements whenever a game is selected
-    useEffect(() => {
-      if (!game) return;
-
-      const fetchRequirements = async () => {
-        try {
-          const res = await fetch(
-            `http://localhost:5000/api/games/requirements?game=${encodeURIComponent(game)}&event=${encodeURIComponent(decodedName)}`
-          );
-          const data = await res.json();
-          setRequirements(data.requirements || []);
-        } catch (err) {
-          console.error("Error fetching requirements:", err);
-        }
-      };
-
-      fetchRequirements();
-    }, [game, decodedName]);
-
-  // Handle registration
+  // Handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    /*const formData = new FormData();
-      formData.append("playerName", playerName);
-      formData.append("team", team);
-      formData.append("game", game);
+    const formData = new FormData();
+    formData.append("playerName", playerName);
+    formData.append("team", team);
+    formData.append("game", game);
 
-      requirementFiles.forEach((file) => {
-        formData.append("requirements", file);
-      });
+    // Append each requirement’s file
+    Object.entries(requirementFiles).forEach(([req, file]) => {
+      formData.append(`requirements[${req}]`, file);
+    });
 
-      try {
-        const res = await fetch(
-          `http://localhost:5000/api/players/${user._id}/register-game`,
-          {
-            method: "PUT",
-            body: formData,
-          }
-        );
-        */
-
-        const payload = {
-          playerName,
-          team,
-          game,
-        };
-        
-        try {
-          const res = await fetch(
-            `http://localhost:5000/api/players/${user._id}/register-game`,
-            {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            }
-          );
-
-        const data = await res.json();
-
-        if (res.ok) {
-          alert("Successfully registered for the game!");
-          setModalOpen(false);
-        } else {
-          alert(data.message || "Registration failed");
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/players/${user._id}/register-game`,
+        {
+          method: "PUT",
+          body: formData,
         }
-      } catch (err) {
-        console.error("Error registering player:", err);
-        alert("Something went wrong.");
+      );
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Successfully registered for the game!");
+        setModalOpen(false);
+      } else {
+        alert(data.message || "Registration failed");
       }
-    };
+    } catch (err) {
+      console.error("Error registering player:", err);
+      alert("Something went wrong.");
+    }
+  };
 
   return (
     <PlayerMainLayout>
@@ -179,8 +140,6 @@ const PlayerGame = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-
-        {/* Open modal */}
         <button
           className="game-register-button"
           onClick={() => setModalOpen(true)}
@@ -193,22 +152,17 @@ const PlayerGame = () => {
         {filteredGames.length === 0 ? (
           <div className="no-games-found">
             <FaCircleQuestion size={48} />
-            <p style={{ textAlign: "center", width: "100%" }}>
-              No games found.
-            </p>
+            <p style={{ textAlign: "center", width: "100%" }}>No games found.</p>
           </div>
         ) : (
           filteredGames.map(([combinedType, games]) => {
             const gameType = games[0]?.gameType || "Default";
             const icon = gameIcons[gameType] || gameIcons.Default;
-
             return (
               <div className="game-button-container" key={combinedType}>
                 <button
                   className="game-button"
-                  onClick={() =>
-                    console.log(`Clicked game: ${combinedType}`)
-                  }
+                  onClick={() => console.log(`Clicked game: ${combinedType}`)}
                   style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >
                   {icon && React.createElement(icon, { size: 50 })}
@@ -220,7 +174,6 @@ const PlayerGame = () => {
         )}
       </div>
 
-      {/* Modal */}
       {modalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -268,48 +221,48 @@ const PlayerGame = () => {
               <div className="form-group">
                 <label className="form-label">Game:</label>
                 <select
-                  value={game}
-                  onChange={(e) => setGame(e.target.value)}
-                  required
-                  className="form-input"
-                >
-                  <option value="">Select Game</option>
-                  {games.map((g) => (
-                    <option key={g._id} value={`${g.category} ${g.gameType}`}>
-                      {g.category} {g.gameType}
-                    </option>
-                  ))}
-                </select>
+    value={game}
+    onChange={(e) => {
+      setGame(e.target.value);
+      const selectedGame = games.find((g) => g._id === e.target.value);
+      setRequirements(selectedGame ? selectedGame.requirements : []);
+    }}
+    required
+    className="form-input"
+  >
+    <option value="">Select Game</option>
+    {games.map((g) => (
+      <option key={g._id} value={g._id}>
+        {g.category} {g.gameType}
+      </option>
+    ))}
+  </select>
               </div>
 
-            {/* Requirements Section */}
-            <h3 className="requirements-title" style={{textAlign:"left"}}>Requirements:</h3>
-            {requirements.length > 0 && (
-              <div className="requirements-section">
-                <h3 className="requirements-title">Requirements</h3>
-                <ul className="requirements-list">
-                  {requirements.map((req, index) => (
-                    <li key={index}>{req}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
+              <h3 className="requirements-title" style={{ textAlign: "left" }}>
+                Requirements:
+              </h3>
 
-            {/* File Uploader */}
-            <div className="file-upload">
-
-              <span className="file-name">Upload Game Requirements Here</span>
-              <label htmlFor="rulesFile" className="upload-btn">
-                Choose File
-              </label>
-              
-              <input
-                type="file"
-                multiple
-                onChange={(e) => setRequirementFiles(Array.from(e.target.files))}
-                className="form-input-file"
-              />
-            </div>
+              {requirements.length === 0 ? (
+  <p style={{ fontStyle: "italic" }}>No requirements for this game.</p>
+) : (
+  requirements.map((req, index) => (
+    <div className="form-group" key={index}>
+      <label className="form-label">{req}:</label>
+      <input
+        type="file"
+        className="form-input"
+        onChange={(e) =>
+          setRequirementFiles((prev) => ({
+            ...prev,
+            [req]: e.target.files[0],
+          }))
+        }
+        required
+      />
+    </div>
+  ))
+)}
 
               <button type="submit" className="form-submit">
                 Register for Game
@@ -317,7 +270,6 @@ const PlayerGame = () => {
             </form>
           </div>
         </div>
-
       )}
     </PlayerMainLayout>
   );

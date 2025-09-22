@@ -1,7 +1,23 @@
 const express = require("express");
 const Player = require("../models/Player");
+const Game = require("../models/Game");
 
 const router = express.Router();
+
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/requirements/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
 
 // GET pending players to enter the insitution
 router.get("/players/pending", async (req, res) => {
@@ -67,6 +83,7 @@ router.delete("/players/:id", async (req, res) => {
   }
 })
 
+/*
 // REGISTER game for player
 router.put("/players/:id/register-game", async (req, res) => {
   const { playerName, team, game } = req.body;
@@ -74,6 +91,57 @@ router.put("/players/:id/register-game", async (req, res) => {
   if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });
   res.json({ message: "Game registered", player: updatedPlayer });
 });
+*/
+
+// REGISTER game for player
+router.put(
+  "/players/:id/register-game",
+  upload.any(), // handles multiple requirement files
+  async (req, res) => {
+    try {
+      const { playerName, team, game } = req.body;
+
+        // Find the game by ID to fetch details
+        const gameDoc = await Game.findById(game);
+        if (!gameDoc) {
+          return res.status(404).json({ message: "Game not found" });
+        }
+
+      // Collect uploaded requirements
+      const uploadedRequirements = req.files.map((file) => {
+        // Match fieldname like "requirements[Medical]" → extract "Medical"
+        const match = file.fieldname.match(/requirements\[(.+)\]/);
+        const reqName = match ? match[1] : file.fieldname;
+
+        return {
+          name: reqName,
+          filePath: `/uploads/requirements/${file.filename}`,
+        };
+      });
+
+      const updatedPlayer = await Player.findByIdAndUpdate(
+        req.params.id,
+        {
+          playerName,
+          team,
+          game: `${gameDoc.category} ${gameDoc.gameType}`,
+          $push: { uploadedRequirements: { $each: uploadedRequirements } },
+        },
+        { new: true }
+      );
+
+      if (!updatedPlayer) {
+        return res.status(404).json({ message: "Player not found" });
+      }
+
+      res.json({ message: "Game registered", player: updatedPlayer });
+    } catch (err) {
+      console.error("Error registering player:", err);
+      res.status(500).json({ message: "Failed to register player" });
+    }
+  }
+);
+
 
 // GET players by team
 router.get("/players", async (req, res) => {

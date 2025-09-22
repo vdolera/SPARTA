@@ -66,7 +66,7 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       !startDate ||
       !endDate ||
       !teams?.length ||
-      !requirements?.length ||
+      !parsedRequirements.length ||
       (!rules && !req.file) ||
       !eventName ||
       !bracketType
