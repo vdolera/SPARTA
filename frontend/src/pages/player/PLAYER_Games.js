@@ -243,42 +243,26 @@ const PlayerGame = () => {
                 Requirements:
               </h3>
 
-                {requirements.length === 0 ? (
-                  <p style={{ fontStyle: "italic" }}>No requirements for this game.</p>
-                ) : (
-                  requirements.map((req, index) => (
-                    <div key={index}>
-                      <label htmlFor={`rulesFile_${index}`} className="req-label">
-                        {req}
-                      </label>
-                    
-                      <div className="req-group" key={index}>
-
-                      {/* File name display */}
-                      <div className="req-filename">
-                        {requirementFiles[req] ? requirementFiles[req].name : "No file chosen"}
-                      </div>
-
-                      {/* Hidden input + custom button */}
-                      <input
-                        id={`rulesFile_${index}`}
-                        type="file"
-                        className="req-input"
-                        onChange={(e) =>
-                          setRequirementFiles((prev) => ({
-                            ...prev,
-                            [req]: e.target.files[0],
-                          }))
-                        }
-                        required
-                      />
-                      <label htmlFor={`rulesFile_${index}`} className="req-button">
-                        Upload File
-                      </label>
-                    </div>
-                  </div>
-                  ))
-                )}
+              {requirements.length === 0 ? (
+  <p style={{ fontStyle: "italic" }}>No requirements for this game.</p>
+) : (
+  requirements.map((req, index) => (
+    <div className="form-group" key={index}>
+      <label className="form-label">{req}:</label>
+      <input
+        type="file"
+        className="form-input"
+        onChange={(e) =>
+          setRequirementFiles((prev) => ({
+            ...prev,
+            [req]: e.target.files[0],
+          }))
+        }
+        required
+      />
+    </div>
+  ))
+)}
 
               <button type="submit" className="form-submit">
                 Register for Game
