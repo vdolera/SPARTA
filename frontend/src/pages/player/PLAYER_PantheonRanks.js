@@ -1,4 +1,4 @@
-import MainLayout from "../../components/P_MainLayout";
+import PlayerMainLayout from "../../components/P_MainLayout";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TbCalendarQuestion } from "react-icons/tb";
@@ -115,7 +115,7 @@ const PlayerPantheonRanks = () => {
                     )}
                     </div>
                 </div>
-        </PlayerMainLayout>
+    </PlayerMainLayout>
     );
 };
 

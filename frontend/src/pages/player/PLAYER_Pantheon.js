@@ -1,4 +1,4 @@
-import MainLayout from "../../components/P_MainLayout";
+import PlayerMainLayout from "../../components/P_MainLayout";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
