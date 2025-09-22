@@ -41,7 +41,7 @@ const TeamPlayerApproval = () => {
     }
   };
 
-  // Decline (delete) player
+  // Decline player
   const handleDecline = async (id) => {
     if (!window.confirm("Are you sure you want to decline this player?")) return;
     try {
