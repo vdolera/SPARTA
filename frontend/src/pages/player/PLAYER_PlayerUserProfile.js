@@ -143,8 +143,38 @@ const PlayerUserProfile = () => {
                     ))}
                   </div>
                 )}
-              </div>
+
+        {activeTab === "documents" && (
+            <div className="documents-section">
+              <h3>Submitted Documents and Requirements</h3>
+              {player.requirements ? (
+                <ul className="requirements-list">
+                  <li>
+                    ID Card:{" "}
+                    <span>{player.requirements.idCard ? "✅ Submitted" : "❌ Missing"}</span>
+                  </li>
+                  <li>
+                    Waiver:{" "}
+                    <span>{player.requirements.waiver ? "✅ Submitted" : "❌ Missing"}</span>
+                  </li>
+                  <li>
+                    Medical Certificate:{" "}
+                    <span>
+                      {player.requirements.medicalCertificate
+                        ? "✅ Submitted"
+                        : "❌ Missing"}
+                    </span>
+                  </li>
+                </ul>
+              ) : (
+                <p>No requirements submitted yet.</p>
+              )}
             </div>
+          )}
+              </div>
+        </div>
+
+        
 
      <div className="profile-actions">
           {isEditing ? (

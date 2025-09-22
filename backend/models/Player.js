@@ -16,6 +16,13 @@ const playerSchema = new mongoose.Schema({
   game: { type: String, trim: true },
   teamApproval: { type: Boolean, default:false },
 
+  //Submitted Documents/Requirements
+  requirements: {
+    matriculation: {type: Boolean, default: false},
+    waiver: {type: Boolean, default:false},
+    medicalCertificate: {type: Boolean, default: false},
+  },
+
   //Extras for Profile
   jerseyNumber: { type: String },
   contactNumber: { type: String },
