@@ -49,7 +49,7 @@ const GameBracket = () => {
           .filter((m) => m.round === r)
           .map((m) => ({
             id: m._id,
-            date: game.startDate,
+            date: m.date ? new Date(m.date) : null,
             teams: m.teams.map((t) => ({
               name: t?.name || "TBD",
               score: t?.score ?? null,
@@ -352,41 +352,50 @@ const GameBracket = () => {
   const renderSeed = (props) => (
     <Seed
       {...props}
-      style={{ fontSize: "14px", cursor: "pointer" }}
+      style={{ fontSize: "14px", cursor: props.seed.id === "champion" ? "default" : "pointer" }}
       onClick={() => {
         if (props.seed.id !== "champion") {
-          setSelectedMatch(props.seed);
+          setSelectedMatch({ ...props.seed, type: "scores" });
           setTempScores(props.seed.teams.map((t) => t.score ?? 0));
         }
       }}
     >
       <SeedItem className="seed-item">
-        {props.seed.teams.map((team, idx) => {
-          const scoreDisplay =
-            props.seed.id === "champion"
-              ? "👑"
-              : selectedMatch?.id === props.seed.id
-                ? tempScores[idx]
-                : team.score;
-
-          let teamClass = "";
-          if (props.seed.finalizeWinner) teamClass = team.winner ? "winner" : "loser";
-          if (selectedMatch?.id === props.seed.id) teamClass += " editing";
-
-          return (
-            <SeedTeam key={idx} className={`seed-team ${teamClass}`}>
-              {team.name} <span className="score-box">{scoreDisplay}</span>
-            </SeedTeam>
-          );
-        })}
+        {props.seed.teams.map((team, idx) => (
+          <SeedTeam key={idx} className="seed-team">
+            {team.name} <span className="score-box">{team.score ?? "-"}</span>
+          </SeedTeam>
+        ))}
+  
+        {/* ✅ Hide actions for Champion */}
+        {props.seed.id !== "champion" && (
+          <div className="match-actions">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedMatch({ ...props.seed, type: "schedule" });
+              }}
+            >
+              Schedule
+            </button>
+  
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedMatch({ ...props.seed, type: "scores" });
+                setTempScores(props.seed.teams.map((t) => t.score ?? 0));
+              }}
+            >
+              Scores
+            </button>
+          </div>
+        )}
       </SeedItem>
     </Seed>
   );
+  
 
   const roundsData = makeRoundsFromMatches();
-
-  
-  
 
   return (
     <MainLayout>
@@ -417,8 +426,6 @@ const GameBracket = () => {
             </div>
 
       </div>
-
-      
 
       {showRulesModal && (
         <div className="modal-overlay">
@@ -510,44 +517,116 @@ const GameBracket = () => {
       </div>
 
       {selectedMatch && (
-        <div className="modal-overlay">
-          <div className="modal">
-            {selectedMatch.type === "rules" ? (
-              <>
-                <h3>Rules PDF</h3>
-                <iframe
-                  src={`http://localhost:5000${game.rules}`}
-                  title="Rules PDF"
-                  className="w-full h-[80vh] rounded-md"
-                />
-                <div className="modal-actions">
-                  <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
-                </div>
-              </>
-            ) : (
-              <>
-                <h3>Update Match Scores</h3>
-                {selectedMatch.teams.map((team, idx) => (
-                  <div key={idx} className="score-input">
-                    <label>
-                      {team.name} Score:
-                      <input
-                        type="number"
-                        value={tempScores[idx]}
-                        onChange={(e) => handleTempScoreChange(idx, Number(e.target.value))}
-                      />
-                    </label>
-                  </div>
-                ))}
-                <div className="modal-actions">
-                  <button type="button" onClick={saveScores}>Save</button>
-                  <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
-                </div>
-              </>
-            )}
+  <div className="modal-overlay">
+    <div className="modal">
+      {selectedMatch.type === "rules" ? (
+        <>
+          <h3>Rules PDF</h3>
+          <iframe
+            src={`http://localhost:5000${game.rules}`}
+            title="Rules PDF"
+            className="w-full h-[80vh] rounded-md"
+          />
+          <div className="modal-actions">
+            <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
           </div>
+        </>
+      ) : selectedMatch.type === "schedule" ? (
+        <>
+          <h3>Schedule Match</h3>
+          <label>Date:</label>
+          <input
+            type="datetime-local"
+            value={
+              selectedMatch.date && !isNaN(new Date(selectedMatch.date).getTime())
+                ? new Date(selectedMatch.date).toISOString().slice(0, 16)
+                : ""
+            }
+            onChange={(e) => setSelectedMatch({ ...selectedMatch, date: e.target.value })}
+          />
+        
+          <label>Location:</label>
+          <input
+            type="text"
+            value={selectedMatch.location || ""}
+            onChange={(e) => setSelectedMatch({ ...selectedMatch, location: e.target.value })}
+          />
+        
+          <div className="modal-actions">
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  // Properly format the date for the backend
+                  let formattedDate = null;
+                  if (selectedMatch.date) {
+                    formattedDate = new Date(selectedMatch.date);
+                    // Check if the date is valid
+                    if (isNaN(formattedDate.getTime())) {
+                      formattedDate = null;
+                    }
+                  }
+      
+                  const scheduleData = {
+                    date: formattedDate,
+                    location: selectedMatch.location || null,
+                  };
+      
+                  const response = await fetch(
+                    `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
+                    {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(scheduleData),
+                    }
+                  );
+      
+                  if (!response.ok) {
+                    throw new Error('Failed to update schedule');
+                  }
+      
+                  // Refresh the game data to see the updated schedule
+                  const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+                  const updatedGame = await res.json();
+                  setGame(updatedGame);
+                  
+                  setSelectedMatch(null);
+                } catch (err) {
+                  console.error("Error updating schedule:", err);
+                  alert("Failed to update schedule. Please try again.");
+                }
+              }}
+            >
+              Save Schedule
+            </button>
+            <button type="button" onClick={() => setSelectedMatch(null)}>Cancel</button>
+          </div>
+        </>
+      ) :  selectedMatch.type === "scores" ? (   // ✅ explicitly check
+      <>
+        <h3>Update Match Scores</h3>
+        {selectedMatch.teams.map((team, idx) => (
+          <div key={idx} className="score-input">
+            <label>
+              {team.name} Score:
+              <input
+                type="number"
+                value={tempScores[idx]}
+                onChange={(e) => handleTempScoreChange(idx, Number(e.target.value))}
+              />
+            </label>
+          </div>
+        ))}
+        <div className="modal-actions">
+          <button type="button" onClick={saveScores}>Save</button>
+          <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
         </div>
-      )}
+      </>
+    ) : null}
+    </div>
+  </div>
+)}
+
 
 
     </MainLayout>
