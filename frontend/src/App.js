@@ -35,6 +35,7 @@ import PlayerTeams from "./pages/player/PLAYER_Teams";
 import PlayerTeamPlayers from "./pages/player/PLAYER_TeamPlayerList";
 import PlayerLiveScores from "./pages/player/PLAYER_LiveScores"; 
 import PlayerPantheon from "./pages/player/PLAYER_Pantheon";
+import PlayerPantheonRanks from "./pages/player/PLAYER_PantheonRanks";
 
 
 export default function App() {
@@ -75,6 +76,7 @@ export default function App() {
         <Route path="/event/:eventName/feedback" element={<BlockRoute> <PlayerFeedback /> </BlockRoute>} />
         <Route path="/event/:eventName/liveScores" element={<BlockRoute> <PlayerLiveScores /> </BlockRoute>} />
         <Route path="/pantheon" element={<BlockRoute> <PlayerPantheon /> </BlockRoute>} />
+        <Route path="/player/pantheon/:eventName/:teamName/players" element={<BlockRoute> <PlayerPantheonRanks /> </BlockRoute>} />
       </Routes>
     </Router>
   );
