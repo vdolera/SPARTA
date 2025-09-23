@@ -296,7 +296,7 @@ router.get('/games/:id', async (req, res) => {
   }
 });
 
-/*
+
 // UPDATE match score
 router.put("/games/:id/matches/:matchId", async (req, res) => {
   try {
@@ -440,13 +440,15 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
     res.status(500).json({ message: "Error updating match" });
   }
 });
-*/
 
-// UPDATE match (schedule or score)
-router.put("/games/:gameId/matches/:matchId", async (req, res) => {
+
+// UPDATE match schedule
+router.put("/games/:gameId/matches/:matchId/schedule", async (req, res) => {
   try {
     const { gameId, matchId } = req.params;
-    let { score1, score2, finalizeWinner, date, location, referee, teams } = req.body;
+    const { date, location, referee, teams } = req.body;
+
+    console.log("Incoming schedule update:", req.body); // debug
 
     const game = await Game.findById(gameId);
     if (!game) return res.status(404).json({ message: "Game not found" });
@@ -454,12 +456,21 @@ router.put("/games/:gameId/matches/:matchId", async (req, res) => {
     const match = game.matches.id(matchId);
     if (!match) return res.status(404).json({ message: "Match not found" });
 
-    // 🗓️ Update schedule fields
-    if (date !== undefined) match.date = new Date(date); // ensure proper Date
+    // Date
+    if (date) {
+      const parsedDate = new Date(date);
+      if (!isNaN(parsedDate.getTime())) {
+        match.date = parsedDate; // always save ISO
+      } else {
+        console.warn("Invalid date received:", date);
+      }
+    }
+
+    // Location
     if (location !== undefined) match.location = location;
+    if (referee !== undefined) match.referee = referee;
 
-
-    // 🔄 Update teams if rescheduled manually
+    // Reset teams if passed
     if (teams?.length === 2) {
       match.teams = [
         { name: teams[0], score: null },
@@ -469,143 +480,13 @@ router.put("/games/:gameId/matches/:matchId", async (req, res) => {
       match.finalizeWinner = false;
     }
 
-    // 🏆 Update scores (only if provided)
-    if (score1 !== undefined && score2 !== undefined) {
-      score1 = Number(score1);
-      score2 = Number(score2);
-
-      const oldScore1 = match.teams[0].score || 0;
-      const oldScore2 = match.teams[1].score || 0;
-
-      match.teams[0].score = score1;
-      match.teams[1].score = score2;
-
-      if (finalizeWinner) {
-        const winnerIdx = score1 > score2 ? 0 : score2 > score1 ? 1 : null;
-        const loserIdx = winnerIdx === 0 ? 1 : winnerIdx === 1 ? 0 : null;
-
-        if (winnerIdx !== null) {
-          const winnerName = match.teams[winnerIdx].name;
-          const loserName = match.teams[loserIdx].name;
-          match.winner = winnerName;
-          match.finalizeWinner = true;
-
-          // ⚡ Bracket progression (WB/LB/GF)
-          if (match.bracket === "WB") {
-            const lbRound = match.round;
-            const lbNextMatches = game.matches.filter(
-              (m) => m.bracket === "LB" && m.round === lbRound
-            );
-
-            const lbTarget = lbNextMatches.find(
-              (m) => m.matchIndex === Math.floor(match.matchIndex / 2)
-            );
-
-            if (lbTarget) {
-              const emptySlot = lbTarget.teams.findIndex(
-                (t) => !t?.name || t.name === "TBD"
-              );
-              if (emptySlot !== -1) {
-                lbTarget.teams[emptySlot] = { name: loserName, score: null };
-              }
-            }
-
-            const nextWB = game.matches.find(
-              (m) =>
-                m.bracket === "WB" &&
-                m.round === match.round + 1 &&
-                m.matchIndex === Math.floor(match.matchIndex / 2)
-            );
-            if (nextWB) {
-              nextWB.teams[match.matchIndex % 2] = {
-                name: winnerName,
-                score: null,
-              };
-            }
-          }
-
-          if (match.bracket === "LB") {
-            const nextLB = game.matches.find(
-              (m) =>
-                m.bracket === "LB" &&
-                m.round === match.round + 1 &&
-                m.matchIndex === Math.floor(match.matchIndex / 2)
-            );
-            if (nextLB) {
-              nextLB.teams[match.matchIndex % 2] = { name: winnerName, score: null };
-            }
-          }
-
-          // Grand Final setup
-          const wbFinal = game.matches
-            .filter((m) => m.bracket === "WB" && m.finalizeWinner)
-            .sort((a, b) => b.round - a.round)[0];
-          const lbFinal = game.matches
-            .filter((m) => m.bracket === "LB" && m.finalizeWinner)
-            .sort((a, b) => b.round - a.round)[0];
-
-          if (wbFinal && lbFinal) {
-            let gf = game.matches.find((m) => m.bracket === "GF");
-
-            if (!gf) {
-              gf = {
-                bracket: "GF",
-                round: Math.max(wbFinal.round, lbFinal.round) + 1,
-                matchIndex: 0,
-                teams: [
-                  { name: wbFinal.winner, score: null },
-                  { name: lbFinal.winner, score: null },
-                ],
-                finalizeWinner: false,
-                winner: null,
-              };
-              game.matches.push(gf);
-            } else if (!gf.finalizeWinner) {
-              gf.teams = [
-                { name: wbFinal.winner, score: gf.teams[0]?.score ?? null },
-                { name: lbFinal.winner, score: gf.teams[1]?.score ?? null },
-              ];
-            }
-          }
-
-          // 🔄 Update Team collection
-          const round = match.round;
-          const team1 = await Team.findOne({
-            teamName: match.teams[0].name,
-            eventName: game.eventName,
-          });
-          const team2 = await Team.findOne({
-            teamName: match.teams[1].name,
-            eventName: game.eventName,
-          });
-
-          if (team1) {
-            team1.totalScore = (team1.totalScore || 0) - oldScore1 + score1;
-            const roundEntry = team1.roundScores.find((r) => r.round === round);
-            if (roundEntry) roundEntry.score = score1;
-            else team1.roundScores.push({ round, score: score1 });
-            await team1.save();
-          }
-
-          if (team2) {
-            team2.totalScore = (team2.totalScore || 0) - oldScore2 + score2;
-            const roundEntry = team2.roundScores.find((r) => r.round === round);
-            if (roundEntry) roundEntry.score = score2;
-            else team2.roundScores.push({ round, score: score2 });
-            await team2.save();
-          }
-        }
-      }
-    }
-
     await game.save();
-    res.json({ match, game });
+    res.json({ match });
   } catch (err) {
-    console.error("Error updating match:", err);
-    res.status(500).json({ message: "Error updating match" });
+    console.error("Error scheduling match:", err);
+    res.status(500).json({ message: "Error scheduling match" });
   }
 });
-
 
 
 module.exports = router;

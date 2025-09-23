@@ -10,8 +10,8 @@ const matchSchema = new mongoose.Schema({
   }],
   winner: { type: String, default: null },
   finalizeWinner: { type: Boolean, default: false }, 
-  date: Date,       
-  location: String,
+  date: { type: Date, default: null },  
+  location: { type: String, default: "" },
 }, { _id: true });
 
 const gameSchema = new mongoose.Schema({
