@@ -20,7 +20,6 @@ const Dashboard = () => {
 
     const fetchGames = async () => {
       try {
-        setLoading(true);
         const res = await axios.get(`http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}`);
         const matches = [];
         const multiDay = [];
