@@ -18,7 +18,7 @@ const userInstitution = user?.institution || "DefaultInstitution";
 
     const fetchGames = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}`); // replace dynamically if needed
+        const res = await axios.get(`http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}`);
         const matches = [];
 
         res.data.forEach(game => {
@@ -42,7 +42,7 @@ const userInstitution = user?.institution || "DefaultInstitution";
     };
 
     fetchGames();
-  }, []);
+  }, [userInstitution]);
 
   const onChange = (newDate) => {
     setDate(newDate);
