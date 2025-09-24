@@ -15,6 +15,7 @@
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   height: fit-content;
+  border: 2px solid #2c4474;
 }
 
 /* Modern Calendar Styling */
@@ -90,6 +91,7 @@
 
 .react-calendar__tile:hover {
   background: #f3f4f6;
+  color: red;
   transform: translateY(-1px);
 }
 
@@ -133,6 +135,7 @@
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   height: fit-content;
+  border: 2px solid #a56806;
 }
 
 .upcoming-events h3 {
@@ -277,39 +280,43 @@
   color: #1a2a49;
 }
 
-.event-list {
+.calendar-events-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
+  text-transform: uppercase;
 }
 
-.event-item {
+.upcoming-event {
   background: #f8f9fa;
   border-left: 4px solid #ce892c;
   padding: 16px;
   border-radius: 8px;
   transition: all 0.2s ease;
+  text-transform: uppercase;
+  font-family: Montserrat, sans-serif;
 }
 
-.event-item:hover {
+.upcoming-event:hover {
   background: #fff7ed;
   transform: translateX(4px);
 }
 
-.event-item strong {
+.upcoming-event strong {
   color: #1a2a49;
   display: block;
   margin-bottom: 4px;
   font-size: 14px;
 }
 
-.event-item time {
+.upcoming-event time {
   color: #6b7280;
   font-size: 12px;
   font-weight: 600;
 }
 
-.event-item .location {
+.upcoming-event .location {
   color: #6b7280;
   font-size: 12px;
   margin-top: 4px;

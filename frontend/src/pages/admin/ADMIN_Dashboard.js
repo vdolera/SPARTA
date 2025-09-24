@@ -191,7 +191,7 @@ const Dashboard = () => {
           ) : upcomingEvents.length > 0 ? (
             <ul>
               {upcomingEvents.map((event, index) => (
-                <li key={index} className="event-item">
+                <li key={index} className="upcoming-event">
                   <strong>{formatEventDate(event.date)} • {event.time}</strong>
                   {event.title} - {event.teams}
                   <br />
@@ -218,10 +218,10 @@ const Dashboard = () => {
                 <button className="close-modal" onClick={closeModal}>×</button>
               </div>
               
-              <div className="event-list">
+              <div className="calendar-events-list">
                 {getSelectedDateEvents().length > 0 ? (
                   getSelectedDateEvents().map((event, index) => (
-                    <div key={index} className="event-item">
+                    <div key={index} className="upcoming-event">
                       <strong>{event.title}</strong>
                       <time>{event.time}</time>
                       <div className="location">📍 {event.location}</div>
