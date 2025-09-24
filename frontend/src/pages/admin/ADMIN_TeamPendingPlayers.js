@@ -1,6 +1,7 @@
 import MainLayout from "../../components/MainLayout";
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
+import { LiaGhostSolid } from "react-icons/lia";
 import '../../styles/ADMIN_PlayerApproval.css';
 
 const TeamPlayerApproval = () => {
@@ -111,7 +112,10 @@ const TeamPlayerApproval = () => {
           </tbody>
         </table>
       ) : (
-        <p>No pending players found.</p>
+        <div className='no-players-found'>
+          <LiaGhostSolid size={48} />
+          <p>No pending players registered</p>
+        </div>
       )}
     </MainLayout>
   );

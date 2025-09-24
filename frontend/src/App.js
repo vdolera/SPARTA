@@ -29,9 +29,7 @@ import PlayerUserProfile from "./pages/player/PLAYER_PlayerUserProfile";
 import PlayerEvent from "./pages/player/PLAYER_Event";
 import PlayerSpecificEvent from "./pages/player/PLAYER_SpecificEvent";
 import PlayerGame from "./pages/player/PLAYER_Games";
-import PlayerRegistration from "./pages/player/PLAYER_Registration";
 import PlayerFeedback from "./pages/player/PLAYER_Feedback";
-import PlayerTeams from "./pages/player/PLAYER_Teams";
 import PlayerTeamPlayers from "./pages/player/PLAYER_TeamPlayerList";
 import PlayerLiveScores from "./pages/player/PLAYER_LiveScores"; 
 import PlayerPantheon from "./pages/player/PLAYER_Pantheon";
@@ -69,10 +67,8 @@ export default function App() {
         <Route path=":userId/profile" element={<BlockRoute> <PlayerUserProfile /> </BlockRoute>} />
         <Route path="/event" element={<BlockRoute> <PlayerEvent /> </BlockRoute>} />
         <Route path="/event/:eventName" element={<PlayerSpecificEvent />} />
-        <Route path="/event/:eventName/team/:teamName" element={<BlockRoute> <PlayerTeams /> </BlockRoute>} />
         <Route path="/event/:eventName/team/:teamName/players" element={<BlockRoute> <PlayerTeamPlayers /> </BlockRoute>} />
         <Route path="/event/:eventName/game" element={<BlockRoute> <PlayerGame /> </BlockRoute>} />
-        <Route path="/event/:eventName/registration" element={<BlockRoute> <PlayerRegistration /> </BlockRoute>} />
         <Route path="/event/:eventName/feedback" element={<BlockRoute> <PlayerFeedback /> </BlockRoute>} />
         <Route path="/event/:eventName/liveScores" element={<BlockRoute> <PlayerLiveScores /> </BlockRoute>} />
         <Route path="/pantheon" element={<BlockRoute> <PlayerPantheon /> </BlockRoute>} />
