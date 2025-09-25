@@ -60,15 +60,15 @@ th {
 }
 
 .no-players-message {
-display: flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
   font-family: Montserrat, sans-serif;
   text-align: center;
   justify-content: center;
   padding: 15px;
-  width: 81vw;
-  margin: 20px;
+  width: 62vw;
+  margin: 20px auto;
   height: 50vh;
   border: 2px solid #82859c;
   border-radius: 15px;

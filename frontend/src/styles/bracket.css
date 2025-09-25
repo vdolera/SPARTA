@@ -38,10 +38,12 @@
 
 .single-elim, .double-elim, .round-robin, .swiss {
   position: relative;
-  border: 2px solid;
+  border: 2px solid none;
   border-radius: 12px;
   padding: 20px;
   z-index: 1;
+  color: #063173;
+  text-align: center;
 }
 
 .single-elim::before, .double-elim::before, .round-robin::before, .swiss::before {

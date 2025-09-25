@@ -40,11 +40,11 @@ const Feedback = () => {
             feedbacks.map((fb) => (
               <div className="feedback-item" key={fb._id}>
                 <div className="feedback-container">  
-                  <div className="feedback-contents" >
-                    <h5 style={{ fontStyle: "italic", textAlign: "right", margin: 0}}>{new Date(fb.createdAt).toLocaleString()}</h5>
-                    <h4 style={{ textAlign: "left", marginBottom: "5px" }}>{fb.playerName || "Anonymous"}</h4>
+                  <div className="feedback-contents">
+                    <h5 style={{ fontStyle: "italic", textAlign: "right", margin: 0}}>{new Date(fb.createdAt).toLocaleDateString()}</h5>
                     <p>{fb.message}</p>
-                  </div>
+                    <h5 style={{ textAlign: "right", marginBottom: "5px" }}> - {fb.playerName || "Anonymous"}</h5>
+                  </div>  
                 </div>
               </div>
             ))

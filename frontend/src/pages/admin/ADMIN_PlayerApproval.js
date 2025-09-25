@@ -1,5 +1,6 @@
 import MainLayout from "../../components/MainLayout";
 import { useEffect, useState } from "react";
+import { FaSchoolFlag } from "react-icons/fa6";
 import '../../styles/ADMIN_PlayerApproval.css';
 
 const Approval = () => {
@@ -68,6 +69,7 @@ const Approval = () => {
       </div>
       {players.length === 0 ? (
         <div className="no-players-message">
+          <FaSchoolFlag size={"50"}/>
           <p>No pending user registrations for your institution.</p>
         </div>
       ) : (
