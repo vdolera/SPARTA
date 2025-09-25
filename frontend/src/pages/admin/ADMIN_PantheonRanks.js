@@ -2,6 +2,8 @@ import MainLayout from "../../components/MainLayout";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TbCalendarQuestion } from "react-icons/tb";
+import "../../styles/LiveScores.css";
+
 
 const PantheonRanks = () => {
   const navigate = useNavigate();

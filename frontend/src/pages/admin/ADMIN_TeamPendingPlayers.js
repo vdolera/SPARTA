@@ -65,52 +65,55 @@ const TeamPlayerApproval = () => {
       </div>
 
       {players.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>Player Name</th>
-              <th>Email</th>
-              <th>Team</th>
-              <th>Game</th>
-              <th>Uploaded Requirements</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {players.map((player) => (
-              <tr key={player._id}>
-                <td>{player.playerName}</td>
-                <td>{player.email}</td>
-                <td>{player.team}</td>
-                <td>{player.game}</td>
-                <td>
-                  {player.uploadedRequirements && player.uploadedRequirements.length > 0 ? (
-                    <ul>
-                      {player.uploadedRequirements.map((req, idx) => (
-                        <li key={idx}>
-                          {req.name}:{" "}
-                          <a
-                            href={`http://localhost:5000${req.filePath}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            View File
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    "No requirements uploaded."
-                  )}
-                </td>
-                <td>
-                  <button onClick={() => handleApprove(player._id)}>Accept</button>
-                  <button onClick={() => handleDecline(player._id)}>Decline</button>
-                </td>
+        <div className="approval-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Player Name</th>
+                <th>Email</th>
+                <th>Team</th>
+                <th>Game</th>
+                <th>Uploaded Requirements</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {players.map((player) => (
+                <tr key={player._id}>
+                  <td>{player.playerName}</td>
+                  <td>{player.email}</td>
+                  <td>{player.team}</td>
+                  <td>{player.game}</td>
+                  <td>
+                    {player.uploadedRequirements && player.uploadedRequirements.length > 0 ? (
+                      <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
+                        {player.uploadedRequirements.map((req, idx) => (
+                          <li key={idx} style={{textTransform: "uppercase"}}>
+                            {req.name}:{" "}
+                            <a
+                              href={`http://localhost:5000${req.filePath}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ color: "#007bff", textDecoration: "underline", textTransform: "capitalize" }}
+                            >
+                              View File
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      "No requirements uploaded."
+                    )}
+                  </td>
+                  <td>
+                    <button className='approve-btn' onClick={() => handleApprove(player._id)}>Accept</button>
+                    <button className='decline-btn'onClick={() => handleDecline(player._id)}>Decline</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <div className='no-players-found'>
           <LiaGhostSolid size={48} />
