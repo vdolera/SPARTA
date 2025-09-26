@@ -1,4 +1,5 @@
 const express = require("express");
+const nodemailer = require("nodemailer")
 const Player = require("../models/Player");
 const Game = require("../models/Game");
 
@@ -50,6 +51,20 @@ router.put("/players/team-approve/:id", async (req, res) => {
       { new: true }
     );
     if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });
+        //Email invite
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+        });
+    
+        await transporter.sendMail({
+          from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
+          to: updatedPlayer.email,
+          subject: `Approval to join the event in ${updatedPlayer.institution}`,
+          html: `<h3>Your request to register in the event have been approved</h3>
+            <p>Gratz</p>`,
+        });
+
     res.json({ message: "Player approved by team", player: updatedPlayer });
   } catch (err) {
     res.status(500).json({ message: "Error approving player by team", error: err.message });
@@ -66,6 +81,21 @@ router.put("/players/approve/:id", async (req, res) => {
       { new: true }
     );
     if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });
+
+        //Email invite
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+        });
+    
+        await transporter.sendMail({
+          from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
+          to: updatedPlayer.email,
+          subject: `Approval to join the event in ${updatedPlayer.institution}`,
+          html: `<h3>Your request to register in the event have been approved</h3>
+            <p>Gratz</p>`,
+        });
+
     res.json({ message: "Player approved", player: updatedPlayer });
   } catch (err) {
     res.status(500).json({ message: "Error approving player", error: err.message });
@@ -163,5 +193,34 @@ router.get("/players/:id", async (req, res) => {
   if (!player) return res.status(404).json({ message: "Player not found" });
   res.json(player);
 });
+
+// Test email endpoint
+router.post("/test-email", async (req, res) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: { 
+        user: process.env.SMTP_USER, 
+        pass: process.env.SMTP_PASS 
+      },
+    });
+
+    const testResult = await transporter.sendMail({
+      from: `"SPARTA Test" <${process.env.SMTP_USER}>`,
+      to: "vincentdolera25@gmail.com", // Use your actual email for testing
+      subject: "Test Email from SPARTA",
+      html: "<h1>This is a test email</h1>",
+    });
+
+    console.log("Test email result:", testResult);
+    res.json({ success: true, messageId: testResult.messageId });
+  } catch (error) {
+    console.error("Test email failed:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get("/ping", (req, res) => res.send("pong"));
+
 
 module.exports = router;

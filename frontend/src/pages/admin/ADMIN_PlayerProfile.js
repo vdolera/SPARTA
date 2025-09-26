@@ -9,12 +9,8 @@ const PlayerProfile = () => {
   const [player, setPlayer] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("player");
-  const [selectedDocument, setSelectedDocument] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    document.title = "SPARTA | Player Profile";
-  }, []);
+  //const [selectedDocument, setSelectedDocument] = useState(null);
+  //const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -137,7 +133,7 @@ const PlayerProfile = () => {
               )}
               {activeTab === "history" && (
                 <div>
-                  {/* History tab content goes here */}
+                  {/* History tab */}
                   <p>History content...</p>
                 </div>
               )}
