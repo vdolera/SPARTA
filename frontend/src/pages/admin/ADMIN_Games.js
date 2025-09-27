@@ -68,6 +68,33 @@ const Game = () => {
     navigate(`/admin/event/${encodeURIComponent(decodedName)}/addgame`);
   };
 
+  const handleDeleteGame = async (gameId) => {
+    if (!window.confirm("Are you sure you want to delete this game?")) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/games/${gameId}`, {
+        method: "DELETE",
+      });
+  
+      if (res.ok) {
+        alert("Game deleted successfully");
+        // Refresh games
+        const updatedGames = { ...gamesByType };
+        for (const key in updatedGames) {
+          updatedGames[key] = updatedGames[key].filter(game => game._id !== gameId);
+          if (updatedGames[key].length === 0) {
+            delete updatedGames[key];
+          }
+        }
+        setGamesByType(updatedGames);
+      } else {
+        alert("Failed to delete game");
+      }
+    } catch (error) {
+      console.error("Error deleting game:", error);
+    }
+  };
+  
+
   return (
     <MainLayout>
       <div className="game-header">
@@ -101,19 +128,29 @@ const Game = () => {
           
             return (
             
-              <div className="game-button-container">
-
+              <div className="game-button-container" key={combinedType}>
+              <button
+                className="game-button"
+                onClick={() =>
+                  navigate(
+                    `/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`
+                  )
+                }
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                {icon && React.createElement(icon, { size: 50 })}
+                {combinedType}
+              </button>
+        
+              {(user.role === "admin" || user.role === "co-organizer") && (
                 <button
-                  className="game-button"
-                  key={combinedType}
-                  onClick={() => navigate(`/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`)}
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                  className="delete-game-btn"
+                  onClick={() => handleDeleteGame(games[0]._id)}
                 >
-                  {icon && React.createElement(icon, { size: 50 })}
-                  {combinedType}
+                  X
                 </button>
-
-              </div>
+              )}
+            </div>
             );
           })
         )}

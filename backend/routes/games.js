@@ -268,6 +268,18 @@ router.post("/games", upload.single("rules"), async (req, res) => {
   }
 });
 
+//Delete games
+router.delete("/games/:id", async (req, res) => {
+  try {
+    const deletedGame = await Game.findByIdAndDelete(req.params.id);
+    if (!deletedGame) return res.status(404).json({ message: "Game not found" });
+    res.json({ message: "Game deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error deleting game", error: err.message });
+  }
+});
+
+
 // GET games
 router.get('/games', async (req, res) => {
   try {
