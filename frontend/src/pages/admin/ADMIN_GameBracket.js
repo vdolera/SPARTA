@@ -395,7 +395,6 @@ const GameBracket = () => {
               Schedule
             </button>
 
-
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -410,9 +409,6 @@ const GameBracket = () => {
       </SeedItem>
     </Seed>
   );
-
-
-  const roundsData = makeRoundsFromMatches();
 
   const saveSchedule = async () => {
     if (!selectedMatch) return;
@@ -449,7 +445,7 @@ const GameBracket = () => {
     }
   };
 
-
+  const roundsData = makeRoundsFromMatches();
 
   return (
     <MainLayout>
@@ -465,7 +461,6 @@ const GameBracket = () => {
             </a>
           </p>
         )}
-
 
         <div className="rules-section">
           {game.rules ? (
@@ -488,22 +483,18 @@ const GameBracket = () => {
         </div>
 
         <div className="video-section">
-        <button
-  onClick={() =>
-    setSelectedMatch({
-      type: "video",
-      videoLink: game.videoLink || "", 
-    })
-  }
->
-  Add Video Link
-</button>
-
+          <button
+            onClick={() =>
+              setSelectedMatch({
+                type: "video",
+                videoLink: game.videoLink || "",
+              })
+            }
+          >
+            Add Video Link
+          </button>
         </div>
-
-
       </div>
-
       {showRulesModal && (
         <div className="modal-overlay">
           <div className="modal rules-modal">
@@ -618,7 +609,6 @@ const GameBracket = () => {
                   onChange={(e) => setSelectedMatch({ ...selectedMatch, date: e.target.value })}
                 />
 
-
                 <label>Location:</label>
                 <input
                   type="text"
@@ -634,7 +624,7 @@ const GameBracket = () => {
                   <button type="button" onClick={() => setSelectedMatch(null)}>Cancel</button>
                 </div>
               </>
-            ) : selectedMatch.type === "scores" ? (   // explicitly check
+            ) : selectedMatch.type === "scores" ? (  
               <>
                 <h3>Update Match Scores</h3>
                 {selectedMatch.teams.map((team, idx) => (
