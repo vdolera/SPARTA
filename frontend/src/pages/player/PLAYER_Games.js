@@ -1,5 +1,5 @@
 import PlayerMainLayout from "../../components/P_MainLayout";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennisBall } from "react-icons/gi";
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
@@ -13,6 +13,7 @@ const PlayerGame = () => {
   const userInstitution = user?.institution;
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
+  const navigate = useNavigate();
 
   const [gamesByType, setGamesByType] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
@@ -162,7 +163,7 @@ const PlayerGame = () => {
               <div className="game-button-container" key={combinedType}>
                 <button
                   className="game-button"
-                  onClick={() => console.log(`Clicked game: ${combinedType}`)}
+                  onClick={() => navigate(`/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`)}
                   style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >
                   {icon && React.createElement(icon, { size: 50 })}

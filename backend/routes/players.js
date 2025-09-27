@@ -124,10 +124,7 @@ router.put("/players/:id/register-game", async (req, res) => {
 */
 
 // REGISTER game for player
-router.put(
-  "/players/:id/register-game",
-  upload.any(), // handles multiple requirement files
-  async (req, res) => {
+router.put("/players/:id/register-game", upload.any(), async (req, res) => {
     try {
       const { playerName, team, game } = req.body;
 
@@ -139,7 +136,7 @@ router.put(
 
       // Collect uploaded requirements
       const uploadedRequirements = req.files.map((file) => {
-        // Match fieldname like "requirements[Medical]" → extract "Medical"
+        // Requirement Name matching
         const match = file.fieldname.match(/requirements\[(.+)\]/);
         const reqName = match ? match[1] : file.fieldname;
 
@@ -193,34 +190,5 @@ router.get("/players/:id", async (req, res) => {
   if (!player) return res.status(404).json({ message: "Player not found" });
   res.json(player);
 });
-
-// Test email endpoint
-router.post("/test-email", async (req, res) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: { 
-        user: process.env.SMTP_USER, 
-        pass: process.env.SMTP_PASS 
-      },
-    });
-
-    const testResult = await transporter.sendMail({
-      from: `"SPARTA Test" <${process.env.SMTP_USER}>`,
-      to: "vincentdolera25@gmail.com", // Use your actual email for testing
-      subject: "Test Email from SPARTA",
-      html: "<h1>This is a test email</h1>",
-    });
-
-    console.log("Test email result:", testResult);
-    res.json({ success: true, messageId: testResult.messageId });
-  } catch (error) {
-    console.error("Test email failed:", error);
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-router.get("/ping", (req, res) => res.send("pong"));
-
 
 module.exports = router;

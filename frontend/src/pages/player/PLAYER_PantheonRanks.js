@@ -74,7 +74,7 @@ const PlayerPantheonRanks = () => {
   }
 
   const handleSelectTeam = (teamName) => {
-    navigate(`/admin/pantheon/${encodeURIComponent(decodedEvent)}/${encodeURIComponent(teamName)}/players`);
+    navigate(`/pantheon/${encodeURIComponent(decodedEvent)}/${encodeURIComponent(teamName)}/players`);
   };
 
 

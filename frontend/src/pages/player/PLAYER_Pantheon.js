@@ -22,7 +22,7 @@ const PlayerPantheon = () => {
   }, [userInstitution]);
 
   const handleClickEvent = (event) => {
-    navigate(`/player/pantheon/${encodeURIComponent(event.eventName)}/ranking`);
+    navigate(`/pantheon/${encodeURIComponent(event.eventName)}/ranking`);
   };
 
 
