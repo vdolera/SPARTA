@@ -37,6 +37,9 @@ import PlayerPantheon from "./pages/player/PLAYER_Pantheon";
 import PlayerPantheonRanks from "./pages/player/PLAYER_PantheonRanks";
 import PlayerPantheonTeam from "./pages/player/PLAYER_PantheonTeam";
 
+//SPECTATOR
+import LandingPage from "./pages/spectator/SPECTATOR_Landing";
+import AllEvent from "./pages/spectator/SPECTATOR_Events";
 
 
 export default function App() {
@@ -78,6 +81,9 @@ export default function App() {
         <Route path="/pantheon" element={<BlockRoute> <PlayerPantheon /> </BlockRoute>} />
         <Route path="/pantheon/:eventName/ranking" element={<BlockRoute> <PlayerPantheonRanks /> </BlockRoute>} />
         <Route path="/pantheon/:eventName/:teamName/players" element={<BlockRoute> <PlayerPantheonTeam /> </BlockRoute>} />
+        {/*Spectator*/}
+        <Route path="/institution" element={ <LandingPage />} />
+        <Route path="/:institution" element={ <AllEvent />} />
       </Routes>
     </Router>
   );

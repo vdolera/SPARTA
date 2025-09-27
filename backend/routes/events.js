@@ -100,20 +100,6 @@ router.get('/events', async (req, res) => {
   }
 });
 
-// GET all active events by Institution
-/*router.get('/active-events', async (req, res) => {
-  try {
-    const { institution } = req.query;
-    const today = new Date();
-    const events = await Event.find({ institution, eventEndDate: {$gte:today} });
-    
-    res.json(events);
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch events', error: err.message });
-  }
-});*/
-
-// GET all active events by Institution 
 // GET all active events by Institution 
 router.get("/active-events", async (req, res) => {
   try {
