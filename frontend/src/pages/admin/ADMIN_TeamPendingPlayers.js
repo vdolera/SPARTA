@@ -46,8 +46,8 @@ const TeamPlayerApproval = () => {
   const handleDecline = async (id) => {
     if (!window.confirm("Are you sure you want to decline this player?")) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/players/${id}`, {
-        method: "DELETE",
+      const res = await fetch(`http://localhost:5000/api/players/team-decline/${id}`, {
+        method: "PUT",
       });
       if (res.ok) {
         alert("Player declined!");
