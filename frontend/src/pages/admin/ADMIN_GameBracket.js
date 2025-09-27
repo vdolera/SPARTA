@@ -21,7 +21,7 @@ const GameBracket = () => {
     const localISO = new Date(d - tzOffset).toISOString().slice(0, 16);
     return localISO;
   };
-  
+
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -416,18 +416,18 @@ const GameBracket = () => {
 
   const saveSchedule = async () => {
     if (!selectedMatch) return;
-  
+
     try {
       let formattedDate = null;
       if (selectedMatch.date) {
-        formattedDate = new Date(selectedMatch.date); 
+        formattedDate = new Date(selectedMatch.date);
       }
-  
+
       const scheduleData = {
         date: formattedDate,
         location: selectedMatch.location || null,
       };
-  
+
       await fetch(
         `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
         {
@@ -436,19 +436,19 @@ const GameBracket = () => {
           body: JSON.stringify(scheduleData),
         }
       );
-  
+
       // refresh game after saving
       const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
       const updatedGame = await res.json();
       setGame(updatedGame);
-  
+
       setSelectedMatch(null);
     } catch (err) {
       console.error("Error updating schedule:", err);
       alert("Failed to update schedule. Please try again.");
     }
   };
-  
+
 
 
   return (
@@ -458,6 +458,14 @@ const GameBracket = () => {
         <p><b>Event:</b> {decodedEvent}</p>
         <p><b>Schedule:</b> {new Date(game.startDate).toLocaleString()} - {new Date(game.endDate).toLocaleString()}</p>
         <p><b>Bracket Type:</b> {game.bracketType}</p>
+        {game.videoLink && (
+          <p>
+            <a href={game.videoLink} target="_blank" rel="noopener noreferrer">
+              Watch Video
+            </a>
+          </p>
+        )}
+
 
         <div className="rules-section">
           {game.rules ? (
@@ -478,6 +486,21 @@ const GameBracket = () => {
             <p>No rules provided.</p>
           )}
         </div>
+
+        <div className="video-section">
+        <button
+  onClick={() =>
+    setSelectedMatch({
+      type: "video",
+      videoLink: game.videoLink || "", 
+    })
+  }
+>
+  Add Video Link
+</button>
+
+        </div>
+
 
       </div>
 
@@ -590,10 +613,10 @@ const GameBracket = () => {
                 <h3>Schedule Match</h3>
                 <label>Date:</label>
                 <input
-  type="datetime-local"
-  value={selectedMatch.date || ""}
-  onChange={(e) => setSelectedMatch({ ...selectedMatch, date: e.target.value })}
-/>
+                  type="datetime-local"
+                  value={selectedMatch.date || ""}
+                  onChange={(e) => setSelectedMatch({ ...selectedMatch, date: e.target.value })}
+                />
 
 
                 <label>Location:</label>
@@ -631,7 +654,47 @@ const GameBracket = () => {
                   <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
                 </div>
               </>
-            ) : null}
+            ) : selectedMatch.type === "video" && (
+              <>
+                <h3>Add Video Link</h3>
+                <input
+                  type="text"
+                  placeholder="Enter video URL"
+                  value={selectedMatch.videoLink || ""}
+                  onChange={(e) =>
+                    setSelectedMatch({ ...selectedMatch, videoLink: e.target.value })
+                  }
+                />
+                <div className="modal-actions">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await fetch(`http://localhost:5000/api/${gameId}/video`, {
+                          method: "PUT",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ videoLink: selectedMatch.videoLink }),
+                        });
+
+                        // Refresh game after saving
+                        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+                        const updated = await res.json();
+                        setGame(updated);
+
+                        setSelectedMatch(null);
+                      } catch (err) {
+                        console.error("Error saving video link:", err);
+                        alert("Failed to save video link.");
+                      }
+                    }}
+                  >
+                    Save
+                  </button>
+                  <button onClick={() => setSelectedMatch(null)}>Cancel</button>
+                </div>
+              </>
+            )
+            }
           </div>
         </div>
       )}

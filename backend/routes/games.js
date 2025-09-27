@@ -488,5 +488,21 @@ router.put("/games/:gameId/matches/:matchId/schedule", async (req, res) => {
   }
 });
 
+//Add VideoLink
+router.put("/:gameId/video", async (req, res) => {
+  const { videoLink } = req.body;
+  try {
+    const game = await Game.findByIdAndUpdate(
+      req.params.gameId,
+      { videoLink },
+      { new: true }
+    );
+    res.json(game);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update video link" });
+  }
+});
+
+
 
 module.exports = router;
