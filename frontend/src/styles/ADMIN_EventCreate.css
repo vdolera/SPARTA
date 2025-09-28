@@ -8,6 +8,7 @@
   border: 0.5px solid gray;
   border-radius: 10px;
   width: 1200px;
+  height: fit-content;
 
 }
 
@@ -20,7 +21,7 @@
   margin: 10px auto;
   flex-direction: row;
   gap: 20px;
-  background-color: rgba(211, 211, 211, 0.149);
+  /* background-color: rgba(211, 211, 211, 0.149); */
 }
 
 .event-form-header {
@@ -48,7 +49,7 @@
 
 .event-form-left, .event-form-right {
   padding: 20px;
-  height: 360px;
+  height: fit-content;
   background-color: white;
   border-radius: 10px;
 }

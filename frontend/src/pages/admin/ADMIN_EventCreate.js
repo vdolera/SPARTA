@@ -180,10 +180,12 @@ const CreateEvent = () => {
                 </label>
 
                 <div className="event-reqs">
-                  <h4>EVENT REQUIREMENTS</h4>
-                  <button type="button" onClick={handleAddRequirement}>
-                    + ADD REQUIREMENT
-                  </button>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
+                    <h4>EVENT REQUIREMENTS</h4>
+                    <button className="add-coordinator-button" type="button" onClick={handleAddRequirement}>
+                      + Add Requirement
+                    </button>
+                  </div>
 
                   {requirements.map((req, idx) => (
                     <div key={idx} style={{ marginTop: "5px" }}>
@@ -317,15 +319,18 @@ const CreateEvent = () => {
                   </p>
                 )}
 
-                <div className="event-container">
-                  <div className="lower-buttons">
-                    <button type="button" onClick={handleCancel}>Cancel</button>
-                    <button type="submit" onClick={handleCreate}>Create Event</button>
-                  </div>
-                </div>
+
               </form>
             </div>
           </div>
+
+          <div className="event-container">
+              <div className="lower-buttons">
+                <button type="button" onClick={handleCancel}>Cancel</button>
+                <button type="submit" onClick={handleCreate}>Create Event</button>
+              </div>
+          </div>
+          
         </div>
       </div>
 
