@@ -333,3 +333,18 @@ button.game-button {
 .req-button:hover {
   background-color: #ce892c;
 }
+
+.delete-game-btn {
+  background-color: #beb3b3;
+  color: white;
+  font-size: 13px;
+  border: none;
+  border-radius: 5px;
+  max-width: fit-content;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.delete-game-btn:hover {
+  background-color: #ff4d4d;
+}
