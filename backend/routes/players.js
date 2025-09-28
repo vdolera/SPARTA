@@ -176,66 +176,66 @@ router.put("/players/:id/register-game", async (req, res) => {
 
 // REGISTER game for player
 router.put("/players/:id/register-game", upload.any(), async (req, res) => {
-  try {
-    const { playerName, team, sex } = req.body;
+    try {
+      const { playerName, team, sex } = req.body;
+      let games = req.body.game;
 
-    // Handle game(s) from "game" field 
-    let games = req.body.game;
-    if (!games) {
-      return res.status(400).json({ message: "No game selected" });
+      // Make sure that games is always an array
+      if (!games) {
+        return res.status(400).json({ message: "No game selected" });
+      }
+      if (!Array.isArray(games)) games = [games];
+
+      // Check if the gameid is in the mongodb 
+      const validGameIds = games.filter((id) =>
+        mongoose.Types.ObjectId.isValid(id)
+      );
+      if (!validGameIds.length) {
+        return res.status(400).json({ message: "Invalid game ID(s)" });
+      }
+
+      // Get the OG game documents
+      const gameDocs = await Game.find({ _id: { $in: validGameIds } });
+      if (!gameDocs.length) {
+        return res.status(404).json({ message: "Games not found" });
+      }
+
+      // Collect uploaded requirement files
+      const uploadedRequirements = (req.files || []).map((file) => {
+        const match = file.fieldname.match(/requirements\[(.+)\]/);
+        const reqName = match ? match[1] : file.fieldname;
+        return {
+          name: reqName,
+          filePath: `/uploads/requirements/${file.filename}`,
+        };
+      });
+
+      // Update the player
+      const updatedPlayer = await Player.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: { playerName, team, sex },
+          $push: {
+            game: {
+              $each: gameDocs.map((g) => `${g.category} ${g.gameType}`),
+            },
+            uploadedRequirements: { $each: uploadedRequirements },
+          },
+        },
+        { new: true }
+      );
+
+      if (!updatedPlayer) {
+        return res.status(404).json({ message: "Player not found" });
+      }
+
+      res.json({ message: "Game(s) registered", player: updatedPlayer });
+    } catch (err) {
+      console.error("Error registering player:", err);
+      res.status(500).json({ message: "Failed to register player" });
     }
-    if (!Array.isArray(games)) games = [games];
-
-    // Validate ObjectIds
-    const validGameIds = games.filter((id) =>
-      mongoose.Types.ObjectId.isValid(id)
-    );
-
-    if (!validGameIds.length) {
-      return res.status(400).json({ message: "Invalid game ID(s)" });
-    }
-
-    // Get game documents
-    const gameDocs = await Game.find({ _id: { $in: validGameIds } });
-    if (!gameDocs.length) {
-      return res.status(404).json({ message: "Games not found" });
-    }
-
-    // Prevent crash if no files
-    const uploadedRequirements = (req.files || []).map((file) => {
-      const match = file.fieldname.match(/requirements\[(.+)\]/);
-      const reqName = match ? match[1] : file.fieldname;
-      return {
-        name: reqName,
-        filePath: `/uploads/requirements/${file.filename}`,
-      };
-    });
-
-    // Update player 
-    const updatedPlayer = await Player.findByIdAndUpdate(
-      req.params.id,
-      {
-        playerName,
-        team,
-        sex,
-        $push: { game: { $each: gameDocs.map((g) => `${g.category} ${g.gameType}`) } },
-        $push: { uploadedRequirements: { $each: uploadedRequirements } },
-      },
-      { new: true }
-    );
-    
-
-    if (!updatedPlayer) {
-      return res.status(404).json({ message: "Player not found" });
-    }
-
-    res.json({ message: "Game(s) registered", player: updatedPlayer });
-  } catch (err) {
-    console.error("Error registering player:", err);
-    res.status(500).json({ message: "Failed to register player" });
   }
-});
-
+);
 
 
 

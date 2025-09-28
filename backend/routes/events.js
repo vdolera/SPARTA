@@ -114,7 +114,7 @@ router.get('/specific-event', async (req, res) => {
   }
 });
 
-// Seym as the upper one, but I added Instituion in the query
+// Seym as the upper one, but I added Instituion in the query(for player game page)
 router.get('/event', async (req, res) => {
   try {
     const { eventName, institution } = req.query;

@@ -110,7 +110,7 @@ const TeamPlayers = () => {
                     <tr key={player._id}>
                       <td>{player.playerName}</td>
                       <td>{player.course || "N/A"}</td>
-                      <td>{player.game}</td>
+                      <td>{Array.isArray(player.game) ? player.game.join(", ") : player.game || "N/A"}</td>
                       <td>{player.eventName}</td>
                       <td>
                         <button onClick={() => handleViewButton(player._id)}> View Profile </button>

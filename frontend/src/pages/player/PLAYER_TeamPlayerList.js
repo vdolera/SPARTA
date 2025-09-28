@@ -101,7 +101,7 @@ useEffect(() => {
                   <td>{player.playerName}</td>
                   <td>{player.course || "N/A"}</td>
                   <td>{player.eventName}</td>
-                  <td>{player.game}</td>
+                  <td>{Array.isArray(player.game) ? player.game.join(", ") : player.game || "N/A"}</td>
                 </tr>
               ))}
             </tbody>

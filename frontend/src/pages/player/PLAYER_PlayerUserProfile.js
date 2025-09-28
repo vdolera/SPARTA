@@ -68,7 +68,7 @@ const PlayerUserProfile = () => {
       <div className="profile-details">
         {[
           { label: "Team", value: player.team || "N/A", name: "team", editable: false },
-          { label: "Sport", value: player.game || "N/A", name: "sport" },
+          { label: "Sport", value: Array.isArray(player.game) ? player.game.join(", ") : player.game || "N/A", name: "sport" },
           { label: "Jersey Number", value: player.jerseyNumber || "N/A", name: "jerseyNumber", editable: true },
         ].map((field, idx) => (
           <div className="profile-field" key={idx}>

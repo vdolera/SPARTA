@@ -14,7 +14,7 @@ const playerSchema = new mongoose.Schema({
   playerName: { type: String, trim: true },
   team: { type: String, trim: true },
   sex: { type: String, enum: ["Male", "Female", "Other"] },
-  game: [String],
+  game: { type: [String], default: [] },
   teamApproval: { type: Boolean, default:false },
   uploadedRequirements: [
     {
