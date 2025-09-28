@@ -127,29 +127,31 @@ const Game = () => {
             const icon = gameIcons[gameType] || gameIcons.Default;
           
             return (
-            
+            <div style={{margin: "1rem"}}>
+              <div style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
+                  {(user.role === "admin" || user.role === "co-organizer") && (
+                  <button className="delete-game-btn" onClick={() => handleDeleteGame(games[0]._id)}>
+                    X
+                  </button>
+                  )}
+              </div>
+
               <div className="game-button-container" key={combinedType}>
-              <button
-                className="game-button"
-                onClick={() =>
-                  navigate(
-                    `/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`
-                  )
-                }
-                style={{ display: "flex", alignItems: "center", gap: "8px" }}
-              >
-                {icon && React.createElement(icon, { size: 50 })}
-                {combinedType}
-              </button>
-        
-              {(user.role === "admin" || user.role === "co-organizer") && (
+              
                 <button
-                  className="delete-game-btn"
-                  onClick={() => handleDeleteGame(games[0]._id)}
+                  className="game-button"
+                  onClick={() =>
+                    navigate(
+                      `/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`
+                    )
+                  }
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >
-                  X
+                  {icon && React.createElement(icon, { size: 50 })}
+                  {combinedType}
                 </button>
-              )}
+
+              </div>
             </div>
             );
           })
