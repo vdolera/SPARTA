@@ -2,6 +2,8 @@ const express = require("express");
 const nodemailer = require("nodemailer")
 const Player = require("../models/Player");
 const Game = require("../models/Game");
+const mongoose = require("mongoose");
+
 
 const router = express.Router();
 
@@ -174,49 +176,67 @@ router.put("/players/:id/register-game", async (req, res) => {
 
 // REGISTER game for player
 router.put("/players/:id/register-game", upload.any(), async (req, res) => {
-    try {
-      const { playerName, team, game } = req.body;
+  try {
+    const { playerName, team, sex } = req.body;
 
-        // Find the game by ID to fetch details
-        const gameDoc = await Game.findById(game);
-        if (!gameDoc) {
-          return res.status(404).json({ message: "Game not found" });
-        }
-
-      // Collect uploaded requirements
-      const uploadedRequirements = req.files.map((file) => {
-        // Requirement Name matching
-        const match = file.fieldname.match(/requirements\[(.+)\]/);
-        const reqName = match ? match[1] : file.fieldname;
-
-        return {
-          name: reqName,
-          filePath: `/uploads/requirements/${file.filename}`,
-        };
-      });
-
-      const updatedPlayer = await Player.findByIdAndUpdate(
-        req.params.id,
-        {
-          playerName,
-          team,
-          game: `${gameDoc.category} ${gameDoc.gameType}`,
-          $push: { uploadedRequirements: { $each: uploadedRequirements } },
-        },
-        { new: true }
-      );
-
-      if (!updatedPlayer) {
-        return res.status(404).json({ message: "Player not found" });
-      }
-
-      res.json({ message: "Game registered", player: updatedPlayer });
-    } catch (err) {
-      console.error("Error registering player:", err);
-      res.status(500).json({ message: "Failed to register player" });
+    // Handle game(s) from "game" field 
+    let games = req.body.game;
+    if (!games) {
+      return res.status(400).json({ message: "No game selected" });
     }
+    if (!Array.isArray(games)) games = [games];
+
+    // Validate ObjectIds
+    const validGameIds = games.filter((id) =>
+      mongoose.Types.ObjectId.isValid(id)
+    );
+
+    if (!validGameIds.length) {
+      return res.status(400).json({ message: "Invalid game ID(s)" });
+    }
+
+    // Get game documents
+    const gameDocs = await Game.find({ _id: { $in: validGameIds } });
+    if (!gameDocs.length) {
+      return res.status(404).json({ message: "Games not found" });
+    }
+
+    // Prevent crash if no files
+    const uploadedRequirements = (req.files || []).map((file) => {
+      const match = file.fieldname.match(/requirements\[(.+)\]/);
+      const reqName = match ? match[1] : file.fieldname;
+      return {
+        name: reqName,
+        filePath: `/uploads/requirements/${file.filename}`,
+      };
+    });
+
+    // Update player 
+    const updatedPlayer = await Player.findByIdAndUpdate(
+      req.params.id,
+      {
+        playerName,
+        team,
+        sex,
+        $push: { game: { $each: gameDocs.map((g) => `${g.category} ${g.gameType}`) } },
+        $push: { uploadedRequirements: { $each: uploadedRequirements } },
+      },
+      { new: true }
+    );
+    
+
+    if (!updatedPlayer) {
+      return res.status(404).json({ message: "Player not found" });
+    }
+
+    res.json({ message: "Game(s) registered", player: updatedPlayer });
+  } catch (err) {
+    console.error("Error registering player:", err);
+    res.status(500).json({ message: "Failed to register player" });
   }
-);
+});
+
+
 
 
 // GET players by team

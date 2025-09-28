@@ -21,7 +21,6 @@ const gameSchema = new mongoose.Schema({
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
   teams: { type: [String], required: true },       
-  requirements: { type: [String], required: true },
   rules: { type: String, required: true }, 
   videoLink: { type: String, default:""},      
   eventName: { type: String, required: true },

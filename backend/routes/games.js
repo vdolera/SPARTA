@@ -38,7 +38,6 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       startDate,
       endDate,
       teams,
-      requirements,
       rules,
       eventName,
       bracketType,
@@ -48,7 +47,6 @@ router.post("/games", upload.single("rules"), async (req, res) => {
 
     // Translation(Parsing) thingy chuchu
     const parsedTeams = JSON.parse(teams || "[]");
-    const parsedRequirements = JSON.parse(requirements || "[]");
     const parsedCoordinators = JSON.parse(coordinators || "[]");
 
     // Check if Text or Uploaded Rules
@@ -66,7 +64,6 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       !startDate ||
       !endDate ||
       !teams?.length ||
-      !parsedRequirements.length ||
       (!rules && !req.file) ||
       !eventName ||
       !bracketType
@@ -236,7 +233,6 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       startDate,
       endDate,
       teams: shuffledTeams,
-      requirements: parsedRequirements,
       rules,
       eventName,
       bracketType,

@@ -22,7 +22,7 @@ const PlayerSpecificEvent = () => {
     const fetchEventDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/event?eventName=${encodeURIComponent(decodedName)}`
+          `http://localhost:5000/api/specific-event?eventName=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
         setEventDetails(data);
@@ -88,8 +88,7 @@ const PlayerSpecificEvent = () => {
 
                     <div className="location-box">
                         <h3>Event Location</h3>
-                        <p>Venue: Event Venue</p>
-                        {/* <p>Location: {location}</p> */}
+                        <p>Venue: {event?.location}</p>
                     </div>
                 </div>
 

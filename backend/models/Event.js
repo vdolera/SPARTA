@@ -10,6 +10,7 @@ const eventSchema = new mongoose.Schema({
   description: { type: String, required: false },
   eventColor: { type: String, required: true },
   location: { type: String, required: true },
+  requirements: { type: [String], required: true },
   coordinators: [
     {
       name: String,

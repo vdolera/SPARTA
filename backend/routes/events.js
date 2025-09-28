@@ -19,6 +19,7 @@ router.post('/event', async (req, res) => {
     description, 
     eventColor, 
     location, 
+    requirements,
     coordinators = []
   } = req.body;
 
@@ -33,6 +34,7 @@ router.post('/event', async (req, res) => {
       description, 
       eventColor,
       location,
+      requirements,
       //For editing
       coordinators: coordinators.map(c => ({
         name: c.name,
@@ -100,6 +102,31 @@ router.get('/events', async (req, res) => {
   }
 });
 
+// get single event info
+router.get('/specific-event', async (req, res) => {
+  try {
+    const { eventName } = req.query;
+    const event = await Event.findOne({ eventName });
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+    res.json(event);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Seym as the upper one, but I added Instituion in the query
+router.get('/event', async (req, res) => {
+  try {
+    const { eventName, institution } = req.query;
+    const event = await Event.findOne({ eventName, institution });
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+    res.json(event);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 // GET all active events by Institution 
 router.get("/active-events", async (req, res) => {
   try {
@@ -157,17 +184,7 @@ router.get('/past-events', async (req, res) => {
   }
 });
 
-// GET single event
-router.get('/event', async (req, res) => {
-  try {
-    const { eventName } = req.query;
-    const event = await Event.findOne({ eventName });
-    if (!event) return res.status(404).json({ message: 'Event not found' });
-    res.json(event);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+
 
 /*
 // UPDATE event

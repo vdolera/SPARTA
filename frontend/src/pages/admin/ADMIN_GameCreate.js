@@ -9,7 +9,6 @@ const CreateGame = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [bracketType, setBracketType] = useState("Single Elimination");
-  const [requirements, setRequirements] = useState([""]);
   const [rules, setRules] = useState("");
   const [availableTeams, setAvailableTeams] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
@@ -46,17 +45,6 @@ const CreateGame = () => {
     );
   };
 
-  // REQUIREMENT HANDLING
-  const handleAddRequirement = () => setRequirements([...requirements, ""]);
-  const handleRequirementChange = (idx, value) => {
-    const updated = [...requirements];
-    updated[idx] = value;
-    setRequirements(updated);
-  };
-  const handleRemoveRequirement = (idx) => {
-    setRequirements(requirements.filter((_, i) => i !== idx));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const user = JSON.parse(localStorage.getItem("auth"));
@@ -76,7 +64,6 @@ const CreateGame = () => {
       formData.append("bracketType", bracketType);
       formData.append("eventName", decodedEventName);
       formData.append("teams", JSON.stringify(selectedTeams));
-      formData.append("requirements", JSON.stringify(requirements));
       formData.append("coordinators", JSON.stringify(selectedCoordinators));
       formData.append("referees", JSON.stringify(referees));
 
@@ -270,9 +257,7 @@ const CreateGame = () => {
                     {[
                       "Single Elimination",
                       "Double Elimination",
-                      "Round Robin",
-                      "Swiss",
-                      "Free for All"
+                      "Round Robin"
                     ].map((type) => (
                       <button
                         key={type}
@@ -364,32 +349,7 @@ const CreateGame = () => {
                 </div>
               </div>
              
-               {/* Requirements */}
               <div className="game-reqs-rules">
-              <div className="game-reqs">
-                <h4>REQUIREMENTS</h4>
-                  <button type="button" onClick={handleAddRequirement}>
-                    + ADD REQUIREMENT
-                  </button>
-                  {requirements.map((req, idx) => (
-                    <div key={idx}>
-                      <input
-                        type="text"
-                        value={req}
-                        style={{margin: "5px"}}
-                        onChange={(e) => handleRequirementChange(idx, e.target.value)}
-                        required
-                        placeholder={`Requirement ${idx + 1}`}
-                      />
-                      {requirements.length > 1 && (
-                        <button className="remove-req" type="button" onClick={() => handleRemoveRequirement(idx)}>
-                          Remove
-                        </button>
-                      )}
-                    </div>
-                  ))}
-              </div>
-
                 {/* Rules */}
                 <div className="game-rules">
                   <h4>RULES</h4>

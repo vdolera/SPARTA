@@ -15,8 +15,10 @@ const CreateEvent = () => {
   const [eventColor, setEventColor] = useState("#3E64AF");
   const [description, setDescription] = useState("");
   const [coordinators, setCoordinator] = useState([
-    { name: "",email: "", role: "co-organizer" }
+    { name: "", email: "", role: "co-organizer" }
   ]);
+  const [requirements, setRequirements] = useState([""]);
+
   const [inviteStatus] = useState("");
 
 
@@ -41,6 +43,7 @@ const CreateEvent = () => {
           location,
           eventColor,
           description,
+          requirements,
           coordinators,
         }),
       });
@@ -75,6 +78,20 @@ const CreateEvent = () => {
   const handleDeleteCoordinator = (idx) => {
     setCoordinator(coordinators.filter((_, i) => i !== idx));
   };
+
+  // REQUIREMENT HANDLING
+  const handleAddRequirement = () => setRequirements([...requirements, ""]);
+
+  const handleRequirementChange = (idx, value) => {
+    const updated = [...requirements];
+    updated[idx] = value;
+    setRequirements(updated);
+  };
+
+  const handleRemoveRequirement = (idx) => {
+    setRequirements(requirements.filter((_, i) => i !== idx));
+  };
+
 
   return (
 
@@ -162,8 +179,42 @@ const CreateEvent = () => {
                   />
                 </label>
 
-              </form>
+                <div className="event-reqs">
+                  <h4>EVENT REQUIREMENTS</h4>
+                  <button type="button" onClick={handleAddRequirement}>
+                    + ADD REQUIREMENT
+                  </button>
 
+                  {requirements.map((req, idx) => (
+                    <div key={idx} style={{ marginTop: "5px" }}>
+                      <input
+                        type="text"
+                        value={req}
+                        onChange={(e) => handleRequirementChange(idx, e.target.value)}
+                        required
+                        placeholder={`Requirement ${idx + 1}`}
+                        style={{ marginRight: "10px" }}
+                      />
+                      {requirements.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveRequirement(idx)}
+                          style={{
+                            background: "#d9534f",
+                            color: "white",
+                            border: "none",
+                            padding: "4px 10px",
+                            borderRadius: "4px",
+                            cursor: "pointer"
+                          }}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </form>
             </div>
 
             <div className="event-form-right" style={{ minHeight: `${220 + coordinators.length * 60}px` }}>
@@ -221,7 +272,7 @@ const CreateEvent = () => {
                         <select
                           className="role-selector"
                           value={coord.role}
-                          onChange={e => handleCoordinatorChange(idx, "role", e.target.value)}   // ✅ correct
+                          onChange={e => handleCoordinatorChange(idx, "role", e.target.value)}   
                           style={{ marginLeft: "8px", marginBottom: "8px", fontSize: "14px" }}
                         >
                           <option value="co-organizer">Co-Organizer</option>
@@ -234,7 +285,7 @@ const CreateEvent = () => {
                         <input
                           type="email"
                           value={coord.email}
-                          onChange={e => handleCoordinatorChange(idx, "email", e.target.value)}  // ✅ fixed
+                          onChange={e => handleCoordinatorChange(idx, "email", e.target.value)}  
                           placeholder="Enter Email"
                         />
                       </label>
@@ -247,19 +298,17 @@ const CreateEvent = () => {
                           onChange={e => handleCoordinatorChange(idx, "name", e.target.value)}
                           placeholder="Enter Name"
                         />
-
                       </label>
 
                       <button
                         type="button"
                         style={{ background: "#d32f2f", color: "white", borderRadius: "6px", padding: "6px 12px", border: "none", cursor: "pointer" }}
-                        onClick={() => handleDeleteCoordinator(idx)}   // ✅ fixed
+                        onClick={() => handleDeleteCoordinator(idx)}  
                       >
                         Delete
                       </button>
                     </div>
                   ))}
-
                 </div>
 
                 {inviteStatus && (
@@ -267,19 +316,15 @@ const CreateEvent = () => {
                     {inviteStatus}
                   </p>
                 )}
+
+                <div className="event-container">
+                  <div className="lower-buttons">
+                    <button type="button" onClick={handleCancel}>Cancel</button>
+                    <button type="submit" onClick={handleCreate}>Create Event</button>
+                  </div>
+                </div>
               </form>
-
             </div>
-
-          </div>
-
-            <div className="event-container">
-              <div className="lower-buttons">
-              <button type="button" onClick={handleCancel}>Cancel</button>
-              <button type="submit" onClick={handleCreate}>Create Event</button>
-            </div>
-
-
           </div>
         </div>
       </div>
