@@ -220,7 +220,7 @@ const PlayerGame = () => {
                 <label className="form-label">Player Name:</label>
                 <input
                   type="text"
-                  value={playerName}
+                  value={playerName || user?.playerName || ""}
                   onChange={(e) => setPlayerName(e.target.value)}
                   required
                   className="form-input"
@@ -230,7 +230,7 @@ const PlayerGame = () => {
               <div className="form-group">
                 <label className="form-label">Team:</label>
                 <select
-                  value={team}
+                  value={team || user?.team || ""}
                   onChange={(e) => setTeam(e.target.value)}
                   required
                   className="form-input"

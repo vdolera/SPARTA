@@ -115,7 +115,7 @@ const PlayerUserProfile = () => {
             ].map((field, idx) => (
               <div className={`profile-field ${field.className || ""}`} key={idx}>
                 <span className="profile-label">{field.label}</span>
-                {isEditing ? (
+                {isEditing && field.name !== "sex" ? (
                   field.type === "select" ? (
                   <select name={field.name} value={player[field.name] || ""} onChange={handleChange} className="profile-input">
                     <option value="">Select Sex</option>
