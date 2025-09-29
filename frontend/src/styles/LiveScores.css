@@ -1,11 +1,13 @@
 .live-scores-main-div {
-  width: 1200px;
+  width: 1000px;
+  margin: auto;
 }
 
 .live-scores-header {
-  width: 1200px;
+  width: 1000px;
   text-align: center;
   font-family: Montserrat, sans-serif;
+  margin: auto;
 }
 
 .live-scores-container {

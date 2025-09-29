@@ -350,9 +350,9 @@ const CreateGame = () => {
               </div>
              
               <div className="game-reqs-rules">
-                {/* Rules */}
+                <h4>RULES</h4>
                 <div className="game-rules">
-                  <h4>RULES</h4>
+                  
                   <textarea
                     value={rules}
                     onChange={(e) => setRules(e.target.value)}

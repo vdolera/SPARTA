@@ -81,9 +81,9 @@ const PantheonRanks = () => {
 
 
     return (
-        <MainLayout>
- <div className="live-scores-header">
-        <h1>Live Scores for {decodedEvent}</h1>
+      <MainLayout>
+      <div className="live-scores-header">
+        <h1>RANKING FOR {decodedEvent}</h1>
       </div>
       
       <div className="live-scores-main-div">

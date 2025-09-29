@@ -42,7 +42,7 @@
 .feedback-item {
     display: flex;
     flex-direction: row;
-    width: 200px;
+    width: 175px;
     min-height: fit-content;
 }
 

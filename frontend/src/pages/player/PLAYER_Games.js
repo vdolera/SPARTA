@@ -185,7 +185,7 @@ const PlayerGame = () => {
             const gameType = games[0]?.gameType || "Default";
             const icon = gameIcons[gameType] || gameIcons.Default;
             return (
-              <div className="game-button-container" key={combinedType}>
+              <div className="game-button-container" key={combinedType} style={{ margin: "1rem" }}>
                 <button
                   className="game-button"
                   onClick={() => navigate(`/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`)}

@@ -185,7 +185,7 @@
 }
 
 .game-rules {
-  margin-top: 25px;
+  margin-top: 5px;
   display: flex;
   flex-direction: column;
   gap: 5px;
