@@ -30,6 +30,8 @@
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.215);
   flex: 1;
+  height: fit-content;
+  word-break: break-word;
 }
 
 .player-main-card {

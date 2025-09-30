@@ -49,7 +49,7 @@ const PlayerUserProfile = () => {
 
   return (
     <PlayerMainLayout>
- <div className="player-profile-container">
+  <div className="player-profile-container">
 
     <div className="profile-view">
       {/* Left card */}
@@ -65,12 +65,12 @@ const PlayerUserProfile = () => {
           <p>{player.institution}</p>
         </div>
 
-      <div className="profile-details">
-        {[
+        <div className="profile-details">
+         {[
           { label: "Team", value: player.team || "N/A", name: "team", editable: false },
           { label: "Sport", value: Array.isArray(player.game) ? player.game.join(", ") : player.game || "N/A", name: "sport" },
           { label: "Jersey Number", value: player.jerseyNumber || "N/A", name: "jerseyNumber", editable: true },
-        ].map((field, idx) => (
+         ].map((field, idx) => (
           <div className="profile-field" key={idx}>
             <span className="profile-label">{field.label}</span>
             {isEditing && field.editable ? (
