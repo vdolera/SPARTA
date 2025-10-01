@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { MoreVertical } from "lucide-react";
+import { MdEventNote } from "react-icons/md";
 import "../../styles/ADMIN_Event.css";
 
 const Event = () => {
@@ -86,11 +87,16 @@ const Event = () => {
         </button>
         )}
       </div>
-
-      <div className="event-list">
+      
+      {events.length === 0 ? (
+        <div className="no-events">
+          <MdEventNote size={"50"}/>
+          <p>No on-going events found. {user.role === "admin" && "Click 'New Event' to create one."}</p>
+        </div>
+      ) : (
+        <div className="event-list">
         {filteredEvents.map((event) => (
           <div key={event._id} className="event-item">
-
             <div className="event-color" style={{ background: event.eventColor || "#A96B24" }}         
             >
               {/* Menu button */}
@@ -122,6 +128,9 @@ const Event = () => {
           </div>
         ))}
       </div>
+      )}
+
+      
       {/* Edit Modal */}
       {editEvent && (
         <div className="modal-event-overlay">

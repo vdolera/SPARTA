@@ -136,6 +136,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   height: fit-content;
   border: 2px solid #a56806;
+  font-family: Poppins, sans-serif;
 }
 
 .upcoming-events h3 {

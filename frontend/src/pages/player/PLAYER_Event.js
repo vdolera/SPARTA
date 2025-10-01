@@ -1,6 +1,7 @@
 import PlayerMainLayout from "../../components/P_MainLayout";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { MdEventNote } from "react-icons/md";
 import '../../styles/ADMIN_Event.css'; 
 
 const PlayerEvent = () => {
@@ -41,6 +42,13 @@ const PlayerEvent = () => {
         />
       </div>
 
+      {events.length === 0 ? (
+        <div className="no-events">
+          <MdEventNote size={"50"}/>
+          <p>There are no on-going events found in your institution.  <br />Please wait for further announcements.</p>
+        </div>
+      ) : (
+
       <div className="event-list">
         {filteredEvents.map((event) => (
           <div className='event-item' key={event._id}>
@@ -54,6 +62,7 @@ const PlayerEvent = () => {
           </div>
         ))}
       </div>
+    )}
     </PlayerMainLayout>
   )
 };
