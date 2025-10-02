@@ -6,29 +6,33 @@ import {TbCalendarQuestion} from "react-icons/tb";
 
 const PlayerLiveScores = () => {
   const { eventName } = useParams();
-  const decodedName = decodeURIComponent(eventName);
+  const decodedEvent = decodeURIComponent(eventName);
   const [teams, setTeams] = useState([]);
 
   const user = JSON.parse(localStorage.getItem('auth'));
   const userInstitution = user?.institution;
 
-  useEffect(() => {
-    const fetchTeams = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5000/api/teams?institution=${encodeURIComponent(userInstitution)}&event=${encodeURIComponent(decodedName)}`
-        );
-        const data = await response.json();
-        setTeams(data);
-      } catch (error) {
-        console.error("Error fetching teams:", error);
-      }
-    };
-
-    if (userInstitution && decodedName) {
-      fetchTeams();
+ // Fetch teams with scores
+ useEffect(() => {
+  const fetchTeams = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(
+          userInstitution
+        )}&event=${encodeURIComponent(decodedEvent)}`
+      );
+      const data = await response.json();
+      // Sort by grandTotal
+      setTeams(data.sort((a, b) => b.grandTotal - a.grandTotal));
+    } catch (error) {
+      console.error("Error fetching teams:", error);
     }
-  }, [userInstitution, decodedName]);
+  };
+
+  if (userInstitution && decodedEvent) {
+    fetchTeams();
+  }
+}, [userInstitution, decodedEvent]);
 
   // Teams are already sorted by backend, but just in case
   const rankedTeams = [...teams].sort(
@@ -46,7 +50,7 @@ const PlayerLiveScores = () => {
     <PlayerMainLayout>
       
       <div className="live-scores-header">
-        <h1>Live Scores for {decodedName}</h1>
+        <h1>Live Scores for {decodedEvent}</h1>
       </div>
 
       <div className="live-scores-maindiv">
