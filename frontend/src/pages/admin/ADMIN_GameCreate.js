@@ -18,6 +18,9 @@ const CreateGame = () => {
   const [selectedCoordinators, setSelectedCoordinators] = useState([]);
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  
+  const [modalMessage, setModalMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate();
   const { eventName } = useParams();
@@ -50,7 +53,8 @@ const CreateGame = () => {
     const user = JSON.parse(localStorage.getItem("auth"));
 
     if (selectedTeams.length < 2) {
-      alert("You must select at least 2 teams to create a bracket.");
+      setModalMessage("You must select at least 2 teams to create a bracket.");
+      setShowModal(true);
       return;
     }
 
@@ -81,14 +85,19 @@ const CreateGame = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Game created!");
-        navigate(-1);
+        setModalMessage("Game created successfully!");
+        setShowModal(true);
+        setTimeout(() => {
+          setShowModal(false);
+          navigate(-1);
+        }, 4000); // Auto-close after 1.5s and go back
       } else {
-        alert("Failed! " + data.message);
+        setModalMessage("Failed! " + data.message);
+        setShowModal(true);
       }
     } catch (err) {
-      console.error("Error:", err);
-      alert("Failed to create game.");
+      setModalMessage("Failed to create game.");
+      setShowModal(true);
     }
   };
 
@@ -143,10 +152,9 @@ const CreateGame = () => {
 
   return (
     <MainLayout>
-
+    <>
+    
       <div className="game-container">
-
-
         <div className="game-create-maindiv">
 
           <div className="game-form-header">
@@ -387,6 +395,16 @@ const CreateGame = () => {
           </div>
         </div>     
       </div>
+
+      {showModal && (
+        <div className="modal-backdrop">
+          <div className="game-modal">
+            <p>{modalMessage}</p>
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
+      </>
     </MainLayout>
   );
 };

@@ -88,7 +88,8 @@ const Game = () => {
         }
         setGamesByType(updatedGames);
       } else {
-        alert("Failed to delete game");
+
+        // alert("Failed to delete game");
       }
     } catch (error) {
       console.error("Error deleting game:", error);
@@ -98,6 +99,8 @@ const Game = () => {
 
   return (
     <MainLayout>
+    <>
+
       <div className="game-header">
         <h2>All Games for {eventName}</h2>
       </div>
@@ -119,8 +122,8 @@ const Game = () => {
 
         {filteredGames.length === 0 ? (
           <div className="no-games-found">
-            <FaCircleQuestion size={48} />
-            <p style={{ textAlign: "center", width: "100%" }}>No games found.</p>
+            <FaCircleQuestion size={40} />
+            <p style={{ textAlign: "center", width: "100%" }}>No games found.<br />Please click the " + Add Game " button to create a new game.</p>
           </div>
         ) : (
           filteredGames.map(([combinedType, games]) => {
@@ -158,6 +161,7 @@ const Game = () => {
           })
         )}
       </div>
+    </>
     </MainLayout>
   );
 };

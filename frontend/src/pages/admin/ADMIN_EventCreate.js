@@ -1,9 +1,13 @@
 import MainLayout from "../../components/MainLayout";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import '../../styles/ADMIN_EventCreate.css';
 
 const CreateEvent = () => {
+
+    useEffect(() => {
+      document.title = "SPARTA | Event Create";
+    })
 
   const navigate = useNavigate();
   const [eventName, setEventName] = useState("");
@@ -21,6 +25,8 @@ const CreateEvent = () => {
 
   const [inviteStatus] = useState("");
 
+  const [modalMessage, setModalMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   // Handle form submission
   const handleCreate = async (e) => {
@@ -51,14 +57,19 @@ const CreateEvent = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Event created and invitations sent!");
-        navigate(-1);
+        setModalMessage("Event Create and Event Invitaions have been sent!");
+        setShowModal(true);
+        setTimeout(() => {
+          setShowModal(false);
+          navigate(-1);
+        }, 4000)
       } else {
-        alert(data.message);
+        setModalMessage("There are still fields that needs to be filled-up.   ")
+        setShowModal(true);
       }
     } catch (error) {
       console.error("Error creating event:", error);
-      alert("Failed to create event.");
+      setModalMessage("Failed to create event.")
     }
   };
 
@@ -96,7 +107,7 @@ const CreateEvent = () => {
   return (
 
     <MainLayout>
-
+    <>
       <div className="event-container">
         <div className='event-create-maindiv'>
 
@@ -333,8 +344,18 @@ const CreateEvent = () => {
           
         </div>
       </div>
+    
+    {showModal && (
+      <div className="event-modal-backdrop">
+        <div className="event-create-modal">
+          <p>{modalMessage}</p>
+          <button onClick={() => setShowModal(false)}>Close</button>
+        </div>
+      </div>
+    )}
 
 
+    </>
     </MainLayout>
 
   )

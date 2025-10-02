@@ -168,12 +168,33 @@
   padding: 6px 12px;
   font-size: 13px;
   border: none;
-  border-radius: 20px;
+  border-radius: 5px;
   max-width: fit-content;
   cursor: pointer;
 }
 
 .rules-section > button:hover {
+  background-color: #CE892C;
+  color: white;
+}
+
+.video-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.video-section > button {
+  background-color: #1A2A49;
+  color: white;
+  padding: 6px 12px;
+  font-size: 13px;
+  border: none;
+  border-radius: 5px;
+  max-width: fit-content;
+  cursor: pointer;
+}
+
+.video-section > button:hover {
   background-color: #CE892C;
   color: white;
 }
@@ -249,7 +270,25 @@
   text-decoration: underline;
 }
 
+/* MATCH BUTTONS */
+.match-actions {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
 
+.match-actions > button {
+  background-color: #747c8b;
+  color: white;
+  padding: 3px 6px;
+  font-size: 13px;
+  border: none;
+  border-radius: 5px;
+  max-width: fit-content;
+  cursor: pointer;
+}
+
+/* MODALS */
 
 
 

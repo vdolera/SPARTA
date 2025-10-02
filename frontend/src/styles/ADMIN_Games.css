@@ -1,6 +1,6 @@
 .game-header {
-  width: 100%;
-  padding: 18px 0;
+  width: 80vw;
+  padding: 10px;
   border-radius: 15px;
   background: white;
   position: relative;
@@ -16,6 +16,7 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   box-sizing: border-box;
+  width: 1000px;
 }
 
 .game-header-row {
@@ -92,12 +93,11 @@ button.game-button {
   font-family: Montserrat, sans-serif;
   text-align: center;
   justify-content: center;
-  padding: 15px;
-  width: 81vw;
-  margin: 20px;
-  height: 50vh;
-  border: 2px solid #82859c;
-  border-radius: 15px;
+  padding: 10px;
+  gap: 10px;
+  width: 80vw;
+  margin: 20px auto;
+  height: 40vh;
   background-color: #f8f8ff;
 }
 

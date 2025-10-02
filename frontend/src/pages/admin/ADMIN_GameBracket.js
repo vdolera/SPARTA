@@ -462,37 +462,39 @@ const GameBracket = () => {
           </p>
         )}
 
-        <div className="rules-section">
-          {game.rules ? (
-            game.rules.endsWith(".pdf") || game.rules.startsWith("/uploads/") ? (
-              <>
-                <button onClick={() => setShowRulesModal(true)}>
-                  View Rules
-                </button>
-              </>
+        <div style={{ display: "flex", flexDirection: "row", gap: "5px",flexWrap: "wrap", alignItems: "center", justifyContent:"center", width: "100%", margin: "0 auto"}}>
+          <div className="rules-section">
+            {game.rules ? (
+              game.rules.endsWith(".pdf") || game.rules.startsWith("/uploads/") ? (
+                <>
+                  <button onClick={() => setShowRulesModal(true)}>
+                    View Rules
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button onClick={() => setShowRulesModal(true)}>
+                    View Rules
+                  </button>
+                </>
+              )
             ) : (
-              <>
-                <button onClick={() => setShowRulesModal(true)}>
-                  View Rules
-                </button>
-              </>
-            )
-          ) : (
-            <p>No rules provided.</p>
-          )}
-        </div>
+              <p>No rules provided.</p>
+            )}
+          </div>
 
-        <div className="video-section">
-          <button
-            onClick={() =>
-              setSelectedMatch({
-                type: "video",
-                videoLink: game.videoLink || "",
-              })
-            }
-          >
-            Add Video Link
-          </button>
+          <div className="video-section">
+            <button
+              onClick={() =>
+                setSelectedMatch({
+                  type: "video",
+                  videoLink: game.videoLink || "",
+                })
+              }
+            >
+              Add Video Link
+            </button>
+          </div>
         </div>
       </div>
       {showRulesModal && (
