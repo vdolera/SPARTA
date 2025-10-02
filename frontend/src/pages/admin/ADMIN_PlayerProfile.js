@@ -71,6 +71,7 @@ const PlayerProfile = () => {
                     { label: "Birth Date", value: player.birthDate ? player.birthDate.substring(0, 10) : "N/A" },
                     { label: "Age", value: player.age || "N/A" },
                     { label: "Sex", value: player.sex || "N/A" },
+                    { label: "Course", value: player.course || "N/A", name: "course", editable: true },
                     { label: "Contact", value: player.contactNumber || "N/A" },
                     { label: "Address", value: player.permanentAddress || "N/A", className: "address-field" },
                     { label: "Weight", value: player.weight ? `${player.weight} kg` : "N/A" },
