@@ -16,6 +16,9 @@ const CreateTeam = () => {
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
+  const [modalMessage, setModalMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
   const decodedEventName = decodeURIComponent(eventName);
 
   const handleCreate = async (e) => {
@@ -50,13 +53,19 @@ const CreateTeam = () => {
 
       if (response.ok) {
         alert("Team created!");
-        navigate(-1);
+        setModalMessage("Team created successfully!");
+        setShowModal(true);
+        setTimeout(() => {
+          setShowModal(false);
+          navigate(-1);
+        }, 4000); // Auto-close after 4s
       } else {
         alert(`${data.message}`);
       }
     } catch (error) {
       console.error("Error creating team:", error);
-      alert("Failed to create team.");
+      setModalMessage("Failed to create team.");
+      setShowModal(true);
     }
   };
 
@@ -100,6 +109,7 @@ const CreateTeam = () => {
 
   return (
     <MainLayout>
+    <>
       <div className="team-create-maindiv">
         <div className="team-form-header">
           <h2>Team Creation Form</h2>
@@ -229,6 +239,16 @@ const CreateTeam = () => {
           </form>
         </div>
       </div>
+
+      {showModal && (
+        <div className="modal-backdrop">
+          <div className="team-modal">
+            <p>{modalMessage}</p>
+            <button onClick={() => setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
+    </>
     </MainLayout>
   );
 };
