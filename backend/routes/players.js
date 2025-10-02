@@ -61,11 +61,29 @@ router.put("/players/approve/:id", async (req, res) => {
         });
     
         await transporter.sendMail({
-          from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
+          from: `"${updatedPlayer.eventName}" <${process.env.SMTP_USER}>`,
           to: updatedPlayer.email,
-          subject: `Approval to join the event in ${updatedPlayer.institution}`,
-          html: `<h3>Your request to register in the event have been approved</h3>
-            <p>Gratz</p>`,
+          subject: `Approval to join the ${updatedPlayer.eventName} at ${updatedPlayer.institution}`,
+          html: 
+          `
+          <div style="font-family: Arial, sans-serif; color: #222;">
+          <p>Dear ${updatedPlayer.name},</p>
+
+          <p>
+          We are excited to inform you that your request to register in the ${updatedPlayer.eventName} at ${updatedPlayer.institution}have been <b>APPROVED</b>.
+          </p>
+
+          <p>Congratulations! And we are looking forward for your active participation in the event.</p>
+
+          <p style="margin-top: 24px;">
+          
+          Best regards,<br/>
+
+          ${updatedPlayer.eventName} Organizing Team
+          
+          </p>
+
+          </div>`,
         });
 
     res.json({ message: "Player approved", player: updatedPlayer });
@@ -87,11 +105,20 @@ router.delete("/players/:id", async (req, res) => {
         });
     
         await transporter.sendMail({
-          from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
+          from: `"SPARTA TEAM" <${process.env.SMTP_USER}>`,
           to: updatedPlayer.email,
-          subject: `Event join request in ${updatedPlayer.institution}`,
-          html: `<h3>Your request to register in the event have been declined, wrong place or somethin</h3>
-            <p>Get out</p>`,
+          subject: `Request to join event at ${updatedPlayer.institution}`,
+          html: `
+          <div style="font-family: Arial, sans-serif; color: #222;">
+
+          <p>Greetings!<br/>We hope this email finds you well.</p>
+
+          <p>Your request to register for the ${updatedPlayer.eventName} at ${updatedPlayer.institution} has been <b>DECLINED</b>. <br />
+          There might have been an issue with your institution or event requirements.</p>
+
+          <p>If this has been a mistake, please approach or contact your event organizer for assistance.</p>
+
+          </div>`,
         });
 
     res.json({ message: "Player deleted" });
@@ -116,11 +143,29 @@ router.put("/players/team-approve/:id", async (req, res) => {
         });
     
         await transporter.sendMail({
-          from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
+          from: `"${updatedPlayer.team}" <${process.env.SMTP_USER}>`,
           to: updatedPlayer.email,
-          subject: `Approval to join the event in ${updatedPlayer.institution}`,
-          html: `<h3>Your request to register in the event have been approved</h3>
-            <p>Gratz</p>`,
+          subject: `Approval to join the Sport Event under ${updatedPlayer.team}`,
+          html: `
+          
+          <div style="font-family: Arial, sans-serif; color: #222;">
+          <p>Dear ${updatedPlayer.name},</p>
+
+          <p>
+          We are excited to inform you that your request to register in the ${updatedPlayer.game} under ${updatedPlayer.team} has been <b>APPROVED</b>.
+          </p>
+
+          <p>Congratulations! And we are looking forward for your active participation in the sport event. Please wait for further instructions.</p>
+
+          <p style="margin-top: 24px;">
+          
+          Best regards,<br/>
+
+          ${updatedPlayer.team} Organizers
+          
+          </p>
+
+          </div>`,
         });
 
     res.json({ message: "Player approved by team", player: updatedPlayer });
@@ -151,11 +196,28 @@ router.put("/players/team-decline/:id", async (req, res) => {
       });
   
       await transporter.sendMail({
-        from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
+        from: `"SPARTA ADMIN" <${process.env.SMTP_USER}>`,
         to: declinedPlayer.email,
-        subject: `Event join request in ${declinedPlayer.institution}`,
-        html: `<h3>Your request to register in the event have been declined, wrong place or somethin</h3>
-          <p>Get out</p>`,
+        subject: `UPDATE on your request made on SPARTA`,
+        html: `
+          <div style="font-family: Arial, sans-serif; color: #222;">
+          <p>Dear ${declinedPlayer.name},</p>
+
+          <p>
+          We hope this message finds you well. We regret to inform you that your request to register in your chosen sport game has been <b>DECLINED</b>.
+          </p>
+
+          <p>We understand that this news may be disappointing, and however we encourage you to explore other sport games to represent our team.</p>
+
+          <p style="margin-top: 24px;">
+          
+          Best regards,<br/>
+
+          Team Organizers
+          
+          </p>
+
+          </div>`,
       });
 
     res.json({ message: "Player declined by team", player: declinedPlayer });

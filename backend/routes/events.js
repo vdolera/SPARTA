@@ -286,7 +286,7 @@ router.put('/event/:id', async (req, res) => {
           });
 
         await transporter.sendMail({
-          from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
+          from: `"SPARTA ADMIN" <${process.env.SMTP_USER}>`,
           to: coord.email,
           subject: `Invitation to ${eventName}`,
           html: `
