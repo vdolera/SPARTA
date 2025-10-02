@@ -128,8 +128,6 @@ const PlayerPantheonTeam = () => {
                                         <th>PLAYERS</th>
                                         <th>COURSE</th>
                                         <th>GAME</th>
-                                        <th>STATUS</th>
-                                        <th>PROFILE</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -138,9 +136,6 @@ const PlayerPantheonTeam = () => {
                                             <td>{player.playerName}</td>
                                             <td>{player.course}</td>
                                             <td>{player.game}</td>
-                                            <td>{player.eventName}</td>
-                                            <td>
-                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
