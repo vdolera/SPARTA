@@ -44,6 +44,7 @@ router.post('/event', async (req, res) => {
     });
     await event.save();
 
+    // CO-ORGANIZER INVITATION
     const coordinatorInvites = [];
     for (let coord of coordinators) {
       if (coord.email) {
@@ -70,8 +71,38 @@ router.post('/event', async (req, res) => {
           from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
           to: coord.email,
           subject: `Invitation to ${eventName}`,
-          html: `<h3>You are invited as ${coord.role || "co-organizer"} for ${eventName} in ${institution}</h3>
-                 <p>Your Access Key: <b>${accessKey}</b></p>`,
+          html: `
+          <div style="font-family: Arial, sans-serif; color: #222;">
+            <h2 style="color: #1A2A49;">Invitation to ${eventName}</h2>
+            <p>Dear ${coord.name || "Coordinator"},</p>
+            <p>
+              You have been invited as a <b>${coord.role || "co-organizer"}</b> for the event <b>${eventName}</b> at <b>${institution}</b>.
+            </p>
+            <h3 style="margin-bottom: 0;">Event Details:</h3>
+            <ul style="margin-top: 4px;">
+              <li><b>Date:</b> ${eventStartDate ? new Date(eventStartDate).toLocaleDateString() : "TBA"}</li>
+              <li><b>End Date:</b> ${eventEndDate ? new Date(eventEndDate).toLocaleDateString() : "TBA"}</li>
+              <li><b>Venue:</b> ${institution}</li>
+            </ul>
+            <p>
+              <b>Your Access Key:</b> <span style="font-size: 1.1em; color: #CE892C;">${accessKey}</span>
+            </p>
+            <p>
+              As part of the organizing team, you will help coordinate logistics, facilitate activities, and ensure the smooth execution of the event. A preparatory meeting will be scheduled soon to align roles, responsibilities, and timelines.
+            </p>
+            <p>
+              Please confirm your participation by replying to this email no later than ${eventStartDate ? new Date(eventStartDate).toLocaleDateString() : "TBA"}. If you have any questions or suggestions, feel free to reach out.
+            </p>
+            <p>
+              We look forward to working with you to make <b>${eventName}</b> a memorable and meaningful experience for our community.
+            </p>
+            <p style="margin-top: 32px;">
+              Warm regards,<br>
+              <b>${userName || "Event Organizer"}</b><br>
+              Lead Organizer, ${eventName}
+            </p>
+          </div>
+         `,
         });
 
         coordinatorInvites.push({ email: coord.email, accessKey });
@@ -248,19 +279,49 @@ router.put('/event/:id', async (req, res) => {
           });
           await newCoord.save();
 
-          // Send email
+          // Send email CO-ORGANIZER INVITATION FOR EDITING OF EVENTS
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
           });
 
-          await transporter.sendMail({
-            from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
-            to: coord.email,
-            subject: `Invitation to ${updatedEvent.eventName}`,
-            html: `<h3>You are invited as ${coord.role || "co-organizer"} for ${updatedEvent.eventName} in ${updatedEvent.institution}</h3>
-                   <p>Your Access Key: <b>${accessKey}</b></p>`,
-          });
+        await transporter.sendMail({
+          from: `"SPARTA Admin" <${process.env.SMTP_USER}>`,
+          to: coord.email,
+          subject: `Invitation to ${eventName}`,
+          html: `
+          <div style="font-family: Arial, sans-serif; color: #222;">
+            <h2 style="color: #1A2A49;">Invitation to ${eventName}</h2>
+            <p>Dear ${coord.name || "Coordinator"},</p>
+            <p>
+              You have been invited as a <b>${coord.role || "co-organizer"}</b> for the event <b>${eventName}</b> at <b>${institution}</b>.
+            </p>
+            <h3 style="margin-bottom: 0;">Event Details:</h3>
+            <ul style="margin-top: 4px;">
+              <li><b>Date:</b> ${eventStartDate ? new Date(eventStartDate).toLocaleDateString() : "TBA"}</li>
+              <li><b>End Date:</b> ${eventEndDate ? new Date(eventEndDate).toLocaleDateString() : "TBA"}</li>
+              <li><b>Venue:</b> ${institution}</li>
+            </ul>
+            <p>
+              <b>Your Access Key:</b> <span style="font-size: 1.1em; color: #CE892C;">${accessKey}</span>
+            </p>
+            <p>
+              As part of the organizing team, you will help coordinate logistics, facilitate activities, and ensure the smooth execution of the event. A preparatory meeting will be scheduled soon to align roles, responsibilities, and timelines.
+            </p>
+            <p>
+              Please confirm your participation by replying to this email no later than ${eventStartDate ? new Date(eventStartDate).toLocaleDateString() : "TBA"}. If you have any questions or suggestions, feel free to reach out.
+            </p>
+            <p>
+              We look forward to working with you to make <b>${eventName}</b> a memorable and meaningful experience for our community.
+            </p>
+            <p style="margin-top: 32px;">
+              Warm regards,<br>
+              <b>${userName || "Event Organizer"}</b><br>
+              Lead Organizer, ${eventName}
+            </p>
+          </div>
+         `,
+        });
 
           coordinatorInvites.push({ email: coord.email, accessKey });
         }
