@@ -67,7 +67,7 @@ const TeamPlayers = () => {
   }, [userInstitution, decodedEvent, decodedTeam]);
 
 
-// Fetch team scores then turn it in to rank
+  // Fetch team scores then turn it in to rank
   useEffect(() => {
     const fetchTeamRankings = async () => {
       try {
@@ -77,17 +77,17 @@ const TeamPlayers = () => {
           )}&event=${encodeURIComponent(decodedEvent)}`
         );
         const data = await res.json();
-  
+
         // Sort descending by totalScore / grandTotal
         const sortedTeams = data.sort(
           (a, b) => (b.grandTotal || b.totalScore || 0) - (a.grandTotal || a.totalScore || 0)
         );
-  
+
         // Find this team’s index
         const rankIndex = sortedTeams.findIndex(
           (t) => t.teamName === decodedTeam
         );
-  
+
         if (rankIndex !== -1) {
           setTeamRank(rankIndex + 1);
         } else {
@@ -97,7 +97,7 @@ const TeamPlayers = () => {
         console.error("Error fetching team rankings:", error);
       }
     };
-  
+
     if (userInstitution && decodedEvent && decodedTeam) {
       fetchTeamRankings();
     }
@@ -108,8 +108,8 @@ const TeamPlayers = () => {
     const v = n % 100;
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
   }
-  
-  
+
+
 
   return (
     <MainLayout>
@@ -126,9 +126,9 @@ const TeamPlayers = () => {
           </div>
 
           <div className='team-ranking-event'>
-  <h3 style={{ textDecoration: "underline" }}>{decodedEvent} RANK</h3>
-  <h1>{teamRank ? getOrdinal(teamRank) : "N/A"}</h1>
-</div>
+            <h3 style={{ textDecoration: "underline" }}>{decodedEvent} RANK</h3>
+            <h1>{teamRank ? getOrdinal(teamRank) : "N/A"}</h1>
+          </div>
 
         </div>
 

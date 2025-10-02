@@ -27,6 +27,7 @@ const playerSchema = new mongoose.Schema({
   jerseyNumber: { type: String },
   contactNumber: { type: String },
   permanentAddress: { type: String },
+  course: {type: String},
   birthDate: { type: Date },
   age: { type: Number },
   weight: { type: Number },

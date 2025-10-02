@@ -108,6 +108,7 @@ const PlayerUserProfile = () => {
               { label: "Birth Date", value: player.birthDate ? player.birthDate.substring(0,10) : "N/A", name: "birthDate", type: "date" },
               { label: "Age", value: player.age || "N/A", name: "age", type: "number" },
               { label: "Sex", value: player.sex || "N/A", name: "sex", type: "select" },
+              { label: "Course", value: player.course || "N/A", name: "course", editable: true },
               { label: "Contact", value: player.contactNumber || "N/A", name: "contactNumber" },
               { label: "Address", value: player.permanentAddress || "N/A", name: "permanentAddress", className: "address-field" },
               { label: "Weight", value: player.weight ? `${player.weight} kg` : "N/A", name: "weight", type: "number" },

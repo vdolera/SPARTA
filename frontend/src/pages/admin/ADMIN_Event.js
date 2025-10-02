@@ -11,14 +11,11 @@ const Event = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(null);
   const [editEvent, setEditEvent] = useState(null);
-  const [, setNewSubOrganizer] = useState(""); // for adding
+  const [, setNewSubOrganizer] = useState(""); // for adding coordinator
   const user = JSON.parse(localStorage.getItem("auth"));
   const userInstitution = user?.institution;
 
-  useEffect(() => {
-    document.title = "SPARTA | Events";
-  }, []);
-
+ // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
       const response = await fetch(
