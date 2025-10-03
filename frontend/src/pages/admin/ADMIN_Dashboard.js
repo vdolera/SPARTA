@@ -6,7 +6,6 @@ import "../../styles/Calendar.css";
 
 const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem('auth'));
-  const userInstitution = user?.institution || "DefaultInstitution";
 
   const [date, setDate] = useState(new Date());
   const [matchEvents, setMatchEvents] = useState([]);
@@ -20,7 +19,15 @@ const Dashboard = () => {
 
     const fetchGames = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}`);
+        let url = `http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}`;
+
+        if (user?.role === "co-organizer" || user?.role === "sub-organizer") {
+          url += `&eventName=${encodeURIComponent(user?.eventName)}`;
+        }
+  
+        // Wait for the data and assign it to res
+        const res = await axios.get(url);
+        
         const matches = [];
         const multiDay = [];
 
@@ -67,7 +74,7 @@ const Dashboard = () => {
     };
 
     fetchGames();
-  }, [userInstitution]);
+  }, [user?.institution, user?.eventName, user?.role]);
 
   const onChange = (newDate) => {
     setDate(newDate);

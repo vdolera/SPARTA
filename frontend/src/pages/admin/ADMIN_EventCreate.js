@@ -1,14 +1,9 @@
 import MainLayout from "../../components/MainLayout";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import '../../styles/ADMIN_EventCreate.css';
 
 const CreateEvent = () => {
-
-    useEffect(() => {
-      document.title = "SPARTA | Event Create";
-    })
-
   const navigate = useNavigate();
   const [eventName, setEventName] = useState("");
   const [userName, setUserName] = useState("");
@@ -53,8 +48,6 @@ const CreateEvent = () => {
           coordinators,
         }),
       });
-
-      const data = await response.json();
 
       if (response.ok) {
         setModalMessage("Event Create and Event Invitaions have been sent!");
@@ -116,9 +109,7 @@ const CreateEvent = () => {
           </div>
 
           <div className='event-form-container'>
-
             <div className="event-form-left">
-
               <div className="event-form-title">
                 <h4> EVENT DETAILS </h4>
                 <p style={{ color: 'red', fontSize: '10px' }}> *All Fields Are REQUIRED To Be Filled Up* </p>
@@ -330,7 +321,6 @@ const CreateEvent = () => {
                   </p>
                 )}
 
-
               </form>
             </div>
           </div>
@@ -353,11 +343,8 @@ const CreateEvent = () => {
         </div>
       </div>
     )}
-
-
     </>
     </MainLayout>
-
   )
 };
 

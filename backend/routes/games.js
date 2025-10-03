@@ -279,13 +279,13 @@ router.delete("/games/:id", async (req, res) => {
 // GET games
 router.get('/games', async (req, res) => {
   try {
-    const { institution, event } = req.query;
+    const { institution, eventName } = req.query;
 
     if (!institution) {
       return res.status(400).json({ message: 'Institution is required' });
     }
 
-    const query = { institution, ...(event && { eventName: event }) };
+    const query = { institution, ...(eventName && { eventName: eventName }) };
     const games = await Game.find(query);
     res.json(games);
   } catch (err) {
