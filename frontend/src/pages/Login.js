@@ -196,13 +196,31 @@ export default function LoginPage() {
               Login as {role.charAt(0).toUpperCase() + role.slice(1)}
             </button>
 
-            <button
-              type="button"
-              className="switch-button"
-              onClick={() => navigate('/register')}
-            >
-              Don't have an account? Register
-            </button>
+            <div style={{ textAlign: 'center', marginTop: '0px' }}>
+              <p>
+                Don't have an account?
+                    <button
+                      type="button"
+                      className="switch-button"
+                      onClick={() => navigate('/register')}
+                    >
+                      Register Here
+                    </button>
+              </p> 
+
+              <p>
+                or continue as
+                <button
+                  type="button"
+                  className="switch-button"
+                  style={{ marginTop: '0px' }}
+                  onClick={() => navigate('/institution')}
+                >
+                  Spectator
+                </button>
+              </p>
+            </div>
+
           </form>
         </div>
 
