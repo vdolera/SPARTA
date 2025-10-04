@@ -9,7 +9,7 @@ const CreateGame = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [bracketType, setBracketType] = useState("Single Elimination");
-  const [rules, setRules] = useState("");
+  const [finalrules, setRules] = useState("");
   const [availableTeams, setAvailableTeams] = useState([]);
   const [selectedTeams, setSelectedTeams] = useState([]);
   const [coordinators, setCoordinators] = useState([]);
@@ -71,10 +71,10 @@ const CreateGame = () => {
       formData.append("coordinators", JSON.stringify(selectedCoordinators));
       formData.append("referees", JSON.stringify(referees));
 
-      if (rules instanceof File) {
-        formData.append("rules", rules);
+      if (finalrules instanceof File) {
+        formData.append("rules", finalrules);
       } else {
-        formData.append("rules", rules);
+        formData.append("rules", finalrules);
       }
 
       const response = await fetch("http://localhost:5000/api/games", {
@@ -362,7 +362,7 @@ const CreateGame = () => {
                 <div className="game-rules">
                   
                   <textarea
-                    value={rules}
+                    value={finalrules}
                     onChange={(e) => setRules(e.target.value)}
                     placeholder="Enter rules (if not uploading file). Please make sure that it is already formatted."
                     rows={5}
@@ -371,7 +371,7 @@ const CreateGame = () => {
                   <div className="file-upload">
 
                     <span className="file-name">
-                      {rules ? rules.name || "1 file selected" : "No file chosen"}
+                      {finalrules ? finalrules.name || "1 file selected" : "No file chosen"}
                     </span>
                     <label htmlFor="rulesFile" className="upload-btn">
                       Choose File

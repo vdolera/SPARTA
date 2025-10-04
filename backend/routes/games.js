@@ -1,8 +1,13 @@
 const express = require("express");
-const multer = require("multer");
 const path = require("path");
 const Game = require("../models/Game");
 const Team = require("../models/Team");
+
+// File uploads
+const multer = require("multer");
+const supabase = require("./supabaseClient");
+//const path = require("path");
+const fs = require("fs");;
 
 const router = express.Router();
 
@@ -16,6 +21,7 @@ function shuffleArray(array) {
   return arr;
 };
 
+/* 
 // storage for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -27,6 +33,9 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+*/
+
+const upload = multer({ dest: "temp/" })
 
 // CREATE Game
 router.post("/games", upload.single("rules"), async (req, res) => {
@@ -50,12 +59,49 @@ router.post("/games", upload.single("rules"), async (req, res) => {
     const parsedCoordinators = JSON.parse(coordinators || "[]");
 
     // Check if Text or Uploaded Rules
-    let finalRules = null;
+
+    /*let finalRules = null;
     if (req.file) {
       finalRules = `/uploads/rules/${req.file.filename}`; // file 
     } else if (rules) {
       finalRules = rules; // plain text
+    }*/
+
+    let finalRules = null;
+
+    if (req.file) {
+      const filePath = req.file.path; // temp file
+      const fileExt = path.extname(req.file.originalname);
+      const fileName = `rules-${Date.now()}${fileExt}`;
+
+   const fileBuffer = fs.readFileSync(filePath);
+
+const { data, error } = await supabase.storage
+  .from("rules")
+  .upload(fileName, fileBuffer, {
+    cacheControl: "3600",
+    upsert: false,
+    contentType: req.file.mimetype,
+  });
+
+
+      // Remove temp file
+      fs.unlinkSync(filePath);
+
+      if (error) {
+        console.error("Supabase upload failed:", error);
+        return res.status(500).json({ message: "Failed to upload rules file" });
+      }
+
+      const { publicUrl } = supabase.storage
+        .from("rules")
+        .getPublicUrl(fileName);
+
+      finalRules = publicUrl;
+    } else if (rules) {
+      finalRules = rules;
     }
+
 
     if (
       !institution ||
@@ -64,7 +110,7 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       !startDate ||
       !endDate ||
       !teams?.length ||
-      (!rules && !req.file) ||
+      !finalRules ||
       !eventName ||
       !bracketType
     ) {
@@ -112,23 +158,25 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       const wbMatches = [];
       const lbMatches = [];
 
-      // WB Round 1
+      // WB Round 1 (seeded from shuffledTeams)
       for (let i = 0; i < shuffledTeams.length; i += 2) {
         wbMatches.push({
           bracket: "WB",
           round: 1,
-          matchIndex: i / 2,
+          matchIndex: Math.floor(i / 2),
           teams: [
             { name: shuffledTeams[i] || "TBD", score: null },
             { name: shuffledTeams[i + 1] || "TBD", score: null },
           ],
           winner: null,
-          nextMatch: null, // will assign after saving
+          finalizeWinner: false,
+          nextMatch: null,
         });
       }
 
-      // WB later rounds placeholders
+      // WB later-round placeholders
       for (let r = 2; r <= totalRounds; r++) {
+        // number of matches in this WB round
         const numMatches = Math.pow(2, totalRounds - r);
         for (let i = 0; i < numMatches; i++) {
           wbMatches.push({
@@ -140,32 +188,68 @@ router.post("/games", upload.single("rules"), async (req, res) => {
               { name: "TBD", score: null },
             ],
             winner: null,
+            finalizeWinner: false,
             nextMatch: null,
           });
         }
       }
 
-      // LB placeholders
-      const lbTotalRounds = 2 * (totalRounds - 1);
-      for (let r = 1; r <= lbTotalRounds; r++) {
-        const numMatches = Math.pow(2, lbTotalRounds - r);
+      // LB placeholders using canonical double-elim sizing
+      const teamCount = shuffledTeams.length;
+      let lbRoundTemplate = [];
+
+      // For standard double-elim,
+      // rounds = 2 * (log2(n)) - 1  (excluding the grand final)
+
+      switch (teamCount) {
+        case 4:
+          // LB rounds: 1 match, 1 match
+          lbRoundTemplate = [1, 1];
+          break;
+        case 8:
+          // LB rounds: 0, 2, 2, 1
+          lbRoundTemplate = [0, 2, 2, 1];
+          break;
+        case 16:
+          // LB rounds: 0, 4, 4, 4, 2, 2, 1
+          lbRoundTemplate = [0, 4, 4, 4, 2, 2, 1];
+          break;
+        default: {
+          // fallback: keep the symmetric pattern from before
+          const lbTotalRounds = Math.max(1, 2 * (totalRounds - 1));
+          const lbMid = Math.ceil(lbTotalRounds / 2);
+          for (let r = 1; r <= lbTotalRounds; r++) {
+            const numMatches =
+              r <= lbMid
+                ? Math.pow(2, r - 1)
+                : Math.pow(2, lbTotalRounds - r);
+            lbRoundTemplate.push(numMatches);
+          }
+        }
+      }
+
+      // now actually create LB placeholders
+      lbRoundTemplate.forEach((numMatches, roundIndex) => {
         for (let i = 0; i < numMatches; i++) {
           lbMatches.push({
             bracket: "LB",
-            round: r,
+            round: roundIndex + 1,
             matchIndex: i,
             teams: [
               { name: "TBD", score: null },
               { name: "TBD", score: null },
             ],
             winner: null,
-            nextMatch: null,
+            finalizeWinner: false,
           });
         }
-      }
+      });
 
+
+      // push WB then LB placeholders
       matches.push(...wbMatches, ...lbMatches);
     }
+
 
     if (bracketType === "Round Robin") {
       const rrMatches = [];
@@ -202,30 +286,6 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       matches.push(...rrMatches);
     }
 
-    if (bracketType === "Swiss") {
-      const swissMatches = [];
-      const rounds = Math.ceil(Math.log2(shuffledTeams.length)); // Common Swiss: log2(N) rounds
-
-      for (let r = 1; r <= rounds; r++) {
-        // Initial random pairings for round 1
-        for (let i = 0; i < shuffledTeams.length; i += 2) {
-          swissMatches.push({
-            bracket: "Swiss",
-            round: r,
-            matchIndex: i / 2,
-            teams: [
-              { name: shuffledTeams[i] || "TBD", score: null },
-              { name: shuffledTeams[i + 1] || "TBD", score: null },
-            ],
-            winner: null,
-            finalizeWinner: false,
-          });
-        }
-      }
-
-      matches.push(...swissMatches);
-    }
-
     const newGame = new Game({
       institution,
       gameType,
@@ -233,7 +293,6 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       startDate,
       endDate,
       teams: shuffledTeams,
-      rules,
       eventName,
       bracketType,
       matches,
@@ -339,27 +398,49 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
         match.finalizeWinner = true;
 
         // Handle Winner Bracket
+        // --- inside finalizeWinner handling ---
         if (match.bracket === "WB") {
-          // Find LB matches in the correct LB round
-          const lbRound = match.round; // WB round N loser goes to LB round N
-          const lbNextMatches = game.matches.filter(
-            (m) => m.bracket === "LB" && m.round === lbRound
+          // compute LB ranges from current game (defensive)
+          const totalWBRounds = Math.ceil(Math.log2((game.teams && game.teams.length) || 1));
+          const lbTotalRounds = Math.max(1, 2 * (totalWBRounds - 1));
+
+          // Desired LB round for a WB loser: 2*WBround - 1 (1-indexed)
+          const desiredLbRound = Math.min(match.round * 2 - 1, lbTotalRounds);
+
+          // Try to find an LB match in desired round (or later) that has an empty slot
+          let candidateLBMatches = game.matches
+            .filter((m) => m.bracket === "LB" && m.round >= desiredLbRound)
+            .sort((a, b) => a.round - b.round || a.matchIndex - b.matchIndex);
+
+          let lbTarget = candidateLBMatches.find((m) =>
+            m.teams.some((t) => !t?.name || t.name === "TBD")
           );
 
-          // Find the LB match slot based on WB matchIndex
-          const lbTarget = lbNextMatches.find(
-            (m) => m.matchIndex === Math.floor(match.matchIndex / 2)
-          );
+          // fallback: search any LB match for an empty slot
+          if (!lbTarget) {
+            const allLB = game.matches
+              .filter((m) => m.bracket === "LB")
+              .sort((a, b) => a.round - b.round || a.matchIndex - b.matchIndex);
+            lbTarget = allLB.find((m) => m.teams.some((t) => !t?.name || t.name === "TBD"));
+          }
+
+          // final fallback: take the first LB match (we'll push into a slot)
+          if (!lbTarget) {
+            lbTarget = game.matches.find((m) => m.bracket === "LB");
+          }
 
           if (lbTarget) {
-            // Assign to first empty slot
-            const emptySlot = lbTarget.teams.findIndex(t => !t?.name || t.name === "TBD");
+            // choose an empty slot if available, else append into first slot (defensive)
+            const emptySlot = lbTarget.teams.findIndex((t) => !t?.name || t.name === "TBD");
             if (emptySlot !== -1) {
               lbTarget.teams[emptySlot] = { name: loserName, score: null };
+            } else {
+              // all slots filled — append to teams array as worst-case fallback
+              lbTarget.teams.push({ name: loserName, score: null });
             }
           }
 
-          // WB next round winner slot (already correct)
+          // advance winner to next WB round slot (unchanged logic but defensive)
           const nextWB = game.matches.find(
             (m) =>
               m.bracket === "WB" &&
@@ -367,9 +448,11 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
               m.matchIndex === Math.floor(match.matchIndex / 2)
           );
           if (nextWB) {
-            nextWB.teams[match.matchIndex % 2] = { name: winnerName, score: null };
+            const slot = match.matchIndex % 2; // 0 or 1
+            nextWB.teams[slot] = { name: winnerName, score: null };
           }
         }
+
 
         // Handle Loser Bracket
         if (match.bracket === "LB") {
