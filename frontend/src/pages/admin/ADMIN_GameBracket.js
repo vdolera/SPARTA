@@ -133,52 +133,74 @@ const GameBracket = () => {
       };
 
       const wbRounds = makeBracketRounds(wbMatches);
-      const lbRounds = makeBracketRounds(lbMatches, false);
 
+      // Get raw LB rounds
+      const rawLBRounds = makeBracketRounds(lbMatches, false);
+      
+      // Renumber LB rounds so they're sequential (start at 1)
+      const lbRounds = rawLBRounds.map((round, idx) => ({
+        ...round,
+        title: `Round ${idx + 1}`,
+      }));
+      
       rounds.push({ title: "WB", rounds: wbRounds });
       rounds.push({ title: "LB", rounds: lbRounds });
+      
 
-      if (gfMatches.length > 0) {
-        const grandFinal = gfMatches[0];
-        rounds.push({
-          title: "Grand Final",
-          seeds: [
-            {
-              id: grandFinal._id,
-              date: grandFinal.date || new Date(),
-              teams: grandFinal.teams.map((t) => ({
-                name: t.name,
-                score: t.score ?? null,
-                winner: grandFinal.finalizeWinner && t.name === grandFinal.winner,
-              })),
-              finalizeWinner: grandFinal.finalizeWinner || false,
-            },
-          ],
-        });
+      // ✅ Only show Grand Final when both WB Final & LB Final are decided
+if (gfMatches.length > 0) {
+  const gf = gfMatches[0];
 
-        if (grandFinal.finalizeWinner && grandFinal.winner) {
-          rounds.push({
-            title: "Champion",
-            seeds: [
+  const wbFinalDone = game.matches.some(
+    (m) => m.bracket === "WB" && m.finalizeWinner && m.round === Math.max(...wbRounds.map(r => parseInt(r.title.split(" ")[1])))
+  );
+
+  const lbFinalDone = game.matches.some(
+    (m) => m.bracket === "LB" && m.finalizeWinner && m.round === Math.max(...lbRounds.map(r => parseInt(r.title.split(" ")[1])))
+  );
+
+  // ✅ Render GF only when WB and LB are both done
+  if (wbFinalDone && lbFinalDone) {
+    rounds.push({
+      title: "Grand Final",
+      seeds: [
+        {
+          id: gf._id,
+          date: gf.date || new Date(),
+          teams: gf.teams.map((t) => ({
+            name: t.name,
+            score: t.score ?? null,
+            winner: gf.finalizeWinner && t.name === gf.winner,
+          })),
+          finalizeWinner: gf.finalizeWinner || false,
+        },
+      ],
+    });
+
+    // ✅ Show Champion only AFTER GF is finalized
+    if (gf.finalizeWinner && gf.winner) {
+      rounds.push({
+        title: "Champion",
+        seeds: [
+          {
+            id: "champion",
+            date: gf.date || new Date(),
+            teams: [
               {
-                id: "champion",
-                date: grandFinal.date || new Date(),
-                teams: [
-                  {
-                    name: grandFinal.winner,
-                    score:
-                      grandFinal.teams.find((t) => t.name === grandFinal.winner)
-                        ?.score ?? null,
-                    winner: true,
-                  },
-                ],
-                finalizeWinner: true,
+                name: gf.winner,
+                score:
+                  gf.teams.find((t) => t.name === gf.winner)?.score ?? null,
+                winner: true,
               },
             ],
-          });
-        }
-      }
+            finalizeWinner: true,
+          },
+        ],
+      });
     }
+  }
+}
+}
 
     if (game.bracketType === "Round Robin") {
       const rrMatches = game.matches.filter((m) => m.bracket === "RR");
