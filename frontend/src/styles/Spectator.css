@@ -1,0 +1,135 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+  margin: 0;
+  width: 100%;
+}
+
+.spectator-header {
+  background: #1A2A49;
+  color: white;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0 auto;
+  padding-bottom: 25px;
+  width: 100%;
+  height: 100px;
+  justify-content: center;
+  font-family: Montserrat, sans-serif;
+}
+
+.header-text {
+  border-radius: 18px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+  box-shadow: 0 2px 12px rgba(30, 42, 73, 0.08);
+  display: flex;
+  align-items: start;
+}
+
+.logo-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  height: 50px;
+}
+
+.logo-container > img {
+  background: #fff;
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(30, 42, 73, 0.10);
+}
+
+.spectator-logo {
+  position: relative;
+  top: -20px;
+  width: 75px;
+  height: 75px;
+  border: none;
+  object-fit: cover;
+  background: #fff;
+  border: 3px solid #ce892c;
+  border-radius: 50%;
+  display: block;
+}
+
+.page-title {
+  font-weight: bold;
+  color: #1A2A49;
+  text-align: center;
+  margin: 20px 0;
+  padding-top: 20px;
+  font-family: Montserrat, sans-serif;
+}
+
+.institution-list {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    overflow-x: auto;
+    margin: 0 auto;
+    gap: 15px;
+    padding: 20px 0;
+}
+
+.institution-list > button {
+    background: #999da5;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(30, 42, 73, 0.08);
+    padding: 15px 25px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 200px;
+    font-weight: bold;
+}
+
+.event-main-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: center;
+    margin: 20px auto;
+    padding: 10px;
+    width: 80vw;
+    background-color: #f8f8ff;
+    box-shadow: 0 2px 12px rgba(30, 42, 73, 0.08);
+    border-radius: 10px;
+}
+
+.event-list {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    overflow-x: auto;
+    margin: 0 auto;
+    gap: 15px;
+    padding: 20px 0;
+}
+
+.no-events-container, .no-events-message {
+    text-align: center;
+    margin: 100px auto;
+    color: #555;
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+}

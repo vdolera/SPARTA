@@ -1,6 +1,7 @@
 import { useNavigate,useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import '../../styles/ADMIN_Event.css'; 
+import '../../styles/ADMIN_Event.css';
+import "../../styles/Spectator.css";
 
 const AllEvent = () => {
   const navigate = useNavigate();
@@ -29,6 +30,22 @@ const AllEvent = () => {
 
   return (
 <>
+    <div className="main-container">
+
+      <div className="spectator-header">
+        <div className="header-text">
+          SPARTA SPECTATOR LIVE VIEWING
+        </div>
+      </div>
+
+      <div className="logo-div">
+        <div className="logo-container">
+          <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+        </div>
+      </div>
+
+      <h2 className="page-title">Current Events in {userInstitution}</h2>
+
       <div className="event-main-header">
         <input
           type="text"
@@ -40,20 +57,26 @@ const AllEvent = () => {
         />
       </div>
 
-      <div className="event-list">
-        {filteredEvents.map((event) => (
-          <div className='event-item' key={event._id}>
-            <div className="event-color" style={{ background: event.eventColor ? event.eventColor : '#A96B24'}} onClick={() => handleEventClick(event)}>
-              
-            </div>
-
-            <div className="event-name" onClick={() => handleEventClick(event)}>
-              {event.eventName}
-            </div>
+      {filteredEvents.length === 0 ? (
+          <div className="no-events-container">
+            <p className="no-events-message"> There are no on-going events at {userInstitution}</p>
           </div>
-        ))}
-      </div>
-</>
+        ) : (
+          <div className="event-list">
+            {filteredEvents.map((event) => (
+              <div className='event-item' key={event._id}>
+                <div className="event-color" style={{ background: event.eventColor ? event.eventColor : '#A96B24'}} onClick={() => handleEventClick(event)}>
+                </div>
+                <div className="event-name" onClick={() => handleEventClick(event)}>
+                  {event.eventName}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+    </div>
+    
+  </>
   )
 };
 
