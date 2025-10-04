@@ -1,8 +1,13 @@
 const express = require("express");
-const multer = require("multer");
 const path = require("path");
 const Game = require("../models/Game");
 const Team = require("../models/Team");
+
+// File uploads
+const multer = require("multer");
+const supabase = require("./supabaseClient");
+//const path = require("path");
+const fs = require("fs");;
 
 const router = express.Router();
 
@@ -16,6 +21,7 @@ function shuffleArray(array) {
   return arr;
 };
 
+/* 
 // storage for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -27,6 +33,9 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+*/
+
+const upload = multer({ dest: "temp/" })
 
 // CREATE Game
 router.post("/games", upload.single("rules"), async (req, res) => {
@@ -50,12 +59,49 @@ router.post("/games", upload.single("rules"), async (req, res) => {
     const parsedCoordinators = JSON.parse(coordinators || "[]");
 
     // Check if Text or Uploaded Rules
-    let finalRules = null;
+
+    /*let finalRules = null;
     if (req.file) {
       finalRules = `/uploads/rules/${req.file.filename}`; // file 
     } else if (rules) {
       finalRules = rules; // plain text
+    }*/
+
+    let finalRules = null;
+
+    if (req.file) {
+      const filePath = req.file.path; // temp file
+      const fileExt = path.extname(req.file.originalname);
+      const fileName = `rules-${Date.now()}${fileExt}`;
+
+   const fileBuffer = fs.readFileSync(filePath);
+
+const { data, error } = await supabase.storage
+  .from("rules")
+  .upload(fileName, fileBuffer, {
+    cacheControl: "3600",
+    upsert: false,
+    contentType: req.file.mimetype,
+  });
+
+
+      // Remove temp file
+      fs.unlinkSync(filePath);
+
+      if (error) {
+        console.error("Supabase upload failed:", error);
+        return res.status(500).json({ message: "Failed to upload rules file" });
+      }
+
+      const { publicUrl } = supabase.storage
+        .from("rules")
+        .getPublicUrl(fileName);
+
+      finalRules = publicUrl;
+    } else if (rules) {
+      finalRules = rules;
     }
+
 
     if (
       !institution ||
@@ -64,7 +110,7 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       !startDate ||
       !endDate ||
       !teams?.length ||
-      (!rules && !req.file) ||
+      !finalRules ||
       !eventName ||
       !bracketType
     ) {
@@ -247,7 +293,6 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       startDate,
       endDate,
       teams: shuffledTeams,
-      rules,
       eventName,
       bracketType,
       matches,
