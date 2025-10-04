@@ -603,27 +603,35 @@ const GameBracket = () => {
               </>
             ) : selectedMatch.type === "schedule" ? (
               <>
-                <h3>Schedule Match</h3>
-                <label>Date:</label>
-                <input
-                  type="datetime-local"
-                  value={selectedMatch.date || ""}
-                  onChange={(e) => setSelectedMatch({ ...selectedMatch, date: e.target.value })}
-                />
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <h3>Schedule Match</h3>
+                  <div style={{ display: "flex", flexDirection: "row", gap: "30px" }}>
+                    <label>Date : </label>
+                    <input
+                      type="datetime-local"
+                      style={{ width: "150px" }}
+                      value={selectedMatch.date || ""}
+                      onChange={(e) => setSelectedMatch({ ...selectedMatch, date: e.target.value })}
+                    />
+                  </div>
 
-                <label>Location:</label>
-                <input
-                  type="text"
-                  value={selectedMatch.location || ""}
-                  onChange={(e) => setSelectedMatch({ ...selectedMatch, location: e.target.value })}
-                />
+                  <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
+                    <label>Location : </label>
+                    <input
+                      type="text"
+                      style={{ width: "150px" }}
+                      value={selectedMatch.location || ""}
+                    onChange={(e) => setSelectedMatch({ ...selectedMatch, location: e.target.value })}
+                    />
+                  </div>
 
-                <div className="modal-actions">
-                  <button type="button" onClick={saveSchedule}>
-                    Save Schedule
-                  </button>
+                  <div className="modal-actions">
+                    <button type="button" onClick={saveSchedule}>
+                      Save Schedule
+                    </button>
 
-                  <button type="button" onClick={() => setSelectedMatch(null)}>Cancel</button>
+                    <button type="button" onClick={() => setSelectedMatch(null)}>Cancel</button>
+                  </div>
                 </div>
               </>
             ) : selectedMatch.type === "scores" ? (  
@@ -631,14 +639,17 @@ const GameBracket = () => {
                 <h3>Update Match Scores</h3>
                 {selectedMatch.teams.map((team, idx) => (
                   <div key={idx} className="score-input">
-                    <label>
+                    <label style={{ marginLeft: "10px" }}>
                       {team.name} Score:
+                    </label>
+
                       <input
                         type="number"
+                        style={{width:"50px", marginRight: "10px"}}
                         value={tempScores[idx]}
                         onChange={(e) => handleTempScoreChange(idx, Number(e.target.value))}
                       />
-                    </label>
+                    
                   </div>
                 ))}
                 <div className="modal-actions">
