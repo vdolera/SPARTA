@@ -5,7 +5,7 @@ import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennis
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
 import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
-import { GrClose } from 'react-icons/gr'
+import { IoMdClose } from "react-icons/io";
 import '../../styles/ADMIN_Games.css';
 
 const Game = () => {
@@ -135,7 +135,7 @@ const Game = () => {
               <div style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
                   {(user.role === "admin" || user.role === "co-organizer") && (
                   <button className="delete-game-btn" onClick={() => handleDeleteGame(games[0]._id)}>
-                    <GrClose />
+                    <IoMdClose />
                   </button>
                   )}
               </div>

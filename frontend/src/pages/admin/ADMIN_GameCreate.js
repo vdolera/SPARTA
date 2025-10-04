@@ -368,22 +368,22 @@ const CreateGame = () => {
                     rows={5}
                   />
 
-                <div className="file-upload">
+                  <div className="file-upload">
 
-                  <span className="file-name">
-                    {rules ? rules.name || "1 file selected" : "No file chosen"}
-                  </span>
-                  <label htmlFor="rulesFile" className="upload-btn">
-                    Choose File
-                  </label>
-                  <input
-                    id="rulesFile"
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    onChange={(e) => setRules(e.target.files[0])}
-                  />
-                  
-                </div>
+                    <span className="file-name">
+                      {rules ? rules.name || "1 file selected" : "No file chosen"}
+                    </span>
+                    <label htmlFor="rulesFile" className="upload-btn">
+                      Choose File
+                    </label>
+                    <input
+                      id="rulesFile"
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      onChange={(e) => setRules(e.target.files[0])}
+                    />
+                    
+                  </div>
                 </div>
               </div>
             </form>

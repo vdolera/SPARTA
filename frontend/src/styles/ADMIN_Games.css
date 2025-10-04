@@ -14,7 +14,7 @@
 
 .game-main-div {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   box-sizing: border-box;
   width: 1000px;
 }
@@ -288,9 +288,65 @@ button.game-button {
   border-radius: 5px;
   max-width: fit-content;
   cursor: pointer;
-  margin-top: 10px;
 }
 
 .delete-game-btn:hover {
   background-color: #ff4d4d;
+}
+
+.req-group {
+  background: #f8f8ff;
+  border: 1.5px solid #CE892C;
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin: 8px auto;
+  width: 150px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;      /* Center items horizontally */
+  justify-content: center;
+  text-align: center;
+}
+
+.req-input::file-selector-button {
+  display: flex;
+  text-align: center;
+  align-items: center;
+}
+
+.req-input[type="file"] {
+  border: none;
+  background: none;
+  font-size: 0.95rem;
+  color: #CE892C;
+  cursor: pointer;
+  padding: 0;
+  margin: auto;
+  width: 120px;
+  outline: none;
+  text-align: center;
+}
+
+.req-input[type="file"]::-webkit-file-upload-button {
+  background: #CE892C;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+
+}
+
+.req-input[type="file"]:hover::-webkit-file-upload-button {
+  background: #1A2A49;
+}
+
+.req-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1A2A49;
+  margin-bottom: 4px;
+  display: block;
 }

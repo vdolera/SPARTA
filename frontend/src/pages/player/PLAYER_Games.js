@@ -312,25 +312,17 @@ const PlayerGame = () => {
 
                     {/* Uploader box */}
                     <div className="req-group">
-                      <div className="req-filename">
-                        {requirementFiles[req] ? requirementFiles[req].name : "No file chosen"}
-                      </div>
 
                       <input
                         id={`rulesFile_${index}`}
                         type="file"
                         className="req-input"
-                        onChange={(e) =>
-                          setRequirementFiles((prev) => ({
-                            ...prev,
-                            [req]: e.target.files[0],
-                          }))
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        onChange={(e) => setRequirementFiles((prev) => ({ ...prev, [req]: e.target.files[0],}))
                         }
                         required
                       />
-                      <label htmlFor={`rulesFile_${index}`} className="req-button">
-                        Upload File
-                      </label>
+
                     </div>
                   </div>
                 ))
