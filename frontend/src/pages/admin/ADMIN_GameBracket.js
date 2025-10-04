@@ -119,10 +119,12 @@ const GameBracket = () => {
               finalizeWinner: m.finalizeWinner || false,
             }));
 
-          // Skip incomplete first round matches in LB
-          if (r === 1 && skipIncompleteFirstRound) {
-            seeds = seeds.filter((s) => s.teams.every((t) => t.name !== "TBD"));
+          // Keep LB Round 1 even if it's empty — only skip rendering if there are truly no matches
+          if (skipIncompleteFirstRound && r === 1) {
+            // If the round has zero matches, skip rendering it entirely
+            if (seeds.length === 0) continue;
           }
+
 
           if (seeds.length) bracketRounds.push({ title: `Round ${r}`, seeds });
         }
@@ -131,7 +133,7 @@ const GameBracket = () => {
       };
 
       const wbRounds = makeBracketRounds(wbMatches);
-      const lbRounds = makeBracketRounds(lbMatches, true); // first LB round only fully known matches
+      const lbRounds = makeBracketRounds(lbMatches, false);
 
       rounds.push({ title: "WB", rounds: wbRounds });
       rounds.push({ title: "LB", rounds: lbRounds });
@@ -232,57 +234,6 @@ const GameBracket = () => {
         });
       }
     }
-
-    if (game.bracketType === "Swiss") {
-      const swissMatches = game.matches.filter((m) => m.bracket === "Swiss");
-      const maxRound = Math.max(...swissMatches.map((m) => m.round));
-
-      for (let r = 1; r <= maxRound; r++) {
-        const seeds = swissMatches
-          .filter((m) => m.round === r)
-          .map((m) => ({
-            id: m._id,
-            date: game.startDate,
-            teams: m.teams.map((t) => ({
-              name: t?.name || "TBD",
-              score: t?.score ?? null,
-              winner: m.finalizeWinner && t?.name === m.winner,
-            })),
-            finalizeWinner: m.finalizeWinner || false,
-          }));
-        rounds.push({ title: `Round ${r}`, seeds });
-      }
-
-      // Optional standings
-      const allMatchesDone = swissMatches.every((m) => m.finalizeWinner);
-      if (allMatchesDone) {
-        const winCount = {};
-        swissMatches.forEach((m) => {
-          if (m.finalizeWinner && m.winner) {
-            winCount[m.winner] = (winCount[m.winner] || 0) + 1;
-          }
-        });
-
-        const sorted = Object.entries(winCount).sort((a, b) => b[1] - a[1]);
-        rounds.push({
-          title: "Swiss Standings",
-          seeds: sorted.map(([team, wins], idx) => ({
-            id: `swiss-${idx}`,
-            date: game.endDate,
-            teams: [
-              {
-                name: team,
-                score: `Wins: ${wins}`,
-                winner: idx === 0, // leader marked as winner
-              },
-            ],
-            finalizeWinner: true,
-          })),
-        });
-      }
-    }
-
-
     return rounds;
   };
 
@@ -462,7 +413,7 @@ const GameBracket = () => {
           </p>
         )}
 
-        <div style={{ display: "flex", flexDirection: "row", gap: "5px",flexWrap: "wrap", alignItems: "center", justifyContent:"center", width: "100%", margin: "0 auto"}}>
+        <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap", alignItems: "center", justifyContent: "center", width: "100%", margin: "0 auto" }}>
           <div className="rules-section">
             {game.rules ? (
               game.rules.endsWith(".pdf") || game.rules.startsWith("/uploads/") ? (
@@ -621,7 +572,7 @@ const GameBracket = () => {
                       type="text"
                       style={{ width: "150px" }}
                       value={selectedMatch.location || ""}
-                    onChange={(e) => setSelectedMatch({ ...selectedMatch, location: e.target.value })}
+                      onChange={(e) => setSelectedMatch({ ...selectedMatch, location: e.target.value })}
                     />
                   </div>
 
@@ -634,7 +585,7 @@ const GameBracket = () => {
                   </div>
                 </div>
               </>
-            ) : selectedMatch.type === "scores" ? (  
+            ) : selectedMatch.type === "scores" ? (
               <>
                 <h3>Update Match Scores</h3>
                 {selectedMatch.teams.map((team, idx) => (
@@ -643,13 +594,13 @@ const GameBracket = () => {
                       {team.name} Score:
                     </label>
 
-                      <input
-                        type="number"
-                        style={{width:"50px", marginRight: "10px"}}
-                        value={tempScores[idx]}
-                        onChange={(e) => handleTempScoreChange(idx, Number(e.target.value))}
-                      />
-                    
+                    <input
+                      type="number"
+                      style={{ width: "50px", marginRight: "10px" }}
+                      value={tempScores[idx]}
+                      onChange={(e) => handleTempScoreChange(idx, Number(e.target.value))}
+                    />
+
                   </div>
                 ))}
                 <div className="modal-actions">
