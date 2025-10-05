@@ -46,7 +46,7 @@ const AllEvent = () => {
 
       <h2 className="page-title">Current Events in {userInstitution}</h2>
 
-      <div className="event-main-header">
+      <div className="spectator-main-header">
         <input
           type="text"
           className="event-search-bar"
