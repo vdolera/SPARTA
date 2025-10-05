@@ -42,7 +42,7 @@ export default function LandingPage() {
             <h3 className="page-title">Select Your Institution</h3>
 
             <div className="institution-list">
-                
+    
                 {institutions.map((institution) => (
                     <button key={institution._id} className="institution-item"
                     onClick={() => handleInstitutionClick(institution)}>
