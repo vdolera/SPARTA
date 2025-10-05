@@ -159,7 +159,7 @@ const Teams = () => {
                     style={{
                       backgroundColor: team.teamColor || "#A96B24",
                       backgroundImage: team.teamIcon
-                        ? `url(http://localhost:5000${team.teamIcon})`
+                        ? `url(${team.teamIcon})`
                         : "none",
                       backgroundSize: "cover",
                       backgroundPosition: "center",

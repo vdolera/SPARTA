@@ -2,11 +2,17 @@ const express = require("express");
 const Team = require("../models/Team");
 const Game = require("../models/Game");
 const Coordinator = require("../models/Coordinator")
+
+
 const multer = require("multer");
+const upload = multer({ dest: "temp/" }); // temp storage only
+const fs = require("fs");
 const path = require("path");
+const supabase = require("./supabaseClient");
 
 const router = express.Router();
 
+/*
 // Setup multer storage(uplaoding thingz to a storage)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -17,6 +23,7 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
+
 
 // CREATE team 
 router.post("/team", upload.single("teamIcon"), async (req, res) => {
@@ -50,6 +57,73 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 });
+*/
+
+router.post("/team", upload.single("teamIcon"), async (req, res) => {
+  try {
+    const { teamName, teamManager, managerEmail, institution, teamColor, eventName, coordinators } = req.body;
+
+    if (!teamName || !teamManager || !managerEmail || !institution) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    const existing = await Team.findOne({ teamName, institution });
+    if (existing) {
+      return res.status(409).json({ message: "Team already exists in this institution." });
+    }
+
+    let teamIconUrl = null;
+
+    if (req.file) {
+      const filePath = req.file.path;
+      const fileExt = path.extname(req.file.originalname);
+      const fileName = `teamIcon-${Date.now()}${fileExt}`;
+      const fileBuffer = fs.readFileSync(filePath);
+
+      const { data, error } = await supabase.storage
+        .from("teams") 
+        .upload(fileName, fileBuffer, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: req.file.mimetype,
+        });
+
+      // remove temp file
+      fs.unlinkSync(filePath);
+
+      if (error) {
+        console.error("Supabase upload failed:", error);
+        return res.status(500).json({ message: "Failed to upload team icon" });
+      }
+
+      // Save url
+      const { data: publicData } = supabase.storage
+      .from("teams")
+      .getPublicUrl(fileName);
+    
+    teamIconUrl = publicData.publicUrl;
+    
+    }
+
+    const team = new Team({
+      teamName,
+      teamManager,
+      managerEmail,
+      institution,
+      teamColor,
+      eventName,
+      teamIcon: teamIconUrl, // ✅ store Supabase URL
+      coordinators: coordinators ? JSON.parse(coordinators) : []
+    });
+
+    await team.save();
+    res.status(201).json({ message: "Team created successfully.", team });
+  } catch (err) {
+    console.error("Error creating team:", err);
+    res.status(500).json({ message: "Server error." });
+  }
+});
+
 
 // GET teams
 router.get('/teams', async (req, res) => {

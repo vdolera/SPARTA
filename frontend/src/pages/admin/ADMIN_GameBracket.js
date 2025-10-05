@@ -437,24 +437,13 @@ const GameBracket = () => {
 
         <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap", alignItems: "center", justifyContent: "center", width: "100%", margin: "0 auto" }}>
           <div className="rules-section">
-            {game.rules ? (
-              game.rules.endsWith(".pdf") || game.rules.startsWith("/uploads/") ? (
-                <>
-                  <button onClick={() => setShowRulesModal(true)}>
-                    View Rules
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button onClick={() => setShowRulesModal(true)}>
-                    View Rules
-                  </button>
-                </>
-              )
-            ) : (
-              <p>No rules provided.</p>
-            )}
-          </div>
+          {game.rules ? (
+      <button onClick={() => setShowRulesModal(true)}>View Rules</button>
+    ) : (
+      <p>No rules provided.</p>
+    )}
+  </div>
+
 
           <div className="video-section">
             <button
@@ -471,26 +460,26 @@ const GameBracket = () => {
         </div>
       </div>
       {showRulesModal && (
-        <div className="modal-overlay">
-          <div className="modal rules-modal">
-            <h2>Game Rules</h2>
+  <div className="modal-overlay">
+    <div className="modal rules-modal">
+      <h2>Game Rules</h2>
 
-            {game.rules.endsWith(".pdf") || game.rules.startsWith("/uploads/") ? (
-              <iframe
-                src={game.rules}
-                title="Rules PDF"
-                width="100%"
-                height="500px"
-                style={{ border: "none" }}
-              />
-            ) : (
-              <p>{game.rules}</p>
-            )}
-
-            <button onClick={() => setShowRulesModal(false)}>Close</button>
-          </div>
-        </div>
+      {game.rules.endsWith(".pdf") ? (
+        <iframe
+          src={game.rules}
+          title="Rules PDF"
+          width="100%"
+          height="500px"
+          style={{ border: "none" }}
+        />
+      ) : (
+        <p style={{ whiteSpace: "pre-wrap" }}>{game.rules}</p>
       )}
+
+      <button onClick={() => setShowRulesModal(false)}>Close</button>
+    </div>
+  </div>
+)}
 
       <div className="bracket-container">
         {game.bracketType === "Single Elimination" && (

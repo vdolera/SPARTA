@@ -1,13 +1,14 @@
 const express = require("express");
-const path = require("path");
 const Game = require("../models/Game");
 const Team = require("../models/Team");
 
 // File uploads
 const multer = require("multer");
 const supabase = require("./supabaseClient");
-//const path = require("path");
+const path = require("path");
 const fs = require("fs");;
+
+const upload = multer({ dest: "temp/" })
 
 const router = express.Router();
 
@@ -35,10 +36,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 */
 
-const upload = multer({ dest: "temp/" })
+
 
 // CREATE Game
-router.post("/games", upload.single("rules"), async (req, res) => {
+router.post("/games", upload.single("rulesFile"), async (req, res) => {
   try {
     const {
       institution,
@@ -47,7 +48,6 @@ router.post("/games", upload.single("rules"), async (req, res) => {
       startDate,
       endDate,
       teams,
-      rules,
       eventName,
       bracketType,
       coordinators,
@@ -70,38 +70,43 @@ router.post("/games", upload.single("rules"), async (req, res) => {
     let finalRules = null;
 
     if (req.file) {
-      const filePath = req.file.path; // temp file
-      const fileExt = path.extname(req.file.originalname);
-      const fileName = `rules-${Date.now()}${fileExt}`;
+      try {
+        const fileExt = path.extname(req.file.originalname);
+        const fileName = `rules-${Date.now()}${fileExt}`;
+        const fileBuffer = fs.readFileSync(req.file.path);
 
-   const fileBuffer = fs.readFileSync(filePath);
+        const { data, error } = await supabase.storage
+          .from("rules")
+          .upload(fileName, fileBuffer, {
+            cacheControl: "3600",
+            upsert: false,
+            contentType: req.file.mimetype,
+          });
 
-const { data, error } = await supabase.storage
-  .from("rules")
-  .upload(fileName, fileBuffer, {
-    cacheControl: "3600",
-    upsert: false,
-    contentType: req.file.mimetype,
-  });
+        // Delete temp file
+        fs.unlinkSync(req.file.path);
 
+        if (error) {
+          console.error("Supabase upload error:", error);
+          return res.status(500).json({ message: "Failed to upload rules file" });
+        }
 
-      // Remove temp file
-      fs.unlinkSync(filePath);
+        // Get public URL
+        const { data: urlData } = supabase.storage.from("rules").getPublicUrl(fileName);
+        finalRules = urlData.publicUrl;
 
-      if (error) {
-        console.error("Supabase upload failed:", error);
-        return res.status(500).json({ message: "Failed to upload rules file" });
+      } catch (err) {
+        console.error("File processing error:", err);
+        return res.status(500).json({ message: "Error processing rules file" });
       }
-
-      const { publicUrl } = supabase.storage
-        .from("rules")
-        .getPublicUrl(fileName);
-
-      finalRules = publicUrl;
-    } else if (rules) {
-      finalRules = rules;
+    } else if (req.body.rulesText && req.body.rulesText.trim() !== "") {
+      finalRules = req.body.rulesText.trim();
     }
 
+    // Final check for rules
+    if (!finalRules || finalRules.trim() === "") {
+      return res.status(400).json({ message: "Rules (file or text) are required" });
+    }
 
     if (
       !institution ||
@@ -109,13 +114,20 @@ const { data, error } = await supabase.storage
       !category ||
       !startDate ||
       !endDate ||
-      !teams?.length ||
-      !finalRules ||
       !eventName ||
       !bracketType
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
+    
+    if (!parsedTeams || parsedTeams.length < 2) {
+      return res.status(400).json({ message: "At least 2 teams are required" });
+    }
+    
+    if (!finalRules || finalRules.trim() === "") {
+      return res.status(400).json({ message: "Rules (file or text) are required" });
+    }
+    
 
     const matches = [];
     const totalRounds = Math.ceil(Math.log2(parsedTeams.length));
