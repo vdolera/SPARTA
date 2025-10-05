@@ -62,7 +62,7 @@ const AllEvent = () => {
             <p className="no-events-message"> There are no on-going events at {userInstitution}</p>
           </div>
         ) : (
-          <div className="event-list">
+          <div className="spectator-event-list">
             {filteredEvents.map((event) => (
               <div className='event-item' key={event._id}>
                 <div className="event-color" style={{ background: event.eventColor ? event.eventColor : '#A96B24'}} onClick={() => handleEventClick(event)}>
