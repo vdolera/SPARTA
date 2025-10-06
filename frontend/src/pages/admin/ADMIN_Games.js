@@ -34,10 +34,6 @@ const Game = () => {
     Chess: GiChessKnight,
   };
 
-    useEffect(() => {
-      document.title = "SPARTA | Games";
-    }, []);
-
   useEffect(() => {
     const fetchGames = async () => {
       try {

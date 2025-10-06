@@ -150,7 +150,7 @@ const GameBracket = () => {
       rounds.push({ title: "LB", rounds: lbRounds });
 
 
-      // ✅ Only show Grand Final when both WB Final & LB Final are decided
+      //  Only show Grand Final when both WB Final & LB Final are decided
       if (gfMatches.length > 0) {
         const gf = gfMatches[0];
 
@@ -162,7 +162,7 @@ const GameBracket = () => {
           (m) => m.bracket === "LB" && m.finalizeWinner && m.round === Math.max(...lbRounds.map(r => parseInt(r.title.split(" ")[1])))
         );
 
-        // ✅ Render GF only when WB and LB are both done
+        // Render GF only when WB and LB are both done
         if (wbFinalDone && lbFinalDone) {
           rounds.push({
             title: "Grand Final",
@@ -180,7 +180,7 @@ const GameBracket = () => {
             ],
           });
 
-          // ✅ Show Champion only AFTER GF is finalized
+          //  Show Champion only AFTER GF is finalized
           if (gf.finalizeWinner && gf.winner) {
             rounds.push({
               title: "Champion",
