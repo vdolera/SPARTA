@@ -53,8 +53,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 12px; /* rounded corners */
-  padding: 2px; /* border thickness */
+  border-radius: 12px;
+  padding: 2px;
   background: linear-gradient(to right, #CE892C, #1e40af);
   -webkit-mask: 
     linear-gradient(#fff 0 0) content-box, 
