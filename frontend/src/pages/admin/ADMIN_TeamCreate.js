@@ -8,7 +8,7 @@ const CreateTeam = () => {
   const [teamName, setTeamName] = useState("");
   const [teamManager, setTeamManager] = useState("");
   const [managerEmail, setManagerEmail] = useState("");
-  const [teamColor, setTeamColor] = useState("");
+  const [teamColor, setTeamColor] = useState("#000000");
   const [teamIcon, setTeamIcon] = useState(null);
   const { eventName } = useParams();
   const [coordinators, setCoordinators] = useState([]);
@@ -41,12 +41,12 @@ const CreateTeam = () => {
       formData.append("eventName", decodedEventName);
       formData.append("coordinators", JSON.stringify(selectedCoordinators));
       if (teamIcon) {
-        formData.append("teamIcon", teamIcon); // ✅ add file
+        formData.append("teamIcon", teamIcon); // add file
       }
 
       const response = await fetch("http://localhost:5000/api/team", {
         method: "POST",
-        body: formData, // ✅ send formData instead of JSON
+        body: formData, // send formData instead of JSON
       });
 
       const data = await response.json();

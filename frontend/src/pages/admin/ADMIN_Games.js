@@ -38,7 +38,7 @@ const Game = () => {
     const fetchGames = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&event=${encodeURIComponent(decodedName)}`
+          `http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
 

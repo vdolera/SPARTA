@@ -356,7 +356,7 @@ router.get('/games', async (req, res) => {
       return res.status(400).json({ message: 'Institution is required' });
     }
 
-    const query = { institution, ...(eventName && { eventName: eventName }) };
+    const query = { institution, eventName };
     const games = await Game.find(query);
     res.json(games);
   } catch (err) {
