@@ -33,7 +33,10 @@ const PlayerGameBracket = () => {
   if (!game) {
     return (
       <PlayerMainLayout>
-        <p>Loading bracket...</p>
+        <div className="loading-screen">
+          <div className="spinner"></div>
+          <p>Loading bracket...</p>
+        </div>
       </PlayerMainLayout>
     );
   }

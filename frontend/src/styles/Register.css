@@ -176,6 +176,7 @@
   transform: translateY(20px);
   animation: toastIn 0.3s forwards, toastOut 0.3s forwards 2.7s;
   z-index: 100;
+  font-family: Montserrat, sans-serif;
 }
 
 .toast-success {
