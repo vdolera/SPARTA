@@ -32,6 +32,13 @@ const PlayerGame = () => {
   const [gamesSelected, setGamesSelected] = useState([]);
   const [eventRequirements, setEventRequirements] = useState([]);
 
+  // For default data when it have one
+  useEffect(() => {
+    setPlayerName(user?.playerName || "");
+    setTeam(user?.team || "");
+    setGender(user?.sex || "");
+  }, [user?.playerName, user?.team, user?.sex]);
+
 
   const filteredGames = Object.entries(gamesByType).filter(
     ([combinedType]) =>

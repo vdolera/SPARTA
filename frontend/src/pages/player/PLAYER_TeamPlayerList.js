@@ -59,6 +59,7 @@ useEffect(() => {
     fetchTeamDetails();
   }, [userInstitution, decodedEvent, decodedTeam]);
 
+  // Fetch Score and turn filter it to team ranking
   useEffect(() => {
     const fetchTeamRankings = async () => {
       try {

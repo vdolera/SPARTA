@@ -12,53 +12,7 @@ const supabase = require("./supabaseClient");
 
 const router = express.Router();
 
-/*
-// Setup multer storage(uplaoding thingz to a storage)
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/teams/"); // folder to store images or files
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); 
-  },
-});
-const upload = multer({ storage });
-
-
-// CREATE team 
-router.post("/team", upload.single("teamIcon"), async (req, res) => {
-  try {
-    const { teamName, teamManager, managerEmail, institution, teamColor, eventName, coordinators } = req.body;
-
-    if (!teamName || !teamManager || !managerEmail || !institution) {
-      return res.status(400).json({ message: "All fields are required." });
-    }
-
-    const existing = await Team.findOne({ teamName, institution });
-    if (existing) {
-      return res.status(409).json({ message: "Team already exists in this institution." });
-    }
-
-    const team = new Team({
-      teamName,
-      teamManager,
-      managerEmail,
-      institution,
-      teamColor,
-      eventName,
-      teamIcon: req.file ? `/uploads/teams/${req.file.filename}` : null, // save image path
-      coordinators: coordinators ? JSON.parse(coordinators) : []
-    });
-
-    await team.save();
-    res.status(201).json({ message: "Team created successfully.", team });
-  } catch (err) {
-    console.error("Error creating team:", err);
-    res.status(500).json({ message: "Server error." });
-  }
-});
-*/
-
+// Team Creation
 router.post("/team", upload.single("teamIcon"), async (req, res) => {
   try {
     const { teamName, teamManager, managerEmail, institution, teamColor, eventName, coordinators } = req.body;
@@ -112,7 +66,7 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
       institution,
       teamColor,
       eventName,
-      teamIcon: teamIconUrl, // ✅ store Supabase URL
+      teamIcon: teamIconUrl, // store Supabase URL
       coordinators: coordinators ? JSON.parse(coordinators) : []
     });
 
