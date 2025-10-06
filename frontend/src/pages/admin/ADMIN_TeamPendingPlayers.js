@@ -114,7 +114,7 @@ const TeamPlayerApproval = () => {
                           <li key={idx} style={{ textTransform: "uppercase" }}>
                             {req.name}:{" "}
                             <a
-                              href={`http://localhost:5000${req.filePath}`}
+                              href={req.filePath}
                               target="_blank"
                               rel="noopener noreferrer"
                               style={{

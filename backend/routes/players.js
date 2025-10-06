@@ -9,6 +9,7 @@ const router = express.Router();
 
 const multer = require("multer");
 const path = require("path");
+const supabase = require("./supabaseClient");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -19,8 +20,9 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
-
+// const upload = multer({ storage });
+// Use memoryStorage (replace local temp files)
+const upload = multer({ storage: multer.memoryStorage() });
 
 // GET pending players to enter the insitution
 router.get("/players/pending", async (req, res) => {
@@ -237,7 +239,7 @@ router.put("/players/:id/register-game", async (req, res) => {
 });
 */
 
-// REGISTER game for player
+/* REGISTER game for player
 router.put("/players/:id/register-game", upload.any(), async (req, res) => {
     try {
       const { playerName, team, sex } = req.body;
@@ -299,6 +301,91 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
     }
   }
 );
+*/
+
+router.put("/players/:id/register-game", upload.any(), async (req, res) => {
+  try {
+    const { playerName, team, sex } = req.body;
+    let games = req.body.game;
+
+    // Ensure games is always an array
+    if (!games) {
+      return res.status(400).json({ message: "No game selected" });
+    }
+    if (!Array.isArray(games)) games = [games];
+
+    // Validate game IDs
+    const validGameIds = games.filter((id) =>
+      mongoose.Types.ObjectId.isValid(id)
+    );
+    if (!validGameIds.length) {
+      return res.status(400).json({ message: "Invalid game ID(s)" });
+    }
+
+    // Find the game docs
+    const gameDocs = await Game.find({ _id: { $in: validGameIds } });
+    if (!gameDocs.length) {
+      return res.status(404).json({ message: "Games not found" });
+    }
+
+    // Upload each requirement file to Supabase
+    const uploadedRequirements = [];
+
+    for (const file of req.files || []) {
+      const match = file.fieldname.match(/requirements\[(.+)\]/);
+      const reqName = match ? match[1] : file.fieldname;
+
+      const uniqueFileName = `req-${Date.now()}-${file.originalname}`;
+
+      const { data, error } = await supabase.storage
+        .from("requirements") // your bucket name
+        .upload(uniqueFileName, file.buffer, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.mimetype,
+        });
+
+      if (error) {
+        console.error("Supabase upload failed:", error);
+        return res.status(500).json({ message: "Failed to upload requirement file" });
+      }
+
+      // Get the public URL
+      const { data: publicData } = supabase.storage
+        .from("requirements")
+        .getPublicUrl(uniqueFileName);
+
+      uploadedRequirements.push({
+        name: reqName,
+        filePath: publicData.publicUrl, // store public URL
+      });
+    }
+
+    // Update the player
+    const updatedPlayer = await Player.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: { playerName, team, sex },
+        $push: {
+          game: {
+            $each: gameDocs.map((g) => `${g.category} ${g.gameType}`),
+          },
+          uploadedRequirements: { $each: uploadedRequirements },
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedPlayer) {
+      return res.status(404).json({ message: "Player not found" });
+    }
+
+    res.json({ message: "Game(s) registered", player: updatedPlayer });
+  } catch (err) {
+    console.error("Error registering player:", err);
+    res.status(500).json({ message: "Failed to register player" });
+  }
+});
 
 
 

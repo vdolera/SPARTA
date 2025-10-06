@@ -159,7 +159,7 @@ const PlayerUserProfile = () => {
                      <td className="requirement-name">{req.name}</td>
                      <td className="file-link">
                        <a
-                         href={`http://localhost:5000${req.filePath}`}
+                         href={req.filePath}
                          target="_blank"
                          rel="noopener noreferrer"
                          className="document-link"
