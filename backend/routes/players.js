@@ -67,10 +67,10 @@ router.put("/players/approve/:id", async (req, res) => {
           html: 
           `
           <div style="font-family: Arial, sans-serif; color: #222;">
-          <p>Dear ${updatedPlayer.name},</p>
+          <p>Greetings!</p>
 
           <p>
-          We are excited to inform you that your request to register in the ${updatedPlayer.eventName} at ${updatedPlayer.institution}have been <b>APPROVED</b>.
+          I hope this email finds you well! We are excited to inform you that your request to register in the <b>${updatedPlayer.eventName}</b> at <b>${updatedPlayer.institution}</b>  has been <b>APPROVED</b>.
           </p>
 
           <p>Congratulations! And we are looking forward for your active participation in the event.</p>
@@ -113,7 +113,7 @@ router.delete("/players/:id", async (req, res) => {
 
           <p>Greetings!<br/>We hope this email finds you well.</p>
 
-          <p>Your request to register for the ${updatedPlayer.eventName} at ${updatedPlayer.institution} has been <b>DECLINED</b>. <br />
+          <p>Your request to register for the ${updatedPlayer.eventName} at ${updatedPlayer.institution} has unfortunately been <b>DECLINED</b>. <br />
           There might have been an issue with your institution or event requirements.</p>
 
           <p>If this has been a mistake, please approach or contact your event organizer for assistance.</p>
@@ -149,7 +149,7 @@ router.put("/players/team-approve/:id", async (req, res) => {
           html: `
           
           <div style="font-family: Arial, sans-serif; color: #222;">
-          <p>Dear ${updatedPlayer.name},</p>
+          <p>Greetings! <br /> We hope this email finds you well!</p>
 
           <p>
           We are excited to inform you that your request to register in the ${updatedPlayer.game} under ${updatedPlayer.team} has been <b>APPROVED</b>.
@@ -201,13 +201,14 @@ router.put("/players/team-decline/:id", async (req, res) => {
         subject: `UPDATE on your request made on SPARTA`,
         html: `
           <div style="font-family: Arial, sans-serif; color: #222;">
-          <p>Dear ${declinedPlayer.name},</p>
+          <p>Greetings! <br /> We hope this email finds you well!</p>
 
           <p>
-          We hope this message finds you well. We regret to inform you that your request to register in your chosen sport game has been <b>DECLINED</b>.
+          We regret to inform you that your request to register in your chosen sport game has been <b>DECLINED</b>.
           </p>
 
-          <p>We understand that this news may be disappointing, and however we encourage you to explore other sport games to represent our team.</p>
+          <p>We understand that this news may be disappointing, and however we encourage you to explore other sport games to represent our team. Please don't
+          hesitate to contact our organizers and team managers for further assistance.</p>
 
           <p style="margin-top: 24px;">
           

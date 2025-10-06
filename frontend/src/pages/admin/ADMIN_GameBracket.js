@@ -42,7 +42,9 @@ const GameBracket = () => {
   if (!game) {
     return (
       <MainLayout>
+      <div style={{ textAlign: "center", marginTop: "50px" }}> 
         <p>Loading bracket...</p>
+      </div> 
       </MainLayout>
     );
   }

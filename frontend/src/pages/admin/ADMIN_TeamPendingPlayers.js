@@ -6,15 +6,20 @@ import '../../styles/ADMIN_PlayerApproval.css';
 
 const TeamPlayerApproval = () => {
   const [players, setPlayers] = useState([]);
+  const [showToast, setShowToast] = useState({ show: false, message: "", type: "" });
+  const [declineConfirm, setDeclineConfirm] = useState({ show: false, playerId: null });
+
   const { eventName, teamName } = useParams();
   const user = JSON.parse(localStorage.getItem("auth"));
   const institution = user?.institution;
 
-  // Fetch pending players (memoized)
+  // Fetch pending players
   const fetchPlayers = useCallback(async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/players/team-pending?institution=${institution}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(teamName)}`
+        `http://localhost:5000/api/players/team-pending?institution=${institution}&eventName=${encodeURIComponent(
+          eventName
+        )}&team=${encodeURIComponent(teamName)}`
       );
       const data = await res.json();
       setPlayers(data);
@@ -27,6 +32,14 @@ const TeamPlayerApproval = () => {
     fetchPlayers();
   }, [fetchPlayers]);
 
+  // Toast handler
+  const showToastMessage = (message, type) => {
+    setShowToast({ show: true, message, type });
+    setTimeout(() => {
+      setShowToast({ show: false, message: "", type: "" });
+    }, 3000);
+  };
+
   // Approve player
   const handleApprove = async (id) => {
     try {
@@ -34,24 +47,34 @@ const TeamPlayerApproval = () => {
         method: "PUT",
       });
       if (res.ok) {
-        alert("Player approved by team!");
-        fetchPlayers(); // refresh list
+        showToastMessage("Approved Player", "success");
+        fetchPlayers();
       }
     } catch (err) {
       console.error("Error approving player:", err);
     }
   };
 
-  // Decline player
-  const handleDecline = async (id) => {
-    if (!window.confirm("Are you sure you want to decline this player?")) return;
+  // Decline confirmation modal trigger
+  const openDeclineConfirm = (id) => {
+    setDeclineConfirm({ show: true, playerId: id });
+  };
+
+  const closeDeclineConfirm = () => {
+    setDeclineConfirm({ show: false, playerId: null });
+  };
+
+  // Confirm decline
+  const confirmDecline = async () => {
+    const id = declineConfirm.playerId;
+    closeDeclineConfirm();
     try {
       const res = await fetch(`http://localhost:5000/api/players/team-decline/${id}`, {
         method: "PUT",
       });
       if (res.ok) {
-        alert("Player declined!");
-        fetchPlayers(); // refresh list
+        showToastMessage("Declined Player", "error");
+        fetchPlayers();
       }
     } catch (err) {
       console.error("Error declining player:", err);
@@ -88,13 +111,17 @@ const TeamPlayerApproval = () => {
                     {player.uploadedRequirements && player.uploadedRequirements.length > 0 ? (
                       <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
                         {player.uploadedRequirements.map((req, idx) => (
-                          <li key={idx} style={{textTransform: "uppercase"}}>
+                          <li key={idx} style={{ textTransform: "uppercase" }}>
                             {req.name}:{" "}
                             <a
                               href={`http://localhost:5000${req.filePath}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              style={{ color: "#007bff", textDecoration: "underline", textTransform: "capitalize" }}
+                              style={{
+                                color: "#007bff",
+                                textDecoration: "underline",
+                                textTransform: "capitalize",
+                              }}
                             >
                               View File
                             </a>
@@ -106,8 +133,12 @@ const TeamPlayerApproval = () => {
                     )}
                   </td>
                   <td>
-                    <button className='approve-btn' onClick={() => handleApprove(player._id)}>Accept</button>
-                    <button className='decline-btn'onClick={() => handleDecline(player._id)}>Decline</button>
+                    <button className="approve-btn" onClick={() => handleApprove(player._id)}>
+                      Accept
+                    </button>
+                    <button className="decline-btn" onClick={() => openDeclineConfirm(player._id)}>
+                      Decline
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -115,11 +146,39 @@ const TeamPlayerApproval = () => {
           </table>
         </div>
       ) : (
-        <div className='no-players-found'>
+        <div className="no-players-found">
           <LiaGhostSolid size={48} />
           <p>No pending players registered</p>
         </div>
       )}
+
+      {/* Decline Confirmation Modal */}
+        {declineConfirm.show && (
+          <div className="decline-modal-overlay">
+            <div className="decline-modal">
+              <h3>Are you sure you want to decline this player?</h3>
+              <div className="decline-modal-actions">
+                <button onClick={confirmDecline} className="btn-decline">
+                  Decline
+                </button>
+                <button onClick={closeDeclineConfirm} className="btn-cancel">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Toast Notification */}
+        {showToast.show && (
+          <div
+            className={`toast-notification ${
+              showToast.type === "success" ? "toast-success" : "toast-error"
+            }`}
+          >
+            {showToast.message}
+          </div>
+        )}
     </MainLayout>
   );
 };

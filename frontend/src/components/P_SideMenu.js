@@ -55,7 +55,7 @@ const PlayerSideMenu = () => {
           </div>
 
           <div className="user-info">
-          <span> {user?.playerName || "User Name"} </span>
+          {/* <span> {user?.playerName || "User Name"} </span> */}
           <span> {user?.email || "No Email"} </span> 
           </div>
 

@@ -51,7 +51,7 @@ const SideMenu = () => {
         </div>
       
         <div className="user-info">
-          <span>{user?.playerName || "No Username Found"}</span>
+          {/* <span>{user?.playerName || "No Username Found"}</span> */}
           <span>{user?.email || "No Email"} </span>
         </div>
 

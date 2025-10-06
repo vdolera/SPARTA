@@ -18,6 +18,7 @@ const PlayerGame = () => {
   const [gamesByType, setGamesByType] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const [teams, setTeams] = useState([]);
   const [games, setGames] = useState([]);
@@ -141,8 +142,8 @@ const PlayerGame = () => {
 
       const data = await res.json();
       if (res.ok) {
-        alert("Successfully registered for the game!");
-        setModalOpen(false);
+          setShowSuccessModal(true);
+          setModalOpen(false);
       } else {
         alert(data.message || "Registration failed");
       }
@@ -332,6 +333,22 @@ const PlayerGame = () => {
                 Register for Game
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showSuccessModal && (
+        <div className="game-register-overlay">
+          <div className="game-register-content">
+            <h2 style={{ color: "#1A2A49" }}>REGISTRATION SUCCESSFUL!</h2>
+            <p style={{ margin: "18px 0" }}>You have successfully registered for the game. <br/ > Please check your email for updates regarding your registration.</p>
+            <button
+              className="game-register-button"
+              style={{ marginTop: "12px" }}
+              onClick={() => setShowSuccessModal(false)}
+            >
+              CLOSE
+            </button>
           </div>
         </div>
       )}
