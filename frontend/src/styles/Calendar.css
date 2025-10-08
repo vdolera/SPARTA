@@ -8,6 +8,26 @@
   min-height: calc(100vh - 100px);
 }
 
+@media (max-width: 1920px) {
+  .dashboard-container {
+    max-width: 1720px;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    padding: 20px;
+  }
+
+  .calendar-container{
+    height: fit-content;
+    width: 1000px;
+  }
+
+  .upcoming-events{
+    height: fit-content;
+    width: 500px;
+  }
+
+}
+
 /* Calendar Container */
 .calendar-container {
   background: white;
@@ -27,7 +47,7 @@
   margin: 0 !important;
 }
 
-/* Navigation */
+/* Navigation <<<IMPORTANT>>> */
 .react-calendar__navigation {
   display: flex;
   margin-bottom: 20px;
@@ -132,7 +152,7 @@
 .upcoming-events {
   background: white;
   border-radius: 16px;
-  padding: 24px;
+  padding: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   height: fit-content;
   border: 2px solid #a56806;
@@ -181,41 +201,28 @@
   font-size: 13px;
 }
 
-/* Responsive Design */
-@media (max-width: 968px) {
-  .dashboard-container {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 15px;
-  }
-  
-  .calendar-container {
-    padding: 20px;
-  }
-  
-  .react-calendar__tile {
-    padding: 10px 6px;
-    min-height: 50px;
-    font-size: 13px;
-  }
+.upcoming-event:hover {
+  background: #fff7ed;
+  transform: translateX(4px);
 }
 
-@media (max-width: 480px) {
-  .dashboard-container {
-    padding: 10px;
-  }
-  
-  .calendar-container,
-  .upcoming-events {
-    padding: 16px;
-    border-radius: 12px;
-  }
-  
-  .react-calendar__tile {
-    padding: 8px 4px;
-    min-height: 45px;
-    font-size: 12px;
-  }
+.upcoming-event strong {
+  color: #1a2a49;
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.upcoming-event time {
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.upcoming-event .location {
+  color: #6b7280;
+  font-size: 12px;
+  margin-top: 4px;
 }
 
 /* Modal Styles */
@@ -287,40 +294,6 @@
   gap: 12px;
   width: 100%;
   text-transform: uppercase;
-}
-
-.upcoming-event {
-  background: #f8f9fa;
-  border-left: 4px solid #ce892c;
-  padding: 16px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  font-family: Montserrat, sans-serif;
-}
-
-.upcoming-event:hover {
-  background: #fff7ed;
-  transform: translateX(4px);
-}
-
-.upcoming-event strong {
-  color: #1a2a49;
-  display: block;
-  margin-bottom: 4px;
-  font-size: 14px;
-}
-
-.upcoming-event time {
-  color: #6b7280;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.upcoming-event .location {
-  color: #6b7280;
-  font-size: 12px;
-  margin-top: 4px;
 }
 
 /* Multi-day event highlighting */
