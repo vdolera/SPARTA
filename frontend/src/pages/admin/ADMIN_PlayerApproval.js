@@ -5,6 +5,9 @@ import '../../styles/ADMIN_PlayerApproval.css';
 
 const Approval = () => {
   const [players, setPlayers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const playersPerPage = 10;
+
   const auth = JSON.parse(localStorage.getItem("auth"));
   const [showToast, setShowToast] = useState({ show: false, message: "", type: "" });
   const [declineConfirm, setDeclineConfirm] = useState({ show: false, playerId: null });
@@ -87,10 +90,29 @@ const Approval = () => {
     }
   };
 
+  // Pagination Logic
+  const totalPages = Math.ceil(players.length / playersPerPage);
+  const indexOfLastPlayer = currentPage * playersPerPage;
+  const indexOfFirstPlayer = indexOfLastPlayer - playersPerPage;
+  const paginatedPlayers = players.slice(indexOfFirstPlayer, indexOfLastPlayer);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <MainLayout>
       <div className="approval-header">
         <h2>PLAYER APPROVALS</h2>
+        <p style={{ margin: 0, fontStyle: "italic" }}> Manage player approvals for your institution. </p>
       </div>
 
       {players.length === 0 ? (
@@ -109,7 +131,7 @@ const Approval = () => {
               </tr>
             </thead>
             <tbody>
-              {players.map((player) => (
+              {paginatedPlayers.map((player) => (
                 <tr key={player._id}>
                   <td>{player.email}</td>
                   <td>{player.eventName}</td>
@@ -125,10 +147,39 @@ const Approval = () => {
               ))}
             </tbody>
           </table>
+
+          {/* Pagination Controls */}
+          <div className="pagination-controls">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+              className="pagination-btn"
+            >
+              Prev
+            </button>
+
+            {[...Array(totalPages)].map((_, i) => (
+              <button
+                key={i}
+                onClick={() => handlePageClick(i + 1)}
+                className={`pagination-btn ${currentPage === i + 1 ? "active" : ""}`}
+              >
+                {i + 1}
+              </button>
+            ))}
+
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="pagination-btn"
+            >
+              Next
+            </button>
+          </div>
         </div>
       )}
 
-      {/* ✅ Decline Confirmation Modal */}
+      {/*Decline Confirmation Modal */}
       {declineConfirm.show && (
         <div className="decline-modal-overlay">
           <div className="decline-modal">
@@ -145,7 +196,7 @@ const Approval = () => {
         </div>
       )}
 
-      {/* ✅ Toast Notification */}
+      {/* Toast Notification */}
       {showToast.show && (
         <div
           className={`toast-notification ${

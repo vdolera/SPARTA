@@ -124,78 +124,80 @@ const Teams = () => {
 
   return (
     <MainLayout>
-      <div className="teams-header-row">
-        <h3>TEAMS FOR {decodedName}</h3>
+      <div className="teams-main-container">
+        <div className="teams-header-row">
+          <h3>TEAMS FOR {decodedName}</h3>
 
-        <input
-          type="text"
-          className="team-search-bar"
-          placeholder="Search teams..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ marginRight: "16px" }}
-        />
-        {(user.role === "admin" || user.role === "co-organizer") && (
-        <button className="new-team-btn" onClick={handleAddTeam}>
-          + New Team
-        </button>
-        )}
-      </div>
+          <input
+            type="text"
+            className="team-search-bar"
+            placeholder="Search teams..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ marginRight: "16px" }}
+          />
+          {(user.role === "admin" || user.role === "co-organizer") && (
+          <button className="new-team-btn" onClick={handleAddTeam}>
+            + New Team
+          </button>
+          )}
+        </div>
 
-      <div className="teams-event">
-        {filteredTeams.length === 0 ? (
-          <div className="no-teams-found">
-            <VscSearchStop size={48} />
-            <p>No teams found.</p>
-          </div>
-        ) : (
-          <ul className="team-list">
-            {filteredTeams.map((team) => (
-              <li key={team._id} className="team-item">
-                <div className="team-card">
-                  <button
-                    className="team-btn"
-                    onClick={() => handleSelectTeam(team.teamName)}
-                    style={{
-                      backgroundColor: team.teamColor || "#A96B24",
-                      backgroundImage: team.teamIcon
-                        ? `url(${team.teamIcon})`
-                        : "none",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      color: "#fff",
-                    }}
-                  >
-                    <span className="team-name-overlay">{team.teamName}</span>
-                  </button>
+        <div className="teams-event">
+          {filteredTeams.length === 0 ? (
+            <div className="no-teams-found">
+              <VscSearchStop size={48} />
+              <p>No teams found.</p>
+            </div>
+          ) : (
+            <ul className="team-list">
+              {filteredTeams.map((team) => (
+                <li key={team._id} className="team-item">
+                  <div className="team-card">
+                    <button
+                      className="team-btn"
+                      onClick={() => handleSelectTeam(team.teamName)}
+                      style={{
+                        backgroundColor: team.teamColor || "#A96B24",
+                        backgroundImage: team.teamIcon
+                          ? `url(${team.teamIcon})`
+                          : "none",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        color: "#fff",
+                      }}
+                    >
+                      <span className="team-name-overlay">{team.teamName}</span>
+                    </button>
 
-                  {/* Menu button */}
-                  <div
-                    className="menu-container"
-                    onClick={(e) => e.stopPropagation()} // prevent opening players page
-                  >
-                    <MoreVertical
-                      className="menu-icon"
-                      onClick={() =>
-                        setMenuOpen(menuOpen === team._id ? null : team._id)
-                      }
-                    />
-                    {menuOpen === team._id && (
-                      <div className="menu-dropdown">
-                        <button onClick={() => setEditTeam(team)}>Edit</button>
-                        <button onClick={() => handleDelete(team._id)}>
-                          Delete
-                        </button>
-                      </div>
-                    )}
+                    {/* Menu button */}
+                    <div
+                      className="menu-container"
+                      onClick={(e) => e.stopPropagation()} // prevent opening players page
+                    >
+                      <MoreVertical
+                        className="menu-icon"
+                        onClick={() =>
+                          setMenuOpen(menuOpen === team._id ? null : team._id)
+                        }
+                      />
+                      {menuOpen === team._id && (
+                        <div className="menu-dropdown">
+                          <button onClick={() => setEditTeam(team)}>Edit</button>
+                          <button onClick={() => handleDelete(team._id)}>
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
-
+      
       {/* Edit Modal */}
       {editTeam && (
         <div className="modal-overlay">
