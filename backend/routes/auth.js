@@ -51,13 +51,13 @@ router.post('/auth/login/:role', async (req, res) => {
     const user = await Model.findOne(query);
     if (!user) return res.status(401).json({ message: 'Invalid credentials' });
 
-    // ADMIN → password
+    // Check ADMIN password
     if (role === 'admin') {
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (!passwordMatch) return res.status(401).json({ message: 'Invalid password' });
     }
 
-    // PLAYER → password
+    // Check PLAYER password
     if (role === 'player') {
       if (!user.approved) {
         return res.status(403).json({ message: 'Your account is not approved yet. Please wait for approval.' });
@@ -67,7 +67,7 @@ router.post('/auth/login/:role', async (req, res) => {
       if (!passwordMatch) return res.status(401).json({ message: 'Invalid password' });
     }
 
-    // COORDINATORS (Co/Sub) → accessKey
+    // Check COORDINATORS accessKey
     if (role === 'co-organizer' || role === 'sub-organizer') {
       if (!user.accessKey) return res.status(403).json({ message: 'Your account is not approved yet.' });
       if (user.accessKey !== accessKey) return res.status(403).json({ message: 'Invalid access key' });
