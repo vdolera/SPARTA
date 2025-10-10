@@ -23,7 +23,7 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // base payload
+    // Payload
     const payload = {
       email: formData.email,
     };
