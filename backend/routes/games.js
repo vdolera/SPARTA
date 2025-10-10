@@ -22,22 +22,6 @@ function shuffleArray(array) {
   return arr;
 };
 
-/* 
-// storage for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/rules");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
-const upload = multer({ storage });
-*/
-
-
-
 // CREATE Game
 router.post("/games", upload.single("rulesFile"), async (req, res) => {
   try {
@@ -59,14 +43,6 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
     const parsedCoordinators = JSON.parse(coordinators || "[]");
 
     // Check if Text or Uploaded Rules
-
-    /*let finalRules = null;
-    if (req.file) {
-      finalRules = `/uploads/rules/${req.file.filename}`; // file 
-    } else if (rules) {
-      finalRules = rules; // plain text
-    }*/
-
     let finalRules = null;
 
     if (req.file) {
@@ -128,7 +104,6 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       return res.status(400).json({ message: "Rules (file or text) are required" });
     }
     
-
     const matches = [];
     const totalRounds = Math.ceil(Math.log2(parsedTeams.length));
     const shuffledTeams = shuffleArray(parsedTeams);
@@ -356,7 +331,8 @@ router.get('/games', async (req, res) => {
       return res.status(400).json({ message: 'Institution is required' });
     }
 
-    const query = { institution, eventName };
+    const query = { institution };
+    if (eventName) query.eventName = eventName;
     const games = await Game.find(query);
     res.json(games);
   } catch (err) {

@@ -14,9 +14,8 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [multiDayEvents, setMultiDayEvents] = useState([]);
 
+  // Fetch Game schedules
   useEffect(() => {
-    document.title = "SPARTA | Dashboard";
-
     const fetchGames = async () => {
       try {
         let url = `http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}`;
