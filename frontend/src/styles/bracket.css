@@ -36,7 +36,7 @@
   color: #111827 !important; /* Tailwind "gray-900" */
 }
 
-.single-elim, .double-elim, .round-robin, .swiss {
+.single-elim, .double-elim, .round-robin {
   position: relative;
   border: 2px solid none;
   border-radius: 12px;
@@ -46,7 +46,7 @@
   text-align: center;
 }
 
-.single-elim::before, .double-elim::before, .round-robin::before, .swiss::before {
+.single-elim::before, .double-elim::before, .round-robin::before{
   content: "";
   position: absolute;
   top: 0;
@@ -79,17 +79,17 @@
   border-color: #fca5a5 !important;
 }
 
-/* ✅ Winner highlight */
+/* Winner highlight */
 .bracket-container .seed-team.winner {
-  background-color: #ffffff !important; /* Green */
+  background-color: #ffffff !important;
   color: #000000 !important;
   border-color: #388e3c !important;
   font-weight: 700 !important;
 }
 
-/* ❌ Loser highlight */
+/* Loser highlight */
 .bracket-container .seed-team.loser {
-  background-color: #ffffff !important; /* Red-400 */
+  background-color: #ffffff !important;
   color: #000000 !important;
   border-color: #b91c1c !important;
   font-weight: 700 !important;
@@ -103,17 +103,17 @@
 
 .round-robin .rr-round {
   display: flex;
-  flex-direction: column; /* keep title above, matches below */
+  flex-direction: column;
   align-items: center;
   gap: 10px;
 }
 
 .round-robin .rr-matches {
   display: flex;
-  flex-direction: row;   /* horizontal layout */
+  flex-direction: row;
   gap: 20px;
   justify-content: center;
-  flex-wrap: wrap;       /* wrap if too many matches */
+  flex-wrap: wrap;
 }
 
 .round-robin .seed-item {
@@ -123,12 +123,12 @@
 
 .modal-overlay {
   position: fixed;
-  inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
+  inset: 0;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000; /* make sure it's above everything */
+  z-index: 2000;
 }
 
 .modal {
@@ -141,7 +141,7 @@
   text-align: center;
   animation: popup 0.25s ease-out;
   position: relative;
-  z-index: 2100; /* ensure it's above overlay */
+  z-index: 2100;
 }
 
 .modal h3 {
@@ -298,16 +298,16 @@
 }
 
 .loading-screen {
-  position: fixed; /* covers the whole screen */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  display: flex; /* center horizontally & vertically */
+  display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.8); /* light overlay */
-  z-index: 100; /* keep it above other elements */
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 100;
   font-size: 1.25rem;
   font-weight: 500;
   color: #333;

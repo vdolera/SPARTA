@@ -1,6 +1,6 @@
 h3 {
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
 }
 
 .teams-event {
@@ -23,10 +23,10 @@ h3 {
 }
 
 .teams-header-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 5px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 5px 20px;
 }
 
 .team-search-bar {
@@ -66,43 +66,43 @@ div button:hover {
 }
 
 .team-btn {
-    cursor: pointer;
-    padding: 8px 12px;
-    border: 1px solid rgb(255, 255, 255);
-    border-radius: 6px;
-    margin: 10px 0;
-    padding: 10px;
-    min-width: 22vh;
-    min-height: 29vh;
-    font-family: Paytone One, sans-serif;
-    font-size: 20px;
-    text-transform: uppercase;
-    font-weight: bold;
-    color: white;
-    text-align: center;
-    align-items: center;
+  cursor: pointer;
+  padding: 8px 12px;
+  border: 1px solid rgb(255, 255, 255);
+  border-radius: 6px;
+  margin: 10px 0;
+  padding: 10px;
+  min-width: 22vh;
+  min-height: 29vh;
+  font-family: Paytone One, sans-serif;
+  font-size: 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  align-items: center;
 }
 
 .no-teams-found {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: Montserrat, sans-serif;
-    text-align: center;
-    justify-content: center;
-    padding: 15px;
-    margin: 20px;
-    height: 50vh;
-    min-width: 80vw;
-    border: 2px solid #82859c;
-    background-color: #f8f8ff;
-    border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Montserrat, sans-serif;
+  text-align: center;
+  justify-content: center;
+  padding: 15px;
+  margin: 20px;
+  height: 50vh;
+  min-width: 80vw;
+  border: 2px solid #82859c;
+  background-color: #f8f8ff;
+  border-radius: 15px;
 }
 
 .team-form {
   display: flex;
   flex-direction: column;
-  gap: 16px; /* space between fields */
+  gap: 16px;
 }
 
 .form-group {
@@ -126,14 +126,12 @@ div button:hover {
   box-sizing: border-box;
 }
 
-/* Force modal form to stack */
 .modal .team-form {
   display: flex !important;
   flex-direction: column !important;
   gap: 1rem !important;
 }
 
-/* Force form groups to stack */
 .modal .form-group {
   display: flex !important;
   flex-direction: column !important;
@@ -141,11 +139,9 @@ div button:hover {
   width: 100% !important;
 }
 
-/* Inputs full width */
 .modal .form-group input,
 .modal .form-group select,
 .modal .form-group textarea {
   width: 100% !important;
   margin-top: 6px !important;
 }
-

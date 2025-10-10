@@ -78,7 +78,6 @@
     min-width: 80vw;
 }
 
-/* Overlay background */
 .feedback-overlay {
   position: fixed;
   inset: 0;
@@ -110,7 +109,6 @@
   font-family: 'Poppins', sans-serif;
 }
 
-/* Textarea */
 .feedback-modal textarea {
   width: 95%;
   padding: 12px;
@@ -127,7 +125,6 @@
   box-shadow: 0 0 0 3px rgba(241, 189, 99, 0.2);
 }
 
-/* Action buttons */
 .feedback-actions {
   display: flex;
   justify-content: flex-end;
@@ -174,7 +171,7 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-  .toast-notification {
+.toast-notification {
   position: fixed;
   bottom: 1.5rem;
   right: 1.5rem;
@@ -192,11 +189,11 @@
 }
 
 .toast-success {
-  background-color: #22c55e; /* green */
+  background-color: #22c55e;
 }
 
 .toast-error {
-  background-color: #ef4444; /* red */
+  background-color: #ef4444;
 }
 
 .toast-success {

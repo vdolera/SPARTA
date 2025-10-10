@@ -96,26 +96,22 @@
   font-family: Poppins, sans-serif;
   white-space: nowrap;
 }
-
-/* Actual button */ 
 .s-logout-button {
   margin-top: 20px;
   border: none; 
   padding: 5px 10px; 
   border-radius: 5px; 
-  background-color: #dc3545; /* red tone for danger/logout */ 
+  background-color: #dc3545; 
   color: #fff; 
   font-size: 15px; 
   cursor: pointer; 
   transition: background 
   0.2s ease, transform 0.1s ease; }
   
-  /* Hover effect */ 
-  .s-logout-button button:hover {
-    background-color: #CE892C;
-  } 
+.s-logout-button button:hover {
+  background-color: #CE892C;
+ } 
   
-  /* Pressed state */ 
-  .s-logout-button button:active {
-    transform: scale(0.97);
-  }
+.s-logout-button button:active {
+  transform: scale(0.97);
+}

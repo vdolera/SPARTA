@@ -21,10 +21,7 @@
   }
 }
 
-/* Cards */
-.player-main-card,
-.other-info-card,
-.profile-form {
+.player-main-card, .other-info-card, .profile-form {
   background: #fff;
   border-radius: 12px;
   padding: 20px;
@@ -53,18 +50,15 @@
   word-break: break-word;
 }
 
-/* Make address wider */
 .other-info-card .profile-field.address-field {
-  grid-column: 1 / -1; /* spans across all columns */
+  grid-column: 1 / -1;
 }
 
 .other-info-card .profile-field.address-field .profile-value-rect {
-  white-space: normal; /* allow wrapping */
+  white-space: normal;
   word-wrap: break-word;
 }
 
-
-/* Profile picture */
 .profile-pic {
   display: flex;
   flex-direction: column;
@@ -105,7 +99,6 @@
   white-space: normal;
 }
 
-/* Profile fields */
 .profile-details {
   margin-top: 10px;
 }
@@ -125,7 +118,6 @@
   margin-top: 4px;
 }
 
-/* Tabs */
 .profile-tabs {
   display: flex;
   border-bottom: 1px solid #ddd;
@@ -156,7 +148,6 @@
   margin: 6px 0;
 }
 
-/* Form */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -173,7 +164,6 @@
   gap: 10px;
 }
 
-/* Keep inputs styled like your rect values */
 .profile-input {
   background: #f7f7f7;
   border: 2px solid transparent;
@@ -186,18 +176,15 @@
   font-family: inherit;
 }
 
-/* Highlight inputs when editing */
 .is-editing .profile-input {
   border-color: rgb(17, 20, 189);
   outline: none;
 }
 
-/* Make address span full width */
 .address-field .profile-input {
   width: 100%;
 }
 
-/* Buttons */
 .profile-actions {
   margin-top: 15px;
   display: flex;
@@ -247,7 +234,7 @@
 }
 
 .table-container {
-  max-height: 400px; /* Adjust based on your needs */
+  max-height: 400px;
   overflow-y: auto;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -306,7 +293,6 @@
   font-weight: 500;
 }
 
-/* Scrollbar styling */
 .table-container::-webkit-scrollbar {
   width: 8px;
 }

@@ -58,28 +58,27 @@
 }
 
 button.game-button {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-size: 15px;
-    margin: 5px 0;
-    padding: 10px;
-    width: 170px;
-    height: 250px;
-    background-color: #1A2A49;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    box-sizing: border-box;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.215);
-    transition: all 0.2s ease-in-out;
-    overflow-wrap: break-word;
-    word-break: break-word;
-
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 15px;
+  margin: 5px 0;
+  padding: 10px;
+  width: 170px;
+  height: 250px;
+  background-color: #1A2A49;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.215);
+  transition: all 0.2s ease-in-out;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .game-button:hover {
@@ -109,7 +108,6 @@ button.game-button {
 }
 
 /* PLAYER CSS */
-
 .game-register-button {
   background-color: #1A2A49;
   color: white;
@@ -125,7 +123,6 @@ button.game-button {
   background-color: #CE892C;
 }
 
-/* Background overlay */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -138,7 +135,6 @@ button.game-button {
   padding: 2rem;
 }
 
-/* Modal box */
 .modal-content {
   background: #fff;
   padding: 2rem;
@@ -154,7 +150,6 @@ button.game-button {
   font-size: 15px;
 }
 
-/* Close button */
 .modal-close {
   position: absolute;
   top: 12px;
@@ -174,7 +169,6 @@ button.game-button {
   width: 100%;
 }
 
-/* Smooth pop-up animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -186,7 +180,6 @@ button.game-button {
   }
 }
 
-/* Form spacing */
 .modal-content form {
   display: flex;
   flex-direction: column;
@@ -218,7 +211,6 @@ button.game-button {
   background-color: #ce892c;
 }
 
-
 .requirements-section {
   margin: 1rem 0;
   padding: 1rem;
@@ -245,7 +237,6 @@ button.game-button {
   border-radius: 6px;
 }
 
-/* Wrapper */
 .file-upload {
   display: flex;
   align-items: center;
@@ -258,12 +249,10 @@ button.game-button {
   flex-direction: column;
 }
 
-/* Hidden input */
 .file-upload input[type="file"] {
   display: none;
 }
 
-/* Upload button */
 .upload-btn {
   background: #0056b3;
   color: white;
@@ -277,7 +266,6 @@ button.game-button {
 .upload-btn:hover {
   background: #004494;
 }
-
 
 .delete-game-btn {
   background-color: #beb3b3;
@@ -303,7 +291,7 @@ button.game-button {
   width: 150px;
   display: flex;
   flex-direction: row;
-  align-items: center;      /* Center items horizontally */
+  align-items: center;
   justify-content: center;
   text-align: center;
 }
@@ -336,7 +324,6 @@ button.game-button {
   font-size: 0.95rem;
   cursor: pointer;
   transition: background 0.2s;
-
 }
 
 .req-input[type="file"]:hover::-webkit-file-upload-button {
@@ -354,7 +341,7 @@ button.game-button {
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 8px; /* space between checkbox and text */
+  gap: 8px;
   margin-bottom: 8px;
   cursor: pointer;
   white-space: nowrap;

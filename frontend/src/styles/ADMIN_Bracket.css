@@ -1,11 +1,11 @@
 .modal-overlay {
   position: fixed;
-  inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
+  inset: 0;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000; /* make sure it's above everything */
+  z-index: 2000;
 }
 
 .modal {
@@ -18,7 +18,7 @@
   text-align: center;
   animation: popup 0.25s ease-out;
   position: relative;
-  z-index: 2100; /* ensure it's above overlay */
+  z-index: 2100;
 }
 
 .modal h3 {

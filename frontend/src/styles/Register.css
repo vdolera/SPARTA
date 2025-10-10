@@ -93,7 +93,7 @@
   appearance: none; 
   -webkit-appearance: none;
   -moz-appearance: none;
-  padding: 0.6rem 2.5rem 0.6rem 1rem; /* padding leaves space for custom arrow */
+  padding: 0.6rem 2.5rem 0.6rem 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 15px;
@@ -180,11 +180,11 @@
 }
 
 .toast-success {
-  background-color: #22c55e; /* green */
+  background-color: #22c55e;
 }
 
 .toast-error {
-  background-color: #ef4444; /* red */
+  background-color: #ef4444;
 }
 
 @keyframes toastIn {

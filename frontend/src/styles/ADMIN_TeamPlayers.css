@@ -1,5 +1,5 @@
 .team-players-container {
-    max-width: 90vw;
+   max-width: 90vw;
 }
 
 .team-players-header {
@@ -13,54 +13,54 @@
 }
 
 .team-players-team {
-    font-size: 40px;
-    color: white;
-    width: 700px;
-    height: 125px;
-    border-radius: 15px;
-    padding-left: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    text-align: center;
+  font-size: 40px;
+  color: white;
+  width: 700px;
+  height: 125px;
+  border-radius: 15px;
+  padding-left: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  text-align: center;
 }
 
 .team-players-total {
-    border: 2px solid #333333;
-    width: 200px;
-    height: 125px;
-    border-radius: 15px;
+  border: 2px solid #333333;
+  width: 200px;
+  height: 125px;
+  border-radius: 15px;
 }
 
 .team-ranking-event {
-    border: 2px solid #333333;
-    width: 200px;
-    height: 125px;
-    border-radius: 15px;
+  border: 2px solid #333333;
+  width: 200px;
+  height: 125px;
+  border-radius: 15px;
 }
 
 .team-pending-players {
-    width: 200px;
-    height: 125px;
-    border-radius: 15px;
-    width: 90%;
-    height: fit-content;
-    margin: 0 auto;
-    margin: 5px auto;
-    display: flex;
-    align-items: right;
-    justify-content: end;
+  width: 200px;
+  height: 125px;
+  border-radius: 15px;
+  width: 90%;
+  height: fit-content;
+  margin: 0 auto;
+  margin: 5px auto;
+  display: flex;
+  align-items: right;
+  justify-content: end;
 }
 
 .team-pending-players > button {
-    background-color: #595c62;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: Montserrat, sans-serif;
-    font-size: 14px;
+  background-color: #595c62;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: Montserrat, sans-serif;
+  font-size: 14px;
 }
 
 .team-players-table {
@@ -73,55 +73,55 @@
 }
 
 .no-players-found {
-    height: 300px;
-    border: 2px solid #ebe1f3;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #666;
-    font-family: Montserrat, sans-serif;
+  height: 300px;
+  border: 2px solid #ebe1f3;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-family: Montserrat, sans-serif;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    border-radius: 5px;
-    overflow: hidden;
-    border-left: 2px solid #6784b7;
-    border-right: 2px solid #6784b7;
-    border-bottom: 2px solid #6784b7;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  border-radius: 5px;
+  overflow: hidden;
+  border-left: 2px solid #6784b7;
+  border-right: 2px solid #6784b7;
+  border-bottom: 2px solid #6784b7;
 }
 
 table thead th {
-    background-color: #6784b7;
-    font-weight: bold;
+  background-color: #6784b7;
+  font-weight: bold;
 }
 
 th, td {
-    padding: 12px 15px;
-    text-align: center;
-    border: 1px solid #ddd;
-    text-align: center;
-    align-items: center;
+  padding: 12px 15px;
+  text-align: center;
+  border: 1px solid #ddd;
+  text-align: center;
+  align-items: center;
 }
 
 th {
-    background-color: #f4f4f4;
-    font-weight: bold;
+  background-color: #f4f4f4;
+  font-weight: bold;
 }
 
 td > button {
-    background-color: #1a2a4978;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: Montserrat, sans-serif;
-    font-size: 14px;
+  background-color: #1a2a4978;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: Montserrat, sans-serif;
+  font-size: 14px;
 }
