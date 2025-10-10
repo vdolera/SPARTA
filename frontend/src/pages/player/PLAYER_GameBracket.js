@@ -14,6 +14,8 @@ const PlayerGameBracket = () => {
 
   const [showRulesModal, setShowRulesModal] = useState(false); // Showing of Rules in Modal
 
+
+  // Fetch Games
   useEffect(() => {
     const fetchGame = async () => {
       try {
@@ -41,6 +43,7 @@ const PlayerGameBracket = () => {
     );
   }
 
+  // Bracketing shit
   const makeRoundsFromMatches = () => {
     if (!game) return [];
     const rounds = [];
@@ -125,7 +128,7 @@ const PlayerGameBracket = () => {
       };
 
       const wbRounds = makeBracketRounds(wbMatches);
-      const lbRounds = makeBracketRounds(lbMatches, true); // first LB round only fully known matches
+      const lbRounds = makeBracketRounds(lbMatches, true); 
 
       rounds.push({ title: "WB", rounds: wbRounds });
       rounds.push({ title: "LB", rounds: lbRounds });
@@ -192,7 +195,7 @@ const PlayerGameBracket = () => {
         rounds.push({ title: `Round ${r}`, seeds });
       }
 
-      // Only calculate Champion if ALL matches are finalized
+      // Only show Champion if all matches are donez
       const allMatchesDone = rrMatches.every((m) => m.finalizeWinner);
       if (allMatchesDone) {
         const winCount = {};
@@ -202,13 +205,12 @@ const PlayerGameBracket = () => {
           }
         });
 
-        // Find team(s) with max wins
         const maxWins = Math.max(...Object.values(winCount));
         const champions = Object.entries(winCount)
           .filter(([_, wins]) => wins === maxWins)
           .map(([team]) => team);
 
-        // Add Champion column
+        // Add Champion stage
         rounds.push({
           title: "Champion",
           seeds: champions.map((champ, idx) => ({
@@ -226,61 +228,10 @@ const PlayerGameBracket = () => {
         });
       }
     }
-
-    if (game.bracketType === "Swiss") {
-      const swissMatches = game.matches.filter((m) => m.bracket === "Swiss");
-      const maxRound = Math.max(...swissMatches.map((m) => m.round));
-
-      for (let r = 1; r <= maxRound; r++) {
-        const seeds = swissMatches
-          .filter((m) => m.round === r)
-          .map((m) => ({
-            id: m._id,
-            date: game.startDate,
-            teams: m.teams.map((t) => ({
-              name: t?.name || "TBD",
-              score: t?.score ?? null,
-              winner: m.finalizeWinner && t?.name === m.winner,
-            })),
-            finalizeWinner: m.finalizeWinner || false,
-          }));
-        rounds.push({ title: `Round ${r}`, seeds });
-      }
-
-      // Optional standings
-      const allMatchesDone = swissMatches.every((m) => m.finalizeWinner);
-      if (allMatchesDone) {
-        const winCount = {};
-        swissMatches.forEach((m) => {
-          if (m.finalizeWinner && m.winner) {
-            winCount[m.winner] = (winCount[m.winner] || 0) + 1;
-          }
-        });
-
-        const sorted = Object.entries(winCount).sort((a, b) => b[1] - a[1]);
-        rounds.push({
-          title: "Swiss Standings",
-          seeds: sorted.map(([team, wins], idx) => ({
-            id: `swiss-${idx}`,
-            date: game.endDate,
-            teams: [
-              {
-                name: team,
-                score: `Wins: ${wins}`,
-                winner: idx === 0, // leader marked as winner
-              },
-            ],
-            finalizeWinner: true,
-          })),
-        });
-      }
-    }
-
-
     return rounds;
   };
 
-
+  // Rendering Bracket
   const renderSeed = (props) => (
     <Seed
       {...props}
@@ -312,6 +263,13 @@ const PlayerGameBracket = () => {
         <p><b>Event:</b> {decodedEvent}</p>
         <p><b>Schedule:</b> {new Date(game.startDate).toLocaleString()} - {new Date(game.endDate).toLocaleString()}</p>
         <p><b>Bracket Type:</b> {game.bracketType}</p>
+        {game.videoLink && (
+          <p>
+            <a href={game.videoLink} target="_blank" rel="noopener noreferrer">
+              Watch Video
+            </a>
+          </p>
+        )}
 
         <div className="rules-section">
           {game.rules ? (

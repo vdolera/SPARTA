@@ -22,7 +22,7 @@ const GameBracket = () => {
     return localISO;
   };
 
-
+  // Fetch Game details
   useEffect(() => {
     const fetchGame = async () => {
       try {
@@ -50,6 +50,7 @@ const GameBracket = () => {
     );
   }
 
+  // Bracketing shit
   const makeRoundsFromMatches = () => {
     if (!game) return [];
     const rounds = [];
@@ -262,6 +263,7 @@ const GameBracket = () => {
     return rounds;
   };
 
+  // Live Score
   const handleTempScoreChange = async (idx, newScore) => {
     setTempScores((prev) => {
       const updated = [...prev];
@@ -288,9 +290,9 @@ const GameBracket = () => {
     }
   };
 
+  // Finalized Scoring
   const saveScores = async () => {
     if (!selectedMatch) return;
-
     try {
       await fetch(
         `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
@@ -334,6 +336,7 @@ const GameBracket = () => {
     }
   };
 
+  // Rendering Bracket
   const renderSeed = (props) => (
     <Seed
       {...props}
@@ -386,6 +389,7 @@ const GameBracket = () => {
     </Seed>
   );
 
+  // Scheduling
   const saveSchedule = async () => {
     if (!selectedMatch) return;
 
