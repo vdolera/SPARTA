@@ -1,10 +1,9 @@
-import PlayerMainLayout from "../../components/P_MainLayout";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
 import "../../styles/bracket.css";
 
-const PlayerGameBracket = () => {
+const SpectatorGameBracket = () => {
   const { eventName, game: gameId } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
 
@@ -34,12 +33,10 @@ const PlayerGameBracket = () => {
 
   if (!game) {
     return (
-      <PlayerMainLayout>
         <div className="loading-screen">
           <div className="spinner"></div>
           <p>Loading bracket...</p>
         </div>
-      </PlayerMainLayout>
     );
   }
 
@@ -257,7 +254,7 @@ const PlayerGameBracket = () => {
   const roundsData = makeRoundsFromMatches();
 
   return (
-    <PlayerMainLayout>
+    <>
       <div className="game-bracket-info">
         <h1>{game.category} {game.gameType} Bracket</h1>
         <p><b>Event:</b> {decodedEvent}</p>
@@ -361,11 +358,9 @@ const PlayerGameBracket = () => {
             ))}
           </div>
         )}
-
       </div>
-
-    </PlayerMainLayout>
+      </>
   );
 };
 
-export default PlayerGameBracket;
+export default SpectatorGameBracket;

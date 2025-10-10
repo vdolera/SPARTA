@@ -20,7 +20,7 @@ const AllEvent = () => {
   }, [userInstitution]);
   
   const handleEventClick = (event) => {
-    navigate(`/event/${encodeURIComponent(event.eventName)}`);
+    navigate(`/spectator/${encodeURIComponent(userInstitution)}/${encodeURIComponent(event.eventName)}`);
   };
 
   // Filter events based on search query

@@ -40,6 +40,9 @@ import PlayerPantheonTeam from "./pages/player/PLAYER_PantheonTeam";
 //SPECTATOR
 import LandingPage from "./pages/spectator/SPECTATOR_Landing";
 import AllEvent from "./pages/spectator/SPECTATOR_Events";
+import SpectatorSpecificEvent from "./pages/spectator/SPECTATOR_SpecificEvent";
+import SpectatorGame from "./pages/spectator/SPECTATOR_Game";
+import SpectatorGameBracket from "./pages/spectator/SPECTATOR_GameBracket";
 
 
 export default function App() {
@@ -82,8 +85,11 @@ export default function App() {
         <Route path="/pantheon/:eventName/ranking" element={<BlockRoute> <PlayerPantheonRanks /> </BlockRoute>} />
         <Route path="/pantheon/:eventName/:teamName/players" element={<BlockRoute> <PlayerPantheonTeam /> </BlockRoute>} />
         {/*Spectator*/}
-        <Route path="/institution" element={ <LandingPage />} />
-        <Route path="/:institution" element={ <AllEvent />} />
+        <Route path="/spectator/institution" element={ <LandingPage />} />
+        <Route path="/spectator/:institution" element={ <AllEvent />} />
+        <Route path="/spectator/:institution/:eventName" element={ <SpectatorSpecificEvent />} />
+        <Route path="/spectator/:institution/:eventName/game" element={ <SpectatorGame />} />
+        <Route path="/spectator/:institution/:eventName/game/:game" element={ <SpectatorGameBracket />} />
       </Routes>
     </Router>
   );

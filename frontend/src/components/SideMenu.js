@@ -3,14 +3,9 @@ import { AiOutlineFire } from "react-icons/ai";
 import { FaUserCheck } from "react-icons/fa";
 import { GiGreekTemple } from "react-icons/gi";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useEffect } from "react";
 import '../styles/SideMenu.css';
 
 const SideMenu = () => {
-
-      useEffect(() => {
-      document.title = "SPARTA | Dashboard";
-    }, []);
 
   const navigate = useNavigate();
   const location = useLocation();

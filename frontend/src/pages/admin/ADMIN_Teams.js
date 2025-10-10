@@ -111,8 +111,7 @@ const Teams = () => {
       if (!res.ok) {
         throw new Error("Failed to update team");
       }
-  
-      const { team: updatedTeam } = await res.json(); // ✅ FIX
+      const { team: updatedTeam } = await res.json(); 
       setTeams(teams.map((t) => (t._id === updatedTeam._id ? updatedTeam : t)));
       setEditTeam(null);
     } catch (err) {
