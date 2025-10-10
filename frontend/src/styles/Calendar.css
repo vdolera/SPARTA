@@ -23,7 +23,6 @@
 
 }
 
-/* Calendar Container */
 .calendar-container {
   background: white;
   border-radius: 16px;
@@ -33,7 +32,6 @@
   border: 2px solid #2c4474;
 }
 
-/* Modern Calendar Styling */
 .custom-calendar {
   border: none !important;
   background: transparent;
@@ -72,7 +70,6 @@
   color: #1a2a49;
 }
 
-/* Weekdays */
 .react-calendar__month-view__weekdays {
   margin-bottom: 10px;
 }
@@ -90,7 +87,6 @@
   text-decoration: none;
 }
 
-/* Tiles */
 .react-calendar__tile {
   border: none;
   background: none;
@@ -123,7 +119,6 @@
   font-weight: 600;
 }
 
-/* Event Markers */
 .event-marker {
   background: #ce892c;
   color: white;
@@ -143,7 +138,6 @@
   font-weight: 700;
 }
 
-/* Upcoming Events */
 .upcoming-events {
   background: white;
   border-radius: 16px;
@@ -222,7 +216,6 @@
   margin-top: 4px;
 }
 
-/* Modal Styles */
 .event-modal-overlay {
   position: fixed;
   top: 0;
@@ -309,7 +302,6 @@
   border-color: #fb923c;
 }
 
-/* Enhanced event indicator */
 .event-indicator {
   display: flex;
   justify-content: center;
@@ -348,7 +340,6 @@
   border-bottom-right-radius: 12px;
 }
 
-/* No events message */
 .no-events {
   text-align: center;
   color: #6b7280;
