@@ -8,7 +8,8 @@ const PlayerFeedback = () => {
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
 
-  const user = JSON.parse(localStorage.getItem("auth"));
+  const userId = JSON.parse(localStorage.getItem("auth"));
+  const [user, setUser] = useState(null);
   const [showOverlay, setShowOverlay] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [feedbacks, setFeedbacks] = useState([]);
@@ -22,6 +23,23 @@ const PlayerFeedback = () => {
     setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 6000);
   };
 
+  // Fetch player data
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        if (!userId) return;
+
+        const res = await fetch(`http://localhost:5000/api/players/${userId._id}`);
+        const data = await res.json();
+        setUser(data); 
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      }
+    };
+    fetchUser();
+  }, [userId]);
+
+  // Fetch Feedbacks
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {

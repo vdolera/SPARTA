@@ -11,6 +11,7 @@ const PlayerEvent = () => {
   const user = JSON.parse(localStorage.getItem('auth'));
   const userInstitution = user?.institution;
 
+  //Fetch Events
   useEffect(() => {
     const fetchEvents = async () => {
       const response = await fetch(`http://localhost:5000/api/active-events?institution=${userInstitution}&email=${user.email}&role=${user.role}`);

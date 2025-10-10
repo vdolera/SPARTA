@@ -32,7 +32,7 @@ const PlayerGame = () => {
   const [gamesSelected, setGamesSelected] = useState([]);
   const [eventRequirements, setEventRequirements] = useState([]);
 
-  // For default data when it have one
+  // For default data when it have one, this for registering
   useEffect(() => {
     setPlayerName(user?.playerName || "");
     setTeam(user?.team || "");
@@ -58,15 +58,11 @@ const PlayerGame = () => {
     Chess: GiChessKnight,
   };
 
-  // Fetch grouped games
+  // Fetch Games
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/games?institution=${encodeURIComponent(
-            userInstitution
-          )}&event=${encodeURIComponent(decodedName)}`
-        );
+        const response = await fetch(`http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
 
         const grouped = {};
@@ -103,6 +99,9 @@ const PlayerGame = () => {
     fetchTeams();
   }, [userInstitution, decodedName]);
 
+  
+
+  // Fetch Reqiorements
   useEffect(() => {
     const fetchEventRequirements = async () => {
       try {
