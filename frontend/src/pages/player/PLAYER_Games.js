@@ -10,7 +10,6 @@ import "../../styles/ADMIN_Games.css";
 
 const PlayerGame = () => {
   const user = JSON.parse(localStorage.getItem("auth"));
-  const userInstitution = user?.institution;
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
   const navigate = useNavigate();
@@ -23,7 +22,6 @@ const PlayerGame = () => {
   const [teams, setTeams] = useState([]);
   const [games, setGames] = useState([]);
   const [requirementFiles, setRequirementFiles] = useState({});
-
 
   //Game Register
   const [playerName, setPlayerName] = useState("");
@@ -62,9 +60,8 @@ const PlayerGame = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`);
+        const response = await fetch(`http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
-
         const grouped = {};
         data.forEach((game) => {
           const key = `${game.category} ${game.gameType}`;
@@ -79,17 +76,13 @@ const PlayerGame = () => {
       }
     };
     fetchGames();
-  }, [userInstitution, decodedName]);
+  }, [user?.institution, decodedName]);
 
   // Fetch teams
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/teams?institution=${encodeURIComponent(
-            userInstitution
-          )}&event=${encodeURIComponent(decodedName)}`
-        );
+        const res = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
         const data = await res.json();
         setTeams(data);
       } catch (err) {
@@ -97,27 +90,21 @@ const PlayerGame = () => {
       }
     };
     fetchTeams();
-  }, [userInstitution, decodedName]);
-
-  
+  }, [user?.institution, decodedName]);
 
   // Fetch Reqiorements
   useEffect(() => {
     const fetchEventRequirements = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/event?eventName=${encodeURIComponent(decodedName)}&institution=${encodeURIComponent(userInstitution)}`
-        );
+        const res = await fetch(`http://localhost:5000/api/event?eventName=${encodeURIComponent(decodedName)}&institution=${encodeURIComponent(user?.institution)}`);
         const data = await res.json();
-        setEventRequirements(data.requirements || []); // Ensure it's always an array
+        setEventRequirements(data.requirements || []);
       } catch (err) {
         console.error("Error fetching event requirements:", err);
       }
     };
-
     fetchEventRequirements();
-  }, [decodedName, userInstitution]);
-
+  }, [decodedName, user?.institution]);
 
   // Handle submit
   const handleSubmit = async (e) => {
@@ -130,7 +117,6 @@ const PlayerGame = () => {
     gamesSelected.forEach((g) => {
       formData.append("game", g);
     });
-
 
     // Append each requirement’s file
     Object.entries(requirementFiles).forEach(([req, file]) => {

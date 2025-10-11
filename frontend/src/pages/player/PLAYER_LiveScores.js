@@ -10,17 +10,12 @@ const PlayerLiveScores = () => {
   const [teams, setTeams] = useState([]);
 
   const user = JSON.parse(localStorage.getItem('auth'));
-  const userInstitution = user?.institution;
 
  // Fetch teams with scores
  useEffect(() => {
   const fetchTeams = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(
-          userInstitution
-        )}&event=${encodeURIComponent(decodedEvent)}`
-      );
+      const response = await fetch(`http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}` );
       const data = await response.json();
       // Sort by grandTotal
       setTeams(data.sort((a, b) => b.grandTotal - a.grandTotal));
@@ -29,10 +24,10 @@ const PlayerLiveScores = () => {
     }
   };
 
-  if (userInstitution && decodedEvent) {
+  if (user?.institution && decodedEvent) {
     fetchTeams();
   }
-}, [userInstitution, decodedEvent]);
+}, [user?.institution, decodedEvent]);
 
   // Teams are already sorted by backend, but just in case
   const rankedTeams = [...teams].sort(

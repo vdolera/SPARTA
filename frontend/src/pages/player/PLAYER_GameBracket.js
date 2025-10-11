@@ -12,8 +12,7 @@ const PlayerGameBracket = () => {
   const [, setSelectedMatch] = useState(null);
   const [, setTempScores] = useState([]);
 
-  const [showRulesModal, setShowRulesModal] = useState(false); // Showing of Rules in Modal
-
+  const [showRulesModal, setShowRulesModal] = useState(false); 
 
   // Fetch Game details
   useEffect(() => {
@@ -26,7 +25,6 @@ const PlayerGameBracket = () => {
         console.error("Error fetching game:", err);
       }
     };
-
     fetchGame();
     const interval = setInterval(fetchGame, 2000);
     return () => clearInterval(interval);

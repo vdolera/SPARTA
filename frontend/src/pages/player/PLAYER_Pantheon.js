@@ -6,32 +6,25 @@ const PlayerPantheon = () => {
   const navigate= useNavigate();
   const [events, setEvents] = useState([]);
   const user = JSON.parse(localStorage.getItem('auth'));
-  const userInstitution = user?.institution;
 
-    useEffect(() => {
-    document.title = "SPARTA | Pantheon";
-  }, []);
-
+  // Fetch Events
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`http://localhost:5000/api/past-events?institution=${userInstitution}`);
+      const response = await fetch(`http://localhost:5000/api/past-events?institution=${user?.institution}`);
       const data = await response.json();
       setEvents(data);
     };
     fetchEvents();
-  }, [userInstitution]);
+  }, [user?.institution]);
 
+  // Selected Event button nav
   const handleClickEvent = (event) => {
     navigate(`/pantheon/${encodeURIComponent(event.eventName)}/ranking`);
   };
 
-
   return (
-
     <PlayerMainLayout>
-
       <div className="event-list">
-       
           {events.map((event) => (
             <div key={event._id} className="event-item">
               <div
