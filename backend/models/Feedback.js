@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const feedbackSchema = new mongoose.Schema({
-  eventName: { type: String, required: true }, // link feedback to event
+  eventName: { type: String, required: true },
   institution: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "Player", required: true },
   playerName: { type: String, required: true },

@@ -21,6 +21,7 @@ const CreateTeam = () => {
 
   const decodedEventName = decodeURIComponent(eventName);
 
+  // Team Creation
   const handleCreate = async (e) => {
     e.preventDefault();
     const user = JSON.parse(localStorage.getItem("auth"));
@@ -41,12 +42,12 @@ const CreateTeam = () => {
       formData.append("eventName", decodedEventName);
       formData.append("coordinators", JSON.stringify(selectedCoordinators));
       if (teamIcon) {
-        formData.append("teamIcon", teamIcon); // add file
+        formData.append("teamIcon", teamIcon);
       }
 
       const response = await fetch("http://localhost:5000/api/team", {
         method: "POST",
-        body: formData, // send formData instead of JSON
+        body: formData, 
       });
 
       const data = await response.json();
@@ -58,7 +59,7 @@ const CreateTeam = () => {
         setTimeout(() => {
           setShowModal(false);
           navigate(-1);
-        }, 4000); // Auto-close after 4s
+        }, 3000);
       } else {
         alert(`${data.message}`);
       }
@@ -69,25 +70,24 @@ const CreateTeam = () => {
     }
   };
 
+  // Fetch Coordinators
   useEffect(() => {
     const fetchCoordinators = async () => {
       const user = JSON.parse(localStorage.getItem("auth"));
       const institution = user?.institution;
 
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/coordinators?institution=${institution}&event=${decodedEventName}`
-        );
+        const res = await fetch(`http://localhost:5000/api/coordinators?institution=${institution}&event=${decodedEventName}`);
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error fetching coordinators:", err);
       }
     };
-
     fetchCoordinators();
   }, [decodedEventName]);
 
+  // Selecting Coords
   const handleSelectCoordinator = (coord) => {
     if (!selectedCoordinators.some((c) => c._id === coord._id)) {
       setSelectedCoordinators((prev) => [...prev, coord]);
@@ -95,6 +95,7 @@ const CreateTeam = () => {
     setSearch("");
   };
 
+  // UnSelecting Coords
   const handleRemoveCoordinator = (id) => {
     setSelectedCoordinators((prev) => prev.filter((c) => c._id !== id));
   };
@@ -176,13 +177,11 @@ const CreateTeam = () => {
                     <label htmlFor="teamIconInput" className="upload-btn">Choose File</label>
                     <input
                       id="teamIconInput"
-                      style={{ width: "250px", display: "none" }}  // hide input if you want button-style UI
+                      style={{ width: "250px", display: "none" }}
                       type="file"
                       accept="image/*"
                       onChange={(e) => setTeamIcon(e.target.files[0])}
                     />
-
-
                   </div>
                 </div>
               </div>
@@ -195,7 +194,7 @@ const CreateTeam = () => {
                     type="text"
                     placeholder="Enter Name or Select"
                     value={search}
-                    onFocus={() => setShowDropdown(true)}   // show on click/focus
+                    onFocus={() => setShowDropdown(true)} 
                     onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                     onChange={(e) => setSearch(e.target.value)}
                   />

@@ -12,22 +12,20 @@ const Teams = () => {
   const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [menuOpen, setMenuOpen] = useState(null); // track which menu is open
-  const [editTeam, setEditTeam] = useState(null); // for modal
+  const [menuOpen, setMenuOpen] = useState(null); 
+  const [editTeam, setEditTeam] = useState(null); 
 
   const user = JSON.parse(localStorage.getItem("auth"));
-  const userInstitution = user?.institution;
 
   const [coordinators, setCoordinators] = useState([]);
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
+  // Fetch Coords
   useEffect(() => {
     const fetchCoordinators = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/coordinators?institution=${userInstitution}&event=${decodedName}`
-        );
+        const res = await fetch(`http://localhost:5000/api/coordinators?institution=${user?.institution}&event=${decodedName}`);
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -35,7 +33,7 @@ const Teams = () => {
       }
     };
     fetchCoordinators();
-  }, [userInstitution, decodedName]);
+  }, [user?.institution, decodedName]);
 
 
   const filteredTeams = teams.filter((team) =>
@@ -48,14 +46,11 @@ const Teams = () => {
       !editTeam?.coordinators?.some((sel) => sel._id === c._id)
   );
 
+  // Fetch teams
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/teams?institution=${encodeURIComponent(
-            userInstitution
-          )}&event=${encodeURIComponent(decodedName)}`
-        );
+        const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
         setTeams(data);
       } catch (error) {
@@ -63,23 +58,22 @@ const Teams = () => {
       }
     };
 
-    if (userInstitution && decodedName) {
+    if (user?.institution && decodedName) {
       fetchTeams();
     }
-  }, [userInstitution, decodedName]);
+  }, [user?.institution, decodedName]);
 
+  // Create team button nav
   const handleAddTeam = () => {
     navigate(`/admin/event/${encodeURIComponent(decodedName)}/addteam`);
   };
 
+  // Selected Team button nav
   const handleSelectTeam = (teamName) => {
-    navigate(
-      `/admin/event/${encodeURIComponent(
-        decodedName
-      )}/team/${encodeURIComponent(teamName)}/players`
-    );
+    navigate(`/admin/event/${encodeURIComponent(decodedName)}/team/${encodeURIComponent(teamName)}/players`);
   };
 
+  // Delete team
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this team?")) return;
     try {
@@ -90,6 +84,7 @@ const Teams = () => {
     }
   };
 
+  // Edit team deatails
   const handleEditSave = async () => {
     try {
       const formData = new FormData();
@@ -119,8 +114,6 @@ const Teams = () => {
     }
   };
   
-
-
   return (
     <MainLayout>
       <div className="teams-main-container">

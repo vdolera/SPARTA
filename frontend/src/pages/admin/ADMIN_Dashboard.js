@@ -24,14 +24,13 @@ const Dashboard = () => {
           url += `&eventName=${encodeURIComponent(user?.eventName)}`;
         }
   
-        // Wait for the data and assign it to res
         const res = await axios.get(url);
         
         const matches = [];
         const multiDay = [];
 
         res.data.forEach(game => {
-          // Check if this game spans multiple days
+          // Check if this game is multiple days
           const gameDates = game.matches
             .filter(match => match.date)
             .map(match => new Date(match.date).toDateString());

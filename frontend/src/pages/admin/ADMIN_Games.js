@@ -34,6 +34,7 @@ const Game = () => {
     Chess: GiChessKnight,
   };
 
+  // Fetch Games
   useEffect(() => {
     const fetchGames = async () => {
       try {
@@ -60,11 +61,12 @@ const Game = () => {
     fetchGames();
   }, [userInstitution, decodedName]);
 
-
+  // Add Game button 
   const handleAddGame = () => {
     navigate(`/admin/event/${encodeURIComponent(decodedName)}/addgame`);
   };
 
+  // Delete Games
   const handleDeleteGame = async (gameId) => {
     if (!window.confirm("Are you sure you want to delete this game?")) return;
     try {
@@ -84,8 +86,7 @@ const Game = () => {
         }
         setGamesByType(updatedGames);
       } else {
-
-        // alert("Failed to delete game");
+         alert("Failed to delete game");
       }
     } catch (error) {
       console.error("Error deleting game:", error);
@@ -96,7 +97,6 @@ const Game = () => {
   return (
     <MainLayout>
     <>
-
       <div className="game-header">
         <h2>All Games for {eventName}</h2>
       </div>

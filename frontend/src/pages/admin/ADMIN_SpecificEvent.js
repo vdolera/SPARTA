@@ -15,12 +15,11 @@ const SpecificEvent = () => {
 
     const [event, setEventDetails] = useState(null);
 
+    // Fetch Event details
     useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/specific-event?eventName=${encodeURIComponent(decodedName)}`
-        );
+        const response = await fetch(`http://localhost:5000/api/specific-event?eventName=${encodeURIComponent(decodedName)}`);
         const data = await response.json();
         setEventDetails(data);
       } catch (error) {
@@ -30,27 +29,30 @@ const SpecificEvent = () => {
       fetchEventDetails();
     }, [decodedName]);
 
+
+    // Game button nav
     const handleGameClick = () => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/game`);
       };
 
+    // Team button nav
     const handleTeamClick = () => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/team`);
       };  
 
+    // Livescore button nav
     const handleScoreClick = () => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/liveScores`);
       };
 
+    // Feedback button nav
     const handleFeedbackClick = () => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/feedback`);
       };
 
     return (
         <MainLayout>
-
-            <div className="specific-event-container">
-                    
+            <div className="specific-event-container">                  
                 <div className="event-header" >
                     <h2>{decodedName}</h2>
                 </div>
@@ -78,36 +80,33 @@ const SpecificEvent = () => {
 
                     <button className="btn-team" onClick={handleTeamClick}>
                       <div className="btn-content">
-                        <TiGroupOutline size={48} /> {/* Larger icon */}
+                        <TiGroupOutline size={48} /> 
                         <span>Team</span>
                       </div>
                     </button>
 
                     <button className="btn-game" onClick={handleGameClick}>
                       <div className="btn-content">
-                        <LuSwords size={48} /> {/* Larger icon */}
+                        <LuSwords size={48} /> 
                         <span>Game</span>
                       </div>
                     </button>
 
                     <button className="btn-score" onClick={handleScoreClick}>
                       <div className="btn-content">
-                        <MdOutlineScoreboard size={48} /> {/* Larger icon */}
+                        <MdOutlineScoreboard size={48} />
                         <span>Live Score</span>
                       </div>
                     </button>
 
                     <button className="btn-feedback" onClick={handleFeedbackClick}>
                       <div className="btn-content">
-                        <MdOutlineFeedback size={42} /> {/* Larger icon */}
+                        <MdOutlineFeedback size={42} /> 
                         <span>Feedback</span>
                       </div>
                     </button>
-
-                </div>
-                
-            </div>
-        
+                </div>      
+            </div>  
         </MainLayout>
     );
 };

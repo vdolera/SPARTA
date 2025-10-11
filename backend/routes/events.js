@@ -54,7 +54,7 @@ router.post('/event', async (req, res) => {
         const coordinator = new Coordinator({
           email: coord.email,
           name: coord.name,
-          role: coord.role || "co-organizer",
+          role: coord.role,
           accessKey,
           institution,
           eventName

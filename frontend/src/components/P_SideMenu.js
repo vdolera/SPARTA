@@ -10,30 +10,23 @@ import "../styles/SideMenu.css";
 const PlayerSideMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")));
 
-  const userId = JSON.parse(localStorage.getItem("auth"));
-
+  // Update the local data of users
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await fetch(`http://localhost:5000/api/players/${user._id}`);
+      const UpdateUser = await res.json();
+      setUser(UpdateUser);
+      localStorage.setItem("auth", JSON.stringify(UpdateUser));
+    };
+    fetchUser();
+  }, [user]);
+  
   const handleLogout = () => {
     localStorage.removeItem("auth");
     navigate("/");
   };
-
-   // Fetch player data
-   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        if (!userId) return;
-
-        const res = await fetch(`http://localhost:5000/api/players/${userId._id}`);
-        const data = await res.json();
-        setUser(data); 
-      } catch (err) {
-        console.error("Error fetching user:", err);
-      }
-    };
-    fetchUser();
-  }, [userId]);
 
   return (
     <div className="sidemenu">
