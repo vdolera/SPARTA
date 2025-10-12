@@ -9,18 +9,18 @@ const PlayerEvent = () => {
   const [events, setEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const user = JSON.parse(localStorage.getItem('auth'));
-  const userInstitution = user?.institution;
 
   //Fetch Events
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(`http://localhost:5000/api/active-events?institution=${userInstitution}&email=${user.email}&role=${user.role}`);
+      const response = await fetch(`http://localhost:5000/api/active-events?institution=${user?.institution}&email=${user.email}&role=${user.role}`);
       const data = await response.json();
       setEvents(data);
     };
     fetchEvents();
-  }, [userInstitution, user.email, user.role]);
+  }, [user?.institution, user.email, user.role]);
   
+  // Selected Event button nav
   const handleEventClick = (event) => {
     navigate(`/event/${encodeURIComponent(event.eventName)}`);
   };

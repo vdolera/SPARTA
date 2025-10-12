@@ -22,10 +22,13 @@ const Pantheon = () => {
     fetchEvents();
   }, [userInstitution]);
 
+
+  // Event button nav
   const handleClickEvent = (event) => {
     navigate(`/admin/pantheon/${encodeURIComponent(event.eventName)}/ranking`);
   };
 
+  // Delete event
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
     try {
@@ -36,6 +39,7 @@ const Pantheon = () => {
     }
   };
 
+  // Edit event
   const handleEditSave = async () => {
     try {
       const res = await fetch(
@@ -56,9 +60,7 @@ const Pantheon = () => {
   };
 
   return (
-
     <MainLayout>
-
       <div className="event-list">
        
       {events.map((event) => (
@@ -287,7 +289,6 @@ const Pantheon = () => {
         </div>
       )}
     </MainLayout>
-
   )
 };
 

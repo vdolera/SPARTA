@@ -11,13 +11,12 @@ const TeamPlayerApproval = () => {
 
   const { eventName, teamName } = useParams();
   const user = JSON.parse(localStorage.getItem("auth"));
-  const institution = user?.institution;
 
   // Fetch pending players
   const fetchPlayers = useCallback(async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/players/team-pending?institution=${institution}&eventName=${encodeURIComponent(
+        `http://localhost:5000/api/players/team-pending?institution=${user?.institution}&eventName=${encodeURIComponent(
           eventName
         )}&team=${encodeURIComponent(teamName)}`
       );
@@ -26,7 +25,7 @@ const TeamPlayerApproval = () => {
     } catch (err) {
       console.error("Error fetching pending players:", err);
     }
-  }, [institution, eventName, teamName]);
+  }, [user?.institution, eventName, teamName]);
 
   useEffect(() => {
     fetchPlayers();

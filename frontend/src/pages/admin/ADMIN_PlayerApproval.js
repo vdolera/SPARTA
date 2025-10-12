@@ -8,31 +8,25 @@ const Approval = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const playersPerPage = 10;
 
-  const auth = JSON.parse(localStorage.getItem("auth"));
+  const user = JSON.parse(localStorage.getItem("auth"));
   const [showToast, setShowToast] = useState({ show: false, message: "", type: "" });
   const [declineConfirm, setDeclineConfirm] = useState({ show: false, playerId: null });
-
-  useEffect(() => {
-    document.title = "SPARTA | Approvals";
-  }, []);
 
   // Fetch pending players
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/players/pending?institution=${auth.institution}`
-        );
+        const res = await fetch(`http://localhost:5000/api/players/pending?institution=${user?.institution}`);
         const data = await res.json();
         setPlayers(data);
       } catch (err) {
         console.error("Error fetching players:", err);
       }
     };
-    if (auth?.institution) {
+    if (user?.institution) {
       fetchPlayers();
     }
-  }, [auth]);
+  }, [user]);
 
   // Toast handler
   const showToastMessage = (message, type) => {

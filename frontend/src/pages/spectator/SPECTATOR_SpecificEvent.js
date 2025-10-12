@@ -1,6 +1,4 @@
-import MainLayout from "../../components/MainLayout";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { TiGroupOutline } from "react-icons/ti";
 import { LuSwords } from "react-icons/lu";
@@ -8,10 +6,11 @@ import { MdOutlineScoreboard } from "react-icons/md";
 import { MdOutlineFeedback } from "react-icons/md";
 import '../../styles/ADMIN_SpecificEvents.css';
 
-const SpecificEvent = () => {
+const SpectatorSpecificEvent = () => {
     const navigate = useNavigate();
-    const { eventName } = useParams();
+    const { institution, eventName } = useParams();
     const decodedName = decodeURIComponent(eventName);
+    const decodedInstitution = decodeURIComponent(institution);
 
     const [event, setEventDetails] = useState(null);
 
@@ -19,7 +18,9 @@ const SpecificEvent = () => {
     useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/specific-event?eventName=${encodeURIComponent(decodedName)}`);
+        const response = await fetch(
+          `http://localhost:5000/api/specific-event?eventName=${encodeURIComponent(decodedName)}`
+        );
         const data = await response.json();
         setEventDetails(data);
       } catch (error) {
@@ -29,30 +30,26 @@ const SpecificEvent = () => {
       fetchEventDetails();
     }, [decodedName]);
 
-
-    // Game button nav
     const handleGameClick = () => {
-        navigate(`/admin/event/${encodeURIComponent(decodedName)}/game`);
+        navigate(`/spectator/${encodeURIComponent(decodedInstitution)}/${encodeURIComponent(decodedName)}/game`);
       };
 
-    // Team button nav
     const handleTeamClick = () => {
-        navigate(`/admin/event/${encodeURIComponent(decodedName)}/team`);
+      navigate(`/event/${encodeURIComponent(decodedName)}/team/players`);
       };  
 
-    // Livescore button nav
     const handleScoreClick = () => {
-        navigate(`/admin/event/${encodeURIComponent(decodedName)}/liveScores`);
+        navigate(`/event/${encodeURIComponent(decodedName)}/liveScores`);
       };
 
-    // Feedback button nav
     const handleFeedbackClick = () => {
-        navigate(`/admin/event/${encodeURIComponent(decodedName)}/feedback`);
+        navigate(`/event/${encodeURIComponent(decodedName)}/feedback`);
       };
 
     return (
-        <MainLayout>
-            <div className="specific-event-container">                  
+
+            <div className="specific-event-container">
+                    
                 <div className="event-header" >
                     <h2>{decodedName}</h2>
                 </div>
@@ -80,35 +77,36 @@ const SpecificEvent = () => {
 
                     <button className="btn-team" onClick={handleTeamClick}>
                       <div className="btn-content">
-                        <TiGroupOutline size={48} /> 
+                        <TiGroupOutline size={48} /> {/* Larger icon */}
                         <span>Team</span>
                       </div>
                     </button>
 
                     <button className="btn-game" onClick={handleGameClick}>
                       <div className="btn-content">
-                        <LuSwords size={48} /> 
+                        <LuSwords size={48} /> {/* Larger icon */}
                         <span>Game</span>
                       </div>
                     </button>
 
                     <button className="btn-score" onClick={handleScoreClick}>
                       <div className="btn-content">
-                        <MdOutlineScoreboard size={48} />
+                        <MdOutlineScoreboard size={48} /> {/* Larger icon */}
                         <span>Live Score</span>
                       </div>
                     </button>
 
                     <button className="btn-feedback" onClick={handleFeedbackClick}>
                       <div className="btn-content">
-                        <MdOutlineFeedback size={42} /> 
+                        <MdOutlineFeedback size={42} /> {/* Larger icon */}
                         <span>Feedback</span>
                       </div>
                     </button>
-                </div>      
-            </div>  
-        </MainLayout>
+
+                </div>
+                
+            </div>
     );
 };
 
-export default SpecificEvent;
+export default SpectatorSpecificEvent;

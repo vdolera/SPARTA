@@ -1,20 +1,18 @@
-import MainLayout from "../../components/MainLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { GiBasketballBall, GiSoccerBall, GiTennisRacket, GiChessKnight, GiTennisBall} from "react-icons/gi";
 import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
 import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
-import { IoMdClose } from "react-icons/io";
 import '../../styles/ADMIN_Games.css';
 
-const Game = () => {
+const SpectatorGame = () => {
   const navigate = useNavigate();
   const [gamesByType, setGamesByType] = useState({});
-  const user = JSON.parse(localStorage.getItem("auth"));
-  const userInstitution = user?.institution;
-  const { eventName } = useParams();
+  
+  const { institution, eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
+  const decodedInstitution = decodeURIComponent(institution);
 
   const [searchQuery, setSearchQuery] = useState("");
   const filteredGames = Object.entries(gamesByType).filter(([combinedType]) =>
@@ -34,12 +32,11 @@ const Game = () => {
     Chess: GiChessKnight,
   };
 
-  // Fetch Games
   useEffect(() => {
     const fetchGames = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
+          `http://localhost:5000/api/games?institution=${encodeURIComponent(decodedInstitution)}&eventName=${encodeURIComponent(decodedName)}`
         );
         const data = await response.json();
 
@@ -59,43 +56,10 @@ const Game = () => {
     };
 
     fetchGames();
-  }, [userInstitution, decodedName]);
+  }, [decodedInstitution, decodedName]);
 
-  // Add Game button 
-  const handleAddGame = () => {
-    navigate(`/admin/event/${encodeURIComponent(decodedName)}/addgame`);
-  };
-
-  // Delete Games
-  const handleDeleteGame = async (gameId) => {
-    if (!window.confirm("Are you sure you want to delete this game?")) return;
-    try {
-      const res = await fetch(`http://localhost:5000/api/games/${gameId}`, {
-        method: "DELETE",
-      });
-  
-      if (res.ok) {
-        alert("Game deleted successfully");
-        // Refresh games
-        const updatedGames = { ...gamesByType };
-        for (const key in updatedGames) {
-          updatedGames[key] = updatedGames[key].filter(game => game._id !== gameId);
-          if (updatedGames[key].length === 0) {
-            delete updatedGames[key];
-          }
-        }
-        setGamesByType(updatedGames);
-      } else {
-         alert("Failed to delete game");
-      }
-    } catch (error) {
-      console.error("Error deleting game:", error);
-    }
-  };
-  
 
   return (
-    <MainLayout>
     <>
       <div className="game-header">
         <h2>All Games for {eventName}</h2>
@@ -109,9 +73,6 @@ const Game = () => {
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
         />
-        {(user.role === "admin" || user.role === "co-organizer") && (
-        <button className="new-game-btn" onClick={handleAddGame}> + Add Game </button>
-        )}
       </div>
 
       <div className="game-main-div">
@@ -129,11 +90,7 @@ const Game = () => {
             return (
             <div style={{margin: "1rem"}}>
               <div style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
-                  {(user.role === "admin" || user.role === "co-organizer") && (
-                  <button className="delete-game-btn" onClick={() => handleDeleteGame(games[0]._id)}>
-                    <IoMdClose />
-                  </button>
-                  )}
+             
               </div>
 
               <div className="game-button-container" key={combinedType}>
@@ -142,7 +99,7 @@ const Game = () => {
                   className="game-button"
                   onClick={() =>
                     navigate(
-                      `/admin/event/${encodeURIComponent(decodedName)}/game/${games[0]._id}`
+                      `/spectator/${encodeURIComponent(decodedInstitution)}/${encodeURIComponent(decodedName)}/game/${games[0]._id}`
                     )
                   }
                   style={{ display: "flex", alignItems: "center", gap: "8px" }}
@@ -158,8 +115,7 @@ const Game = () => {
         )}
       </div>
     </>
-    </MainLayout>
   );
 };
 
-export default Game;
+export default SpectatorGame;

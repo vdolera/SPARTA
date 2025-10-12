@@ -80,7 +80,7 @@ router.post('/auth/login/:role', async (req, res) => {
 });
 
 
-// INSTITUTIONS
+// Get INSTITUTIONS
 router.get('/institutions', async (req, res) => {
   try {
     const institutions = await Institution.find().sort({ name: 1 });

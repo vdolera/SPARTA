@@ -12,12 +12,12 @@ const GameBracket = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [tempScores, setTempScores] = useState([]);
 
-  const [showRulesModal, setShowRulesModal] = useState(false); // Showing of Rules in Modal
+  const [showRulesModal, setShowRulesModal] = useState(false); 
 
   const formatForInput = (date) => {
     if (!date) return "";
     const d = new Date(date);
-    const tzOffset = d.getTimezoneOffset() * 60000; // offset in ms
+    const tzOffset = d.getTimezoneOffset() * 60000;
     const localISO = new Date(d - tzOffset).toISOString().slice(0, 16);
     return localISO;
   };

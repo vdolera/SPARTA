@@ -210,7 +210,7 @@ export default function LoginPage() {
                   type="button"
                   className="switch-button"
                   style={{ marginTop: '0px' }}
-                  onClick={() => navigate('/institution')}
+                  onClick={() => navigate('/spectator/institution')}
                 >
                   Spectator
                 </button>

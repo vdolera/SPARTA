@@ -5,61 +5,30 @@ import { TbCalendarQuestion } from "react-icons/tb";
 
 const PlayerPantheonRanks = () => {
   const navigate = useNavigate();
-  const { eventName, teamName } = useParams();
+  const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
-  const decodedTeam = decodeURIComponent(teamName);
 
   const [teams, setTeams] = useState([]);
-  const [, setTeamColor] = useState("#A96B24");
-
+ 
   const user = JSON.parse(localStorage.getItem("auth"));
-  const userInstitution = user?.institution;
   
 
   // Fetch teams with scores
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(
-            userInstitution
-          )}&event=${encodeURIComponent(decodedEvent)}`
-        );
+        const response = await fetch(`http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
         const data = await response.json();
-        // Sort by grandTotal
+        // Sort by finatl score
         setTeams(data.sort((a, b) => b.grandTotal - a.grandTotal));
       } catch (error) {
         console.error("Error fetching teams:", error);
       }
     };
-  
-    if (userInstitution && decodedEvent) {
+    if (user?.institution && decodedEvent) {
       fetchTeams();
     }
-  }, [userInstitution, decodedEvent]);
-
-  // Fetch single team details
-  useEffect(() => {
-    const fetchTeamDetails = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:5000/api/team?institution=${encodeURIComponent(
-            userInstitution
-          )}&event=${encodeURIComponent(
-            decodedEvent
-          )}&teamName=${encodeURIComponent(decodedTeam)}`
-        );
-        const data = await res.json();
-        setTeamColor(data.teamColor || "#808080");
-      } catch (err) {
-        console.error("Error fetching team details:", err);
-      }
-    };
-
-    if (decodedTeam) {
-      fetchTeamDetails();
-    }
-  }, [userInstitution, decodedEvent, decodedTeam]);
+  }, [user?.institution, decodedEvent]);
 
   // Teams are already sorted by backend, but just in case
   const rankedTeams = [...teams].sort(
@@ -76,7 +45,6 @@ const PlayerPantheonRanks = () => {
   const handleSelectTeam = (teamName) => {
     navigate(`/pantheon/${encodeURIComponent(decodedEvent)}/${encodeURIComponent(teamName)}/players`);
   };
-
 
     return (
         <PlayerMainLayout>

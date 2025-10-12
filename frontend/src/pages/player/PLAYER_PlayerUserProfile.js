@@ -4,12 +4,12 @@ import { useParams } from "react-router-dom";
 import "../../styles/PlayerProfile.css";
 
 const PlayerUserProfile = () => {
-  //const user = JSON.parse(localStorage.getItem("auth"));
   const {userId} = useParams();
   const [player, setPlayer] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("player");
 
+  // Fetch user dertails
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -27,6 +27,7 @@ const PlayerUserProfile = () => {
     setPlayer({ ...player, [e.target.name]: e.target.value });
   };
 
+  // Edit 
   const handleSave = async () => {
     try {
       const res = await fetch(`http://localhost:5000/api/players/${userId}/profile`, {
@@ -180,8 +181,6 @@ const PlayerUserProfile = () => {
               </div>
         </div>
 
-        
-
      <div className="profile-actions">
           {isEditing ? (
             <>
@@ -192,9 +191,7 @@ const PlayerUserProfile = () => {
             <button className="btn edit-btn" onClick={() => setIsEditing(true)}>Edit Profile</button>
           )}
         </div>
-
       </div>
-
     </PlayerMainLayout>
   );
 };

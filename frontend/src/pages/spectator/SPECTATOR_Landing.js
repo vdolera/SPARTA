@@ -21,7 +21,7 @@ export default function LandingPage() {
     }, []);
 
     const handleInstitutionClick = (institution) => {
-        navigate(`/${encodeURIComponent(institution.name)}`);
+        navigate(`/spectator/${encodeURIComponent(institution.name)}`);
     };
 
     return (

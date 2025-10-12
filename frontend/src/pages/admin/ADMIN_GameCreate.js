@@ -27,20 +27,18 @@ const CreateGame = () => {
   const { eventName } = useParams();
   const decodedEventName = decodeURIComponent(eventName);
 
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("auth"));
-    if (!user?.institution) return;
+  const user = JSON.parse(localStorage.getItem("auth"));
 
-    fetch(
-      `http://localhost:5000/api/teams?institution=${encodeURIComponent(
-        user.institution
-      )}&event=${encodeURIComponent(decodedEventName)}`
-    )
+  // Fetching teams
+  useEffect(() => {
+    if (!user?.institution) return;
+    fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEventName)}`)
       .then((res) => res.json())
       .then((data) => setAvailableTeams(data))
       .catch((err) => console.error("Error fetching teams:", err));
-  }, [decodedEventName]);
+  }, [user?.institution, decodedEventName]);
 
+  // Team select
   const toggleTeamSelection = (teamName) => {
     setSelectedTeams((prev) =>
       prev.includes(teamName)
@@ -49,6 +47,7 @@ const CreateGame = () => {
     );
   };
 
+  // Game Creation
   const handleSubmit = async (e) => {
     e.preventDefault();
     const user = JSON.parse(localStorage.getItem("auth"));
@@ -73,12 +72,10 @@ const CreateGame = () => {
       formData.append("referees", JSON.stringify(referees));
 
       if (rulesFile) {
-        formData.append("rulesFile", rulesFile);  // file key
+        formData.append("rulesFile", rulesFile);  
       }
-      formData.append("rulesText", rulesText);    // text key
+      formData.append("rulesText", rulesText); 
       
-
-
       const response = await fetch("http://localhost:5000/api/games", {
         method: "POST",
         body: formData,
@@ -92,7 +89,7 @@ const CreateGame = () => {
         setTimeout(() => {
           setShowModal(false);
           navigate(-1);
-        }, 4000); // Auto-close after 1.5s and go back
+        }, 4000);
       } else {
         setModalMessage("Failed! " + data.message);
         setShowModal(true);
@@ -103,25 +100,21 @@ const CreateGame = () => {
     }
   };
 
+  // Fetch Coords
   useEffect(() => {
     const fetchCoordinators = async () => {
-      const user = JSON.parse(localStorage.getItem("auth"));
-      const institution = user?.institution;
-
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/coordinators?institution=${institution}&event=${decodedEventName}`
-        );
+        const res = await fetch(`http://localhost:5000/api/coordinators?institution=${user?.institution}&event=${decodedEventName}`);
         const data = await res.json();
         setCoordinators(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error fetching coordinators:", err);
       }
     };
-
     fetchCoordinators();
-  }, [decodedEventName]);
+  }, [user?.institution, decodedEventName]);
 
+  // Add coords
   const handleSelectCoordinator = (coord) => {
     if (!selectedCoordinators.some((c) => c._id === coord._id)) {
       setSelectedCoordinators((prev) => [...prev, coord]);
@@ -129,6 +122,7 @@ const CreateGame = () => {
     setSearch("");
   };
 
+  // Remove coord
   const handleRemoveCoordinator = (id) => {
     setSelectedCoordinators((prev) => prev.filter((c) => c._id !== id));
   };
@@ -139,7 +133,7 @@ const CreateGame = () => {
       !selectedCoordinators.some((sel) => sel._id === c._id)
   );
 
-  //Referee
+  // Add Referee
   const handleAddReferee = () => {
     if (refereeInput.trim() && !referees.includes(refereeInput.trim())) {
       setReferees((prev) => [...prev, refereeInput.trim()]);
@@ -147,15 +141,14 @@ const CreateGame = () => {
     }
   };
 
+  // Remove referee
   const handleRemoveReferee = (name) => {
     setReferees((prev) => prev.filter((r) => r !== name));
   };
 
-
   return (
     <MainLayout>
       <>
-
         <div className="game-container">
           <div className="game-create-maindiv">
 

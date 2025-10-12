@@ -23,11 +23,11 @@ const CreateEvent = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
 
+  const user = JSON.parse(localStorage.getItem("auth"));
+
   // Handle form submission
   const handleCreate = async (e) => {
     e.preventDefault();
-    const user = JSON.parse(localStorage.getItem("auth"));
-
     try {
       const response = await fetch("http://localhost:5000/api/event", {
         method: "POST",
@@ -37,7 +37,7 @@ const CreateEvent = () => {
         body: JSON.stringify({
           userName,
           email,
-          institution: user.institution,
+          institution: user?.institution,
           eventName,
           eventStartDate,
           eventEndDate,
@@ -69,16 +69,19 @@ const CreateEvent = () => {
   // Handle cancel
   const handleCancel = () => navigate(-1);
 
+  // Change Coord
   const handleCoordinatorChange = (idx, field, value) => {
     const updated = [...coordinators];
     updated[idx][field] = value;
     setCoordinator(updated);
   };
 
+  // Add coord
   const handleAddCoordinator = () => {
     setCoordinator([...coordinators, { name: "", email: "", role: "co-organizer" }]);
   };
 
+  // Remove coord
   const handleDeleteCoordinator = (idx) => {
     setCoordinator(coordinators.filter((_, i) => i !== idx));
   };
@@ -86,19 +89,19 @@ const CreateEvent = () => {
   // REQUIREMENT HANDLING
   const handleAddRequirement = () => setRequirements([...requirements, ""]);
 
+  // Change Requirements
   const handleRequirementChange = (idx, value) => {
     const updated = [...requirements];
     updated[idx] = value;
     setRequirements(updated);
   };
 
+  // Remove Requirements
   const handleRemoveRequirement = (idx) => {
     setRequirements(requirements.filter((_, i) => i !== idx));
   };
 
-
   return (
-
     <MainLayout>
     <>
       <div className="event-container">

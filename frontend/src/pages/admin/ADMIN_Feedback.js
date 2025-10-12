@@ -10,6 +10,7 @@ const Feedback = () => {
 
   const [feedbacks, setFeedbacks] = useState([]);
 
+  // Fetch Feedbacks
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {

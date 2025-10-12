@@ -11,29 +11,30 @@ const Event = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(null);
   const [editEvent, setEditEvent] = useState(null);
-  const [, setNewSubOrganizer] = useState(""); // for adding coordinator
+  const [, setNewSubOrganizer] = useState(""); 
   const user = JSON.parse(localStorage.getItem("auth"));
-  const userInstitution = user?.institution;
 
- // Fetch events
+  // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
-      const response = await fetch(
-        `http://localhost:5000/api/active-events?institution=${userInstitution}&email=${user.email}&role=${user.role}`);
+      const response = await fetch(`http://localhost:5000/api/active-events?institution=${user?.institution}&email=${user.email}&role=${user.role}`);
       const data = await response.json();
       setEvents(data);
     }; 
     fetchEvents();
-  }, [userInstitution, user.email, user.role]);
+  }, [user?.institution, user.email, user.role]);
 
+  // Add Event button nav
   const handleAddEvent = () => {
     navigate("./create");
   };
 
+  // Selected Event button nav
   const handleEventClick = (event) => {
     navigate(`/admin/event/${encodeURIComponent(event.eventName)}`);
   };
 
+  // Delete event
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
     try {
@@ -44,6 +45,7 @@ const Event = () => {
     }
   };
 
+  // Edit event
   const handleEditSave = async () => {
     try {
       const res = await fetch(

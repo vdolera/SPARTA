@@ -28,8 +28,7 @@ const PlayerFeedback = () => {
     const fetchUser = async () => {
       try {
         if (!userId) return;
-
-        const res = await fetch(`http://localhost:5000/api/players/${userId._id}`);
+        const res = await fetch(`http://localhost:5000/api/players/${userId?._id}`);
         const data = await res.json();
         setUser(data); 
       } catch (err) {
@@ -53,6 +52,7 @@ const PlayerFeedback = () => {
     fetchFeedbacks();
   }, [decodedEvent]);
 
+  // Post Feedback
   const handlePost = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/feedback", {

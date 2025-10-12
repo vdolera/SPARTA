@@ -10,37 +10,30 @@ const PlayerPantheonTeam = () => {
     const decodedTeam = decodeURIComponent(teamName);
 
     const user = JSON.parse(localStorage.getItem("auth"));
-    const userInstitution = user?.institution;
 
     const [players, setPlayers] = useState([]);
     const [teamColor, setTeamColor] = useState("#808080");
     const [teamRank, setTeamRank] = useState(null);
 
-
     // Fetch players
     useEffect(() => {
         const fetchPlayers = async () => {
             try {
-                const res = await fetch(
-                    `http://localhost:5000/api/players?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedEvent)}&team=${encodeURIComponent(decodedTeam)}`);
-
+                const res = await fetch(`http://localhost:5000/api/players?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedEvent)}&team=${encodeURIComponent(decodedTeam)}`);
                 const data = await res.json();
                 setPlayers(data);
             } catch (err) {
                 console.error("Error fetching players:", err);
             }
         };
-
         fetchPlayers();
-    }, [userInstitution, decodedEvent, decodedTeam]);
+    }, [user?.institution, decodedEvent, decodedTeam]);
 
     // Fetch team details
     useEffect(() => {
         const fetchTeamDetails = async () => {
             try {
-                const res = await fetch(
-                    `http://localhost:5000/api/team?institution=${encodeURIComponent(userInstitution)}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`);
-
+                const res = await fetch(`http://localhost:5000/api/team?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}&teamName=${encodeURIComponent(decodedTeam)}`);
                 const data = await res.json();
                 setTeamColor(data.teamColor || "#808080");
             } catch (err) {
@@ -49,17 +42,13 @@ const PlayerPantheonTeam = () => {
         };
 
         fetchTeamDetails();
-    }, [userInstitution, decodedEvent, decodedTeam]);
+    }, [user?.institution, decodedEvent, decodedTeam]);
 
     // Fetch team ranking
     useEffect(() => {
         const fetchTeamRankings = async () => {
           try {
-            const res = await fetch(
-              `http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(
-                userInstitution
-              )}&event=${encodeURIComponent(decodedEvent)}`
-            );
+            const res = await fetch(`http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
             const data = await res.json();
       
             // Sort descending by totalScore / grandTotal
@@ -82,10 +71,10 @@ const PlayerPantheonTeam = () => {
           }
         };
       
-        if (userInstitution && decodedEvent && decodedTeam) {
+        if (user?.institution && decodedEvent && decodedTeam) {
           fetchTeamRankings();
         }
-      }, [userInstitution, decodedEvent, decodedTeam]);
+      }, [user?.institution, decodedEvent, decodedTeam]);
 
       function getOrdinal(n) {
         const s = ["th", "st", "nd", "rd"];
