@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const PlayerPantheon = () => {
+
+  useEffect(() => {document.title = "SPARTA | Pantheon";},[]);
+
   const navigate= useNavigate();
   const [events, setEvents] = useState([]);
   const user = JSON.parse(localStorage.getItem('auth'));

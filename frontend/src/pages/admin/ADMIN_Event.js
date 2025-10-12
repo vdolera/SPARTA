@@ -6,6 +6,9 @@ import { MdEventNote } from "react-icons/md";
 import "../../styles/ADMIN_Event.css";
 
 const Event = () => {
+
+  useEffect(() => {document.title = "SPARTA | Event";},[]);
+
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");

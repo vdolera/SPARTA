@@ -9,6 +9,9 @@ import { IoMdClose } from "react-icons/io";
 import '../../styles/ADMIN_Games.css';
 
 const Game = () => {
+
+  useEffect(() => {document.title = "SPARTA | " + decodedName + " Games";},[]);
+
   const navigate = useNavigate();
   const [gamesByType, setGamesByType] = useState({});
   const user = JSON.parse(localStorage.getItem("auth"));

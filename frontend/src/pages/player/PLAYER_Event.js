@@ -5,6 +5,9 @@ import { MdEventNote } from "react-icons/md";
 import '../../styles/ADMIN_Event.css'; 
 
 const PlayerEvent = () => {
+
+  useEffect(() => {document.title = "SPARTA | Events";},[]);
+
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,6 +35,7 @@ const PlayerEvent = () => {
 
   return (
     <PlayerMainLayout>
+    <div className="event-list-container">
       <div className="event-main-header">
         <input
           type="text"
@@ -64,6 +68,7 @@ const PlayerEvent = () => {
         ))}
       </div>
     )}
+    </div>
     </PlayerMainLayout>
   )
 };

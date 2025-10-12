@@ -5,6 +5,9 @@ import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
 import "../../styles/bracket.css";
 
 const PlayerGameBracket = () => {
+
+  useEffect(() => {document.title = "SPARTA | Game Bracket";},[]);
+
   const { eventName, game: gameId } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
 

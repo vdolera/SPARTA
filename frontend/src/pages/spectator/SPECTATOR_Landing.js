@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Spectator.css";
 
-
-
 export default function LandingPage() {
+
+  useEffect(() => {document.title = "SPARTA | Spectator";},[]);
+
     const [institutions, setInstitutions] = useState([]);
     const navigate = useNavigate();
     useEffect(() => {

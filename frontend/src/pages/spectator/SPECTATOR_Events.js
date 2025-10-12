@@ -4,6 +4,9 @@ import '../../styles/ADMIN_Event.css';
 import "../../styles/Spectator.css";
 
 const AllEvent = () => {
+
+  useEffect(() => {document.title = "SPARTA | Event Bracket";},[]);
+
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");

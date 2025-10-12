@@ -5,11 +5,12 @@ import "../../styles/LiveScores.css";
 import { TbCalendarQuestion } from "react-icons/tb";
 
 const LiveScores = () => {
+
+  useEffect(() => {document.title = "SPARTA | Live Scores";},[]);
+
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
-
   const [teams, setTeams] = useState([]);
-
   const user = JSON.parse(localStorage.getItem("auth"));
 
   // Fetch teams with scores

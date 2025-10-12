@@ -5,13 +5,14 @@ import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
 import "../../styles/bracket.css";
 
 const GameBracket = () => {
+
+  useEffect(() => {document.title = "SPARTA | Game Bracket";},[]);
+
   const { eventName, game: gameId } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
-
   const [game, setGame] = useState(null);
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [tempScores, setTempScores] = useState([]);
-
   const [showRulesModal, setShowRulesModal] = useState(false); 
 
   const formatForInput = (date) => {

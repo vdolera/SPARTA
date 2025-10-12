@@ -1,9 +1,12 @@
 import MainLayout from "../../components/MainLayout";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import '../../styles/ADMIN_EventCreate.css';
 
 const CreateEvent = () => {
+
+  useEffect(() => {document.title = "SPARTA | Create Event";},[]);
+
   const navigate = useNavigate();
   const [eventName, setEventName] = useState("");
   const [userName, setUserName] = useState("");

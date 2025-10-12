@@ -5,9 +5,11 @@ import '../../styles/ADMIN_Feedback.css';
 import { VscSearchStop } from "react-icons/vsc";
 
 const Feedback = () => {
+
+  useEffect(() => {document.title = "SPARTA | Event Feedback";},[]);
+
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
-
   const [feedbacks, setFeedbacks] = useState([]);
 
   // Fetch Feedbacks

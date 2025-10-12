@@ -5,6 +5,9 @@ import { LiaGhostSolid } from "react-icons/lia";
 import '../../styles/ADMIN_PlayerApproval.css';
 
 const TeamPlayerApproval = () => {
+
+  useEffect(() => {document.title = "SPARTA | Team Player Approval";},[]);
+
   const [players, setPlayers] = useState([]);
   const [showToast, setShowToast] = useState({ show: false, message: "", type: "" });
   const [declineConfirm, setDeclineConfirm] = useState({ show: false, playerId: null });

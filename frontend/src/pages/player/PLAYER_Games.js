@@ -7,8 +7,10 @@ import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
 import "../../styles/ADMIN_Games.css";
 
-
 const PlayerGame = () => {
+
+  useEffect(() => {document.title = "SPARTA | " + decodedName + " Games";},[]);
+
   const user = JSON.parse(localStorage.getItem("auth"));
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);

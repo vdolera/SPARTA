@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import "../../styles/PlayerProfile.css";
 
 const PlayerProfile = () => {
+
+  useEffect(() => {document.title = "SPARTA | Player Profile";},[]);
+
   const { playerId } = useParams();
   const [player, setPlayer] = useState({});
   const [activeTab, setActiveTab] = useState("player");

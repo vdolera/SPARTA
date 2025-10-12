@@ -5,6 +5,9 @@ import "../../styles/ADMIN_Feedback.css";
 
 
 const PlayerFeedback = () => {
+
+  useEffect(() => {document.title = "SPARTA | Feedback";},[]);
+
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
 

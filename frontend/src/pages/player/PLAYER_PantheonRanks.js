@@ -2,12 +2,15 @@ import PlayerMainLayout from "../../components/P_MainLayout";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TbCalendarQuestion } from "react-icons/tb";
+import "../../styles/LiveScores.css";
 
 const PlayerPantheonRanks = () => {
+
+  useEffect(() => {document.title = "SPARTA | Pantheon Ranks";},[]);
+
   const navigate = useNavigate();
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
-
   const [teams, setTeams] = useState([]);
  
   const user = JSON.parse(localStorage.getItem("auth"));
@@ -49,7 +52,7 @@ const PlayerPantheonRanks = () => {
     return (
         <PlayerMainLayout>
             <div className="live-scores-header">
-                    <h1>Live Scores for {decodedEvent}</h1>
+                    <h1>FINAL RANK FOR {decodedEvent}</h1>
                 </div>
                 
                 <div className="live-scores-main-div">

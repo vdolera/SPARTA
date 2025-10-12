@@ -6,10 +6,12 @@ import "../../styles/LiveScores.css";
 
 
 const PantheonRanks = () => {
+
+  useEffect(() => {document.title = "SPARTA | Pantheon Rankings";},[]);
+
   const navigate = useNavigate();
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
-
   const [teams, setTeams] = useState([]);
 
   const user = JSON.parse(localStorage.getItem("auth"));

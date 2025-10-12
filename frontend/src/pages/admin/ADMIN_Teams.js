@@ -6,9 +6,11 @@ import { VscSearchStop } from "react-icons/vsc";
 import { MoreVertical } from "lucide-react";
 
 const Teams = () => {
+
+  useEffect(() => {document.title = "SPARTA | " + decodedName + " Teams";},[]);
+
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
-
   const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");

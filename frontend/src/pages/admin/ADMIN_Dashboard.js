@@ -5,6 +5,9 @@ import axios from 'axios';
 import "../../styles/Calendar.css";
 
 const Dashboard = () => {
+
+  useEffect(() => {document.title = "SPARTA | Dashboard";},[]);
+
   const user = JSON.parse(localStorage.getItem('auth'));
 
   const [date, setDate] = useState(new Date());

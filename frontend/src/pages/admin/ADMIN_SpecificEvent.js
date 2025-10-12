@@ -9,6 +9,9 @@ import { MdOutlineFeedback } from "react-icons/md";
 import '../../styles/ADMIN_SpecificEvents.css';
 
 const SpecificEvent = () => {
+
+    useEffect(() => {document.title = "SPARTA | " + decodedName;},[]);
+
     const navigate = useNavigate();
     const { eventName } = useParams();
     const decodedName = decodeURIComponent(eventName);

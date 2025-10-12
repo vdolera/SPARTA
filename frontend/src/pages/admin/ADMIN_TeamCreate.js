@@ -4,6 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import "../../styles/ADMIN_TeamCreate.css";
 
 const CreateTeam = () => {
+
+  useEffect(() => {document.title = "SPARTA | Create Team";},[]);
+
   const navigate = useNavigate();
   const [teamName, setTeamName] = useState("");
   const [teamManager, setTeamManager] = useState("");

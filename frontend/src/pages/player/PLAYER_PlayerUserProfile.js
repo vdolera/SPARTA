@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import "../../styles/PlayerProfile.css";
 
 const PlayerUserProfile = () => {
+
+  useEffect(() => {document.title = "SPARTA | Player Profile";},[]);
+
   const {userId} = useParams();
   const [player, setPlayer] = useState({});
   const [isEditing, setIsEditing] = useState(false);

@@ -4,6 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import '../../styles/ADMIN_GameCreate.css'
 
 const CreateGame = () => {
+
+  useEffect(() => {document.title = "SPARTA | Create Game";},[]);
+
   const [gameType, setGameType] = useState("Basketball");
   const [category, setCategory] = useState("Men");
   const [startDate, setStartDate] = useState("");

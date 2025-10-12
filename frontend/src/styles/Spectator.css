@@ -133,3 +133,142 @@ body {
     font-size: 20px;
     font-family: Arial, sans-serif;
 }
+
+.spectator-specific-event-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 100vw;
+  margin-bottom: 0px;
+}
+
+.event-header {
+  justify-content: center;
+  margin: 20px;
+  margin-bottom: 0px;
+  width: 55vw;
+  height: 10vh;
+  font-family: Montserrat, sans-serif;
+  font-size: 16px;
+  background: linear-gradient(to left, #1A2A49, #A96B24);
+  border: 1px solid #ccc;
+  border-radius: 10px 10px 0px 0px;
+  color: white;
+  padding: 10px 20px;
+}
+
+.event-details {
+  display: flex;
+  flex-direction: row;
+  gap: 120px;
+  width: 55vw;
+  height: 20vh;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  border-radius: 0px 0px 10px 10px;
+  padding: 5px 20px;
+  font-family: Montserrat, sans-serif;
+  font-size: 15px;
+}
+
+p {
+  color: black;
+  font-size: 13px;
+}
+
+.event-specifics {
+  display: flex;
+  flex-direction: row;
+  gap: 10vh;
+  margin-top: 50px;
+
+}
+
+.event-specifics button {
+  font-size: 16px;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  width: 150px;
+  height: 190px;
+}
+
+.event-specifics .btn-game {
+  background-color: #A96B24;
+}
+
+.event-specifics .btn-team {
+  background-color: #1A2A49
+}
+
+.event-specifics .btn-score {
+  background-color: #800000;
+}
+
+.event-specifics .btn-feedback {
+  background-color: #2E8B57;
+}
+
+.organizer-box, .date-box, .location-box {
+  min-width: 150px;
+  text-align: center;
+}
+
+.btn-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 50px
+}
+
+.btn-content svg {
+  margin-bottom: 8px;
+}
+
+
+.game-header {
+  margin: 10px auto;
+}
+.game-main-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 1rem;
+  margin: 0 auto;
+}
+
+.game-button-container {
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.game-button {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border-radius: 12px;
+}
+
+.game-header-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.game-search-bar {
+  max-width: 680px;
+  width: 100%;
+}

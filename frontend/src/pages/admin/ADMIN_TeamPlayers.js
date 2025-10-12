@@ -5,6 +5,9 @@ import '../../styles/ADMIN_TeamPlayers.css';
 import { LiaGhostSolid } from "react-icons/lia";
 
 const TeamPlayers = () => {
+
+  useEffect(() => {document.title = "SPARTA | " + decodedTeam + " Players";},[]);
+
   const { eventName, teamName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
   const decodedTeam = decodeURIComponent(teamName);

@@ -4,6 +4,9 @@ import { FaSchoolFlag } from "react-icons/fa6";
 import '../../styles/ADMIN_PlayerApproval.css';
 
 const Approval = () => {
+
+  useEffect(() => {document.title = "SPARTA | Player Approvals";},[]);
+
   const [players, setPlayers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const playersPerPage = 10;

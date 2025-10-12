@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
+import '../../styles/ADMIN_SpecificEvents.css';
 import "../../styles/bracket.css";
 
 const SpectatorGameBracket = () => {
+
+  useEffect(() => {document.title = "SPARTA |Game Bracket";},[]);
+
   const { eventName, game: gameId } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
-
   const [game, setGame] = useState(null);
   const [, setSelectedMatch] = useState(null);
   const [, setTempScores] = useState([]);
@@ -255,6 +258,19 @@ const SpectatorGameBracket = () => {
 
   return (
     <>
+
+      <div className="spectator-header">
+        <div className="header-text">
+         SPARTA SPECTATOR LIVE VIEWING
+        </div>
+      </div>
+
+      <div className="logo-div">
+        <div className="logo-container">
+          <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+        </div>
+      </div>
+
       <div className="game-bracket-info">
         <h1>{game.category} {game.gameType} Bracket</h1>
         <p><b>Event:</b> {decodedEvent}</p>

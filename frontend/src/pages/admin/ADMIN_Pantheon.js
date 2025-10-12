@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { MoreVertical } from "lucide-react";
 
 const Pantheon = () => {
+
+  useEffect(() => {document.title = "SPARTA | Pantheon";},[]);
+
   const navigate= useNavigate();
   const [events, setEvents] = useState([]);
   const [menuOpen, setMenuOpen] = useState(null);

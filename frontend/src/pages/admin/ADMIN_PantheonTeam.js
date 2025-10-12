@@ -5,6 +5,9 @@ import { LiaGhostSolid } from "react-icons/lia";
 
 
 const PantheonTeam = () => {
+
+    useEffect(() => {document.title = "SPARTA | Pantheon Team";},[]);
+
     const { eventName, teamName } = useParams();
     const decodedEvent = decodeURIComponent(eventName);
     const decodedTeam = decodeURIComponent(teamName);

@@ -5,6 +5,9 @@ import "../../styles/LiveScores.css";
 import {TbCalendarQuestion} from "react-icons/tb";
 
 const PlayerLiveScores = () => {
+
+  useEffect(() => {document.title = "SPARTA | Live Scores";},[]);
+
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
   const [teams, setTeams] = useState([]);

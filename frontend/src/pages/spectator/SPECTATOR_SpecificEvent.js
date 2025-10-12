@@ -48,7 +48,19 @@ const SpectatorSpecificEvent = () => {
 
     return (
 
-            <div className="specific-event-container">
+            <div className="spectator-specific-event-container">
+
+              <div className="spectator-header">
+                  <div className="header-text">
+                      SPARTA SPECTATOR LIVE VIEWING
+                  </div>
+              </div>
+
+              <div className="logo-div">
+                  <div className="logo-container">
+                      <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+                  </div>
+              </div>
                     
                 <div className="event-header" >
                     <h2>{decodedName}</h2>
@@ -75,7 +87,9 @@ const SpectatorSpecificEvent = () => {
 
                 <div className="event-specifics">
 
-                    <button className="btn-team" onClick={handleTeamClick}>
+                    <button className="btn-team" 
+                    // onClick={handleTeamClick}
+                    >
                       <div className="btn-content">
                         <TiGroupOutline size={48} /> {/* Larger icon */}
                         <span>Team</span>
@@ -89,17 +103,12 @@ const SpectatorSpecificEvent = () => {
                       </div>
                     </button>
 
-                    <button className="btn-score" onClick={handleScoreClick}>
+                    <button className="btn-score" 
+                    // onClick={handleScoreClick}
+                    >
                       <div className="btn-content">
                         <MdOutlineScoreboard size={48} /> {/* Larger icon */}
                         <span>Live Score</span>
-                      </div>
-                    </button>
-
-                    <button className="btn-feedback" onClick={handleFeedbackClick}>
-                      <div className="btn-content">
-                        <MdOutlineFeedback size={42} /> {/* Larger icon */}
-                        <span>Feedback</span>
                       </div>
                     </button>
 
