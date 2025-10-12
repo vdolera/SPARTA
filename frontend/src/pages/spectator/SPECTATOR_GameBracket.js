@@ -6,7 +6,7 @@ import "../../styles/bracket.css";
 
 const SpectatorGameBracket = () => {
 
-  useEffect(() => {document.title = "SPARTA |Game Bracket";},[]);
+  useEffect(() => {document.title = "SPARTA | Game Bracket";},[]);
 
   const { eventName, game: gameId } = useParams();
   const decodedEvent = decodeURIComponent(eventName);

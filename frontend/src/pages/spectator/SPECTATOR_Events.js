@@ -5,7 +5,7 @@ import "../../styles/Spectator.css";
 
 const AllEvent = () => {
 
-  useEffect(() => {document.title = "SPARTA | Event Bracket";},[]);
+  useEffect(() => {document.title = "SPARTA | Event List";},[]);
 
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);

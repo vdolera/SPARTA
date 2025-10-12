@@ -7,6 +7,9 @@ import { MdOutlineFeedback } from "react-icons/md";
 import '../../styles/ADMIN_SpecificEvents.css';
 
 const SpectatorSpecificEvent = () => {
+
+  useEffect(() => {document.title = "SPARTA | " + decodedName},[]);
+
     const navigate = useNavigate();
     const { institution, eventName } = useParams();
     const decodedName = decodeURIComponent(eventName);
@@ -89,6 +92,7 @@ const SpectatorSpecificEvent = () => {
 
                     <button className="btn-team" 
                     // onClick={handleTeamClick}
+                    style={{backgroundColor: "gray"}}
                     >
                       <div className="btn-content">
                         <TiGroupOutline size={48} /> {/* Larger icon */}
@@ -105,6 +109,7 @@ const SpectatorSpecificEvent = () => {
 
                     <button className="btn-score" 
                     // onClick={handleScoreClick}
+                    style={{backgroundColor: "gray"}}
                     >
                       <div className="btn-content">
                         <MdOutlineScoreboard size={48} /> {/* Larger icon */}
