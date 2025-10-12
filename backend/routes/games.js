@@ -6,9 +6,7 @@ const Team = require("../models/Team");
 const multer = require("multer");
 const supabase = require("./supabaseClient");
 const path = require("path");
-const fs = require("fs");;
-
-const upload = multer({ dest: "temp/" })
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
@@ -49,18 +47,14 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       try {
         const fileExt = path.extname(req.file.originalname);
         const fileName = `rules-${Date.now()}${fileExt}`;
-        const fileBuffer = fs.readFileSync(req.file.path);
 
         const { data, error } = await supabase.storage
           .from("rules")
-          .upload(fileName, fileBuffer, {
+          .upload(fileName, req.file.buffer, {
             cacheControl: "3600",
             upsert: false,
             contentType: req.file.mimetype,
           });
-
-        // Delete temp file
-        fs.unlinkSync(req.file.path);
 
         if (error) {
           console.error("Supabase upload error:", error);

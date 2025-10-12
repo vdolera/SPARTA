@@ -29,13 +29,21 @@ const CreateGame = () => {
 
   const user = JSON.parse(localStorage.getItem("auth"));
 
-  // Fetching teams
+  // Fetch teams
   useEffect(() => {
-    if (!user?.institution) return;
-    fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEventName)}`)
-      .then((res) => res.json())
-      .then((data) => setAvailableTeams(data))
-      .catch((err) => console.error("Error fetching teams:", err));
+    const fetchTeams = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEventName)}`);
+        const data = await response.json();
+        setAvailableTeams(data);
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+      }
+    };
+
+    if (user?.institution && decodedEventName) {
+      fetchTeams();
+    }
   }, [user?.institution, decodedEventName]);
 
   // Team select

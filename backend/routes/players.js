@@ -9,8 +9,6 @@ const router = express.Router();
 
 const multer = require("multer");
 const supabase = require("./supabaseClient");
-
-// Use memoryStorage (replace local temp files)
 const upload = multer({ storage: multer.memoryStorage() });
 
 // GET pending players to enter the insitution
@@ -302,8 +300,6 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
     res.status(500).json({ message: "Failed to register player" });
   }
 });
-
-
 
 // GET players by team
 router.get("/players", async (req, res) => {

@@ -12,7 +12,7 @@ const PlayerSideMenu = () => {
   const location = useLocation();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")));
 
-  // Update the local data of users
+  // To Update the local data of users
   useEffect(() => {
     const fetchUser = async () => {
       const res = await fetch(`http://localhost:5000/api/players/${user._id}`);

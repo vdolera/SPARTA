@@ -5,8 +5,7 @@ const Coordinator = require("../models/Coordinator")
 
 
 const multer = require("multer");
-const upload = multer({ dest: "temp/" }); // temp storage only
-const fs = require("fs");
+const upload = multer({ storage: multer.memoryStorage() }); 
 const path = require("path");
 const supabase = require("./supabaseClient");
 
@@ -32,18 +31,14 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
       const filePath = req.file.path;
       const fileExt = path.extname(req.file.originalname);
       const fileName = `teamIcon-${Date.now()}${fileExt}`;
-      const fileBuffer = fs.readFileSync(filePath);
 
       const { data, error } = await supabase.storage
         .from("teams") 
-        .upload(fileName, fileBuffer, {
+        .upload(fileName, req.file.buffer, {
           cacheControl: "3600",
           upsert: false,
           contentType: req.file.mimetype,
         });
-
-      // remove temp file
-      fs.unlinkSync(filePath);
 
       if (error) {
         console.error("Supabase upload failed:", error);
@@ -123,14 +118,13 @@ router.get("/teams/scores", async (req, res) => {
       return res.status(400).json({ message: "Institution and event are required" });
     }
 
-    // Get teams for this event/institution
     const teams = await Team.find({ institution, eventName: event });
 
     if (!teams.length) {
       return res.status(404).json({ message: "No teams found for this event" });
     }
 
-    // Map each team to their scores
+    // Put each team to their scores
     const teamsWithScores = await Promise.all(
       teams.map(async (team) => {
         // Get only games where this team has played

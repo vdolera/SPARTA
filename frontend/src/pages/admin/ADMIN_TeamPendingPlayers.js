@@ -15,11 +15,7 @@ const TeamPlayerApproval = () => {
   // Fetch pending players
   const fetchPlayers = useCallback(async () => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/players/team-pending?institution=${user?.institution}&eventName=${encodeURIComponent(
-          eventName
-        )}&team=${encodeURIComponent(teamName)}`
-      );
+      const res = await fetch(`http://localhost:5000/api/players/team-pending?institution=${user?.institution}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(teamName)}`);
       const data = await res.json();
       setPlayers(data);
     } catch (err) {

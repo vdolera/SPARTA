@@ -31,9 +31,7 @@ const gameSchema = new mongoose.Schema({
     enum: [
       'Single Elimination',
       'Double Elimination',
-      'Round Robin',
-      'Swiss',
-      'Free for All'
+      'Round Robin'
     ],
     required: true,
   },
