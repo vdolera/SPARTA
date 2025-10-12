@@ -115,3 +115,135 @@
 .s-logout-button button:active {
   transform: scale(0.97);
 }
+
+/* Responsive: side menu scaling + collapsed view for smaller screens */
+.sidemenu {
+  transition: width 200ms ease, transform 200ms ease;
+}
+
+/* Medium screens: slightly narrower */
+@media (max-width: 1024px) {
+  .sidemenu {
+    width: 160px;
+  }
+
+  .logo-img {
+    width: 84px;
+  }
+
+  .sidemenu-list a {
+    font-size: 15px;
+    padding: 6px 12px;
+  }
+}
+
+/* Tablet / small laptops -> compact vertical bar */
+@media (max-width: 768px) {
+  .sidemenu {
+    width: 80px;
+  }
+
+  .sidemenu-logo {
+    padding-left: 8px;
+    padding-top: 8px;
+  }
+
+  .logo-img {
+    width: 48px;
+    height: auto;
+  }
+
+  /* Reduce left margin so icons align inside the narrower bar */
+  .sidemenu-list {
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  /* Center icons, hide textual labels if present (keeps icons visible) */
+  .sidemenu-list a {
+    justify-content: center;
+    padding: 10px 6px;
+    gap: 0;
+    font-size: 0; /* hide inline text nodes while keeping icon elements (svg / i) */
+  }
+
+  /* If your link text is wrapped in a .label or span, hide that explicitly */
+  .sidemenu-list a .label,
+  .sidemenu-list a span,
+  .sidemenu-list a .text {
+    display: none;
+  }
+
+  .sidemenu-list a > svg,
+  .sidemenu-list a i {
+    font-size: 20px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .sidemenu-list li {
+    margin: 10px 0;
+  }
+
+  /* Hide bottom/info blocks to save space on small viewports */
+  .bottom-info,
+  .user-info,
+  .user-name,
+  .bottom-info h2 {
+    display: none;
+  }
+
+  /* Keep logout accessible as a small icon button if you wrap it in a button/icon later */
+  .s-logout-button {
+    margin: 8px 0;
+    padding: 6px;
+    border-radius: 6px;
+  }
+}
+
+/* Very small screens -> convert to top horizontal bar */
+@media (max-width: 420px) {
+  .sidemenu {
+    width: 100%;
+    height: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+  }
+
+  .sidemenu-list {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    align-items: center;
+    margin: 0;
+    border-top: none;
+  }
+
+  .sidemenu-list li {
+    margin: 0;
+  }
+
+  .sidemenu-list a {
+    font-size: 0;
+    padding: 8px;
+    justify-content: center;
+  }
+
+  .logo-img {
+    width: 36px;
+  }
+
+  .bottom-info,
+  .user-info,
+  .user-name,
+  .bottom-info h2 {
+    display: none;
+  }
+}
