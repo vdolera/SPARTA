@@ -233,7 +233,7 @@ p {
 .game-header {
   margin: 10px auto;
 }
-.game-main-div {
+.spectator-game-main-div {
   display: flex;
   flex-direction: row;
   align-items: center;
