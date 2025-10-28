@@ -5,7 +5,7 @@ import '../../styles/ADMIN_GameCreate.css'
 
 const CreateGame = () => {
 
-  useEffect(() => {document.title = "SPARTA | Create Game";},[]);
+  useEffect(() => { document.title = "SPARTA | Create Game"; }, []);
 
   const [gameType, setGameType] = useState("Basketball");
   const [category, setCategory] = useState("Men");
@@ -83,10 +83,10 @@ const CreateGame = () => {
       formData.append("referees", JSON.stringify(referees));
 
       if (rulesFile) {
-        formData.append("rulesFile", rulesFile);  
+        formData.append("rulesFile", rulesFile);
       }
-      formData.append("rulesText", rulesText); 
-      
+      formData.append("rulesText", rulesText);
+
       const response = await fetch("http://localhost:5000/api/games", {
         method: "POST",
         body: formData,
@@ -239,26 +239,61 @@ const CreateGame = () => {
                       {availableTeams.length === 0 ? (
                         <p>No teams available for this event.</p>
                       ) : (
-                        availableTeams.map((team) => (
+                        <>
+                          {/* Toggle Select All */}
                           <button
-                            key={team._id}
                             type="button"
-                            onClick={() => toggleTeamSelection(team.teamName)}
+                            onClick={() => {
+                              const allSelected = selectedTeams.length === availableTeams.length;
+                              setSelectedTeams(
+                                allSelected ? [] : availableTeams.map((t) => t.teamName)
+                              );
+                            }}
                             style={{
-                              margin: "5px",
-                              padding: "8px 12px",
-                              backgroundColor: selectedTeams.includes(team.teamName)
-                                ? "#181b59"
-                                : "#ccc",
+                              margin: "5px 0 10px",
+                              padding: "10px 16px",
+                              backgroundColor:
+                                selectedTeams.length === availableTeams.length
+                                  ? "#b91c1c" 
+                                  : "#181b59", 
                               color: "white",
                               border: "none",
-                              borderRadius: "5px",
+                              borderRadius: "6px",
                               cursor: "pointer",
+                              fontWeight: "bold",
+                              transition: "background-color 0.2s ease",
                             }}
                           >
-                            {team.teamName}
+                            {selectedTeams.length === availableTeams.length
+                              ? "Deselect All"
+                              : "Select All"}
                           </button>
-                        ))
+
+                          {/* Individual team select list */}
+                          <div className="team-buttons" style={{ marginTop: "10px" }}>
+                            {availableTeams.map((team) => (
+                              <button
+                                key={team._id}
+                                type="button"
+                                onClick={() => toggleTeamSelection(team.teamName)}
+                                style={{
+                                  margin: "5px",
+                                  padding: "8px 12px",
+                                  backgroundColor: selectedTeams.includes(team.teamName)
+                                    ? "#181b59"
+                                    : "#ccc",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "5px",
+                                  cursor: "pointer",
+                                  transition: "background-color 0.2s ease",
+                                }}
+                              >
+                                {team.teamName}
+                              </button>
+                            ))}
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
@@ -376,7 +411,7 @@ const CreateGame = () => {
                     <div className="file-upload">
                       <input
                         id="rulesFile"
-                        name="rulesFile" 
+                        name="rulesFile"
                         type="file"
                         accept=".pdf,.doc,.docx"
                         onChange={(e) => setRulesFile(e.target.files[0])}
