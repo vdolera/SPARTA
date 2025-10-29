@@ -104,15 +104,24 @@ const Event = () => {
               >
                 {/* Menu button */}
                 {user.role === "admin" && (
-                  <>
-                    <MoreVertical size={20} className="menu-icon" onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)} />
+                  <div className="menu-container">
+                    <MoreVertical
+                      size={20}
+                      className="menu-icon"
+                      onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)}
+                    />
+
                     {menuOpen === event._id && (
-                      <div className="menu-dropdown">
-                        <button onClick={() => setEditEvent(event)}>EDIT</button>
-                        <button onClick={() => handleDelete(event._id)}>DELETE</button>
+                      <div className="dropdown-menu">
+                        <div className="dropdown-item" onClick={() => setEditEvent(event)}>
+                          Edit
+                        </div>
+                        <div className="dropdown-item delete" onClick={() => handleDelete(event._id)}>
+                          Delete
+                        </div>
                       </div>
                     )}
-                  </>
+                  </div>  
                 )}
               </div>
 
