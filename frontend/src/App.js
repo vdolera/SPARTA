@@ -1,9 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import BlockRoute from "../src/BlockRoute";
 
-//ADMIN
+//GENERAL
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ServicePage from "./pages/Service";
+
+//ADMIN
 import Dashboard from "./pages/admin/ADMIN_Dashboard";
 import Event from "./pages/admin/ADMIN_Event"
 import CreateEvent from "./pages/admin/ADMIN_EventCreate";
@@ -51,6 +54,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/service" element={<ServicePage />} />
         {/*Admin*/}
         <Route path="/admin/dashboard" element={<BlockRoute> <Dashboard /> </BlockRoute>} />
         <Route path="/admin/approval" element={<BlockRoute> <Approval /> </BlockRoute>} />

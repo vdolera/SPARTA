@@ -15,6 +15,21 @@ const getModelByRole = (role) => {
   return null;
 };
 
+// Sending email
+const multer = require('multer');
+const nodemailer = require('nodemailer');
+const upload = multer({ storage: multer.memoryStorage() });
+
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST, 
+  port: process.env.SMTP_PORT, 
+  secure: process.env.SMTP_PORT == 465, 
+  auth: {
+    user: process.env.SMTP_USER, 
+    pass: process.env.SMTP_PASS, 
+  },
+});
+
 // REGISTER
 router.post('/auth/register/:role', async (req, res) => {
   const { role } = req.params;
@@ -87,6 +102,54 @@ router.get('/institutions', async (req, res) => {
     res.json(institutions);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching institutions' });
+  }
+});
+
+// Sending Email to sys admin
+router.post('/send-request', upload.single('attachment'), async (req, res) => {
+  try {
+    const { email, body } = req.body;
+
+    // Basic validation
+    if (!email || !body) {
+      return res.status(400).json({ message: 'Email and message body are required.' });
+    }
+
+    let attachments = [];
+    if (req.file) {
+      attachments.push({
+        filename: req.file.originalname, 
+        content: req.file.buffer,        
+        contentType: req.file.mimetype,  
+      });
+    }
+
+    // Define email options
+    const mailOptions = {
+      from: `"SPARTA Service" <${process.env.SMTP_USER}>`,
+      to: process.env.SMTP_USER, 
+      replyTo: email, 
+      subject: 'New Institution Request from SPARTA Service Page',
+      html: `
+        <h2>New Service Request</h2>
+        <p><strong>From:</strong> ${email}</p>
+        <p><strong>Message:</strong></p>
+        <div style="border:1px solid #ddd; padding:10px; background-color:#f9f9f9; border-radius: 5px;">
+          <pre>${body}</pre>
+        </div>
+        <hr>
+        <p><i>${attachments.length > 0 ? 'A file was attached to this request.' : 'No file was attached.'}</i></p>
+      `,
+      attachments: attachments, 
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'Request sent successfully! We will get back to you soon.' });
+
+  } catch (err) {
+    console.error('Error sending service request email:', err);
+    res.status(500).json({ message: 'An error occurred on the server. Please try again.' });
   }
 });
 
