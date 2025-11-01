@@ -265,7 +265,7 @@ const CreateGame = () => {
                             }}
                           >
                             {selectedTeams.length === availableTeams.length
-                              ? "Deselect All"
+                              ? "Unselect All"
                               : "Select All"}
                           </button>
 

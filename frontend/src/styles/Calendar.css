@@ -383,3 +383,43 @@
     max-height: none;
   }
 }
+
+/* Announcemtn Container */
+.dashboard-page-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  width: 100%;
+}
+
+/* Announcements Column */
+.announcements-container {
+  flex-shrink: 0; /* Prevents this column from shrinking */
+  width: 400px;   /* Give it a fixed width (adjust as you like) */
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px); 
+}
+
+/* scrollable list container */
+.announcements-list {
+  flex-grow: 1;
+  overflow-y: auto; 
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px;
+  background: #fdfdfd;
+}
+
+.feedback-contents p {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: normal; 
+}
+
+/* This does the same for the author name (<h5>) */
+.feedback-contents h5 {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: normal;
+}

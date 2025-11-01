@@ -4,12 +4,13 @@ import Calendar from 'react-calendar';
 import axios from 'axios';
 import "../../styles/Calendar.css";
 
-const Dashboard = () => {
+  const Dashboard = () => {
 
   useEffect(() => {document.title = "SPARTA | Dashboard";},[]);
 
   const user = JSON.parse(localStorage.getItem('auth'));
 
+  // Calendar & Events State
   const [date, setDate] = useState(new Date());
   const [matchEvents, setMatchEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,14 +18,33 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [multiDayEvents, setMultiDayEvents] = useState([]);
 
+  // Announcements State
+  const [announcements, setAnnouncements] = useState([]);
+  const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
+  const [showPostModal, setShowPostModal] = useState(false);
+  const [newAnnouncement, setNewAnnouncement] = useState("");
+
+  // Toast State
+  const [showToast, setShowToast] = useState({ show: false, message: "", type: "" });
+
+  // Toast helper
+  const showToastMessage = (message, type) => {
+    setShowToast({ show: true, message, type });
+    setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 6000);
+  };
+
   // Fetch Game schedules
   useEffect(() => {
     const fetchGames = async () => {
+      if (!user?.institution) {
+        setLoading(false);
+        return;
+      }
       try {
-        let url = `http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}`;
+        let url = `http://localhost:5000/api/games?institution=${encodeURIComponent(user.institution)}`;
 
         if (user?.role === "co-organizer" || user?.role === "sub-organizer") {
-          url += `&eventName=${encodeURIComponent(user?.eventName)}`;
+          url += `&eventName=${encodeURIComponent(user.eventName)}`;
         }
   
         const res = await axios.get(url);
@@ -33,7 +53,6 @@ const Dashboard = () => {
         const multiDay = [];
 
         res.data.forEach(game => {
-          // Check if this game is multiple days
           const gameDates = game.matches
             .filter(match => match.date)
             .map(match => new Date(match.date).toDateString());
@@ -41,7 +60,6 @@ const Dashboard = () => {
           const uniqueDates = [...new Set(gameDates)];
           
           if (uniqueDates.length > 1) {
-            // This is a multi-day event
             const dateRange = {
               gameId: game._id || game.gameType,
               startDate: new Date(Math.min(...game.matches.filter(m => m.date).map(m => new Date(m.date)))),
@@ -76,6 +94,61 @@ const Dashboard = () => {
 
     fetchGames();
   }, [user?.institution, user?.eventName, user?.role]);
+
+  // Fetch Announcements
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      if (!user?.institution) {
+        setLoadingAnnouncements(false);
+        return;
+      }
+      try {
+        setLoadingAnnouncements(true);
+        let url = `http://localhost:5000/api/announcements?institution=${encodeURIComponent(user.institution)}`;
+        
+        if (user?.role === "co-organizer" || user?.role === "sub-organizer") {
+          url += `&eventName=${encodeURIComponent(user.eventName)}`;
+        }
+
+        const res = await axios.get(url);
+        setAnnouncements(res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+      } catch (err) {
+        console.error("Error fetching announcements:", err);
+      } finally {
+        setLoadingAnnouncements(false);
+      }
+    };
+    fetchAnnouncements();
+  }, [user?.institution, user?.eventName, user?.role]);
+
+  // Post Announcement
+  const handlePostAnnouncement = async () => {
+    if (!newAnnouncement.trim()) {
+      showToastMessage("Announcement cannot be empty", "error");
+      return;
+    }
+    try {
+      const res = await axios.post("http://localhost:5000/api/announcements", {
+        institution: user.institution,
+        eventName: (user?.role === "co-organizer" || user?.role === "sub-organizer") ? user.eventName : null,
+        authorName: user.username || "Admin", 
+        message: newAnnouncement,
+      });
+
+      if (res.data) {
+        setAnnouncements([res.data, ...announcements]);
+        setNewAnnouncement("");
+        setShowPostModal(false);
+        showToastMessage("Announcement posted successfully!", "success");
+      } else {
+        showToastMessage("Failed to post announcement", "error");
+      }
+    } catch (err) {
+      console.error("Error posting announcement:", err);
+      showToastMessage("Something went wrong!", "error");
+    }
+  };
+
 
   const onChange = (newDate) => {
     setDate(newDate);
@@ -119,7 +192,6 @@ const Dashboard = () => {
     if (view === 'month') {
       const classes = [];
       
-      // Check for events on this day
       const hasEvents = matchEvents.some(
         event => event.date.toDateString() === date.toDateString()
       );
@@ -128,7 +200,6 @@ const Dashboard = () => {
         classes.push('react-calendar__tile--has-event');
       }
 
-      // Check if this date is within any multi-day event range
       multiDayEvents.forEach(eventRange => {
         if (date >= eventRange.startDate && date <= eventRange.endDate) {
           classes.push('react-calendar__tile--event-range');
@@ -143,7 +214,7 @@ const Dashboard = () => {
         }
       });
 
-      return classes;
+      return classes.length > 0 ? classes : null;
     }
   };
 
@@ -173,43 +244,94 @@ const Dashboard = () => {
   };
 
   const upcomingEvents = matchEvents
-    .filter(event => event.date >= new Date())
+    .filter(event => event.date >= new Date(new Date().setHours(0, 0, 0, 0))) // Filter from start of today
     .sort((a, b) => a.date - b.date)
     .slice(0, 5);
 
+  const canPost = user?.role === 'organizer' || user?.role === 'co-organizer' || user?.role === 'admin';
+
   return (
     <MainLayout>
-      <div className="dashboard-container">
-        <div className="calendar-container">
-          <Calendar 
-            onChange={onChange} 
-            value={date} 
-            tileContent={tileContent}
-            tileClassName={tileClassName}
-            className="custom-calendar"
-            showNeighboringMonth={false}
-            onClickDay={handleDateClick}
-          />
+      <div className="dashboard-page-container">
+        
+        {/* Announcements Container */}
+        <div className="announcements-container">
+          <div className="feedback-header-row">
+            <h3>ANNOUNCEMENTS</h3>
+            {canPost && (
+              <button onClick={() => setShowPostModal(true)}>Create Post</button>
+            )}
+          </div>
+          
+          <div className="feedback-maindiv announcements-list">
+            {loadingAnnouncements ? (
+              <p>Loading announcements...</p>
+            ) : announcements.length === 0 ? (
+              <div className="no-feedback-message">
+                <p>No announcements posted yet.</p>
+              </div>
+            ) : (
+              announcements.map((ann) => (
+                <div className="feedback-container" key={ann._id}>
+                  <div className="feedback-contents">
+                    <h5
+                      style={{
+                        fontStyle: "italic",
+                        textAlign: "right",
+                        margin: 0,
+                      }}
+                    >
+                      {new Date(ann.createdAt).toLocaleDateString()}
+                    </h5>
+                    <p>{ann.message}</p>
+                    <h5
+                      style={{
+                        textAlign: "right",
+                        marginBottom: "5px",
+                      }}
+                    >
+                      - {ann.authorName}
+                    </h5>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
 
-        <div className="upcoming-events">
-          <h3>UPCOMING EVENTS</h3>
-          {loading ? (
-            <p>Loading events...</p>
-          ) : upcomingEvents.length > 0 ? (
-            <ul>
-              {upcomingEvents.map((event, index) => (
-                <li key={index} className="upcoming-event">
-                  <strong>{formatEventDate(event.date)} • {event.time}</strong>
-                  {event.title} - {event.teams}
-                  <br />
-                  <span className="location">📍 {event.location}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No upcoming events</p>
-          )}
+        {/* Main Dashboard Content */}
+        <div className="dashboard-main-content">
+          <div className="calendar-container">
+            <Calendar 
+              onChange={onChange} 
+              value={date} 
+              tileContent={tileContent}
+              tileClassName={tileClassName}
+              className="custom-calendar"
+              showNeighboringMonth={false}
+              onClickDay={handleDateClick}
+            />
+          </div>
+
+          <div className="upcoming-events">
+            <h3>UPCOMING EVENTS</h3>
+            {loading ? (
+              <p>Loading events...</p>
+            ) : upcomingEvents.length > 0 ? (
+              <ul>
+                {upcomingEvents.map((event, index) => (
+                  <li key={index} className="upcoming-event">
+                    <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                    {event.title} - {event.teams}
+                    <br />
+                    <span className="location">📍 {event.location}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No upcoming events</p>
+            )}
+          </div>
         </div>
 
         {/* Event Modal */}
@@ -243,6 +365,43 @@ const Dashboard = () => {
             </div>
           </div>
         )}
+
+        {/* Post Announcement Modal */}
+        {showPostModal && (
+          <div className="feedback-overlay">
+            <div className="feedback-modal">
+              <h2>Post an Announcement</h2>
+
+              <textarea
+                value={newAnnouncement}
+                onChange={(e) => setNewAnnouncement(e.target.value)}
+                placeholder="Write your announcement..."
+                rows="5"
+              />
+
+              <div className="feedback-actions">
+                <button className="cancel" onClick={() => setShowPostModal(false)}>
+                  Cancel
+                </button>
+                <button className="submit" onClick={handlePostAnnouncement}>
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Toast Notification */}
+        {showToast.show && (
+          <div
+            className={`toast-notification ${
+              showToast.type === "success" ? "toast-success" : "toast-error"
+            }`}
+          >
+            {showToast.message}
+          </div>
+        )}
+
       </div>
     </MainLayout>
   );
