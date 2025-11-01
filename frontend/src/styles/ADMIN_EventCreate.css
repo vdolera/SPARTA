@@ -1,27 +1,101 @@
-.event-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%
+
+/* LARGE SCREENS SCREENS LAPTOPS */
+@media (min-width: 1024px) and (max-width: 1440px) {
+
+  .event-container {
+    height: auto;
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 auto;
+  }
+
+  .event-create-maindiv {
+    width: min(1400px, 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+  }
+  
+  .event-form-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+    width:max-content
+  }
+
+  .event-form-left {
+      border: 2px solid #CE892C;
+      margin: 5px;
+      min-width: 25vw;
+      max-width: 60vw;
+      width: 90%;
+    }
+
+  .event-form-right {
+    border: 2px solid #1A2A49;
+    margin: 5px;
+    min-width: 30vw;
+    max-width: 60vw;
+    width: 90%;
+  }
+
+  
 }
 
-.event-create-maindiv {
-  border: 0.5px solid gray;
-  border-radius: 10px;
-  width: 1200px;
-  height: fit-content;
-  margin-top: 50px;
+/* EXTRA LARGE SCREENS */
+
+@media (min-width: 1441px) {
+  .event-container {
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 auto;
+  }
+
+  .event-create-maindiv {
+    width: 1200px;
+    margin: 0 auto;
+  }
+
+  .event-form-left, .event-form-right {
+    width: 100%;
+  }
+
+  .event-form-right {
+  border: 2px solid #1A2A49;
+  margin: 5px;
+  width: 650px;
+}
+
+  .event-form-left {
+    border: 2px solid #CE892C;
+    margin: 5px;
+    width: 400px;
+  }
+
+  }
+
+  .event-create-maindiv {
+    border: 0.5px solid gray;
+    border-radius: 10px;
+    /* width: 1200px; */
+    height: fit-content;
+    margin-top: 50px;
 }
 
 
 .event-form-container {
   display: flex;
-  flex-direction: row;
+  /* flex-direction: row; */
   align-items: flex-start;
   justify-content: center;
   font-family: Monteserrat, sans-serif;
   margin: 10px auto;
-  flex-direction: row;
   gap: 20px;
 }
 
@@ -36,17 +110,7 @@
   text-align: center;
 }
 
-.event-form-right {
-  border: 2px solid #1A2A49;
-  margin: 5px;
-  width: 650px;
-}
 
-.event-form-left {
-  border: 2px solid #CE892C;
-  margin: 5px;
-  width: 400px;
-}
 
 .event-form-left, .event-form-right {
   padding: 20px;

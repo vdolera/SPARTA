@@ -174,14 +174,14 @@ const CreateEvent = () => {
                   />
                 </label>
 
-                <label>
+                <label style={{display:"flex", flexDirection:"column", marginBottom:"10px"}}>
                   Description:
                   <textarea
                     value={description}
                     onChange={e => setDescription(e.target.value)}
                     placeholder="Enter Event Description"
                     rows="4"
-                    cols="57"
+                    cols="60"
                     required
                     style={{ resize: 'vertical', fontFamily: 'Montserrat, sans-serif', marginTop: '5px' }}
                   />
