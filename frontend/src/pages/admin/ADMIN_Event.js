@@ -335,7 +335,7 @@ const Event = () => {
             </div>
           </div>
         )}
-
+    
     </MainLayout>
   );
 };

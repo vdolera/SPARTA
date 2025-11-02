@@ -1,3 +1,71 @@
+@media (max-width: 1023px) {
+  .event-main-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 500px;
+  }
+
+  .event-list-container {
+    width: 700px;
+    margin-top: 120px;
+    padding-left: 25px;
+  }
+
+  .event-item {
+    min-width: 25vw;
+    max-width: fit-content;
+    max-height: fit-content;
+  }
+
+  .event-color {
+    height: 5vh;
+  }
+
+  .event-name {
+    font-size: 16px;
+    height: 55px;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1600px) {
+  .event-main-header {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 0;
+    width: 1100px;
+  }
+  .event-list-container {
+    width: 1100px;
+    margin-top: 150px;
+  }
+
+  .event-item {
+    min-width: 18vw;
+    height: 24vh;
+  }
+
+  .event-color {
+    height: 6vh;
+  }
+
+  .event-name {
+    font-size: 18px;
+    height: 8vh;
+  }
+}
+
+.event-item {
+  color: black;
+  font-size: 20px;
+  border-radius: 100px;
+  border: none;
+  margin: 5px;
+  /* min-width: 18vw;
+  max-width: fit-content;
+  height: 24vh; */
+}
+
 .event-main-header {
   display: flex;
   justify-content: space-between;
@@ -15,7 +83,6 @@
   box-sizing: border-box;
   background-color: transparent;
   height: fit-content;
-  width: 100%;
 }
 
 .event-search-bar {
@@ -89,7 +156,6 @@
 
 .event-color {
   width: 100%;
-  height: 7vh;
   border-radius: 5px 5px 0 0;
   cursor: pointer;
   position: relative;
@@ -167,7 +233,6 @@
   font-weight: bold;
   border-radius: 0 0 5px 5px;
   border: 1px solid #b9bbb6;
-  height: 10vh;
   font-family: Arial, Helvetica, sans-serif;
   color: #1A2A49;
   cursor: pointer;
@@ -180,16 +245,7 @@
   font-style: italic;
 }
 
-.event-item {
-  color: black;
-  font-size: 20px;
-  border-radius: 100px;
-  border: none;
-  margin: 5px;
-  min-width: 18vw;
-  max-width: fit-content;
-  height: 24vh;
-}
+
 
 .modal-event-overlay {
  position: fixed;
@@ -204,7 +260,7 @@
   z-index: 2100;
 }
 
-/* Modal Card */
+/* ============= MODAL CARD ============= */
 .event-modal {
   background: #fff;
   padding: 24px 32px;

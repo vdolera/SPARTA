@@ -8,3 +8,11 @@
   box-sizing: border-box;
   height: fit-content;
 }
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 50px;;
+    margin-top: 100px;
+    padding: 0 10px 0 10px;
+  }
+}
