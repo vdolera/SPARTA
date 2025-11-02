@@ -1,6 +1,7 @@
 import MainLayout from "../../components/MainLayout";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 import '../../styles/ADMIN_EventCreate.css';
 
 const CreateEvent = () => {
@@ -260,8 +261,21 @@ const CreateEvent = () => {
                 <hr style={{ border: '1px solid #ccc', margin: '10px 0' }} />
 
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-                  <div className="event-form-title">
-                    <h4> CO & SUB-ORGANIZERS </h4>
+                  <div className="event-form-title" >
+                    <div style={{display: "flex", flexDirection: "row", gap:"5px"}}>
+                      <h4> CO & SUB-ORGANIZERS </h4>
+
+                      <div className="info-icon" tabIndex={0} aria-describedby="coord-types-tooltip">
+                        <IoIosInformationCircleOutline />
+                        <div className="hover-modal" role="tooltip" id="coord-types-tooltip">
+                          <strong>Coordinator Types</strong>
+                          <ul>
+                            <li><b>Co-Organizer</b> — can create teams and games, accepts players into institutions and teams and can access scoreboard. They can also view player data such as the player's submitted requirements.</li>
+                            <li><b>Sub-Organizer</b> — can manage teams and players within an event and game. However, they aren't allowed to create events and games.</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
                     <p style={{ color: '#3E64AF' }}> *Fields are Optional To Be Filled Up* </p>
                   </div>
                   <button
