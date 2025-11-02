@@ -188,7 +188,7 @@ const CreateEvent = () => {
                 </label>
 
                 <div className="event-reqs">
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
+                  <div className="event-form-title" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
                     <h4>EVENT REQUIREMENTS</h4>
                     <button className="add-coordinator-button" type="button" onClick={handleAddRequirement}>
                       + Add Requirement
@@ -230,7 +230,7 @@ const CreateEvent = () => {
             <div className="event-form-right" style={{ minHeight: `${220 + coordinators.length * 60}px` }}>
               <div className="event-form-title">
                 <h4> ORGANIZER DETAILS </h4>
-                <p style={{ color: 'red', fontSize: '10px' }}> *All Fields Are REQUIRED To Be Filled Up* </p>
+                <p style={{ color: 'red'}}> *All Fields Are REQUIRED To Be Filled Up* </p>
               </div>
 
               <form className="event-forms" onSubmit={handleCreate}>
@@ -262,7 +262,7 @@ const CreateEvent = () => {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
                   <div className="event-form-title">
                     <h4> CO & SUB-ORGANIZERS </h4>
-                    <p style={{ color: '#3E64AF', fontSize: '10px' }}> *Fields are Optional To Be Filled Up* </p>
+                    <p style={{ color: '#3E64AF' }}> *Fields are Optional To Be Filled Up* </p>
                   </div>
                   <button
                     className="add-coordinator-button"
