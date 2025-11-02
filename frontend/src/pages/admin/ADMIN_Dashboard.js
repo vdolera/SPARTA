@@ -284,12 +284,7 @@ import "../../styles/Calendar.css";
                       {new Date(ann.createdAt).toLocaleDateString()}
                     </h5>
                     <p>{ann.message}</p>
-                    <h5
-                      style={{
-                        textAlign: "right",
-                        marginBottom: "5px",
-                      }}
-                    >
+                    <h5>
                       - {ann.authorName}
                     </h5>
                   </div>

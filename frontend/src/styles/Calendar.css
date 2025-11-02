@@ -394,8 +394,8 @@
 
 /* Announcements Column */
 .announcements-container {
-  flex-shrink: 0; /* Prevents this column from shrinking */
-  width: 400px;   /* Give it a fixed width (adjust as you like) */
+  flex-shrink: 0; 
+  width: 400px;   
   display: flex;
   flex-direction: column;
   height: calc(100vh - 100px); 
