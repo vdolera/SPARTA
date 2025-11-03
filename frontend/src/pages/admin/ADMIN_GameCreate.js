@@ -26,11 +26,56 @@ const CreateGame = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
 
+  const [eventDetails, setEventDetails] = useState(null);
+
   const navigate = useNavigate();
   const { eventName } = useParams();
   const decodedEventName = decodeURIComponent(eventName);
 
   const user = JSON.parse(localStorage.getItem("auth"));
+
+  // Date format reader thingy
+  const formatDateTimeLocal = (isoString) => {
+    if (!isoString) return "";
+    try {
+      const date = new Date(isoString);
+      if (isNaN(date.getTime())) return ""; 
+      const offset = date.getTimezoneOffset() * 60000;
+      const localDate = new Date(date.getTime() - offset);
+      return localDate.toISOString().slice(0, 16); 
+    } catch (e) {
+      return "";
+    }
+  };
+
+  const eventStartFormatted = formatDateTimeLocal(eventDetails?.eventStartDate);
+  const eventEndFormatted = formatDateTimeLocal(eventDetails?.eventEndDate);
+
+
+  // Fetch Event Details (for date validation) 
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      if (!user?.institution || !decodedEventName) return;
+      try {
+        const response = await fetch(`http://localhost:5000/api/events?institution=${encodeURIComponent(user.institution)}&name=${encodeURIComponent(decodedEventName)}`);
+        
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.message || "Event not found");
+        }
+        
+        const data = await response.json();
+        setEventDetails(data);
+
+      } catch (error) {
+        console.error("Error fetching event details:", error);
+        setModalMessage(`Error fetching event details: ${error.message}. Cannot validate game dates.`);
+        setShowModal(true);
+      }
+    };
+
+    fetchEventDetails();
+  }, [user?.institution, decodedEventName]);
 
   // Fetch teams
   useEffect(() => {
@@ -218,6 +263,9 @@ const CreateGame = () => {
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         required
+                        min={eventStartFormatted}
+                        max={eventEndFormatted}
+                        disabled={!eventDetails} 
                       />
                     </label>
 
@@ -228,8 +276,12 @@ const CreateGame = () => {
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
                         required
+                        min={startDate || eventStartFormatted} 
+                        max={eventEndFormatted}
+                        disabled={!eventDetails}
                       />
                     </label>
+                    {!eventDetails && <p style={{color: 'red', fontSize: '0.8em'}}>Loading event dates...</p>}
                   </div>
 
                   {/* Participating Teams */}

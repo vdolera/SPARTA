@@ -1,6 +1,7 @@
 const express = require("express");
 const Game = require("../models/Game");
 const Team = require("../models/Team");
+const Event = require("../models/Event");
 
 // File uploads
 const multer = require("multer");
@@ -35,6 +36,41 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       coordinators,
       referees,
     } = req.body;
+
+    // DATE VALIDATION for game( event date to game)
+    const parentEvent = await Event.findOne({ 
+      eventName: eventName, 
+      institution: institution 
+    });
+
+    if (!parentEvent) {
+      return res.status(404).json({ message: "Parent event not found. Cannot create game." });
+    }
+
+    const gameStart = new Date(startDate);
+    const gameEnd = new Date(endDate);
+    const eventStart = new Date(parentEvent.eventStartDate);
+    const eventEnd = new Date(parentEvent.eventEndDate);
+
+    if (isNaN(gameStart.getTime()) || isNaN(gameEnd.getTime())) {
+        return res.status(400).json({ message: "Invalid game start or end date." });
+    }
+
+    if (gameStart < eventStart) {
+       return res.status(400).json({ 
+         message: `Game start date cannot be before the event start date (${eventStart.toLocaleDateString()}).`
+       });
+    }
+    
+    if (gameEnd > eventEnd) {
+       return res.status(400).json({ 
+         message: `Game end date cannot be after the event end date (${eventEnd.toLocaleDateString()}).`
+       });
+    }
+    
+    if (gameStart > gameEnd) {
+       return res.status(400).json({ message: "Game start date must be before its end date." });
+    }
 
     // Translation(Parsing) thingy chuchu
     const parsedTeams = JSON.parse(teams || "[]");
