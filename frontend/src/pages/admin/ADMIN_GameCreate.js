@@ -278,7 +278,7 @@ const CreateGame = () => {
                         required
                         min={startDate || eventStartFormatted} 
                         max={eventEndFormatted}
-                        disabled={!eventDetails}
+                        disabled={!eventDetails} 
                       />
                     </label>
                     {!eventDetails && <p style={{color: 'red', fontSize: '0.8em'}}>Loading event dates...</p>}

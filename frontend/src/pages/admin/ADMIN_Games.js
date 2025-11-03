@@ -9,15 +9,14 @@ import { IoMdClose } from "react-icons/io";
 import '../../styles/ADMIN_Games.css';
 
 const Game = () => {
-
-  useEffect(() => {document.title = "SPARTA | " + decodedName + " Games";},[]);
+  const { eventName } = useParams();
+  const decodedName = decodeURIComponent(eventName);
+  useEffect(() => {document.title = "SPARTA | " + decodedName + " Games";},[decodedName]);
 
   const navigate = useNavigate();
   const [gamesByType, setGamesByType] = useState({});
   const user = JSON.parse(localStorage.getItem("auth"));
   const userInstitution = user?.institution;
-  const { eventName } = useParams();
-  const decodedName = decodeURIComponent(eventName);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
