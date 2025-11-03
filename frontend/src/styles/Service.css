@@ -1,0 +1,51 @@
+.service-page-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    gap: 10px;
+    padding: 24px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    
+}
+
+h2 {
+    font-family: Monteserrat, Sans-serif;
+    margin: 0;
+}
+
+p, .instructions-list, .form-group {
+    font-family: Arial, Sans-serif;
+    line-height: 1.5;
+}
+
+.instructions-section {
+    border: 2px solid #ce892c;
+    border-radius: 15px;
+    margin: 5px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.form-section {
+    border: 2px solid #1a2a49;
+    border-radius: 15px;
+    margin: 5px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+@media (min-width: 1024px) and  (max-width: 1600px) {
+
+    .instructions-section, .form-section {
+        min-width: 20vw;
+        width: 80%;
+        max-width: 30vw;
+        box-sizing: border-box;
+        flex: 1 1 480px;
+    }
+
+}

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import "../styles/Service.css"
+import "../styles/Spectator.css"
 
 export default function ServicePage() {
   // State for form fields
@@ -55,7 +57,22 @@ export default function ServicePage() {
   };
 
   return (
+
     <div className="service-page-container">
+
+      <div className="spectator-header">
+        <div className="header-text">
+          SPARTA SERVICE REQUEST
+        </div>
+      </div>
+
+      <div className="logo-div">
+        <div className="logo-container">
+          <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+        </div>
+      </div>
+
+    <div className="service-page-wrapper">
       <div className="instructions-section">
         <h2>How to Add a New Institution</h2>
         <p>
@@ -90,58 +107,58 @@ export default function ServicePage() {
         </ol>
       </div>
 
-      <hr className="divider" />
+        <div className="form-section">
+          <h2>Service Request Form</h2>
+          <form className="service-form" onSubmit={handleSubmit}>
+            
+            {/* Email Field  */}
+            <div className="form-group">
+              <label htmlFor="email">Your Contact Email</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+              />
+            </div>
 
-      <div className="form-section">
-        <h2>Service Request Form</h2>
-        <form className="service-form" onSubmit={handleSubmit}>
-          
-          {/* Email Field  */}
-          <div className="form-group">
-            <label htmlFor="email">Your Contact Email</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-            />
-          </div>
+            {/* Body Field */}
+            <div className="form-group">
+              <label htmlFor="body">Message Body (Institution Details)</label>
+              <textarea
+                id="body"
+                rows="10"
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                placeholder="Please enter the institution's details as per the instructions above..."
+                required
+              ></textarea>
+            </div>
 
-          {/* Body Field */}
-          <div className="form-group">
-            <label htmlFor="body">Message Body (Institution Details)</label>
-            <textarea
-              id="body"
-              rows="10"
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              placeholder="Please enter the institution's details as per the instructions above..."
-              required
-            ></textarea>
-          </div>
+            {/* File Upload */}
+            <div className="form-group">
+              <label htmlFor="file-upload">Upload Attachment (Optional)</label>
+              <input
+                type="file"
+                id="file-upload"
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+            </div>
 
-          {/* File Upload */}
-          <div className="form-group">
-            <label htmlFor="file-upload">Upload Attachment (Optional)</label>
-            <input
-              type="file"
-              id="file-upload"
-              onChange={(e) => setFile(e.target.files[0])}
-            />
-          </div>
+            {/* Submit Button */}
+            <button type="submit" className="submit-btn" disabled={status === "sending"}>
+              {status === "sending" ? "Sending..." : "Send Request"}
+            </button>
 
-          {/* Submit Button */}
-          <button type="submit" className="submit-btn" disabled={status === "sending"}>
-            {status === "sending" ? "Sending..." : "Send Request"}
-          </button>
+            {/* Status Message */}
+            {message && (
+              <p className={`status-message ${status}`}>{message}</p>
+            )}
+          </form>
+        </div>
 
-          {/* Status Message */}
-          {message && (
-            <p className={`status-message ${status}`}>{message}</p>
-          )}
-        </form>
       </div>
     </div>
   );
