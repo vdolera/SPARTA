@@ -5,7 +5,6 @@
   grid-template-columns: 1fr 350px;
   gap: 40px;
   max-width: 1400px;
-  /* margin: 0 auto; */
   min-height: calc(100vh - 100px);
   align-items: start;
 }
@@ -296,10 +295,10 @@
 /* === RESPONSIVE MEDIA QUERIES === */
 
 /* 🖥️ Large Desktops (1440px+) */
-@media screen and (min-width: 1440px) {
+@media screen and (min-width: 1024px) and (max-width: 1600px) {
   .dashboard-container {
     max-width: 1200px;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 2fr 1fr;
     gap: 40px;
     display: flex;
     align-items: flex-start;
@@ -307,26 +306,12 @@
   }
 
   .calendar-container {
-    width: 1000px;
+    width: 800px;
     min-height: fit-content;
   }
 
   .upcoming-events {
     width: 50%;
-  }
-}
-
-/* 💻 Laptops (1024px–1439px) */
-@media screen and (max-width: 1439px) {
-  .dashboard-container {
-    grid-template-columns: 2fr 1fr;
-    gap: 25px;
-    max-width: 1200px;
-  }
-
-  .calendar-container,
-  .upcoming-events {
-    width: 100%;
   }
 }
 
@@ -343,51 +328,12 @@
   }
 }
 
-/* 📲 Mobile (≤767px) */
-@media screen and (max-width: 767px) {
-  .dashboard-container {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    gap: 16px;
-  }
 
-  .calendar-container,
-  .upcoming-events {
-    padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    width: 100%;
-  }
-
-  .upcoming-events h3 {
-    font-size: 16px;
-  }
-
-  .react-calendar__tile {
-    min-height: 48px;
-    font-size: 13px;
-  }
-}
-
-@media screen and (max-width: 1023px) {
-  .calendar-container {
-    min-height: 50vh;
-    max-height: none;
-  }
-}
-
-@media screen and (max-width: 767px) {
-  .calendar-container {
-    min-height: auto;
-    max-height: none;
-  }
-}
-
-/* Announcemtn Container */
+/* Announcement Container */
 .dashboard-page-container {
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
   gap: 24px;
   width: 100%;
 }
@@ -398,23 +344,74 @@
   width: 400px;   
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 100px); 
+  height: calc(100vh - 100px);
+  border: 2px solid #1a2a49;
+  border-radius: 10px;
+
 }
 
-/* scrollable list container */
+/* ANNOUNCEMENT DIV */
 .announcements-list {
   flex-grow: 1;
-  overflow-y: auto; 
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 15px;
   background: #fdfdfd;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.announcement-header {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 5px 15px;
+}
+
+.announcement-header h3 {
+  margin: 10px;
+  text-decoration: underline;
+}
+
+.announcement-header button {
+  background: #1a2a49;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 7px;
+  font-family: Poppins, sans-serif;
+  font-size: 12px;
+  height: fit-content;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.announcement-block {
+  background: linear-gradient(180deg, #ce892c, #1a2a49);
+  padding: 2px;
+  border-radius: 12px;
+  width: 100%;
+}
+
+.announcement-block-contents {
+    background: white;
+    border-radius: 10px;
+    padding: 5px 10px;
+    font-family: Poppins, sans-serif;
+    min-height: 15vh;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .feedback-contents p {
   overflow-wrap: break-word;
   word-wrap: break-word;
-  white-space: normal; 
+  white-space: normal;
+
 }
 
 /* This does the same for the author name (<h5>) */

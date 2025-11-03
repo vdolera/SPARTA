@@ -105,6 +105,8 @@ export default function ServicePage() {
             will begin the verification process.
           </li>
         </ol>
+
+        <p>For further assistance, please contact our support team at <b>sparta.capstoneproject@gmail.com</b></p>
       </div>
 
         <div className="form-section">
@@ -132,7 +134,7 @@ export default function ServicePage() {
                 rows="10"
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                placeholder="Please enter the institution's details as per the instructions above..."
+                placeholder="Please enter the institution's details as per the instructions given..."
                 required
               ></textarea>
             </div>

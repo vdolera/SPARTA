@@ -22,20 +22,19 @@ p, .instructions-list, .service-form-group {
     line-height: 1.5;
 }
 
+.instructions-section, .form-section {
+    margin: 5px;
+    padding: 25px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
+}
+
 .instructions-section {
     border: 2px solid #ce892c;
-    border-radius: 15px;
-    margin: 5px;
-    padding: 20px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .form-section {
     border: 2px solid #1a2a49;
-    border-radius: 15px;
-    margin: 5px;
-    padding: 20px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .service-form-group {
@@ -51,7 +50,6 @@ p, .instructions-list, .service-form-group {
 
 .service-form-group input {
     padding: 5px;
-    margin-top: 5px;
     border: 2px solid #181b59;
     border-radius: 8px;
     background-color: #fff;
@@ -59,9 +57,25 @@ p, .instructions-list, .service-form-group {
     font-weight: 500;
     color: #333;
     cursor: pointer;
-    transition: border-color 0.2s 
-ease, box-shadow 0.2s 
-ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.submit-btn {
+    display: block;
+    margin: 5px auto;
+    background-color: #1a2a49;
+    color: #fff;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.submit-btn:hover {
+    background-color: #ce892c;
 }
 
 @media (min-width: 1024px) and  (max-width: 1600px) {
@@ -72,6 +86,8 @@ ease;
         max-width: 30vw;
         box-sizing: border-box;
         flex: 1 1 480px;
+        height: 550px;
+        overflow-y: auto;
     }
 
 }

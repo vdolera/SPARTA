@@ -253,46 +253,6 @@ import "../../styles/Calendar.css";
   return (
     <MainLayout>
       <div className="dashboard-page-container">
-        
-        {/* Announcements Container */}
-        <div className="announcements-container">
-          <div className="feedback-header-row">
-            <h3>ANNOUNCEMENTS</h3>
-            {canPost && (
-              <button onClick={() => setShowPostModal(true)}>Create Post</button>
-            )}
-          </div>
-          
-          <div className="feedback-maindiv announcements-list">
-            {loadingAnnouncements ? (
-              <p>Loading announcements...</p>
-            ) : announcements.length === 0 ? (
-              <div className="no-feedback-message">
-                <p>No announcements posted yet.</p>
-              </div>
-            ) : (
-              announcements.map((ann) => (
-                <div className="feedback-container" key={ann._id}>
-                  <div className="feedback-contents">
-                    <h5
-                      style={{
-                        fontStyle: "italic",
-                        textAlign: "right",
-                        margin: 0,
-                      }}
-                    >
-                      {new Date(ann.createdAt).toLocaleDateString()}
-                    </h5>
-                    <p>{ann.message}</p>
-                    <h5>
-                      - {ann.authorName}
-                    </h5>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
 
         {/* Main Dashboard Content */}
         <div className="dashboard-main-content">
@@ -360,6 +320,46 @@ import "../../styles/Calendar.css";
             </div>
           </div>
         )}
+
+                {/* Announcements Container */}
+        <div className="announcements-container">
+          <div className="announcement-header" style={{display: "flex", flexDirection: "row"}}>
+            <h3>ANNOUNCEMENTS</h3>
+            {canPost && (
+              <button onClick={() => setShowPostModal(true)}>Create Post</button>
+            )}
+          </div>
+          
+          <div className="announcements-list">
+            {loadingAnnouncements ? (
+              <p>Loading announcements...</p>
+            ) : announcements.length === 0 ? (
+              <div className="no-feedback-message">
+                <p>No announcements posted yet.</p>
+              </div>
+            ) : (
+              announcements.map((ann) => (
+                <div className="announcement-block" key={ann._id}>
+                  <div className="announcement-block-contents">
+                    <h5
+                      style={{
+                        fontStyle: "italic",
+                        textAlign: "left",
+                        margin: "0",
+                      }}
+                    >
+                      {new Date(ann.createdAt).toLocaleDateString()}
+                    </h5>
+                    <p style={{margin: "5px", textAlign: "center"}}>{ann.message}</p>
+                    <h5 style={{margin: "5px", textAlign: "end"}}>
+                      - {ann.authorName}
+                    </h5>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
 
         {/* Post Announcement Modal */}
         {showPostModal && (
