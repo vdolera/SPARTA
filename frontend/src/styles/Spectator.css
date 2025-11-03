@@ -180,7 +180,8 @@ body {
 }
 
 .event-header {
-  justify-content: center;
+  display: flex;
+  align-items: center;
   margin: 20px;
   margin-bottom: 0px;
   width: 55vw;

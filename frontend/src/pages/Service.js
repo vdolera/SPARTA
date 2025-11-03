@@ -112,7 +112,7 @@ export default function ServicePage() {
           <form className="service-form" onSubmit={handleSubmit}>
             
             {/* Email Field  */}
-            <div className="form-group">
+            <div className="service-form-group">
               <label htmlFor="email">Your Contact Email</label>
               <input
                 type="email"
@@ -125,7 +125,7 @@ export default function ServicePage() {
             </div>
 
             {/* Body Field */}
-            <div className="form-group">
+            <div className="service-form-group">
               <label htmlFor="body">Message Body (Institution Details)</label>
               <textarea
                 id="body"
@@ -137,22 +137,30 @@ export default function ServicePage() {
               ></textarea>
             </div>
 
-            {/* File Upload */}
-            <div className="form-group">
-              <label htmlFor="file-upload">Upload Attachment (Optional)</label>
-              <input
-                type="file"
-                id="file-upload"
-                onChange={(e) => setFile(e.target.files[0])}
-              />
+            <div className="service-form-group">
+              
+              <div className="file-upload" style={{width: "80%", margin: "5px auto"}}>
+                <input
+                  id="file-upload"
+                  name="file-upload"
+                  type="file"
+                  onChange={(e) => setFile(e.target.files[0])}
+                  style={{display: "none"}}
+                />
+
+                <span>{file ? file.name : "No file chosen"}</span>
+
+                <label htmlFor="file-upload" className="upload-btn">
+                  Upload Attachment
+                </label>
+              </div>
+
             </div>
 
-            {/* Submit Button */}
             <button type="submit" className="submit-btn" disabled={status === "sending"}>
               {status === "sending" ? "Sending..." : "Send Request"}
             </button>
 
-            {/* Status Message */}
             {message && (
               <p className={`status-message ${status}`}>{message}</p>
             )}

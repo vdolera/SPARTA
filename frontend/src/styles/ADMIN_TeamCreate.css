@@ -133,7 +133,7 @@
 }
 
 .selected-tags {
-  margin-top: 8px;
+  margin: 10px 0;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -142,11 +142,10 @@
 .tag {
   background: #d68b1d;
   color: white;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 3px 5px;
+  border-radius: 5px;
   display: flex;
   align-items: center;
-  gap: 6px;
 }
 
 .tag button {

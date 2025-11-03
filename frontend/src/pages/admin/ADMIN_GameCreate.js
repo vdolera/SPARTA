@@ -241,8 +241,7 @@ const CreateGame = () => {
                       ) : (
                         <>
                           {/* Toggle Select All */}
-                          <button
-                            type="button"
+                          <button type="button" 
                             onClick={() => {
                               const allSelected = selectedTeams.length === availableTeams.length;
                               setSelectedTeams(
@@ -250,17 +249,17 @@ const CreateGame = () => {
                               );
                             }}
                             style={{
-                              margin: "5px 0 10px",
-                              padding: "10px 16px",
+                              margin: "5px 0 5px",
+                              padding: "5px 10px",
                               backgroundColor:
                                 selectedTeams.length === availableTeams.length
-                                  ? "#b91c1c" 
-                                  : "#181b59", 
+                                  ? "#b95454ff" 
+                                  : "#18593cff", 
                               color: "white",
                               border: "none",
                               borderRadius: "6px",
                               cursor: "pointer",
-                              fontWeight: "bold",
+                              
                               transition: "background-color 0.2s ease",
                             }}
                           >
@@ -328,7 +327,8 @@ const CreateGame = () => {
                     </div>
                   </div>
                 </div>
-
+              
+              <div>
                 {/* Add Coordinator */}
                 <div className="game-organizers">
                   <h4>SUB-ORGANIZERS</h4>
@@ -380,7 +380,7 @@ const CreateGame = () => {
                     <input
                       type="text"
                       placeholder="Type referee name and press Add"
-                      style={{ margin: "5px" }}
+                      style={{ margin: "5px", width: "60%" }}
                       value={refereeInput}
                       onChange={(e) => setRefereeInput(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" ? (e.preventDefault(), handleAddReferee()) : null}
@@ -428,10 +428,10 @@ const CreateGame = () => {
                     </div>
                   </div>
                 </div>
-
-
-              </form>
-            </div>
+              </div>      
+            </form>
+            
+          </div>
 
             <div className="lower-buttons">
               <button type="button" onClick={() => navigate(-1)}>Cancel</button>
@@ -443,7 +443,7 @@ const CreateGame = () => {
         {showModal && (
           <div className="modal-backdrop">
             <div className="game-modal">
-              <p>{modalMessage}</p>
+              <p style={{ color: '#333', fontSize: '14px', textTransform: 'capitalize' }}>{modalMessage}</p>
               <button onClick={() => setShowModal(false)}>Close</button>
             </div>
           </div>

@@ -36,12 +36,12 @@
     width: 1100px;
   }
   .event-list-container {
-    width: 1100px;
+    width: 1200px;
     margin-top: 150px;
   }
 
   .event-item {
-    min-width: 18vw;
+    min-width: 15vw;
     height: 24vh;
   }
 

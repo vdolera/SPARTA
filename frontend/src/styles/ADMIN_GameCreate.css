@@ -8,16 +8,12 @@
   border: 0.5px solid gray;
   border-radius: 10px;
   max-width: 1200px;
-  width: 100%;
+  width: 80%;
   box-sizing: border-box;
-  padding: 12px;
 }
 
 /* Make textarea and inputs adapt */
-textarea,
-.game-details select,
-.game-details > input,
-.game-organizers input {
+textarea, .game-details select, .game-details > input, .game-organizers input {
   box-sizing: border-box;
   max-width: 100%;
 }
@@ -33,9 +29,7 @@ textarea,
     gap: 12px;
   }
 
-  .game-details,
-  .game-organizers,
-  .game-reqs-rules {
+  .game-details, .game-organizers, .game-reqs-rules {
     width: calc(50% - 20px);
     min-width: 280px;
   }
@@ -49,17 +43,12 @@ textarea,
     gap: 16px;
   }
 
-  .game-details,
-  .game-organizers,
-  .game-reqs-rules,
-  .file-upload {
+  .game-details, .game-organizers, .game-reqs-rules, .file-upload {
     width: 100%;
     margin: 6px 0;
   }
 
-  .game-details select,
-  .game-details > input,
-  .game-organizers input {
+  .game-details select, .game-details > input, .game-organizers input {
     width: 100%;
   }
 
@@ -123,8 +112,6 @@ textarea,
   justify-content: center;
   font-family: Monteserrat, sans-serif;
   margin: 10px auto;
-  gap: 20px;
-  background-color: rgba(211, 211, 211, 0.149);
 }
 
 .game-form-header {
@@ -169,7 +156,7 @@ textarea,
     display: flex;
     flex-direction: column;
     width: 450px;
-    height: inherit;
+    height: fit-content;
     margin: 10px;
     padding: 10px;
 }
@@ -260,7 +247,7 @@ textarea,
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  width: 400px;
+  width: inherit;
   margin: 10px;
   padding: 10px;
 }
@@ -299,7 +286,7 @@ textarea,
 }
 
 textarea {
-  width: 90%;
+  width: 100%;
   padding: 12px;
   border: 1.5px solid #ccc;
   border-radius: 8px;
@@ -417,7 +404,7 @@ textarea:focus {
   transform: translate(-50%, -50%);
   background: #fff;
   padding: 5px;
-  border-radius: 16px;
+  border-radius: 10px;
   box-shadow: 0 8px 32px rgba(30, 42, 73, 0.18);
   text-align: center;
   width: 400px;
