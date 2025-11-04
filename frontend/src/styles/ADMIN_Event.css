@@ -41,8 +41,35 @@
   }
 
   .event-item {
+    min-width: 20vw;
+    height: fit-content;
+  }
+
+  .event-color {
+    height: 6vh;
+  }
+
+  .event-name {
+    font-size: 18px;
+    height: 8vh;
+  }
+}
+
+@media (min-width: 1601px) {
+  .event-main-header {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 0;
+    width: 1300px;
+  }
+  .event-list-container {
+    width: 1400px;
+    margin-top: 150px;
+  }
+
+  .event-item {
     min-width: 15vw;
-    height: 24vh;
+    height: fit-content;
   }
 
   .event-color {
@@ -61,9 +88,6 @@
   border-radius: 100px;
   border: none;
   margin: 5px;
-  /* min-width: 18vw;
-  max-width: fit-content;
-  height: 24vh; */
 }
 
 .event-main-header {
