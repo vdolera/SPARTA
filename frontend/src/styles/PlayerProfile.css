@@ -1,3 +1,69 @@
+@media (min-width: 1600px) {
+  .player-profile-container {
+    max-width: 1400px;
+  }
+
+  .player-profile-container {
+    max-width: 1200px;
+  }
+
+  .player-main-card {
+    min-width: 15vw;
+    height: 55vh;
+}
+
+  .other-info-card {
+    min-width: 35vw;
+    height: 55vh;
+  }
+
+}
+
+@media (min-width: 1023px) and (max-width: 1599px) {
+  .profile-view {
+    flex-direction: row;
+    width: auto;  }
+
+  .player-profile-container {
+    max-width: 1200px;
+  }
+
+  .player-main-card {
+    max-width: 15vw;
+    height: 55vh;
+}
+
+  .other-info-card {
+    min-width: 45vw;
+    height: 55vh;
+  }
+
+}
+
+@media (max-width: 1022px) {
+
+  .profile-view {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .player-main-card, .other-info-card {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .player-main-card {
+    max-width: 35vw;
+    height: 55vh;
+  }
+
+  .other-info-card {
+    min-width: 50vw;
+    width: 65vw;
+    height: 55vh;
+  }
+}
+
 .player-profile-container {
   display: flex;
   flex-direction: column;
@@ -11,14 +77,8 @@
 
 .profile-view {
   display: flex;
-  flex-direction: column;
   gap: 20px;
-}
-
-@media (min-width: 768px) {
-  .profile-view {
-    flex-direction: row;
-  }
+  width: fit-content;
 }
 
 .player-main-card, .other-info-card, .profile-form {
@@ -27,19 +87,9 @@
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.215);
   flex: 1;
-  height: fit-content;
   word-break: break-word;
 }
 
-.player-main-card {
-    max-width: 15vw;
-    height: 55vh;
-}
-
-.other-info-card {
-    width: 50vw;
-    height: 55vh;
-}
 
 .other-info-card .profile-details {
   display: grid;

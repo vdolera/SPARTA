@@ -295,7 +295,7 @@
 /* === RESPONSIVE MEDIA QUERIES === */
 
 /* 🖥️ Large Desktops (1440px+) */
-@media screen and (min-width: 1024px) and (max-width: 1600px) {
+@media screen and (min-width: 1024px) {
   .dashboard-container {
     max-width: 1200px;
     grid-template-columns: 2fr 1fr;
@@ -307,11 +307,12 @@
 
   .calendar-container {
     width: 800px;
-    min-height: fit-content;
+    height: fit-content;
   }
 
   .upcoming-events {
     width: 50%;
+    margin: 10px 0;
   }
 }
 
@@ -344,9 +345,10 @@
   width: 400px;   
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 100px);
-  border: 2px solid #1a2a49;
-  border-radius: 10px;
+  height: calc(80vh - 100px);
+  border: 1px solid #1a2a49;
+  border-radius: 3px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 
 }
 

@@ -323,7 +323,7 @@ import "../../styles/Calendar.css";
 
                 {/* Announcements Container */}
         <div className="announcements-container">
-          <div className="announcement-header" style={{display: "flex", flexDirection: "row"}}>
+          <div className="announcement-header" style={{display: "flex", flexDirection: "column"}}>
             <h3>ANNOUNCEMENTS</h3>
             {canPost && (
               <button onClick={() => setShowPostModal(true)}>Create Post</button>

@@ -166,19 +166,19 @@ const Teams = () => {
 
                     {/* Menu button */}
                     <div
-                      className="menu-container"
+                      className="team-menu-container"
                       onClick={(e) => e.stopPropagation()} // prevent opening players page
                     >
                       <MoreVertical
-                        className="menu-icon"
+                        className="team-menu-icon"
                         onClick={() =>
                           setMenuOpen(menuOpen === team._id ? null : team._id)
                         }
                       />
                       {menuOpen === team._id && (
                         <div className="menu-dropdown">
-                          <button onClick={() => setEditTeam(team)}>Edit</button>
-                          <button onClick={() => handleDelete(team._id)}>
+                          <button className="dropdown-item" onClick={() => setEditTeam(team)}>Edit</button>
+                          <button className="dropdown-item delete" onClick={() => handleDelete(team._id)}>
                             Delete
                           </button>
                         </div>
