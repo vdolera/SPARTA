@@ -262,7 +262,7 @@ const CreateEvent = () => {
 
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
                   <div className="event-form-title" >
-                    <div style={{display: "flex", flexDirection: "row", gap:"5px"}}>
+                    <div style={{display: "flex", flexDirection: "row", gap:"5px", alignItems: "center"}}>
                       <h4> COORDINATORS </h4>
 
                       <div className="info-icon" tabIndex={0} aria-describedby="coord-types-tooltip">

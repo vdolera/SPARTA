@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { MoreVertical } from "lucide-react";
 import { MdEventNote } from "react-icons/md";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 import "../../styles/ADMIN_Event.css";
 
 const Event = () => {
@@ -235,9 +236,25 @@ const Event = () => {
 
                 {/* Co & Sub-organizers just like CreateEvent */}
                 <hr />
-                <h4>CO & SUB-ORGANIZERS</h4>
+                <div style={{display: "flex", flexDirection: "row", gap:"5px", alignItems: "center", justifyContent: "center"}}>
+                  <h4>CO & SUB-ORGANIZERS</h4>
+                  <div className="info-icon" tabIndex={0} aria-describedby="coord-types-tooltip">
+                    <IoIosInformationCircleOutline />
+                      <div className="hover-modal" role="tooltip" id="coord-types-tooltip">
+                        <strong>Coordinator Types</strong>
+                          <ul style={{listStyle: "none", textAlign: "left"}}>
+                            <li>
+                              <b>Co-Organizer</b> — can create teams and games, accepts players into institutions and teams and can access scoreboard. They can also view player data such as the player's submitted requirements.
+                            </li>
+                            <li>
+                              <b>Sub-Organizer</b> — can manage teams and players within an event and game. However, they aren't allowed to create events and games.
+                            </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 <p style={{ color: "#3E64AF", fontSize: "10px" }}>
-                  *Optional – you may add multiple*
+                  *You may add multiple Co & Sub-organizers*
                 </p>
                 <button
                   type="button"
@@ -326,10 +343,10 @@ const Event = () => {
                 </div>
 
                 <div className="event-modal-actions">
-                  <button className="modal-save-btn" type="submit">Save</button>
                   <button className="modal-cancel-btn" type="button" onClick={() => setEditEvent(null)}>
                     Cancel
                   </button>
+                  <button className="modal-save-btn" type="submit">Save</button>
                 </div>
               </form>
             </div>

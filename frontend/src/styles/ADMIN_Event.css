@@ -35,6 +35,15 @@
     gap: 0;
     width: 1100px;
   }
+  .event-search-bar {
+    font-size: 14px;
+  }
+
+  .new-event-btn {
+    font-size: 14px;
+    padding: 7px 12px;
+  }
+
   .event-list-container {
     width: 1200px;
     margin-top: 150px;
@@ -53,17 +62,29 @@
     font-size: 18px;
     height: 8vh;
   }
+
+  .event-name p {
+    font-size: 12px;
+  }
 }
 
 @media (min-width: 1601px) {
   .event-main-header {
-    flex-direction: row;
-    align-items: flex-end;
     gap: 0;
-    width: 1300px;
+    width: 80vw;
   }
+
+  .event-search-bar {
+    font-size: 18px;
+  }
+
+  .new-event-btn {
+    font-size: 18px;
+    padding: 8px 15px;
+  }
+
   .event-list-container {
-    width: 1400px;
+    width: 80vw;
     margin-top: 150px;
   }
 
@@ -77,9 +98,15 @@
   }
 
   .event-name {
-    font-size: 18px;
+    font-size: 20px;
     height: 8vh;
   }
+
+  .event-name p {
+    font-size: 14px;
+  };
+
+  
 }
 
 .event-item {
@@ -110,9 +137,8 @@
 }
 
 .event-search-bar {
-  padding: 6px 12px;
-  font-size: 14px;
   border-radius: 25px;
+  padding: 6px 12px;
   border: 1.5px solid #1A2A49;
   outline: none;
   width: 43vh;
@@ -132,8 +158,6 @@
 .new-event-btn {
   background-color: #1A2A49;
   color: white;
-  padding: 5px 10px;
-  font-size: 15px;
   border: none;
   border-radius: 10px;
   max-width: fit-content;
@@ -257,7 +281,6 @@
 
 .event-name {
   padding: 10px 15px 0 15px;
-  font-size: 18px;
   font-weight: bold;
   border-radius: 0 0 5px 5px;
   border: 1px solid #b9bbb6;
@@ -267,7 +290,6 @@
 }
 
 .event-name p {
-  font-size: 12px;
   font-family: Monteserrat, sans-serif;
   font-weight: normal;
   font-style: italic;
@@ -372,8 +394,27 @@
   gap: 12px;
 }
 
+/* Custom Scrollbar for WebKit Browsers (Chrome, Edge, Safari) */
+.event-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.event-modal::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 8px;
+}
+
+.event-modal::-webkit-scrollbar-thumb {
+  background: #b6c2d9;
+  border-radius: 8px;
+}
+
+.event-modal::-webkit-scrollbar-thumb:hover {
+  background: #94a3c0;
+}
+
 .modal-save-btn {
-  background: #003886;
+  background: #00865e;
   color: white;
   padding: 10px 18px;
   border: none;
@@ -383,13 +424,17 @@
 }
 
 .modal-cancel-btn {
-  background: #d32f2f;
+  background: #5d5b5b;
   color: white;
   padding: 10px 18px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
+}
+
+.modal-cancel-btn:hover {
+  background: rgb(139, 18, 18);
 }
 
 .add-coordinator-btn {

@@ -2,7 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import { useState, useEffect } from "react";
 import Calendar from 'react-calendar';
 import axios from 'axios';
-import { MdEditSquare, MdPadding } from "react-icons/md";
+import { MdEditSquare} from "react-icons/md";
 import "../../styles/Calendar.css";
 
   const Dashboard = () => {

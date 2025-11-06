@@ -64,8 +64,11 @@ const Pantheon = () => {
 
   return (
     <MainLayout>
+
+      <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+        <img style={{width: "30vw"}} src="../SPARTA_PANTHEON.png" alt="Pantheon Icon" className="pantheon-icon" />
+      </div>
       <div className="event-list">
-       
       {events.map((event) => (
           <div key={event._id} className="event-item">
             <div className="event-color" style={{ background: event.eventColor || "#A96B24" }}         

@@ -28,7 +28,7 @@
   flex-direction: row;
   gap: 120px;
   width: 55vw;
-  height: 20vh;
+  height: 15vh;
   align-items: center;
   justify-content: center;
   border: 1px solid #ccc;
@@ -92,4 +92,27 @@ p {
 
 .btn-content svg {
   margin-bottom: 8px;
+}
+
+@media (min-width: 1600px) {
+  .event-header {
+    height: 12vh;
+    font-size: 20px;
+  }
+  .event-specifics button {
+    width: 10vw;
+    height: 25vh;
+    font-size: 18px;
+  }
+
+  .organizer-box > h3, .date-box > h3, .location-box > h3 {
+    font-size: 20px;
+    text-transform: uppercase;
+  }
+
+  .organizer-box > p, .date-box > p, .location-box > p {
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+
 }
