@@ -17,7 +17,7 @@
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   width: 100%;
-  min-height: 60vh;
+  min-height: fit-content;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
@@ -162,8 +162,8 @@
 .upcoming-events {
   background: #fff;
   border: 2px solid #a56806;
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 15px;
+  padding: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   font-family: Poppins, sans-serif;
   height: fit-content;
@@ -220,7 +220,7 @@
 }
 
 /* === MODAL === */
-.event-modal-overlay {
+.dashboard-event-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
@@ -231,27 +231,33 @@
   padding: 20px;
 }
 
-.event-modal {
+.dashboard-event-modal {
   background: #fff;
-  border-radius: 16px;
+  border-radius: 10px;
   padding: 24px;
-  max-width: 500px;
   width: 100%;
   max-height: 80vh;
+  max-width: 30vw;
   overflow-y: auto;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  position: relative;
+  z-index: 2100;
+  animation: popup 0.25s ease-out;
 }
 
-.event-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
+.dashboard-event-modal-header {
+  text-align: center;
+  padding-bottom: 10px;
   border-bottom: 2px solid #f3f4f6;
+  position: relative;
+  text-align: center;
+  padding: 0.5rem 2rem;
 }
 
-.event-modal-header h3 {
+.dashboard-event-modal-header h3 {
   margin: 0;
   color: #1a2a49;
   font-size: 20px;
@@ -259,18 +265,22 @@
 }
 
 .close-modal {
-  background: none;
-  border: none;
-  font-size: 24px;
   color: #6b7280;
   cursor: pointer;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: fit-content;
+  height: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  position: absolute;
+  right: -1rem;
+  top: 0%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
 }
 
 .close-modal:hover {
@@ -283,6 +293,7 @@
   flex-direction: column;
   gap: 12px;
   text-transform: uppercase;
+  margin-top: 5px;
 }
 
 .no-events {
@@ -306,7 +317,7 @@
   }
 
   .calendar-container {
-    width: 800px;
+    width: 50vw;
     height: fit-content;
   }
 
@@ -345,7 +356,8 @@
   width: 400px;   
   display: flex;
   flex-direction: column;
-  height: calc(80vh - 100px);
+  align-items: center;
+  height: calc(75vh - 100px);
   border: 1px solid #1a2a49;
   border-radius: 3px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
@@ -354,15 +366,20 @@
 
 /* ANNOUNCEMENT DIV */
 .announcements-list {
+  display: flex;
+  align-items: center;
   flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 15px;
-  background: #fdfdfd;
-  width: 100%;
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  width: 95%;
+  border-radius: 5px;
   box-sizing: border-box;
 }
 
@@ -374,11 +391,20 @@
 }
 
 .announcement-header h3 {
-  margin: 10px;
+  margin: 5px;
   text-decoration: underline;
 }
 
-.announcement-header button {
+.announcement-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: left;
+  margin: 5px;
+  padding: 5px;
+  width: 95%;
+}
+
+.announcement-footer button {
   background: #1a2a49;
   color: white;
   border: none;
@@ -421,4 +447,37 @@
   overflow-wrap: break-word;
   word-wrap: break-word;
   white-space: normal;
+}
+
+/* Custom Scrollbar */
+.announcements-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.announcements-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.announcements-list::-webkit-scrollbar-thumb {
+  background: #cfcfcf;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.announcements-list::-webkit-scrollbar-thumb:hover {
+  background: #b5b5b5;
+}
+
+/* User Manual */
+.user-manual {
+  width: 95%;   
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 15vh;
+  border: 1px solid #1a2a49;
+  border-radius: 3px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 10px;
 }

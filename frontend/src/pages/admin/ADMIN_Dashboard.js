@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import { useState, useEffect } from "react";
 import Calendar from 'react-calendar';
 import axios from 'axios';
+import { MdEditSquare, MdPadding } from "react-icons/md";
 import "../../styles/Calendar.css";
 
   const Dashboard = () => {
@@ -268,32 +269,55 @@ import "../../styles/Calendar.css";
             />
           </div>
 
-          <div className="upcoming-events">
-            <h3>UPCOMING EVENTS</h3>
-            {loading ? (
-              <p>Loading events...</p>
-            ) : upcomingEvents.length > 0 ? (
-              <ul>
-                {upcomingEvents.map((event, index) => (
-                  <li key={index} className="upcoming-event">
-                    <strong>{formatEventDate(event.date)} • {event.time}</strong>
-                    {event.title} - {event.teams}
-                    <br />
-                    <span className="location">📍 {event.location}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No upcoming events</p>
-            )}
+          <div style={{ flexGrow: 1, display: "flex", flexDirection: "row", gap: "15px" }}>
+            <div className="upcoming-events">
+              <h3>ONGOING EVENTS</h3>
+              {loading ? (
+                <p>Loading events...</p>
+              ) : upcomingEvents.length > 0 ? (
+                <ul>
+                  {upcomingEvents.map((event, index) => (
+                    <li key={index} className="upcoming-event">
+                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                      {event.title} - {event.teams}
+                      <br />
+                      <span className="location">📍 {event.location}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Wohoo! You have no on-going event for today.</p>
+              )}
+            </div>
+
+            <div className="upcoming-events">
+              <h3>UPCOMING EVENTS</h3>
+              {loading ? (
+                <p>Loading events...</p>
+              ) : upcomingEvents.length > 0 ? (
+                <ul>
+                  {upcomingEvents.map((event, index) => (
+                    <li key={index} className="upcoming-event">
+                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                      {event.title} - {event.teams}
+                      <br />
+                      <span className="location">📍 {event.location}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No upcoming events</p>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Event Modal */}
         {isModalOpen && (
-          <div className="event-modal-overlay" onClick={closeModal}>
-            <div className="event-modal" onClick={(e) => e.stopPropagation()}>
-              <div className="event-modal-header">
+          <div className="dashboard-event-modal-overlay" onClick={closeModal}>
+            <div className="dashboard-event-modal" onClick={(e) => e.stopPropagation()}>
+
+              <div className="dashboard-event-modal-header">
                 <h3>Events on {selectedDate.toLocaleDateString('en-US', { 
                   weekday: 'long', 
                   year: 'numeric', 
@@ -306,11 +330,11 @@ import "../../styles/Calendar.css";
               <div className="calendar-events-list">
                 {getSelectedDateEvents().length > 0 ? (
                   getSelectedDateEvents().map((event, index) => (
-                    <div key={index} className="upcoming-event">
+                    <div style={{display: "flex", flexDirection: "column", margin: "2px"}} key={index} className="upcoming-event">
                       <strong>{event.title}</strong>
-                      <time>{event.time}</time>
-                      <div className="location">📍 {event.location}</div>
                       <div>{event.teams}</div>
+                      
+                      <div className="location">📍 {event.location} <time>{event.time}</time> </div>
                     </div>
                   ))
                 ) : (
@@ -321,44 +345,54 @@ import "../../styles/Calendar.css";
           </div>
         )}
 
-                {/* Announcements Container */}
-        <div className="announcements-container">
-          <div className="announcement-header" style={{display: "flex", flexDirection: "column"}}>
-            <h3>ANNOUNCEMENTS</h3>
-            {canPost && (
-              <button onClick={() => setShowPostModal(true)}>Create Post</button>
-            )}
-          </div>
-          
-          <div className="announcements-list">
-            {loadingAnnouncements ? (
-              <p>Loading announcements...</p>
-            ) : announcements.length === 0 ? (
-              <div className="no-feedback-message">
-                <p>No announcements posted yet.</p>
-              </div>
-            ) : (
-              announcements.map((ann) => (
-                <div className="announcement-block" key={ann._id}>
-                  <div className="announcement-block-contents">
-                    <h5
-                      style={{
-                        fontStyle: "italic",
-                        textAlign: "left",
-                        margin: "0",
-                      }}
-                    >
-                      {new Date(ann.createdAt).toLocaleDateString()}
-                    </h5>
-                    <p style={{margin: "5px", textAlign: "center"}}>{ann.message}</p>
-                    <h5 style={{margin: "5px", textAlign: "end"}}>
-                      - {ann.authorName}
-                    </h5>
-                  </div>
+        {/* Announcements Container */}
+        <div style={{display: "flex", flexDirection: "column", gap: "5px"}}>
+          <div className="announcements-container">
+            <div className="announcement-header" style={{display: "flex", flexDirection: "column"}}>
+                <h3>ANNOUNCEMENTS</h3>
+            </div>
+                
+                <div className="announcements-list">
+                  {loadingAnnouncements ? (
+                    <p>Loading announcements...</p>
+                  ) : announcements.length === 0 ? (
+                    <div className="no-feedback-message">
+                      <p>No announcements posted yet.</p>
+                    </div>
+                  ) : (
+                    announcements.map((ann) => (
+                      <div className="announcement-block" key={ann._id}>
+                        <div className="announcement-block-contents">
+                          <h5
+                            style={{
+                              fontStyle: "italic",
+                              textAlign: "left",
+                              margin: "0",
+                            }}
+                          >
+                            {new Date(ann.createdAt).toLocaleDateString()}
+                          </h5>
+                          <p style={{margin: "5px", textAlign: "center"}}>{ann.message}</p>
+                          <h5 style={{margin: "5px", textAlign: "end"}}>
+                            - {ann.authorName}
+                          </h5>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
-              ))
-            )}
+
+                <div className="announcement-footer">
+                  {canPost && (
+                    <button style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "5px" }} onClick={() => setShowPostModal(true)}> <MdEditSquare /> Create a Post</button>
+                  )}
+                </div>
           </div>
+
+          <div className="user-manual">
+            <h3 style={{ textAlign: "center", margin: "5px" }}> User Manual </h3>
+          </div>
+
         </div>
 
         {/* Post Announcement Modal */}
@@ -366,12 +400,16 @@ import "../../styles/Calendar.css";
           <div className="feedback-overlay">
             <div className="feedback-modal">
               <h2>Post an Announcement</h2>
+              <p style={{marginBottom: "5px", fontFamily: "Poppins, Sans-Serif"}}>Please enter the details of your announcement below. Your announcement post can be seen by all users with the organizer role in your institution</p>
 
               <textarea
                 value={newAnnouncement}
                 onChange={(e) => setNewAnnouncement(e.target.value)}
                 placeholder="Write your announcement..."
                 rows="5"
+                style={{
+                  width: "100%"
+                }}
               />
 
               <div className="feedback-actions">
