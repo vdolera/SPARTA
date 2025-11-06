@@ -395,6 +395,18 @@ const GameBracket = () => {
     if (!selectedMatch) return;
 
     try {
+      // Check date if valid
+      if (selectedMatch.date) {
+        const schedDate = new Date(selectedMatch.date);
+        const gameStart = new Date(game.startDate);
+        const gameEnd = new Date(game.endDate);
+
+        if (schedDate < gameStart || schedDate > gameEnd) {
+            alert(`Date must be between ${new Date(game.startDate).toLocaleString()} and ${new Date(game.endDate).toLocaleString()}`);
+            return;
+        }
+    }
+
       let formattedDate = null;
       if (selectedMatch.date) {
         formattedDate = new Date(selectedMatch.date);
@@ -417,8 +429,8 @@ const GameBracket = () => {
       // refresh game after saving
       const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
       const updatedGame = await res.json();
-      setGame(updatedGame);
 
+      setGame(updatedGame);
       setSelectedMatch(null);
     } catch (err) {
       console.error("Error updating schedule:", err);
@@ -581,6 +593,8 @@ const GameBracket = () => {
                       type="datetime-local"
                       style={{ width: "150px" }}
                       value={selectedMatch.date || ""}
+                      min={formatForInput(game.startDate)}
+                      max={formatForInput(game.endDate)}
                       onChange={(e) => setSelectedMatch({ ...selectedMatch, date: e.target.value })}
                     />
                   </div>

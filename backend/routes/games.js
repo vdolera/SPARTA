@@ -565,14 +565,24 @@ router.put("/games/:gameId/matches/:matchId/schedule", async (req, res) => {
     const match = game.matches.id(matchId);
     if (!match) return res.status(404).json({ message: "Match not found" });
 
-    // Date
+    // Date and date validation
     if (date) {
-      const parsedDate = new Date(date);
-      if (!isNaN(parsedDate.getTime())) {
-        match.date = parsedDate; // always save ISO
-      } else {
-        console.warn("Invalid date received:", date);
+      const scheduleDate = new Date(date);
+      const gameStart = new Date(game.startDate);
+      const gameEnd = new Date(game.endDate);
+
+      // Check if valid date format
+      if (isNaN(scheduleDate.getTime())) {
+         return res.status(400).json({ message: "Invalid date format" });
       }
+
+      // Check if within game duration
+      if (scheduleDate < gameStart || scheduleDate > gameEnd) {
+        return res.status(400).json({
+          message: `Match must be scheduled between Game Start (${gameStart.toLocaleString()}) and Game End (${gameEnd.toLocaleString()})`
+        });
+      }
+      match.date = scheduleDate;
     }
 
     // Location
