@@ -1,5 +1,4 @@
 .sidemenu {
-  width: 200px;
   height: 100%;
   background-color: #1A2A49;
   position: fixed;
@@ -18,7 +17,7 @@
 }
 
 .logo-img {
-  width: 100px;
+  width: 4vw;
   height: auto;
 }
 
@@ -121,10 +120,21 @@
   transition: width 200ms ease, transform 200ms ease;
 }
 
-/* Medium screens: slightly narrower */
-@media (max-width: 1024px) {
+@media (min-width: 1600px) {
   .sidemenu {
-    width: 160px;
+    width: 10.5vw;
+  }
+
+  .logo-img {
+    width: 5vw;
+    height: auto;
+  }
+}
+
+/* Medium screens: slightly narrower */
+@media (max-width: 1599px) {
+  .sidemenu {
+    width: 12vw;
   }
 
   .logo-img {
@@ -153,21 +163,18 @@
     height: auto;
   }
 
-  /* Reduce left margin so icons align inside the narrower bar */
   .sidemenu-list {
     margin-left: 0;
     padding-left: 0;
   }
 
-  /* Center icons, hide textual labels if present (keeps icons visible) */
   .sidemenu-list a {
     justify-content: center;
     padding: 10px 6px;
     gap: 0;
-    font-size: 0; /* hide inline text nodes while keeping icon elements (svg / i) */
+    font-size: 0; 
   }
 
-  /* If your link text is wrapped in a .label or span, hide that explicitly */
   .sidemenu-list a .label,
   .sidemenu-list a span,
   .sidemenu-list a .text {

@@ -269,7 +269,7 @@ const CreateEvent = () => {
                         <IoIosInformationCircleOutline />
                         <div className="hover-modal" role="tooltip" id="coord-types-tooltip">
                           <strong>Coordinator Types</strong>
-                          <ul>
+                          <ul style={{listStyle: "none"}}>
                             <li><b>Co-Organizer</b> — can create teams and games, accepts players into institutions and teams and can access scoreboard. They can also view player data such as the player's submitted requirements.</li>
                             <li><b>Sub-Organizer</b> — can manage teams and players within an event and game. However, they aren't allowed to create events and games.</li>
                           </ul>
@@ -345,7 +345,7 @@ const CreateEvent = () => {
             </div>
           </div>
 
-          <div className="event-container">
+          <div>
               <div className="lower-buttons">
                 <button type="button" onClick={handleCancel}>Cancel</button>
                 <button type="submit" onClick={handleCreate}>Create Event</button>

@@ -1,6 +1,14 @@
+@media (min-width: 1024px) and (max-width: 1599px) {
+  .team-create-maindiv {
+    width: 45vw;
+  }
+
+
+
+}
+
 .team-create-maindiv {
   border-radius: 10px;
-  width: 600px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,7 +21,6 @@
   font-size: 10px;
   font-family: Monteserrat, sans-serif;
   color: white;
-  padding: 3px;
   border:1px solid #666699;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -23,8 +30,7 @@
 }
 
 .team-form-container {
-  align-items: center;
-  padding: 10px;
+  padding: 0 10px;
   font-family: Montserrat, sans-serif;
   background-color: rgba(255, 255, 255, 0.251);
   width: inherit;
@@ -45,8 +51,6 @@
 }
 
 .team-form {
-  display: flex;
-  flex-direction: row;
   gap: 10px;
   font-size: 14px;    
 }
@@ -96,6 +100,7 @@
 .multi-select {
   position: relative;
   width: 300px;
+  margin-top: 5px;
 }
 
 .multi-select input {

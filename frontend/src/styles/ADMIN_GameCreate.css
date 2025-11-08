@@ -2,13 +2,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 10px 0;
 }
 
 .game-create-maindiv {
   border: 0.5px solid gray;
   border-radius: 10px;
   max-width: 1200px;
-  width: 80%;
+  width: auto;
   box-sizing: border-box;
 }
 
@@ -316,7 +317,7 @@ textarea:focus {
   gap: 12px;
   margin-top: 10px;
   font-size: 14px;
-  border: 2px solid #9dbbd9;
+  border: 2px dashed #9dbbd9;
   border-radius: 10px;
   padding: 8px 12px;
   flex-direction: column;
@@ -376,13 +377,11 @@ textarea:focus {
 .lower-buttons {
   display: flex;
   flex-direction: row;
-  padding: 20px;
   font-family: Monteserrat, sans-serif;
   text-align: center;
   justify-content: center;
   gap: 10px;
   align-items: center;
-  width: 100%
 }
 
 .modal-backdrop {

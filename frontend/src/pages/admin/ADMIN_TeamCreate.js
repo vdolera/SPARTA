@@ -119,11 +119,16 @@ const CreateTeam = () => {
             <h2>Team Creation Form</h2>
           </div>
 
-          <div className="team-form-container">
+          <div style={{width: "inherit", padding: "10px 10px", borderLeft: "1px solid rgb(176, 176, 176)", borderRight: "1px solid rgb(176, 176, 176)", textAlign: "center", fontFamily: "Poppins, Sans-Serif"}}>
+              <h4>Create a New Team for {decodedEventName}</h4>
+              <p style={{margin: "5px 0", fontStyle: "italic", color: "#777"}}>Please fill out the form below to create a new team. Ensure all details are accurate before submission.</p>
+          </div>
 
+          <div className="team-form-container">
+            
             <form className="team-form" onSubmit={handleCreate}>
 
-              <div style={{ display: "flex", flexDirection: "row", gap: "50px" }}>
+              <div style={{ display: "flex", flexDirection: "row", gap: "50px", justifyContent: "space-evenly" }}>
                 <div style={{ display: "flex", flexDirection: "column", width: "250px", margin: "5px", padding: "5px" }}>
                   <div className="input-group">
                     <input
@@ -159,7 +164,7 @@ const CreateTeam = () => {
                   </div>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", width: "250px", margin: "5px", padding: "5px" }}>
+                <div style={{ display: "flex", flexDirection: "column", width: "250px", margin: "5px", padding: "5px", textAlign: "center" }}>
                   <div>
                     <label className="color-picker">
                       Team Color:
@@ -171,7 +176,7 @@ const CreateTeam = () => {
                       />
                     </label>
                   </div>
-                  <h6> or you may upload the team logo</h6>
+                  <p style={{margin: "5px"}}> or you may upload the team logo</p>
                   <div className="file-upload">
 
                     <span className="file-name">
@@ -235,9 +240,9 @@ const CreateTeam = () => {
               </div>
 
               <div className="lower-buttons">
-                <button type="submit">Create Team</button>
                 <button type="button" onClick={handleCancel}>Cancel</button>
-              </div>
+                <button type="submit">Create Team</button>
+            </div>
 
             </form>
           </div>

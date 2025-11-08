@@ -1,8 +1,8 @@
 .main-content {
   margin-left: 200px; /* Pushes content to the right of sidebar */
-  margin-top: 125px;
+  margin-top: 15vh;
   padding: 0 20px 0 20px;
-  min-height: calc(100vh - 95px);
+  min-height: calc(100vh - 15vh);
   box-sizing: border-box;
   height: fit-content;
 }

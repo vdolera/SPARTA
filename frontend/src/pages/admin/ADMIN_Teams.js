@@ -120,21 +120,27 @@ const Teams = () => {
     <MainLayout>
       <div className="teams-main-container">
         <div className="teams-header-row">
-          <h3>TEAMS FOR {decodedName}</h3>
 
-          <input
-            type="text"
-            className="team-search-bar"
-            placeholder="Search teams..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ marginRight: "16px" }}
-          />
-          {(user.role === "admin" || user.role === "co-organizer") && (
-          <button className="new-team-btn" onClick={handleAddTeam}>
-            + New Team
-          </button>
-          )}
+          <div>
+            <h3> TEAMS FOR {decodedName}</h3>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+            <input
+              type="text"
+              className="team-search-bar"
+              placeholder="Search teams..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ marginRight: "16px" }}
+            />
+            {(user.role === "admin" || user.role === "co-organizer") && (
+            <button className="new-team-btn" onClick={handleAddTeam}>
+              + New Team
+            </button>
+            )}
+          </div>
+
         </div>
 
         <div className="teams-event">

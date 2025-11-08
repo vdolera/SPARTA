@@ -157,9 +157,7 @@
   .event-create-maindiv {
     border: 0.5px solid gray;
     border-radius: 10px;
-    /* width: 1200px; */
     height: fit-content;
-    margin-top: 50px;
 }
 
 
