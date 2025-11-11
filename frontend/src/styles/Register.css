@@ -174,7 +174,7 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   opacity: 0;
   transform: translateY(20px);
-  animation: toastIn 0.3s forwards, toastOut 0.3s forwards 2.7s;
+  animation: toastIn 0.3s forwards, toastOut 0.3s forwards 7.5s;
   z-index: 100;
   font-family: Montserrat, sans-serif;
 }

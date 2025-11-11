@@ -91,3 +91,21 @@ p, .instructions-list, .service-form-group {
     }
 
 }
+
+@media (max-width: 1023px) {
+
+    .service-page-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .instructions-section, .form-section {
+        width: 90%;
+        max-width: 600px;
+        box-sizing: border-box;
+        height: auto;
+        overflow: visible;
+        margin-bottom: 20px;
+    }
+    
+}

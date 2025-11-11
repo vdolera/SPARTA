@@ -31,7 +31,7 @@ import "../../styles/Calendar.css";
   // Toast helper
   const showToastMessage = (message, type) => {
     setShowToast({ show: true, message, type });
-    setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 6000);
+    setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 8000);
   };
 
   // Fetch Game schedules
@@ -346,7 +346,7 @@ import "../../styles/Calendar.css";
         )}
 
         {/* Announcements Container */}
-        <div style={{display: "flex", flexDirection: "column", gap: "5px"}}>
+        <div className="dashboard-side-content" >
           <div className="announcements-container">
             <div className="announcement-header" style={{display: "flex", flexDirection: "column"}}>
                 <h3>ANNOUNCEMENTS</h3>

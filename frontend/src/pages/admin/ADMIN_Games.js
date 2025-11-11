@@ -105,19 +105,19 @@ const Game = () => {
         setToastMessage("Game has been deleted");
         setShowToast(true);
         // hide toast after 7s
-        setTimeout(() => setShowToast(false), 7000);
+        setTimeout(() => setShowToast(false), 8000);
       } else {
         setShowDeleteModal(false);
         setToastMessage("Failed to delete game");
         setShowToast(true);
-        setTimeout(() => setShowToast(false), 4000);
+        setTimeout(() => setShowToast(false), 8000);
       }
     } catch (error) {
       console.error("Error deleting game:", error);
       setShowDeleteModal(false);
       setToastMessage("Error deleting game");
       setShowToast(true);
-      setTimeout(() => setShowToast(false), 4000);
+      setTimeout(() => setShowToast(false), 8000);
     } finally {
       setGameToDelete(null);
     }

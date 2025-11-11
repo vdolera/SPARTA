@@ -145,7 +145,7 @@ const CreateGame = () => {
         setTimeout(() => {
           setShowModal(false);
           navigate(-1);
-        }, 4000);
+        }, 8000);
       } else {
         setModalMessage("Failed! " + data.message);
         setShowModal(true);
@@ -390,7 +390,7 @@ const CreateGame = () => {
                       type="text"
                       placeholder="Enter Name or Select"
                       value={search}
-                      onFocus={() => setShowDropdown(true)}   // show on click/focus
+                      onFocus={() => setShowDropdown(true)}
                       onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                       onChange={(e) => setSearch(e.target.value)}
                     />

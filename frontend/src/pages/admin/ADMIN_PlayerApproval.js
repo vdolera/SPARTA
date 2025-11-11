@@ -36,7 +36,7 @@ const Approval = () => {
     setShowToast({ show: true, message, type });
     setTimeout(() => {
       setShowToast({ show: false, message: "", type: "" });
-    }, 3000);
+    }, 8000);
   };
 
   // Approve player

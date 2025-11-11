@@ -106,7 +106,9 @@ export default function ServicePage() {
           </li>
         </ol>
 
-        <p>For further assistance, please contact our support team at <b>sparta.capstoneproject@gmail.com</b></p>
+      <p>Please expect to receive a confirmation email within 3-5 business days.</p>
+      <hr />
+      <p>For further assistance, please contact our support team at <b>sparta.capstoneproject@gmail.com</b></p>
       </div>
 
         <div className="form-section">

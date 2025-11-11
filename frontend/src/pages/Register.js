@@ -54,7 +54,7 @@ export default function RegisterPage() {
     setToast({ show: true, message, type });
     setTimeout(() => {
       setToast({ show: false, message: '', type: '' });
-    }, 3000);
+    }, 8000);
   };
 
   const handleSubmit = async (e) => {
@@ -85,7 +85,7 @@ export default function RegisterPage() {
 
       if (response.ok) {
         showToast(`Successfully registered as ${role}`, 'success');
-        setTimeout(() => navigate('/dashboard'), 2000); // slight delay for smooth UX
+        setTimeout(() => navigate('/dashboard'), 8000);
       } else {
         showToast(data.message || 'Registration failed', 'error');
       }

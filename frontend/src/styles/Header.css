@@ -35,3 +35,11 @@
     left: 12vw; 
   }
 }
+
+@media (max-width: 768px) {
+  .header {
+    left: 7vw;
+    height: 9vh;
+  }
+
+}

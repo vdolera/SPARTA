@@ -1,3 +1,5 @@
+
+
 .specific-event-container {
   display: flex;
   flex-direction: column;
@@ -115,4 +117,27 @@ p {
     text-transform: uppercase;
   }
 
+}
+
+@media (max-width: 1023px) {
+  .specific-event-container {
+    width: 100%;
+    margin: 0 auto;
+
+  }
+
+  .event-header, .event-details {
+    width: 75vw;
+  }
+
+  .event-specifics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 60vw;
+    gap: 5vh;
+  }
+
+  .event-details {
+    gap: 1vw;
+  }
 }

@@ -150,7 +150,7 @@
 /* Tablet / small laptops -> compact vertical bar */
 @media (max-width: 768px) {
   .sidemenu {
-    width: 80px;
+    width: 7vw;
   }
 
   .sidemenu-logo {
@@ -164,7 +164,7 @@
   }
 
   .sidemenu-list {
-    margin-left: 0;
+    margin: 0 auto;
     padding-left: 0;
   }
 

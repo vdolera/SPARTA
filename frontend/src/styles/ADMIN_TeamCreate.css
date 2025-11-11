@@ -3,8 +3,6 @@
     width: 45vw;
   }
 
-
-
 }
 
 .team-create-maindiv {
@@ -258,4 +256,50 @@
 
 .team-modal button:hover {
   background: #CE892C;
+}
+
+.toast-notification {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  animation: fadeInSlide 0.3s ease-out, fadeOut 0.5s ease-in 7s forwards;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ✅ Success State */
+.toast-notification.success {
+  background-color: #2e7d32;
+}
+
+/* ❌ Error State */
+.toast-notification.error {
+  background-color: #d32f2f;
+}
+
+/* Smooth appear animation */
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Smooth exit */
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 }

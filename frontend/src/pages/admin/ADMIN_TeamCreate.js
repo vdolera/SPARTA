@@ -19,8 +19,9 @@ const CreateTeam = () => {
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const [modalMessage, setModalMessage] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("success"); 
 
   const decodedEventName = decodeURIComponent(eventName);
 
@@ -56,21 +57,30 @@ const CreateTeam = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Team created!");
-        setModalMessage("Team created successfully!");
-        setShowModal(true);
+        setToastMessage("Team Successfully Created");
+        setToastType("success");
+        setShowToast(true);
+
         setTimeout(() => {
-          setShowModal(false);
+          setShowToast(false);
           navigate(-1);
-        }, 3000);
+        }, 8000);
       } else {
-        alert(`${data.message}`);
+        setToastMessage(data.message || "Failed to create team.");
+        setToastType("error");
+        setShowToast(true);
+
+        setTimeout(() => setShowToast(false), 8000);
       }
-    } catch (error) {
-      console.error("Error creating team:", error);
-      setModalMessage("Failed to create team.");
-      setShowModal(true);
-    }
+      } catch (error) {
+        console.error("Error creating team:", error);
+        
+        setToastMessage("Failed to create team.");
+        setToastType("error");
+        setShowToast(true);
+
+        setTimeout(() => setShowToast(false), 8000);
+      }
   };
 
   // Fetch Coordinators
@@ -248,12 +258,10 @@ const CreateTeam = () => {
           </div>
         </div>
 
-        {showModal && (
-          <div className="modal-backdrop">
-            <div className="team-modal">
-              <p>{modalMessage}</p>
-              <button onClick={() => setShowModal(false)}>Close</button>
-            </div>
+        {showToast && (
+          <div className={`toast-notification ${toastType}`}>
+            {toastType === "success" ? "✅ " : "❌ "}
+            {toastMessage}
           </div>
         )}
       </>

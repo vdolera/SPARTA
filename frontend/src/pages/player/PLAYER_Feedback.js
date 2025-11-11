@@ -23,7 +23,7 @@ const PlayerFeedback = () => {
   // Toast helper
   const showToastMessage = (message, type) => {
     setShowToast({ show: true, message, type });
-    setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 6000);
+    setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 8000);
   };
 
   // Fetch player data

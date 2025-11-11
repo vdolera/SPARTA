@@ -59,7 +59,7 @@ const CreateEvent = () => {
         setTimeout(() => {
           setShowModal(false);
           navigate(-1);
-        }, 4000)
+        }, 8000)
       } else {
         setModalMessage("There are still fields that needs to be filled-up.   ")
         setShowModal(true);
