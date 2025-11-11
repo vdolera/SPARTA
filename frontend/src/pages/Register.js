@@ -179,9 +179,14 @@ export default function RegisterPage() {
               Register as {role.charAt(0).toUpperCase() + role.slice(1)}
             </button>
 
+            <button type="button" className="switch-button" onClick={() => navigate('/Service')}>
+              Can't find your institution?<br /> Register your institution here.
+            </button>
+
             <button type="button" className="switch-button" onClick={() => navigate('/')}>
               Already have an account? Login
             </button>
+
           </form>
         </div>
       </div>
