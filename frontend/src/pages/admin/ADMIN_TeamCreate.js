@@ -259,8 +259,7 @@ const CreateTeam = () => {
         </div>
 
         {showToast && (
-          <div className={`toast-notification ${toastType}`}>
-            {toastType === "success" ? "✅ " : "❌ "}
+          <div className={`toast ${toastType === 'success' ? 'toast-success' : 'toast-error'}`}>
             {toastMessage}
           </div>
         )}

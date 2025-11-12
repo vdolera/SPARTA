@@ -610,11 +610,9 @@ const GameBracket = () => {
                   </div>
 
                   <div className="modal-actions">
-                    <button type="button" onClick={saveSchedule}>
-                      Save Schedule
-                    </button>
-
+                    
                     <button type="button" onClick={() => setSelectedMatch(null)}>Cancel</button>
+                    <button type="button" onClick={saveSchedule}> Save Schedule </button>
                   </div>
                 </div>
               </>
@@ -637,8 +635,10 @@ const GameBracket = () => {
                   </div>
                 ))}
                 <div className="modal-actions">
-                  <button type="button" onClick={saveScores}>Save</button>
+                  
                   <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
+                  <button type="button" onClick={saveScores}>Save</button>
+                  
                 </div>
               </>
             ) : selectedMatch.type === "video" && (
@@ -653,6 +653,8 @@ const GameBracket = () => {
                   }
                 />
                 <div className="modal-actions">
+                  <button onClick={() => setSelectedMatch(null)}>Cancel</button>
+
                   <button
                     type="button"
                     onClick={async () => {
@@ -677,7 +679,6 @@ const GameBracket = () => {
                   >
                     Save
                   </button>
-                  <button onClick={() => setSelectedMatch(null)}>Cancel</button>
                 </div>
               </>
             )

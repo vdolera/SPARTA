@@ -29,9 +29,9 @@
   }
 }
 
-@media (max-width: 1599px) {
+@media (min-width: 769px) and (max-width: 1599px) {
   .header {
-    height: 14vh;
+    height: 12vh;
     left: 12vw; 
   }
 }

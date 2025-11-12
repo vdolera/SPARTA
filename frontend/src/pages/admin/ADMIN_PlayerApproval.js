@@ -196,9 +196,9 @@ const Approval = () => {
       {/* Toast Notification */}
       {showToast.show && (
         <div
-          className={`toast-notification ${
-            showToast.type === "success" ? "toast-success" : "toast-error"
-          }`}
+          className={`toast ${showToast.type === "success" ? "toast-success" : "toast-error"}`}
+          role="status"
+          aria-live="polite"
         >
           {showToast.message}
         </div>

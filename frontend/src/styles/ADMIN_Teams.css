@@ -146,7 +146,8 @@ div button:hover {
 .form-group input,
 .form-group select,
 .form-group textarea {
-  width: 100%;
+  width: 15vw;
+  margin-left: 1rem;
   padding: 8px 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -223,4 +224,133 @@ div button:hover {
 .team-btn {
   position: relative;
   z-index: 1;
+}
+
+/* Confirm modal overlay */
+.confirm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 18, 40, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+
+.confirm-modal {
+  background: #fff;
+  padding: 20px 22px;
+  border-radius: 10px;
+  width: 360px;
+  max-width: calc(100% - 40px);
+  box-shadow: 0 12px 40px rgba(10,18,40,0.2);
+  text-align: center;
+  color: #1A2A49;
+}
+
+.confirm-modal h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.confirm-modal p {
+  margin: 8px 0 16px;
+  font-size: 14px;
+  color: #334155;
+}
+
+.confirm-modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* buttons inside modal */
+.confirm-modal .btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.confirm-modal .btn.cancel {
+  background: #eef2ff;
+  color: #1A2A49;
+  border: 1px solid rgba(26,42,73,0.06);
+}
+
+.confirm-modal .btn.confirm {
+  background: #d32f2f;
+  color: #fff;
+}
+
+/* Toast styles matching Register.js */
+.toast {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(10,18,40,0.28);
+  z-index: 1300;
+  font-weight: 600;
+  color: #fff;
+}
+
+.toast-success {
+  background: rgba(157, 34, 17, 0.95);
+}
+
+.toast-error {
+  background: rgba(211,47,47,0.95);
+}
+
+/* small responsive tweak */
+@media (max-width: 480px) {
+  .confirm-modal { width: 92%; padding: 16px; }
+  .toast { left: 12px; right: 12px; bottom: 12px; }
+}
+
+.team-edit-modal {
+  background: #fff;
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  max-width: 420px;
+  width: 90%;
+  animation: popup 0.25s ease-out;
+  position: relative;
+  z-index: 2100;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.team-edit-form {
+  gap: 10px;
+  font-size: 14px;
+}
+
+.teamedit-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.teamedit-modal-actions button {
+  flex: 1 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.teamedit-modal-actions button:first-child {
+    background: #545557;
+    color: white;
+}
+
+.teamedit-modal-actions button:last-child {
+    background: #0f8942;
+    color: white;
 }

@@ -18,6 +18,7 @@ const TeamPlayers = () => {
   const [players, setPlayers] = useState([]);
   const [teamColor, setTeamColor] = useState("#808080");
   const [teamRank, setTeamRank] = useState(null);
+  const [pendingCount, setPendingCount] = useState(0);
 
 
   const handleViewButton = (playerId) => {
@@ -89,6 +90,34 @@ const TeamPlayers = () => {
     }
   }, [user?.institution, decodedEvent, decodedTeam]);
 
+  // fetch pending players count for this team (polls every 30s)
+  useEffect(() => {
+    let mounted = true;
+    const fetchPendingCount = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/players/team-pending?institution=${encodeURIComponent(
+            user?.institution
+          )}&eventName=${encodeURIComponent(eventName)}&team=${encodeURIComponent(
+            teamName
+          )}`
+        );
+        if (!res.ok) return;
+        const data = await res.json();
+        if (mounted) setPendingCount(Array.isArray(data) ? data.length : 0);
+      } catch (err) {
+        console.error("Error fetching pending count:", err);
+      }
+    };
+
+    fetchPendingCount();
+    const id = setInterval(fetchPendingCount, 30000); // every 30s
+    return () => {
+      mounted = false;
+      clearInterval(id);
+    };
+  }, [user?.institution, eventName, teamName]);
+
   function getOrdinal(n) {
     const s = ["th", "st", "nd", "rd"];
     const v = n % 100;
@@ -117,7 +146,14 @@ const TeamPlayers = () => {
         </div>
 
         <div className='team-pending-players'>
-          <button onClick={handlePending}>Pending Players</button>
+          <button className="team-pending-btn" onClick={handlePending}>
+            Pending Players
+            {pendingCount > 0 && (
+              <span className="team-pending-badge" aria-label={`${pendingCount} pending`}>
+                {pendingCount}
+              </span>
+            )}
+          </button>
         </div>
 
         <div className='team-players-table'>

@@ -132,13 +132,13 @@
 }
 
 /* Medium screens: slightly narrower */
-@media (max-width: 1599px) {
+@media (min-width: 1440px) and (max-width: 1599px) {
   .sidemenu {
     width: 12vw;
   }
 
   .logo-img {
-    width: 84px;
+    width: 68px;
   }
 
   .sidemenu-list a {

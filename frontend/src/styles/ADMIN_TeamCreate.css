@@ -267,24 +267,21 @@
   font-size: 14px;
   color: #fff;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  animation: fadeInSlide 0.3s ease-out, fadeOut 0.5s ease-in 7s forwards;
+  animation: fadeInSlide 0.3s ease-out, fadeOut 0.5s ease-in 7.5s forwards;
   z-index: 9999;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-/* ✅ Success State */
 .toast-notification.success {
-  background-color: #2e7d32;
+  background-color: #086c3a;
 }
 
-/* ❌ Error State */
 .toast-notification.error {
   background-color: #d32f2f;
 }
 
-/* Smooth appear animation */
 @keyframes fadeInSlide {
   from {
     opacity: 0;

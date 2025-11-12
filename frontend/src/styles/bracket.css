@@ -56,9 +56,7 @@
   border-radius: 12px;
   padding: 2px;
   background: linear-gradient(to right, #CE892C, #1e40af);
-  -webkit-mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
   z-index: -1;
@@ -236,21 +234,21 @@
 }
 
 .modal-actions button:first-child {
-  background: #1A2A49;
+  background: #545557;
   color: white;
 }
 .modal-actions button:first-child:hover {
-  background: #416abc;
+  background: #a11912;
   color: white;
 }
 
 .modal-actions button:last-child {
-  background: #CE892C;
+  background: #0f8942;
   color: white;
 }
 
 .modal-actions button:last-child:hover {
-  background: #83561c;
+  background:#CE892C;
   color: white;
 }
 
