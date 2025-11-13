@@ -27,7 +27,7 @@ const Teams = () => {
   const [coordinators, setCoordinators] = useState([]);
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-
+  const [gamesExist, setGamesExist] = useState(false);
   // Fetch Coords
   useEffect(() => {
     const fetchCoordinators = async () => {
@@ -71,6 +71,25 @@ const Teams = () => {
     if (user?.institution && decodedName) {
       fetchTeams();
     }
+  }, [user?.institution, decodedName]);
+
+  // Fetch Games
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedName)}`);
+        const games = await response.json();
+
+     // If any game exists for this event, set to true
+     if (games.length > 0) {
+      setGamesExist(true);
+    } 
+      } catch (error) {
+        console.error("Error fetching games:", error);
+      }
+    };
+
+    fetchGames();
   }, [user?.institution, decodedName]);
 
   // Create team button nav
@@ -166,7 +185,7 @@ const Teams = () => {
               style={{ marginRight: "16px" }}
             />
             {(user.role === "admin" || user.role === "co-organizer") && (
-            <button className="new-team-btn" onClick={handleAddTeam}>
+            <button className="new-team-btn" onClick={handleAddTeam} disabled={gamesExist} title={gamesExist ? "Games are in progress. New teams cannot be added." : "Add a new team"}>
               + New Team
             </button>
             )}
