@@ -21,6 +21,33 @@ function shuffleArray(array) {
   return arr;
 };
 
+// Function to save the medals to each team
+async function awardMedal(teamName, eventName, game, medal) {
+  try {
+    if (!teamName || teamName === "TBD") return;
+
+    const gameName = `${game.category} ${game.gameType}`;
+
+    // Use find team and add medal
+    await Team.updateOne(
+      { teamName: teamName, eventName: eventName },
+      {
+        // prevents duplicate medals
+        $addToSet: {
+          medals: {
+            gameId: game._id,
+            gameName: gameName,
+            medal: medal
+          }
+        }
+      }
+    );
+    console.log(`Awarded ${medal} to ${teamName} for ${gameName}`);
+  } catch (err) {
+    console.error(`Failed to award ${medal} to ${teamName}`, err);
+  }
+}
+
 // CREATE Game
 router.post("/games", upload.single("rulesFile"), async (req, res) => {
   try {
@@ -38,9 +65,9 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
     } = req.body;
 
     // DATE VALIDATION for game( event date to game)
-    const parentEvent = await Event.findOne({ 
-      eventName: eventName, 
-      institution: institution 
+    const parentEvent = await Event.findOne({
+      eventName: eventName,
+      institution: institution
     });
 
     if (!parentEvent) {
@@ -53,23 +80,23 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
     const eventEnd = new Date(parentEvent.eventEndDate);
 
     if (isNaN(gameStart.getTime()) || isNaN(gameEnd.getTime())) {
-        return res.status(400).json({ message: "Invalid game start or end date." });
+      return res.status(400).json({ message: "Invalid game start or end date." });
     }
 
     if (gameStart < eventStart) {
-       return res.status(400).json({ 
-         message: `Game start date cannot be before the event start date (${eventStart.toLocaleDateString()}).`
-       });
+      return res.status(400).json({
+        message: `Game start date cannot be before the event start date (${eventStart.toLocaleDateString()}).`
+      });
     }
-    
+
     if (gameEnd > eventEnd) {
-       return res.status(400).json({ 
-         message: `Game end date cannot be after the event end date (${eventEnd.toLocaleDateString()}).`
-       });
+      return res.status(400).json({
+        message: `Game end date cannot be after the event end date (${eventEnd.toLocaleDateString()}).`
+      });
     }
-    
+
     if (gameStart > gameEnd) {
-       return res.status(400).json({ message: "Game start date must be before its end date." });
+      return res.status(400).json({ message: "Game start date must be before its end date." });
     }
 
     // Translation(Parsing) thingy chuchu
@@ -125,15 +152,15 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
-    
+
     if (!parsedTeams || parsedTeams.length < 2) {
       return res.status(400).json({ message: "At least 2 teams are required" });
     }
-    
+
     if (!finalRules || finalRules.trim() === "") {
       return res.status(400).json({ message: "Rules (file or text) are required" });
     }
-    
+
     const matches = [];
     const totalRounds = Math.ceil(Math.log2(parsedTeams.length));
     const shuffledTeams = shuffleArray(parsedTeams);
@@ -415,8 +442,58 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
         match.winner = winnerName;
         match.finalizeWinner = true;
 
+        // Adding Medals to the team
+        // Single Elimination
+        if (game.bracketType === "Single Elimination") {
+          const totalRounds = Math.ceil(Math.log2(game.teams.length));
+          if (match.round === totalRounds) {
+            await awardMedal(winnerName, game.eventName, game, 'gold');
+            await awardMedal(loserName, game.eventName, game, 'silver');
+          }
+        }
+
+        // Double Elimination
+        if (game.bracketType === "Double Elimination") {
+          if (match.bracket === "GF") { // This is the Grand Final
+            await awardMedal(winnerName, game.eventName, game, 'gold');
+            await awardMedal(loserName, game.eventName, game, 'silver');
+
+            // Find Bronze Medallist (Loser of the LB Final)
+            const lbMatches = game.matches.filter(m => m.bracket === "LB");
+            const maxLbRound = Math.max(...lbMatches.map(m => m.round));
+            const lbFinal = lbMatches.find(m => m.round === maxLbRound);
+
+            if (lbFinal && lbFinal.finalizeWinner) {
+              const bronzeWinnerName = lbFinal.teams.find(t => t.name !== lbFinal.winner)?.name;
+              await awardMedal(bronzeWinnerName, game.eventName, game, 'bronze');
+            }
+          }
+        }
+
+        // Round Robin
+        if (game.bracketType === "Round Robin") {
+          // Check if all matches are now finalized
+          const allMatchesDone = game.matches.every(m => m.finalizeWinner || m._id === match._id);
+
+          if (allMatchesDone) {
+            const winCount = {};
+            game.teams.forEach(team => { winCount[team] = 0; });
+
+            game.matches.forEach(m => {
+              if (m.winner) {
+                winCount[m.winner] = (winCount[m.winner] || 0) + 1;
+              }
+            });
+
+            const sortedTeams = Object.entries(winCount).sort(([, winsA], [, winsB]) => winsB - winsA);
+
+            if (sortedTeams[0]) await awardMedal(sortedTeams[0][0], game.eventName, game, 'gold');
+            if (sortedTeams[1]) await awardMedal(sortedTeams[1][0], game.eventName, game, 'silver');
+            if (sortedS[2]) await awardMedal(sortedS[2][0], game.eventName, game, 'bronze');
+          }
+        }
+
         // Handle Winner Bracket
-        // --- inside finalizeWinner handling ---
         if (match.bracket === "WB") {
           // compute LB ranges from current game (defensive)
           const totalWBRounds = Math.ceil(Math.log2((game.teams && game.teams.length) || 1));
@@ -434,7 +511,6 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
             m.teams.some((t) => !t?.name || t.name === "TBD")
           );
 
-          // fallback: search any LB match for an empty slot
           if (!lbTarget) {
             const allLB = game.matches
               .filter((m) => m.bracket === "LB")
@@ -573,7 +649,7 @@ router.put("/games/:gameId/matches/:matchId/schedule", async (req, res) => {
 
       // Check if valid date format
       if (isNaN(scheduleDate.getTime())) {
-         return res.status(400).json({ message: "Invalid date format" });
+        return res.status(400).json({ message: "Invalid date format" });
       }
 
       // Check if within game duration

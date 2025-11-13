@@ -19,6 +19,15 @@ const teamSchema = new mongoose.Schema(
         score: { type: Number, default: 0 },
       },
     ],
+
+    //Medals per game
+    medals: [
+      {
+        gameId: { type: mongoose.Schema.Types.ObjectId, ref: 'Game' },
+        gameName: { type: String },
+        medal: { type: String, enum: ['gold', 'silver', 'bronze'] }
+      }
+    ]
   },
   { timestamps: true }
 );
