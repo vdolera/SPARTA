@@ -19,8 +19,8 @@ const LiveScores = () => {
       try {
         const response = await fetch(`http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
         const data = await response.json();
-        // Sort by grandTotal
-        setTeams(data.sort((a, b) => b.grandTotal - a.grandTotal));
+        // Data is already sorted by the backend
+        setTeams(data);
       } catch (error) {
         console.error("Error fetching teams:", error);
       }
@@ -29,12 +29,9 @@ const LiveScores = () => {
     if (user?.institution && decodedEvent) {
       fetchTeams();
     }
-  }, [user?.institution, decodedEvent]);
+  }, [user?.institution, decodedEvent]); 
   
-  // Teams are already sorted by backend, but just in case
-  const rankedTeams = [...teams].sort(
-    (a, b) => (b.totalScore || 0) - (a.totalScore || 0)
-  );
+  const rankedTeams = teams;
 
   // Adding ordinals in ranking 
   function getOrdinal(n) {
@@ -47,22 +44,22 @@ const LiveScores = () => {
     <MainLayout>
       
       <div className="live-scores-header">
-        <h1>Live Scores for {decodedEvent}</h1>
+        <h1>LiveScores for {decodedEvent}</h1>
       </div>
       
       <div className="live-scores-main-div">
-
         <div className="live-scores-container">
           {rankedTeams.length === 0 ? (
             <div className="no-matches-found">
               <TbCalendarQuestion size={48} />
               <p>
-                OOPS! <br /> There are no ongoing matches found under {decodedEvent}{" "}
+                OOPS! <br /> No teams found for {decodedEvent}{" "}
                 <br /> Please come back again soon...
               </p>
             </div>
           ) : (
             <div className="teams-list">
+              
               {rankedTeams.map((team, idx) => (
                 <div
                   className="team-score"
@@ -73,6 +70,16 @@ const LiveScores = () => {
                     <span>{getOrdinal(idx + 1)}</span>
                     <span>{team.teamName}</span>
                   </span>
+
+                  {/* ADDED MEDAL DISPLAY */}
+                  <span className="medal-tally-display">
+                    {team.gold > 0 && <span>🥇 {team.gold}</span>}
+                    {team.silver > 0 && <span>🥈 {team.silver}</span>}
+                    {team.bronze > 0 && <span>🥉 {team.bronze}</span>}
+                    {(team.gold === 0 && team.silver === 0 && team.bronze === 0) && (
+                      <span>-</span>
+                    )}
+                  </span>        
                   <span>{team.grandTotal ?? 0}</span>
                 </div>
               ))}

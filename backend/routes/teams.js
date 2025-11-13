@@ -113,71 +113,53 @@ router.get('/team', async (req, res) => {
 router.get("/teams/scores", async (req, res) => {
   try {
     const { institution, event } = req.query;
-
     if (!institution || !event) {
       return res.status(400).json({ message: "Institution and event are required" });
     }
 
     const teams = await Team.find({ institution, eventName: event });
 
-    if (!teams.length) {
-      return res.status(404).json({ message: "No teams found for this event" });
-    }
+    // Calculate grandTotal (medal score) and medal counts for each team
+    const teamsWithTally = teams.map(team => {
+      let grandTotal = 0;
+      let gold = 0;
+      let silver = 0;
+      let bronze = 0;
 
-    // Put each team to their scores
-    const teamsWithScores = await Promise.all(
-      teams.map(async (team) => {
-        // Get only games where this team has played
-        const games = await Game.find({
-          eventName: event,
-          institution,
-          "matches.teams.name": team.teamName,
-        });
+      team.medals.forEach(medal => {
+        if (medal.medal === 'gold') {
+          grandTotal += 3; // 3 points for gold
+          gold++;
+        } else if (medal.medal === 'silver') {
+          grandTotal += 2; // 2 points for silver
+          silver++;
+        } else if (medal.medal === 'bronze') {
+          grandTotal += 1; // 1 point for bronze
+          bronze++;
+        }
+      });
+      
+      const teamObject = team.toObject(); // Get a plain JS object
+      teamObject.grandTotal = grandTotal;
+      teamObject.gold = gold;
+      teamObject.silver = silver;
+      teamObject.bronze = bronze;
+      
+      return teamObject;
+    });
 
-        let grandTotal = 0;
-        let rounds = {};
+    // Sort by grandTotal (highest first), then by gold, then silver, etc.
+    teamsWithTally.sort((a, b) => {
+      if (b.grandTotal !== a.grandTotal) return b.grandTotal - a.grandTotal;
+      if (b.gold !== a.gold) return b.gold - a.gold;
+      if (b.silver !== a.silver) return b.silver - a.silver;
+      return b.bronze - a.bronze;
+    });
 
-        games.forEach((game) => {
-          game.matches.forEach((match) => {
-            match.teams.forEach((t) => {
-              if (t.name === team.teamName && t.score != null) {
-                grandTotal += t.score;
-
-                if (!rounds[match.round]) {
-                  rounds[match.round] = { matches: [], total: 0 };
-                }
-
-                rounds[match.round].matches.push({
-                  matchId: match._id,
-                  gameId: game._id,
-                  score: t.score,
-                  opponent:
-                    match.teams.find((x) => x.name !== team.teamName)?.name ||
-                    "TBD",
-                  winner: match.winner,
-                });
-
-                rounds[match.round].total += t.score;
-              }
-            });
-          });
-        });
-
-        return {
-          teamName: team.teamName,
-          institution: team.institution,
-          eventName: team.eventName,
-          teamColor: team.teamColor || "#A96B24",
-          grandTotal,
-          rounds,
-        };
-      })
-    );
-
-    res.status(200).json(teamsWithScores);
-  } catch (err) {
-    console.error("Error fetching team scores:", err);
-    res.status(500).json({ message: "Error fetching team scores" });
+    res.json(teamsWithTally);
+  } catch (error) {
+    console.error("Error fetching team scores:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
