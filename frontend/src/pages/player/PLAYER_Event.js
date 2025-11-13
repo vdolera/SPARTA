@@ -63,6 +63,15 @@ const PlayerEvent = () => {
 
             <div className="event-name" onClick={() => handleEventClick(event)}>
               {event.eventName}
+              <p>
+                  {event?.eventStartDate
+                    ? new Date(event.eventStartDate).toLocaleDateString()
+                    : "Loading..."}{" "}
+                  -{" "}
+                  {event?.eventEndDate
+                    ? new Date(event.eventEndDate).toLocaleDateString()
+                    : "Loading..."}
+                </p>
             </div>
           </div>
         ))}

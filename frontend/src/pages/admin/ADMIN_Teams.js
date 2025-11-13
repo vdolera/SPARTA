@@ -254,7 +254,7 @@ const Teams = () => {
               }}
             >
               {/* Team Name */}
-              <div className="form-group">
+              <div className="teamedit-form-group">
                 <label>
                   Team Name:
                   <input
@@ -269,7 +269,7 @@ const Teams = () => {
               </div>
 
               {/* Team Manager */}
-              <div className="form-group">
+              <div className="teamedit-form-group">
                 <label>
                   Team Manager:
                   <input
@@ -283,7 +283,7 @@ const Teams = () => {
               </div>
 
               {/* Manager Email */}
-              <div className="form-group">
+              <div className="teamedit-form-group">
                 <label>
                   Manager Email:
                   <input
@@ -297,7 +297,7 @@ const Teams = () => {
               </div>
 
               {/* Team Color */}
-              <div className="form-group">
+              <div className="teamedit-form-group">
                 <label style={{fontFamily: "Montserrat, sans-serif", fontSize: "14px", color: "black"}} className="color-picker">
                   Team Color:
                   <input
@@ -332,7 +332,7 @@ const Teams = () => {
                 </div>
 
               {/* Sub-organizers */}
-              <div className="form-group" style={{ marginTop: "20px" }}>
+              <div className="teamedit-form-group" style={{ marginTop: "20px" }}>
                 <div>
                   <label>Assign Sub-Organizer/s</label>
                   <div className="multi-select">

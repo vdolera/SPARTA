@@ -172,38 +172,41 @@ const PlayerDashboard = () => {
   
   return (
     <PlayerMainLayout>
-    <div className="dashboard-container">
-      <div className="calendar-container">
-        <Calendar 
-          onChange={onChange} 
-          value={date} 
-          tileContent={tileContent}
-          tileClassName={tileClassName}
-          className="custom-calendar"
-          showNeighboringMonth={false}
-          onClickDay={handleDateClick}
-        />
+    <div className="dashboard-page-container">
+
+      <div className="dashboard-main-content">
+        <div className="calendar-container">
+          <Calendar 
+            onChange={onChange} 
+            value={date} 
+            tileContent={tileContent}
+            tileClassName={tileClassName}
+            className="custom-calendar"
+            showNeighboringMonth={false}
+            onClickDay={handleDateClick}
+          />
+        </div>
       </div>
 
-      <div className="upcoming-events">
-        <h3>UPCOMING EVENTS</h3>
-        {loading ? (
-          <p>Loading events...</p>
-        ) : upcomingEvents.length > 0 ? (
-          <ul>
-            {upcomingEvents.map((event, index) => (
-              <li key={index} className="upcoming-event">
-                <strong>{formatEventDate(event.date)} • {event.time}</strong>
-                {event.title} - {event.teams}
-                <br />
-                <span className="location">📍 {event.location}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No upcoming events</p>
-        )}
-      </div>
+        <div className="upcoming-events" style={{margin: "0px"}}>
+          <h3>UPCOMING GAMES</h3>
+          {loading ? (
+            <p>Loading events...</p>
+          ) : upcomingEvents.length > 0 ? (
+            <ul>
+              {upcomingEvents.map((event, index) => (
+                <li key={index} className="upcoming-event">
+                  <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                  {event.title} - {event.teams}
+                  <br />
+                  <span className="location">📍 {event.location}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p style={{fontStyle: "italic"}}>Head over the Events Page to join a game match!</p>
+          )}
+        </div>
 
       {/* Event Modal */}
       {isModalOpen && (

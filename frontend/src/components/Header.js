@@ -19,7 +19,7 @@ const Header = () => {
     '/pantheon': 'PANTHEON',
   };
 
-  const currentTitle = pageTitles[location.pathname] || 'SPARTA: Sports Planning And Resource Tracking Application';
+  const currentTitle = pageTitles[location.pathname] || 'SPARTA';
 
   return (
     <div className="header">

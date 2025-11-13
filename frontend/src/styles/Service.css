@@ -78,6 +78,24 @@ p, .instructions-list, .service-form-group {
     background-color: #ce892c;
 }
 
+.instructions-section::-webkit-scrollbar {
+  width: 0px;
+}
+
+.instructions-section::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 8px;
+}
+
+.instructions-section::-webkit-scrollbar-thumb {
+  background: #b6c2d9;
+  border-radius: 8px;
+}
+
+.instructions-section::-webkit-scrollbar-thumb:hover {
+  background: #94a3c0;
+}
+
 @media (min-width: 1024px) and  (max-width: 1600px) {
 
     .instructions-section, .form-section {

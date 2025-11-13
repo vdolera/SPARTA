@@ -132,20 +132,20 @@ div button:hover {
   gap: 16px;
 }
 
-.form-group {
+.teamedit-form-group {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-.form-group label {
+.teamedit-form-group label {
   font-weight: 600;
   margin-bottom: 6px;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.teamedit-form-group input,
+.teamedit-form-group select,
+.teamedit-form-group textarea {
   width: 15vw;
   margin-left: 1rem;
   padding: 8px 10px;
@@ -160,16 +160,16 @@ div button:hover {
   gap: 1rem !important;
 }
 
-.modal .form-group {
+.modal .teamedit-form-group {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
   width: 100% !important;
 }
 
-.modal .form-group input,
-.modal .form-group select,
-.modal .form-group textarea {
+.modal .teamedit-form-group input,
+.modal .teamedit-form-group select,
+.modal .teamedit-form-group textarea {
   width: 100% !important;
   margin-top: 6px !important;
 }
