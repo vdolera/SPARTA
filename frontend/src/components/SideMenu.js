@@ -10,10 +10,7 @@ const SideMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleLogout = () => {
-    localStorage.removeItem('auth');
-    navigate('/');
-  };
+
 
   const user = JSON.parse(localStorage.getItem("auth"));
 
@@ -38,21 +35,6 @@ const SideMenu = () => {
           <Link to="/admin/pantheon"><GiGreekTemple /> Pantheon </Link>
         </li>
       </ul>
-
-      {/* Bottom user info */}
-      <div className="bottom-info">
-        <div>
-          <h2>{user.role.toUpperCase()}</h2>
-        </div>
-      
-        <div className="user-info">
-          {/* <span>{user?.playerName || "No Username Found"}</span> */}
-          <span>{user?.email || "No Email"} </span>
-        </div>
-
-        <button className="s-logout-button" onClick={handleLogout}>Logout</button>
-
-      </div>
 
     </div>
   );

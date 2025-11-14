@@ -26,7 +26,7 @@
   padding: 0;
   margin: 0 0 0 20px; 
   flex-grow: 1;
-  border-top: 2px solid white;
+  /* border-top: 2px solid white; */
 }
 
 .sidemenu-list li {
@@ -67,54 +67,6 @@
 
 }
 
-.bottom-info h2 {
-  font-family:Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  text-align: center;
-  color: white;
-  border: 2px solid white;
-  padding: 5px 20px;
-  border-radius: 5px;
-  background-color: #063d73;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  flex-direction: column;
-  gap: 10px;
-  font-size: 12px;
-  font-family: Monteserrat, Sans-Serif;
-  color: white;
-  margin-top: 10px;
-}
-
-.user-name {
-  font-size: 14px;
-  font-family: Poppins, sans-serif;
-  white-space: nowrap;
-}
-.s-logout-button {
-  margin-top: 20px;
-  border: none; 
-  padding: 5px 10px; 
-  border-radius: 5px; 
-  background-color: #dc3545; 
-  color: #fff; 
-  font-size: 15px; 
-  cursor: pointer; 
-  transition: background 
-  0.2s ease, transform 0.1s ease; }
-  
-.s-logout-button button:hover {
-  background-color: #CE892C;
- } 
-  
-.s-logout-button button:active {
-  transform: scale(0.97);
-}
-
 /* Responsive: side menu scaling + collapsed view for smaller screens */
 .sidemenu {
   transition: width 200ms ease, transform 200ms ease;
@@ -150,7 +102,7 @@
 /* Tablet / small laptops -> compact vertical bar */
 @media (max-width: 768px) {
   .sidemenu {
-    width: 7vw;
+    width: 10vw;
   }
 
   .sidemenu-logo {
