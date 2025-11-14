@@ -83,9 +83,15 @@ h3 {
   cursor: pointer;
 }
 
-div .new-team-btn:hover {
+.new-team-btn:hover {
   background-color: #CE892C;
   color: white;
+}
+
+.new-team-btn:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .team-search-bar:focus {
