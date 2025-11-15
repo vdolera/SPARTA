@@ -16,10 +16,8 @@ app.use(
   })
 );
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+// For sending day before schedule notifs
+const notificationService = require("./routes/notificationService");
 
 // API Routes
 app.use("/api", require("./routes/auth"));
@@ -36,5 +34,18 @@ app.get("/", (req, res) => {
   res.send("Server is running...");
 });
 
-// Start Server
-app.listen(PORT, "0.0.0.0", () => console.log(`Server running on port ${PORT}`));
+// MongoDB Connection & Server Start
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB Connected");
+    
+    // Start Server *after* DB connection is successful
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on port ${PORT}`);
+      
+      // Start the notification service
+      notificationService.start();
+    });
+    
+  })
+  .catch(err => console.log("Failed to connect to MongoDB:", err));
