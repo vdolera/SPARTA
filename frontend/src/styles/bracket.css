@@ -129,6 +129,17 @@
   z-index: 2000;
 }
 
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 1px 0 1px 0;
+}
+
+.tally-content p {
+  font-size: 16px;;
+  margin: 8px 0;
+}
+
 .modal {
   background: #fff;
   padding: 20px 25px;
@@ -143,24 +154,24 @@
 }
 
 .modal h3 {
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 .modal.rules-modal {
   background: #fff;
   padding: 20px;
   width: 80%;
-  max-width: 900px;
+  max-width: 50vw;
   border-radius: 10px;
   box-shadow: 0 5px 20px rgba(0,0,0,0.3);
 }
 
-.rules-section {
+.rules-section, .medal-tally-section, .video-section {
   margin-top: 20px;
   text-align: center;
 }
 
-.rules-section > button {
+.rules-section > button, .medal-tally-section > button, .video-section > button {
   background-color: #1A2A49;
   color: white;
   padding: 6px 12px;
@@ -171,28 +182,7 @@
   cursor: pointer;
 }
 
-.rules-section > button:hover {
-  background-color: #CE892C;
-  color: white;
-}
-
-.video-section {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.video-section > button {
-  background-color: #1A2A49;
-  color: white;
-  padding: 6px 12px;
-  font-size: 13px;
-  border: none;
-  border-radius: 5px;
-  max-width: fit-content;
-  cursor: pointer;
-}
-
-.video-section > button:hover {
+.rules-section > button:hover, .medal-tally-section > button:hover, .video-section > button:hover {
   background-color: #CE892C;
   color: white;
 }

@@ -209,7 +209,7 @@ const CreateGame = () => {
           <div className="game-create-maindiv">
 
             <div className="game-form-header">
-              <h1>Game Details</h1>
+              <h1>Game Creation Form</h1>
             </div>
 
             <div className="game-form-container">

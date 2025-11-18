@@ -77,7 +77,7 @@ export default function LoginPage() {
     {showLoginSuccess && (
       <div className="modal-overlay">
         <div className="modal">
-          <h2>Login Successful</h2>
+          <h2>LOGIN SUCCESSFUL!</h2>
           <p>Welcome back!</p>
           <button onClick={() => setShowLoginSuccess(false)}>Continue</button>
         </div>

@@ -1,7 +1,6 @@
 import PlayerMainLayout from "../../components/P_MainLayout";
 import { useState, useEffect } from "react";
 import Calendar from 'react-calendar';
-//import 'react-calendar/dist/Calendar.css'; // Default calendar styling
 import axios from 'axios';
 import "../../styles/Calendar.css";
 

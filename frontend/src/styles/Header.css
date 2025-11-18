@@ -17,7 +17,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
   font-family: poppins, sans-serif;
 }
 
@@ -25,10 +24,10 @@
   align-items: center;
   gap: 10px;
   font-family: Poppins, sans-serif;
-  padding: 10px 0;
+  padding: 10px 15px;
   display: inline-flex;
   justify-content: space-evenly;
-  width: 15vw;
+  width: fit-content;
   height: 5vh;
   border-radius: 5px;
   background-color: #ce892c73;
@@ -191,17 +190,22 @@
   }
 }
 
-@media (min-width: 769px) and (max-width: 1599px) {
+@media (min-width: 1271px) and (max-width: 1599px) {
   .header {
     height: 12vh;
     left: 12vw; 
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1270px) {
   .header {
-    left: 10vw;
+    left: 0vw;
     height: 9vh;
+  }
+
+  .header-content h2 {
+    font-size: 18px;
+    margin-left: 4rem;
   }
 
 }

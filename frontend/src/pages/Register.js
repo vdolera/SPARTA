@@ -150,7 +150,7 @@ export default function RegisterPage() {
                 value={formData.institution}
                 onChange={handleChange}
                 required
-                style={{ width: '250px' }}
+                style={{ width: '275px' }}
               >
                 <option value="">Select Institution</option>
                 {institutions.map((inst) => (
