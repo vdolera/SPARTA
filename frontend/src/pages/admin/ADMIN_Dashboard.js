@@ -28,6 +28,11 @@ import "../../styles/Calendar.css";
   // Toast State
   const [showToast, setShowToast] = useState({ show: false, message: "", type: "" });
 
+  // List Modal State
+  const [showListModal, setShowListModal] = useState(false);
+  const [listModalTitle, setListModalTitle] = useState("");
+  const [listModalItems, setListModalItems] = useState([]);
+
   // Toast helper
   const showToastMessage = (message, type) => {
     setShowToast({ show: true, message, type });
@@ -150,7 +155,6 @@ import "../../styles/Calendar.css";
     }
   };
 
-
   const onChange = (newDate) => {
     setDate(newDate);
   };
@@ -251,27 +255,44 @@ import "../../styles/Calendar.css";
 
   const canPost = user?.role === 'organizer' || user?.role === 'co-organizer' || user?.role === 'admin';
 
+  const openListModal = (type) => {
+    const today = new Date();
+    const startOfToday = new Date(today); startOfToday.setHours(0,0,0,0);
+    const endOfToday = new Date(today); endOfToday.setHours(23,59,59,999);
+
+    if (type === "ongoing") {
+      const items = matchEvents.filter(e => e.date >= startOfToday && e.date <= endOfToday)
+                               .sort((a,b) => a.date - b.date);
+      setListModalTitle("Ongoing Events");
+      setListModalItems(items);
+    } else {
+      const items = matchEvents.filter(e => e.date > endOfToday)
+                               .sort((a,b) => a.date - b.date);
+      setListModalTitle("Upcoming Events");
+      setListModalItems(items);
+    }
+    setShowListModal(true);
+  };
+
+  const closeListModal = () => {
+    setShowListModal(false);
+    setListModalItems([]);
+    setListModalTitle("");
+  };
+
   return (
     <MainLayout>
       <div className="dashboard-page-container">
 
         {/* Main Dashboard Content */}
         <div className="dashboard-main-content">
-          <div className="calendar-container">
-            <Calendar 
-              onChange={onChange} 
-              value={date} 
-              tileContent={tileContent}
-              tileClassName={tileClassName}
-              className="custom-calendar"
-              showNeighboringMonth={false}
-              onClickDay={handleDateClick}
-            />
-          </div>
-
+          
           <div style={{ flexGrow: 1, display: "flex", flexDirection: "row", gap: "15px" }}>
             <div className="upcoming-events">
-              <h3>ONGOING EVENTS</h3>
+              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                <h3>ONGOING EVENTS</h3>
+                <button className="view-all-btn" onClick={() => openListModal("ongoing")}>View All</button>
+              </div>
               {loading ? (
                 <p>Loading events...</p>
               ) : upcomingEvents.length > 0 ? (
@@ -291,7 +312,10 @@ import "../../styles/Calendar.css";
             </div>
 
             <div className="upcoming-events">
-              <h3>UPCOMING EVENTS</h3>
+              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                <h3>UPCOMING EVENTS</h3>
+                <button className="view-all-btn" onClick={() => openListModal("upcoming")}>View All</button>
+              </div>
               {loading ? (
                 <p>Loading events...</p>
               ) : upcomingEvents.length > 0 ? (
@@ -310,6 +334,19 @@ import "../../styles/Calendar.css";
               )}
             </div>
           </div>
+
+          <div className="calendar-container">
+            <Calendar 
+              onChange={onChange} 
+              value={date} 
+              tileContent={tileContent}
+              tileClassName={tileClassName}
+              className="custom-calendar"
+              showNeighboringMonth={false}
+              onClickDay={handleDateClick}
+            />
+          </div>
+
         </div>
 
         {/* Event Modal */}
@@ -339,6 +376,32 @@ import "../../styles/Calendar.css";
                   ))
                 ) : (
                   <div className="no-events">No events scheduled for this date</div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* List Modal for Ongoing / Upcoming */}
+        {showListModal && (
+          <div className="dashboard-event-modal-overlay" onClick={closeListModal}>
+            <div className="dashboard-event-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="dashboard-event-modal-header">
+                <h3>{listModalTitle}</h3>
+                <button className="close-modal" onClick={closeListModal}>×</button>
+              </div>
+
+              <div className="calendar-events-list">
+                {listModalItems.length > 0 ? (
+                  listModalItems.map((event, index) => (
+                    <div key={index} className="upcoming-event">
+                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                      <div>{event.title} - {event.teams}</div>
+                      <div className="location">📍 {event.location}</div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="no-events">No events</div>
                 )}
               </div>
             </div>

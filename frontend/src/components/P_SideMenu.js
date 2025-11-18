@@ -52,21 +52,6 @@ const PlayerSideMenu = () => {
           <Link to="/pantheon"> <GiGreekTemple /> Pantheon </Link>
         </li>
       </ul>
-
-
-        <div className="bottom-info">
-          <div>
-            <h2 style={{backgroundColor:"#CE892C"}}>PLAYER</h2>
-          </div>
-
-          <div className="user-info">
-          <span> {user?.playerName || "User Name"} </span>
-          <span> {user?.email || "No Email"} </span> 
-          </div>
-
-          <button className="s-logout-button" onClick={handleLogout}>Logout</button>
-        
-        </div>
          
     </div>
   );

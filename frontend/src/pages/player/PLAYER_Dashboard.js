@@ -188,8 +188,8 @@ const PlayerDashboard = () => {
         </div>
       </div>
 
-        <div className="upcoming-events" style={{margin: "0px"}}>
-          <h3>UPCOMING GAMES</h3>
+        <div className="player-upcoming-events" style={{margin: "0px"}}>
+          <h3 style={{borderBottom: "1px solid #bcc7dd"}}>UPCOMING GAMES</h3>
           {loading ? (
             <p>Loading events...</p>
           ) : upcomingEvents.length > 0 ? (
@@ -197,6 +197,7 @@ const PlayerDashboard = () => {
               {upcomingEvents.map((event, index) => (
                 <li key={index} className="upcoming-event">
                   <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                  <br />
                   {event.title} - {event.teams}
                   <br />
                   <span className="location">📍 {event.location}</span>

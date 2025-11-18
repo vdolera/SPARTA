@@ -163,19 +163,19 @@
   background: #fff;
   border: 2px solid #a56806;
   border-radius: 15px;
-  padding: 15px;
+  padding: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   font-family: Poppins, sans-serif;
-  height: fit-content;
+  max-height: 15vh;        /* limit height */
+  overflow-y: auto;        /* vertical scrolling */
+  overflow-x: hidden;
   transition: all 0.3s ease;
 }
 
 .upcoming-events h3 {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 700;
   color: #1a2a49;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
   border-bottom: 2px solid #f3f4f6;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -185,13 +185,30 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.player-upcoming-events {
+  background: #fff;
+  border: 2px solid #a56806;
+  border-radius: 15px;
+  padding: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  font-family: Poppins, sans-serif;
+  font-size: 14px;
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: all 0.3s ease;
 }
 
 .upcoming-events li {
   background: #f8f9fa;
   border-left: 4px solid #ce892c;
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
   border-radius: 8px;
   font-size: 14px;
   line-height: 1.5;
@@ -216,6 +233,20 @@
   color: #6b7280;
   font-size: 12px;
   margin-top: 4px;
+}
+
+/* small "View All" button in panel header */
+.view-all-btn {
+  background: transparent;
+  border: 1px solid rgba(26,42,73,0.08);
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #1A2A49;
+}
+.view-all-btn:hover {
+  background: rgba(26,42,73,0.06);
 }
 
 /* === MODAL === */
@@ -424,6 +455,25 @@
   background: #b5b5b5;
 }
 
+.player-upcoming-events::-webkit-scrollbar {
+  width: 10px;
+}
+
+.player-upcoming-events::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.player-upcoming-events::-webkit-scrollbar-thumb {
+  background: #cfcfcf;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.player-upcoming-events::-webkit-scrollbar-thumb:hover {
+  background: #b5b5b5;
+}
+
 /* User Manual */
 .user-manual {
   width: 100%;   
@@ -504,7 +554,7 @@
 
 }
 
-@media (min-width: 1024px) and (max-width: 1599px) {
+@media (min-width: 1271px) and (max-width: 1599px) {
   .dashboard-container {
     grid-template-columns: 1fr 350px;
     gap: 20px;
@@ -534,7 +584,7 @@
   }
 
   .announcements-container {
-    height: calc(75vh - 12vh);
+    height: calc(80vh - 12vh);
   }
 
   .announcement-footer button {
@@ -542,7 +592,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1270px) {
 
   .dashboard-page-container {
     flex-direction: column;
@@ -583,4 +633,34 @@
   .user-manual {
     width: 100%;
   }
+}
+
+/* match announcements scrollbar for ongoing/upcoming panels & event modal */
+.upcoming-events,
+.dashboard-event-modal {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #cfcfcf transparent;
+}
+
+.upcoming-events::-webkit-scrollbar,
+.dashboard-event-modal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.upcoming-events::-webkit-scrollbar-track,
+.dashboard-event-modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.upcoming-events::-webkit-scrollbar-thumb,
+.dashboard-event-modal::-webkit-scrollbar-thumb {
+  background: #cfcfcf;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.upcoming-events::-webkit-scrollbar-thumb:hover,
+.dashboard-event-modal::-webkit-scrollbar-thumb:hover {
+  background: #b5b5b5;
 }

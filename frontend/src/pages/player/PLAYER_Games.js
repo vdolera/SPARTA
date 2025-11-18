@@ -211,7 +211,7 @@ const PlayerGame = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="modal-form">
-              <div className="form-group">
+              <div>
                 <label className="form-label">Player Name:</label>
                 <input
                   type="text"
@@ -222,7 +222,7 @@ const PlayerGame = () => {
                 />
               </div>
 
-              <div className="form-group">
+              <div>
                 <label className="form-label">Team:</label>
                 <select
                   value={team || user?.team || ""}
@@ -239,7 +239,7 @@ const PlayerGame = () => {
                 </select>
               </div>
 
-              <div className="form-group">
+              <div>
                 <label className="form-label">Gender:</label>
                 <select
                   value={gender}
@@ -256,7 +256,7 @@ const PlayerGame = () => {
                 </select>
               </div>
 
-              <div className="form-group">
+              <div style={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
                 <label className="form-label">Games:</label>
                 {games
                   .filter((g) => {
