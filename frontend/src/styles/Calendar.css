@@ -344,8 +344,7 @@
 
 /* Announcements Column */
 .announcements-container {
-  flex-shrink: 0; 
-  width: 400px;   
+  flex-shrink: 0;  
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -475,8 +474,7 @@
 }
 
 /* User Manual */
-.user-manual {
-  width: 100%;   
+.user-manual {   
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -626,12 +624,14 @@
   }
 
   .announcements-container {
-    width: 100%;
+    width: 90%;
     height: 60vh;
+    margin: auto;
   }
 
   .user-manual {
-    width: 100%;
+    width: 90%;
+    margin: auto;
   }
 }
 
