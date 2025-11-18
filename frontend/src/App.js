@@ -60,7 +60,7 @@ export default function App() {
         <Route path="/admin/approval" element={<BlockRoute> <Approval /> </BlockRoute>} />
         <Route path="/admin/event" element={<BlockRoute> <Event /> </BlockRoute>} />
         <Route path="/admin/event/create" element={<BlockRoute> <CreateEvent /> </BlockRoute>} />
-        <Route path="/admin/event/:eventName" element={<SpecificEvent />} />
+        <Route path="/admin/event/:eventName" element={<BlockRoute> <SpecificEvent /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/team" element={<BlockRoute> <Team /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/team/:teamName/players" element={<BlockRoute> <TeamPlayers /> </BlockRoute>} />
         <Route path="/admin/event/:eventName/team/:teamName/pending" element={<BlockRoute> <TeamPlayerApproval /> </BlockRoute>} />
@@ -79,7 +79,7 @@ export default function App() {
         <Route path="/dashboard" element={<BlockRoute> <PlayerDashboard /> </BlockRoute>} />
         <Route path=":userId/profile" element={<BlockRoute> <PlayerUserProfile /> </BlockRoute>} />
         <Route path="/event" element={<BlockRoute> <PlayerEvent /> </BlockRoute>} />
-        <Route path="/event/:eventName" element={<PlayerSpecificEvent />} />
+        <Route path="/event/:eventName" element={<BlockRoute> <PlayerSpecificEvent /> </BlockRoute>} />
         <Route path="/event/:eventName/team/:teamName/players" element={<BlockRoute> <PlayerTeamPlayers /> </BlockRoute>} />
         <Route path="/event/:eventName/game" element={<BlockRoute> <PlayerGame /> </BlockRoute>} />
         <Route path="/event/:eventName/game/:game" element={<BlockRoute> <PlayerGameBracket /> </BlockRoute>} />
