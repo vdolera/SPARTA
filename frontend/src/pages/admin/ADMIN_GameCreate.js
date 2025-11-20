@@ -145,7 +145,7 @@ const CreateGame = () => {
         setTimeout(() => {
           setShowModal(false);
           navigate(-1);
-        }, 8000);
+        }, 5000);
       } else {
         setModalMessage("Failed! " + data.message);
         setShowModal(true);

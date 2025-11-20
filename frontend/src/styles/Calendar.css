@@ -383,65 +383,6 @@
   text-decoration: underline;
 }
 
-.dashboard-buttons {
-  width: 100%;
-  height: 15vh;
-  margin-top: 5px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.orghub-button {
-  background: #2e8b57;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 15px 25px;
-  font-family: Poppins, sans-serif;
-  font-size: clamp(12px, 2vw, 16px);
-  cursor: pointer;
-  transition: background 0.3s ease;
-  margin: 5px;
-  width: 15vw;
-  height: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-
-.orghub-button:hover {
-  background: #ffa812 ;
-}
-
-.orghub-footer {
-  display: flex;
-  justify-content: flex-end;
-  margin: 5px;
-  gap: 5px;
-  padding: 5px;
-  width: 95%;
-}
-
-.orghub-footer button {
-  background: #1a2a49;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 7px;
-  font-family: Poppins, sans-serif;
-  height: fit-content;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.orghub-footer button:hover {
-  background: #ce892c;
-}
-
 .announcement-block {
   background: linear-gradient(180deg, #ce892c, #1a2a49);
   padding: 2px;
@@ -458,20 +399,6 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-}
-
-.feedback-contents p {
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  white-space: normal;
-
-}
-
-/* This does the same for the author name (<h5>) */
-.feedback-contents h5 {
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  white-space: normal;
 }
 
 /* Custom Scrollbar */
@@ -575,10 +502,6 @@
     font-size: 16px;
   }
 
-  .orghub-footer button {
-    font-size: 16px;
-  }
-
 }
 
 @media (min-width: 1271px) and (max-width: 1599px) {
@@ -615,16 +538,13 @@
     height: calc(80vh - 12vh);
   }
 
-  .orghub-footer button {
-    font-size: 14px;
-  }
 }
 
 @media (max-width: 1270px) {
 
   .dashboard-page-container {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    align-items: flex-start;
   }
 
   .dashboard-container {

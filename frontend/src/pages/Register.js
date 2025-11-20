@@ -54,7 +54,7 @@ export default function RegisterPage() {
     setToast({ show: true, message, type });
     setTimeout(() => {
       setToast({ show: false, message: '', type: '' });
-    }, 8000);
+    }, 5000);
   };
 
   const handleSubmit = async (e) => {

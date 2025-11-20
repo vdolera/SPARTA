@@ -55,6 +55,17 @@ const PlayerUserProfile = () => {
     <PlayerMainLayout>
   <div className="player-profile-container">
 
+    <div className="profile-actions">
+      {isEditing ? (
+        <>
+          <button className="btn save-btn" onClick={handleSave}>Save</button>
+          <button className="btn cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>
+            </>
+      ) : (
+          <button className="btn edit-btn" onClick={() => setIsEditing(true)}>Edit Profile</button>
+          )}
+    </div>    
+
     <div className="profile-view">
       {/* Left card */}
       <div className="player-main-card">
@@ -184,16 +195,6 @@ const PlayerUserProfile = () => {
               </div>
         </div>
 
-     <div className="profile-actions">
-          {isEditing ? (
-            <>
-              <button className="btn save-btn" onClick={handleSave}>Save</button>
-              <button className="btn cancel-btn" onClick={() => setIsEditing(false)}>Cancel</button>
-            </>
-          ) : (
-            <button className="btn edit-btn" onClick={() => setIsEditing(true)}>Edit Profile</button>
-          )}
-        </div>
       </div>
     </PlayerMainLayout>
   );

@@ -1,0 +1,8 @@
+.pantheon-menu-icon {
+    cursor: pointer;
+    color: #ffffff;
+    transition: color 0.2s ease;
+    position: absolute;
+    top: 5px;
+    right: 0px;
+}

@@ -16,6 +16,8 @@ const Event = () => {
   const [menuOpen, setMenuOpen] = useState(null);
   const [editEvent, setEditEvent] = useState(null);
   const [, setNewSubOrganizer] = useState(""); 
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const user = JSON.parse(localStorage.getItem("auth"));
 
   // Fetch events
@@ -38,15 +40,29 @@ const Event = () => {
     navigate(`/admin/event/${encodeURIComponent(event.eventName)}`);
   };
 
-  // Delete event
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this event?")) return;
+  // Open delete confirmation modal
+  const openDeleteModal = (event) => {
+    setDeleteTarget(event);
+    setDeleteModalOpen(true);
+  };
+
+  // Perform delete
+  const performDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await fetch(`http://localhost:5000/api/event/${id}`, { method: "DELETE" });
-      setEvents(events.filter((e) => e._id !== id));
+      await fetch(`http://localhost:5000/api/event/${deleteTarget._id}`, { method: "DELETE" });
+      setEvents(events.filter((e) => e._id !== deleteTarget._id));
     } catch (err) {
       console.error("Delete failed:", err);
+    } finally {
+      setDeleteModalOpen(false);
+      setDeleteTarget(null);
     }
+  };
+
+  const cancelDelete = () => {
+    setDeleteModalOpen(false);
+    setDeleteTarget(null);
   };
 
   // Edit event
@@ -117,7 +133,7 @@ const Event = () => {
                         <div className="dropdown-item" onClick={() => setEditEvent(event)}>
                           Edit
                         </div>
-                        <div className="dropdown-item delete" onClick={() => handleDelete(event._id)}>
+                        <div className="dropdown-item delete" onClick={() => { setMenuOpen(null); openDeleteModal(event); }}>
                           Delete
                         </div>
                       </div>
@@ -349,6 +365,19 @@ const Event = () => {
                   <button className="modal-save-btn" type="submit">Save</button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+        {/* Delete Confirmation Modal */}
+        {deleteModalOpen && deleteTarget && (
+          <div className="modal-event-overlay" onClick={cancelDelete}>
+            <div className="event-modal" onClick={(e) => e.stopPropagation()}>
+              <h2>Confirm Delete</h2>
+              <p>Are you sure you want to delete the event "<strong>{deleteTarget.eventName}</strong>"? This action cannot be undone.</p>
+              <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 12 }}>
+                <button className="modal-cancel-btn" type="button" onClick={cancelDelete}>Cancel</button>
+                <button className="modal-save-btn" type="button" onClick={performDelete} style={{ background: "#d32f2f" }}>Delete</button>
+              </div>
             </div>
           </div>
         )}

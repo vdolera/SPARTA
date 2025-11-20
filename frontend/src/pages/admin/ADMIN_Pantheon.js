@@ -2,6 +2,7 @@ import MainLayout from "../../components/MainLayout";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MoreVertical } from "lucide-react";
+import "../../styles/Pantheon.css";
 
 const Pantheon = () => {
 
@@ -76,7 +77,7 @@ const Pantheon = () => {
               {/* Menu button */}
               {user.role === "admin" && (
                 <>
-                  <MoreVertical size={20} className="menu-icon" onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)} />
+                  <MoreVertical size={20} className="pantheon-menu-icon" onClick={() => setMenuOpen(menuOpen === event._id ? null : event._id)} />
                   {menuOpen === event._id && (
                     <div className="menu-dropdown">
                       <button onClick={() => setEditEvent(event)}>EDIT</button>

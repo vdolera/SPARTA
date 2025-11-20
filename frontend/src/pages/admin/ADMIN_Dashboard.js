@@ -40,7 +40,7 @@ const Dashboard = () => {
   // Toast helper
   const showToastMessage = (message, type) => {
     setShowToast({ show: true, message, type });
-    setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 8000);
+    setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 5000);
   };
 
   // Fetch Game schedules
@@ -315,16 +315,6 @@ const Dashboard = () => {
               onClickDay={handleDateClick}
             />
           </div>
-
-          <div className="dashboard-buttons">
-            <button
-              className="orghub-button"
-              onClick={() => setShowHubModal(true)}
-              title="Open Organizer's Hub"
-              >
-              <FaPeopleGroup size={25} /> Organizer's Hub
-            </button>
-          </div>
         </div>
 
         {/* Event Modal */}
@@ -385,44 +375,7 @@ const Dashboard = () => {
             </div>
           </div>
         )}
-
-        {/* Organizer's Hub Modal */}
-        {showHubModal && (
-          <div className="dashboard-event-modal-overlay" onClick={() => setShowHubModal(false)}>
-            <div className="dashboard-event-modal" onClick={(e) => e.stopPropagation()}>
-              <div className="dashboard-event-modal-header">
-                <h3>Organizer's Hub</h3>
-                <button className="close-modal" onClick={() => setShowHubModal(false)}>×</button>
-              </div>
-
-              <div className="calendar-events-list" style={{maxHeight: "60vh", overflowY: "auto"}}>
-                {loadingAnnouncements ? (
-                  <p>Loading announcements...</p>
-                ) : announcements.length === 0 ? (
-                  <div className="no-events">No announcements</div>
-                ) : (
-                  announcements.map((ann) => (
-                    <div key={ann._id} className="announcement-block" style={{marginBottom: 8}}>
-                      <div className="announcement-block-contents">
-                        <h5 style={{fontStyle: "italic", margin: 0}}>{new Date(ann.createdAt).toLocaleDateString()}</h5>
-                        <p style={{margin: "6px 0"}}>{ann.message}</p>
-                        <div style={{textAlign: "right", fontWeight: 700}}>- {ann.authorName}</div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              <div className="orghub-footer" style={{display: "flex", justifyContent: "flex-end", alignItems: "center"}}>
-                {canPost && (
-                  <button style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "5px" }} onClick={() => setShowPostModal(true)}> <MdEditSquare /> Create a Post</button>
-                )}
-                <button style={{backgroundColor: "gray"}} onClick={() => setShowHubModal(false)}>Close</button>
-              </div>
-            </div>
-          </div>
-        )}
-
+    
         {/* Announcements Container */}
         <div className="dashboard-side-content" >
 
@@ -473,55 +426,7 @@ const Dashboard = () => {
               )}
             </div>
           </div>
-
-          
-
-          {/* <div className="user-manual">
-            <h3 style={{ textAlign: "center", margin: "5px" }}> User Manual </h3>
-          </div> */}
-
         </div>
-
-        {/* Post Announcement Modal */}
-        {showPostModal && (
-          <div className="feedback-overlay">
-            <div className="feedback-modal">
-              <h2>Post an Announcement</h2>
-              <p style={{marginBottom: "5px", fontFamily: "Poppins, Sans-Serif"}}>Please enter the details of your announcement below. Your announcement post can be seen by all users with the organizer role in your institution</p>
-
-              <textarea
-                value={newAnnouncement}
-                onChange={(e) => setNewAnnouncement(e.target.value)}
-                placeholder="Write your announcement..."
-                rows="5"
-                style={{
-                  width: "100%"
-                }}
-              />
-
-              <div className="feedback-actions">
-                <button className="cancel" onClick={() => setShowPostModal(false)}>
-                  Cancel
-                </button>
-                <button className="submit" onClick={handlePostAnnouncement}>
-                  Submit
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Toast Notification */}
-        {showToast.show && (
-          <div
-            className={`toast-notification ${
-              showToast.type === "success" ? "toast-success" : "toast-error"
-            }`}
-          >
-            {showToast.message}
-          </div>
-        )}
-
       </div>
     </MainLayout>
   );

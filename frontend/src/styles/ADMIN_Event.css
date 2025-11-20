@@ -223,7 +223,7 @@
   transition: color 0.2s ease;
   position: absolute;
   top: 0px;
-  left: -15px;
+  right: -5px;
 }
 
 .menu-icon:hover {
