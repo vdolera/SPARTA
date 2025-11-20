@@ -26,17 +26,44 @@
 
   .player-profile-container {
     max-width: 1200px;
+    gap: 20px;
   }
 
   .player-main-card {
     max-width: 15vw;
     height: 55vh;
-}
+  }
+
+  .profile-pic {
+    width: 200px;
+  }
+
+  .profile-value-rect {
+    font-size: 15px;
+    margin-top: 4px;
+  }
+
+  .profile-field {
+    margin-bottom: 12px;
+  }
+
+  .profile-input {
+    font-size: 15px;
+  }
 
   .other-info-card {
     min-width: 45vw;
     height: 55vh;
   }
+
+  .player-main-card, .other-info-card, .profile-form {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.215);
+  flex: 1;
+  word-break: break-word;
+}
 
 }
 
@@ -78,17 +105,28 @@
     padding: 2px 5px;
   }
 
-  .other-info-card {
-    min-width: 50vw;
-    width: 65vw;
-    height: 55vh;
+  .profile-field {
+    margin-bottom: 10px;
   }
+
+  .profile-input {
+    font-size: 12px;
+  }
+
+  .other-info-card {
+    width: 65vw;
+    height: 60vh;
+  }
+
+  .player-main-card, .other-info-card, .profile-form {
+  border-radius: 10px;
+  padding: 15px;
+}
 }
 
 .player-profile-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
   max-width: 1000px;
   margin: 25px auto;
   padding: 20px;
@@ -99,16 +137,12 @@
 .profile-view {
   display: flex;
   gap: 20px;
-  width: fit-content;
+  width: 100%;
 }
 
 .player-main-card, .other-info-card, .profile-form {
   background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.215);
-  flex: 1;
-  word-break: break-word;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.594);
 }
 
 
@@ -137,7 +171,6 @@
   text-align: center;
   padding: 15px;
   margin: 10px auto;
-  width: 200px;
   height: auto;
   border: none;
   overflow-wrap: break-word;
@@ -171,9 +204,7 @@
 .profile-details {
   margin-top: 10px;
 }
-.profile-field {
-  margin-bottom: 12px;
-}
+
 .profile-label {
   display: block;
   font-size: 14px;
@@ -183,8 +214,6 @@
   background: #f7f7f7;
   border-radius: 6px;
   padding: 6px 10px;
-  font-size: 15px;
-  margin-top: 4px;
 }
 
 .profile-tabs {
@@ -234,11 +263,10 @@
 }
 
 .profile-input {
-  background: #f7f7f7;
+  background: #e6e6e6;
   border: 2px solid transparent;
   border-radius: 6px;
   padding: 6px 10px;
-  font-size: 15px;
   margin-top: 4px;
   width: 100%;
   box-sizing: border-box;
@@ -379,4 +407,45 @@
 
 .table-container::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* Toast: bottom-right small notification */
+.profile-toast {
+  position: fixed;
+  right: 20px;
+  bottom: 24px;
+  background: #33854B; /* green to indicate success */
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  font-weight: 600;
+  z-index: 6000;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: toastIn 0.25s forwards ease;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  min-width: 140px;
+  text-align: center;
+}
+
+/* Simple entrance animation */
+@keyframes toastIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments: smaller screens -> center bottom, full width with margin */
+@media (max-width: 480px) {
+  .profile-toast {
+    left: 12px;
+    right: 12px;
+    bottom: 14px;
+    min-width: unset;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
 }

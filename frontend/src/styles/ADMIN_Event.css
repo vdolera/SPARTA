@@ -1,4 +1,4 @@
-@media (max-width: 1023px) {
+@media (max-width: 1270px) {
   .event-main-header {
     gap: 10px;
     width: 85vw;
@@ -30,7 +30,7 @@
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1600px) {
+@media (min-width: 1271px) and (max-width: 1600px) {
   .event-main-header {
     gap: 0;
     width: auto;
@@ -45,8 +45,7 @@
   }
 
   .event-list-container {
-    width: 1200px;
-    margin-top: 150px;
+    width: 100%;
   }
 
   .event-item {

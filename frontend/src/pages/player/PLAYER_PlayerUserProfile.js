@@ -11,6 +11,7 @@ const PlayerUserProfile = () => {
   const [player, setPlayer] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("player");
+  const [showToast, setShowToast] = useState(false);
 
   // Fetch user dertails
   useEffect(() => {
@@ -42,7 +43,9 @@ const PlayerUserProfile = () => {
         const updated = await res.json();
         setPlayer(updated);
         setIsEditing(false);
-        alert("Profile updated!");
+        // show toast notification instead of alert
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 3000);
       } else {
         alert("Failed to update profile");
       }
@@ -195,6 +198,12 @@ const PlayerUserProfile = () => {
               </div>
         </div>
 
+      {/* Toast notification */}
+      {showToast && (
+        <div className="profile-toast" role="status" aria-live="polite">
+          Profile Updated
+        </div>
+      )}
       </div>
     </PlayerMainLayout>
   );

@@ -2,8 +2,6 @@ import MainLayout from "../../components/MainLayout";
 import { useState, useEffect } from "react";
 import Calendar from 'react-calendar';
 import axios from 'axios';
-import { MdEditSquare} from "react-icons/md";
-import { FaPeopleGroup } from "react-icons/fa6";
 import "../../styles/Calendar.css";
 
 const Dashboard = () => {
@@ -20,28 +18,11 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [multiDayEvents, setMultiDayEvents] = useState([]);
 
-  // Announcements State
-  const [announcements, setAnnouncements] = useState([]);
-  const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
-  const [showPostModal, setShowPostModal] = useState(false);
-  const [newAnnouncement, setNewAnnouncement] = useState("");
-
-  // Toast State
-  const [showToast, setShowToast] = useState({ show: false, message: "", type: "" });
-
   // List Modal State
   const [showListModal, setShowListModal] = useState(false);
   const [listModalTitle, setListModalTitle] = useState("");
   const [listModalItems, setListModalItems] = useState([]);
 
-  // + add hub state
-  const [showHubModal, setShowHubModal] = useState(false);
-
-  // Toast helper
-  const showToastMessage = (message, type) => {
-    setShowToast({ show: true, message, type });
-    setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 5000);
-  };
 
   // Fetch Game schedules
   useEffect(() => {
@@ -104,60 +85,6 @@ const Dashboard = () => {
 
     fetchGames();
   }, [user?.institution, user?.eventName, user?.role]);
-
-  // Fetch Announcements
-  useEffect(() => {
-    const fetchAnnouncements = async () => {
-      if (!user?.institution) {
-        setLoadingAnnouncements(false);
-        return;
-      }
-      try {
-        setLoadingAnnouncements(true);
-        let url = `http://localhost:5000/api/announcements?institution=${encodeURIComponent(user.institution)}`;
-        
-        if (user?.role === "co-organizer" || user?.role === "sub-organizer") {
-          url += `&eventName=${encodeURIComponent(user.eventName)}`;
-        }
-
-        const res = await axios.get(url);
-        setAnnouncements(res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
-      } catch (err) {
-        console.error("Error fetching announcements:", err);
-      } finally {
-        setLoadingAnnouncements(false);
-      }
-    };
-    fetchAnnouncements();
-  }, [user?.institution, user?.eventName, user?.role]);
-
-  // Post Announcement
-  const handlePostAnnouncement = async () => {
-    if (!newAnnouncement.trim()) {
-      showToastMessage("Announcement cannot be empty", "error");
-      return;
-    }
-    try {
-      const res = await axios.post("http://localhost:5000/api/announcements", {
-        institution: user.institution,
-        eventName: (user?.role === "co-organizer" || user?.role === "sub-organizer") ? user.eventName : null,
-        authorName: user.username || "Admin", 
-        message: newAnnouncement,
-      });
-
-      if (res.data) {
-        setAnnouncements([res.data, ...announcements]);
-        setNewAnnouncement("");
-        setShowPostModal(false);
-        showToastMessage("Announcement posted successfully!", "success");
-      } else {
-        showToastMessage("Failed to post announcement", "error");
-      }
-    } catch (err) {
-      console.error("Error posting announcement:", err);
-      showToastMessage("Something went wrong!", "error");
-    }
-  };
 
   const onChange = (newDate) => {
     setDate(newDate);
@@ -269,8 +196,6 @@ const Dashboard = () => {
     .filter(event => event.date > endOfToday)
     .sort((a, b) => a.date - b.date)
     .slice(0, 5);
-
-  const canPost = user?.role === 'organizer' || user?.role === 'co-organizer' || user?.role === 'admin';
 
   const openListModal = (type) => {
     const today = new Date();

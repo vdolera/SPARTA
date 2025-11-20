@@ -1,3 +1,90 @@
+@media (max-width: 1270px) {
+  .register-box {
+    width: 600px;
+    height: 90vh;
+    padding: 0.5rem;
+  }
+
+  .register-left {
+    padding: 10px;
+  }
+
+  .register-form {
+    gap: 0.5rem;
+  }
+
+  .role-buttons {
+    margin: 0 auto 0.5rem auto;
+    padding: 5px;
+    width: 250px;
+    height: 30px;
+  }
+
+  .role-button {
+    font-size: 12px;
+  }
+
+  .register-form label {
+    font-size: 0.75rem;
+  }
+
+  .form-group select {
+    font-size: 13px;
+  }
+
+  .register-button {
+    font-size: 0.75rem;
+  }
+
+  .register-left {
+    justify-content: space-evenly;
+  }
+
+  .switch-button {
+    font-size: 0.75rem;
+    padding: 3px 5px;
+  }
+  
+}
+
+@media (min-width: 1271px) and (max-width: 1599px) {
+  .register-box {
+    width: 700px;
+    width: 100%;
+    padding: 1.5rem;
+  }
+
+  .register-left {
+    padding: 20px;
+  }
+
+  .register-form {
+    gap: 1rem;
+  }
+
+  .register-button {
+    font-size: 0.95rem;
+  }
+
+  .switch-button {
+    padding: 5px 7px;
+    font-size: 0.9rem;
+  }
+
+  .register-form label {
+    font-size: 0.875rem;
+  }
+
+  .form-group select {
+    font-size: 15px;
+  }
+
+  .register-left {
+    justify-content: center;
+  }
+
+}
+
 .register-container {
     min-height: 100vh;
     display: flex;
@@ -13,9 +100,6 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     outline: 2px #CE892C solid;
     border-radius: 1rem;
-    width: 100%;
-    max-width: 700px;
-    padding: 1.5rem;
     display: flex;
     justify-content: space-between;
     font-family: Poppins, sans-serif;
@@ -32,10 +116,8 @@
   .register-left {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     width: 50%;
-    padding: 20px;
   }
 
   .register-image {
@@ -48,7 +130,6 @@
   .role-buttons {
     display: flex;
     justify-content: center;
-    margin-bottom: 1rem;
   }
   
   .role-button {
@@ -80,7 +161,6 @@
   .register-form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
   }
 
   .form-group {
@@ -96,7 +176,6 @@
   padding: 0.6rem 0.5rem 0.6rem 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
-  font-size: 15px;
   background-color: #fff;
   color: #333;
   cursor: pointer;
@@ -104,7 +183,6 @@
   }
 
   .register-form label {
-    font-size: 0.875rem;
     font-weight: 500;
     color: #374151;
   }
@@ -147,14 +225,12 @@
     margin-top: 0.5rem;
     background-color: transparent;
     color: #05215e;
-    font-size: 0.9rem;
     font-weight: 500;
     border: none;
     cursor: pointer;
     text-decoration: underline;
     transition: color 0.3s ease;
     border-radius: 5px;
-    padding: 5px 7px;
   }
   
   .switch-button:hover {
