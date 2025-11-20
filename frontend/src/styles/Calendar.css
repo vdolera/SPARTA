@@ -503,7 +503,7 @@
 
 }
 
-@media (min-width: 1271px) and (max-width: 1599px) {
+@media (min-width: 1273px) and (max-width: 1599px) {
   .dashboard-container {
     grid-template-columns: 1fr 350px;
     gap: 20px;
@@ -539,7 +539,7 @@
 
 }
 
-@media (max-width: 1270px) {
+@media (max-width: 1272px) {
 
   .dashboard-page-container {
     flex-direction: row;

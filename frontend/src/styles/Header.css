@@ -190,14 +190,14 @@
   }
 }
 
-@media (min-width: 1271px) and (max-width: 1599px) {
+@media (min-width: 1273px) and (max-width: 1599px) {
   .header {
     height: 12vh;
     left: 12vw; 
   }
 }
 
-@media (max-width: 1270px) {
+@media (max-width: 1272px) {
   .header {
     left: 0vw;
     height: 12vh;

@@ -7,10 +7,10 @@
   height: fit-content;
 }
 
-@media (max-width: 1270px) {
+@media (max-width: 1272px) {
   .main-content {
     margin-left: 5rem;
-    margin-top: 10vh;
+    margin-top: 15vh;
     padding: 0 10px 0 10px;
   }
 }
