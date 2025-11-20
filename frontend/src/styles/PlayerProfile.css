@@ -43,7 +43,7 @@
 @media (max-width: 1270px) {
 
   .profile-view {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
   }
   
@@ -51,10 +51,31 @@
     max-width: 100%;
     height: auto;
   }
+  .player-profile-container {
+    gap: 5px;
+  }
 
   .player-main-card {
-    max-width: 35vw;
-    height: 55vh;
+    max-width: 20vw;
+    height: 60vh;
+  }
+
+  .profile-pic {
+    width: 15vw;
+  }
+
+  .profile-pic img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .profile-pic p:first-of-type {
+    font-size: 12px;
+  }
+
+  .profile-value-rect {
+    font-size: 12px;
+    padding: 2px 5px;
   }
 
   .other-info-card {
@@ -119,7 +140,6 @@
   width: 200px;
   height: auto;
   border: none;
-  word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: normal;
 }
@@ -144,7 +164,6 @@
   font-size: 12px;
   color: #666;
   margin-top: 4px;
-  word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: normal;
 }
