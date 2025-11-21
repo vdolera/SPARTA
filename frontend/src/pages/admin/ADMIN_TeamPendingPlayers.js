@@ -46,7 +46,8 @@ const TeamPlayerApproval = () => {
       });
       if (res.ok) {
         showToastMessage("Approved Player", "success");
-        fetchPlayers();
+        //fetchPlayers();
+        setPlayers((prevPlayers) => prevPlayers.filter((player) => player._id !== id));
       }
     } catch (err) {
       console.error("Error approving player:", err);
@@ -72,7 +73,8 @@ const TeamPlayerApproval = () => {
       });
       if (res.ok) {
         showToastMessage("Declined Player", "error");
-        fetchPlayers();
+        //fetchPlayers();
+        setPlayers((prevPlayers) => prevPlayers.filter((player) => player._id !== id));
       }
     } catch (err) {
       console.error("Error declining player:", err);
