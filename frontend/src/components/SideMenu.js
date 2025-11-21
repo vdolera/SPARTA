@@ -10,8 +10,6 @@ const SideMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-
-
   const user = JSON.parse(localStorage.getItem("auth"));
 
    return (
