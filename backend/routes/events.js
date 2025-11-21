@@ -237,7 +237,31 @@ router.put('/event/:id', async (req, res) => {
     const { id } = req.params;
     const { coordinators, ...eventData } = req.body;
 
-    // Update Event 
+    // Fetch the CURRENT event before updating to double check coords
+    const oldEvent = await Event.findById(id);
+    if (!oldEvent) return res.status(404).json({ message: "Event not found" });
+
+    // Deleting coords
+    if (Array.isArray(coordinators)) {
+      // Get coord list when event created 
+      const oldEmails = oldEvent.coordinators.map(c => c.email);
+      // Get coord list in the edit modal
+      const newEmails = coordinators.map(c => c.email).filter(e => e);
+
+      // Find emails that were present but now removed in the modal
+      const emailsToDelete = oldEmails.filter(email => !newEmails.includes(email));
+
+      if (emailsToDelete.length > 0) {
+        // Remove them from the Coordinator schema
+        await Coordinator.deleteMany({
+          eventName: oldEvent.eventName, // only delete the coord in the specific event
+          email: { $in: emailsToDelete }
+        });
+        console.log(`Deleted coordinators: ${emailsToDelete}`);
+      }
+    }
+
+    // 3. Update the Event Document
     const updatedEvent = await Event.findByIdAndUpdate(
       id,
       { 
@@ -252,10 +276,8 @@ router.put('/event/:id', async (req, res) => {
       }, 
       { new: true }
     );
-    
 
-    if (!updatedEvent) return res.status(404).json({ message: "Event not found" });
-
+    // 4. Handle New Invitations (Existing logic)
     if (Array.isArray(coordinators)) {
       const existingCoords = await Coordinator.find({ eventName: updatedEvent.eventName });
 
@@ -264,7 +286,7 @@ router.put('/event/:id', async (req, res) => {
       for (let coord of coordinators) {
         if (!coord.email) continue;
 
-        // check if coordinator already exists
+        // check if coordinator already exists in the Coordinator Collection
         const alreadyExists = existingCoords.some(c => c.email === coord.email);
 
         if (!alreadyExists) {
@@ -282,49 +304,43 @@ router.put('/event/:id', async (req, res) => {
           });
           await newCoord.save();
 
-          // Send email CO-ORGANIZER INVITATION FOR EDITING OF EVENTS
+          // Send email CO-ORGANIZER INVITATION
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
           });
 
-        await transporter.sendMail({
-          from: `"SPARTA ADMIN" <${process.env.SMTP_USER}>`,
-          to: coord.email,
-          subject: `Invitation to ${updatedEvent.eventName}`,
-          html: `
-          <div style="font-family: Arial, sans-serif; color: #222;">
-            <h2 style="color: #1A2A49;">Invitation to ${updatedEvent.eventName}</h2>
-            <p>Dear ${coord.name || "Coordinator"},</p>
-            <p>
-              You have been invited as a <b>${coord.role || "co-organizer"}</b> for the event <b>${updatedEvent.eventName}</b> at <b>${updatedEvent.institution}</b>.
-            </p>
-            <h3 style="margin-bottom: 0;">Event Details:</h3>
-            <ul style="margin-top: 4px;">
-              <li><b>Date:</b> ${updatedEvent.eventStartDate ? new Date(updatedEvent.eventStartDate).toLocaleDateString() : "TBA"}</li>
-              <li><b>End Date:</b> ${updatedEvent.eventEndDate ? new Date(updatedEvent.eventEndDate).toLocaleDateString() : "TBA"}</li>
-              <li><b>Venue:</b> ${updatedEvent.institution}</li>
-            </ul>
-            <p>
-              <b>Your Access Key:</b> <span style="font-size: 1.1em; color: #CE892C;">${accessKey}</span>
-            </p>
-            <p>
-              As part of the organizing team, you will help coordinate logistics, facilitate activities, and ensure the smooth execution of the event. A preparatory meeting will be scheduled soon to align roles, responsibilities, and timelines.
-            </p>
-            <p>
-              Please confirm your participation by replying to this email no later than ${updatedEvent.eventStartDate ? new Date(updatedEvent.eventStartDate).toLocaleDateString() : "TBA"}. If you have any questions or suggestions, feel free to reach out.
-            </p>
-            <p>
-              We look forward to working with you to make <b>${updatedEvent.eventName}</b> a memorable and meaningful experience for our community.
-            </p>
-            <p style="margin-top: 32px;">
-              Warm regards,<br>
-              <b>${updatedEvent?.userName || "Event Organizer"}</b><br>
-              Lead Organizer, ${updatedEvent.eventName}
-            </p>
-          </div>
-         `,
-        });
+          await transporter.sendMail({
+            from: `"SPARTA ADMIN" <${process.env.SMTP_USER}>`,
+            to: coord.email,
+            subject: `Invitation to ${updatedEvent.eventName}`,
+            html: `
+            <div style="font-family: Arial, sans-serif; color: #222;">
+              <h2 style="color: #1A2A49;">Invitation to ${updatedEvent.eventName}</h2>
+              <p>Dear ${coord.name || "Coordinator"},</p>
+              <p>
+                You have been invited as a <b>${coord.role || "co-organizer"}</b> for the event <b>${updatedEvent.eventName}</b> at <b>${updatedEvent.institution}</b>.
+              </p>
+              <h3 style="margin-bottom: 0;">Event Details:</h3>
+              <ul style="margin-top: 4px;">
+                <li><b>Date:</b> ${updatedEvent.eventStartDate ? new Date(updatedEvent.eventStartDate).toLocaleDateString() : "TBA"}</li>
+                <li><b>End Date:</b> ${updatedEvent.eventEndDate ? new Date(updatedEvent.eventEndDate).toLocaleDateString() : "TBA"}</li>
+                <li><b>Venue:</b> ${updatedEvent.institution}</li>
+              </ul>
+              <p>
+                <b>Your Access Key:</b> <span style="font-size: 1.1em; color: #CE892C;">${accessKey}</span>
+              </p>
+              <p>
+                Please confirm your participation by replying to this email.
+              </p>
+              <p style="margin-top: 32px;">
+                Warm regards,<br>
+                <b>${updatedEvent?.userName || "Event Organizer"}</b><br>
+                Lead Organizer, ${updatedEvent.eventName}
+              </p>
+            </div>
+           `,
+          });
 
           coordinatorInvites.push({ email: coord.email, accessKey });
         }
@@ -335,6 +351,7 @@ router.put('/event/:id', async (req, res) => {
 
     res.json(updatedEvent);
   } catch (err) {
+    console.error("Update event error:", err);
     res.status(500).json({ message: "Failed to update event", error: err.message });
   }
 });
