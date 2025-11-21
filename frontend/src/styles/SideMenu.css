@@ -57,15 +57,6 @@
   width: fit-content;
 }
 
-.bottom-info {
-  border-top: 1px solid white;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-
-}
 
 /* Responsive: side menu scaling + collapsed view for smaller screens */
 .sidemenu {

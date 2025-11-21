@@ -595,18 +595,20 @@ const GameBracket = () => {
         {game.bracketType === "Round Robin" && (
           <div className="round-robin bracket-container">
             <h2>Round Robin</h2>
-            {roundsData.map((round, rIndex) => (
-              <div key={rIndex} className="rr-round">
-                <h3 className="rr-title">{round.title}</h3>
-                <div className="rr-matches">
-                  {round.seeds.map((seed, sIndex) => (
-                    <React.Fragment key={sIndex}>
-                      {renderSeed({ seed })}
-                    </React.Fragment>
-                  ))}
+            <div style={{display: "grid", gridTemplateColumns: "repeat(4, 1fr)"}}>
+              {roundsData.map((round, rIndex) => (
+                <div key={rIndex} className="rr-round">
+                  <h3 className="rr-title">{round.title}</h3>
+                  <div className="rr-matches">
+                    {round.seeds.map((seed, sIndex) => (
+                      <React.Fragment key={sIndex}>
+                        {renderSeed({ seed })}
+                      </React.Fragment>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
 
