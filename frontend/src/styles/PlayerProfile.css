@@ -1,20 +1,21 @@
 @media (min-width: 1600px) {
-  .player-profile-container {
-    max-width: 1400px;
-  }
 
   .player-profile-container {
-    max-width: 1200px;
+    width: 100%;
   }
 
   .player-main-card {
     min-width: 15vw;
     height: 55vh;
+    padding: 10px 15px;
+    border-radius: 5px;
 }
 
   .other-info-card {
-    min-width: 35vw;
+    width: 35vw;
     height: 55vh;
+    padding: 10px 15px;
+    border-radius: 5px;
   }
 
 }
@@ -138,7 +139,6 @@
 .profile-view {
   display: flex;
   gap: 20px;
-  width: 100%;
 }
 
 .player-main-card, .other-info-card, .profile-form {
