@@ -275,7 +275,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* List Modal for Ongoing / Upcoming */}
+        {/* List Modal for Ongoing/Upcoming */}
         {showListModal && (
           <div className="dashboard-event-modal-overlay" onClick={closeListModal}>
             <div className="dashboard-event-modal" onClick={(e) => e.stopPropagation()}>
@@ -286,13 +286,15 @@ const Dashboard = () => {
 
               <div className="calendar-events-list">
                 {listModalItems.length > 0 ? (
-                  listModalItems.map((event, index) => (
-                    <div key={index} className="upcoming-event">
-                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
-                      <div>{event.title} - {event.teams}</div>
-                      <div className="location">📍 {event.location}</div>
-                    </div>
-                  ))
+                  <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+                    {listModalItems.map((event, index) => (
+                      <li style={{borderLeft: "5px solid #ce892c", borderRadius: "10px", backgroundColor: "#f0f4f7d1", padding: " 10px 5px"}} key={index}>
+                        <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                        <div>{event.title} — {event.teams}</div>
+                        <div className="location" style={{ marginTop: 8 }}>📍 {event.location}</div>
+                      </li>
+                    ))}
+                  </ul>
                 ) : (
                   <div className="no-events">No events</div>
                 )}

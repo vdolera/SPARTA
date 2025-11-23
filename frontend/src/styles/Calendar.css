@@ -207,9 +207,9 @@
 .upcoming-events li {
   background: #f8f9fa;
   border-left: 4px solid #ce892c;
+  border-radius: 8px;
   padding: 12px;
   margin-bottom: 8px;
-  border-radius: 8px;
   font-size: 14px;
   line-height: 1.5;
   transition: all 0.2s ease;
@@ -325,6 +325,7 @@
   text-transform: uppercase;
   margin-top: 5px;
   padding: 10px;
+  
 }
 
 .no-events {
@@ -457,13 +458,12 @@
   }
 
   .upcoming-events {
-    width: 50%;
+    width: 400px;
     margin: 10px 0;
     height: 20vh;
-    align-items: center;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    text-align: center;
     font-size: 1rem;
   }
 
