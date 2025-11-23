@@ -210,8 +210,8 @@ const PlayerDashboard = () => {
 
       {/* Event Modal */}
       {isModalOpen && (
-        <div className="event-modal-overlay" onClick={closeModal}>
-          <div className="event-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="dashboard-event-modal-overlay" onClick={closeModal}>
+          <div className="dashboard-event-modal" onClick={(e) => e.stopPropagation()} style={{overflowX: "hidden"}}>
             <div className="event-modal-header">
               <h3>Events on {selectedDate.toLocaleDateString('en-US', { 
                 weekday: 'long', 
