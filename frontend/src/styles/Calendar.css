@@ -190,20 +190,6 @@
   gap: 10px;
 }
 
-.player-upcoming-events {
-  background: #fff;
-  border: 2px solid #a56806;
-  border-radius: 15px;
-  padding: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  font-family: Poppins, sans-serif;
-  font-size: 14px;
-  max-height: 60vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  transition: all 0.3s ease;
-}
-
 .upcoming-events li {
   background: #f8f9fa;
   border-left: 4px solid #ce892c;
@@ -418,25 +404,6 @@
 }
 
 .announcements-list::-webkit-scrollbar-thumb:hover {
-  background: #b5b5b5;
-}
-
-.player-upcoming-events::-webkit-scrollbar {
-  width: 10px;
-}
-
-.player-upcoming-events::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.player-upcoming-events::-webkit-scrollbar-thumb {
-  background: #cfcfcf;
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-}
-
-.player-upcoming-events::-webkit-scrollbar-thumb:hover {
   background: #b5b5b5;
 }
 

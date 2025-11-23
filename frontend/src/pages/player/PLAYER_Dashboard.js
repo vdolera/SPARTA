@@ -187,7 +187,7 @@ const PlayerDashboard = () => {
         </div>
       </div>
 
-        <div className="player-upcoming-events" style={{margin: "0px"}}>
+        <div className="upcoming-events" style={{margin: "0px"}}>
           <h3 style={{borderBottom: "1px solid #bcc7dd"}}>UPCOMING GAMES</h3>
           {loading ? (
             <p>Loading events...</p>
