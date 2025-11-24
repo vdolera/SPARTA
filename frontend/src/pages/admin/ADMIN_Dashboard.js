@@ -226,7 +226,7 @@ const Dashboard = () => {
     <MainLayout>
       <div className="dashboard-page-container">
 
-        {/* Main Dashboard Content */}
+      {/* Main Dashboard Content */}
         <div className="dashboard-main-content">
           
           <div className="calendar-container">
@@ -240,13 +240,64 @@ const Dashboard = () => {
               onClickDay={handleDateClick}
             />
           </div>
+          </div>
+
+          {/* Announcements Container */}
+          <div className="dashboard-side-content" >
+
+          <div style={{ flexGrow: 1, display: "flex", flexDirection: "column"}}>
+            <div className="upcoming-events">
+              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                <h3>ONGOING EVENTS</h3>
+                <button className="view-all-btn" onClick={() => openListModal("ongoing")}>View All</button>
+              </div>
+              {loading ? (
+                <p>Loading events...</p>
+              ) : ongoingEvents.length > 0 ? (
+                <ul>
+                  {ongoingEvents.map((event, index) => (
+                    <li key={index} className="upcoming-event">
+                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                      {event.title} - {event.teams}
+                      <br />
+                      <span className="location">📍 {event.location}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p style={{padding: "10px"}}>Wohoo! You have no on-going event for today.</p>
+              )}
+            </div>
+
+            <div className="upcoming-events">
+              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                <h3>UPCOMING EVENTS</h3>
+                <button className="view-all-btn" onClick={() => openListModal("upcoming")}>View All</button>
+              </div>
+              {loading ? (
+                <p>Loading events...</p>
+              ) : upcomingEvents.length > 0 ? (
+                <ul>
+                  {upcomingEvents.map((event, index) => (
+                    <li key={index} className="upcoming-event">
+                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                      {event.title} - {event.teams}
+                      <br />
+                      <span className="location">📍 {event.location}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No upcoming events</p>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Event Modal */}
         {isModalOpen && (
           <div className="dashboard-event-modal-overlay" onClick={closeModal}>
             <div className="dashboard-event-modal" onClick={(e) => e.stopPropagation()}>
-
               <div className="dashboard-event-modal-header">
                 <h3>Events on {selectedDate.toLocaleDateString('en-US', { 
                   weekday: 'long', 
@@ -303,57 +354,6 @@ const Dashboard = () => {
           </div>
         )}
     
-        {/* Announcements Container */}
-        <div className="dashboard-side-content" >
-
-          <div style={{ flexGrow: 1, display: "flex", flexDirection: "column"}}>
-            <div className="upcoming-events">
-              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                <h3>ONGOING EVENTS</h3>
-                <button className="view-all-btn" onClick={() => openListModal("ongoing")}>View All</button>
-              </div>
-              {loading ? (
-                <p>Loading events...</p>
-              ) : ongoingEvents.length > 0 ? (
-                <ul>
-                  {ongoingEvents.map((event, index) => (
-                    <li key={index} className="upcoming-event">
-                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
-                      {event.title} - {event.teams}
-                      <br />
-                      <span className="location">📍 {event.location}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p style={{padding: "10px"}}>Wohoo! You have no on-going event for today.</p>
-              )}
-            </div>
-
-            <div className="upcoming-events">
-              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                <h3>UPCOMING EVENTS</h3>
-                <button className="view-all-btn" onClick={() => openListModal("upcoming")}>View All</button>
-              </div>
-              {loading ? (
-                <p>Loading events...</p>
-              ) : upcomingEvents.length > 0 ? (
-                <ul>
-                  {upcomingEvents.map((event, index) => (
-                    <li key={index} className="upcoming-event">
-                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
-                      {event.title} - {event.teams}
-                      <br />
-                      <span className="location">📍 {event.location}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No upcoming events</p>
-              )}
-            </div>
-          </div>
-        </div>
       </div>
     </MainLayout>
   );

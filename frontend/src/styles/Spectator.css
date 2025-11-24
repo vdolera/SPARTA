@@ -150,12 +150,29 @@ body {
     border-radius: 10px;
 }
 
-.spectator-event-list {
-    display: flex;
-    flex-direction: row;
+.spectator-game-header-row {
     align-items: center;
-    justify-content: center;
-    width: 100vw;
+    display: flex;
+    justify-content: space-between;
+    /* width: 90%; */
+    margin: auto;
+    padding: 0 35px;
+}
+
+.spectator-game-main-div {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin: 0 auto;
+    width: 100%;
+}
+
+.spectator-event-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+    justify-content: flex-start;
+    width: 80vw;
     overflow-x: auto;
     margin: 0 auto;
     gap: 15px;

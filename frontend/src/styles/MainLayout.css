@@ -2,7 +2,7 @@
   margin-left: 200px; /* Pushes content to the right of sidebar */
   margin-top: 15vh;
   padding: 0 20px 0 20px;
-  min-height: calc(100vh - 15vh);
+  min-height: calc(100vh - 20vh);
   box-sizing: border-box;
   height: fit-content;
 }
