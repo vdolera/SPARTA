@@ -237,7 +237,7 @@
 
 .dashboard-stats {
   width: 100%;
-  border: 2px solid #32815b;
+  border: 2px solid #dddddd;
   border-radius: 10px;
   height: 30vh;
   margin-bottom: 25px;
@@ -471,14 +471,23 @@
   margin-top: 8px;
 }
 
+.events-summary {
+  text-align: center;
+}
+
 .event-card {
-  background: #fff;
-  border: 1px solid rgba(26,42,73,0.06);
-  border-radius: 12px;
-  padding: 12px;
+  background: #e0e0e0;
+  border: 1px solid rgba(194, 209, 239, 0.35);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 5px 10px;
   box-shadow: 0 8px 20px rgba(10,18,40,0.06);
   display: flex;
   flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-family: Montserrat, Sans-Serif;
   gap: 12px;
   min-height: 96px;
 }

@@ -47,7 +47,7 @@
   
 }
 
-@media (min-width: 1273px) and (max-width: 1599px) {
+@media (min-width: 1273px) {
   .register-box {
     width: 700px;
     padding: 1.5rem;

@@ -362,8 +362,7 @@ const Dashboard = () => {
 
         <div className="dashboard-stats">
           <h4>{user.institution}</h4>
-
-          {/* Events Summary (flashcards) */}
+          {/* Events Summary*/}
           <div className="events-summary" style={{ marginTop: 12 }}>
             {loading ? <p>Loading Data...</p> : eventsSummary.length === 0 ? (
               <p style={{ margin: 0, color: "#6b7280" }}>No active events found</p>
