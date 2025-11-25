@@ -385,6 +385,9 @@ const Dashboard = () => {
           </div>
         </div>
 
+        <div className="dashboard-stats">
+          <h4>{user.institution}</h4>
+
         {/* Events Summary (flashcards) */}
         <div className="events-summary" style={{ marginTop: 12 }}>
           {eventsSummary.length === 0 ? (
@@ -414,8 +417,7 @@ const Dashboard = () => {
           )}
         </div>
 
-        <div className="dashboard-stats">
-          <h4>{user.institution}</h4>
+        
                   
             
         </div>
