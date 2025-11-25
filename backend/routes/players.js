@@ -222,15 +222,14 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
     const { playerName, team, sex } = req.body;
     let games = req.body.game;
 
-    // 1. FIND THE PLAYER FIRST
-    // We need the document instance to modify the array manually
+    // Check the player
     const player = await Player.findById(req.params.id);
     
     if (!player) {
       return res.status(404).json({ message: "Player not found" });
     }
 
-    // --- Validation Logic ---
+    // File validation
     if (!games) return res.status(400).json({ message: "No game selected" });
     if (!Array.isArray(games)) games = [games];
 
@@ -239,9 +238,9 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
 
     const gameDocs = await Game.find({ _id: { $in: validGameIds } });
     if (!gameDocs.length) return res.status(404).json({ message: "Games not found" });
-    // ------------------------
+  
 
-    // 2. PREPARE NEW UPLOADS
+    // New upload
     const newUploads = [];
 
     for (const file of req.files || []) {
@@ -275,11 +274,10 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
       });
     }
 
-    // 3. MERGE FILES (THE OVERWRITE LOGIC)
-    // Loop through new uploads and replace existing ones in the player's array
+    // Overwrite existing data to prevent uncessesary files
     if (newUploads.length > 0) {
       newUploads.forEach((newFile) => {
-        // Filter out any existing file with the exact same name
+        // Find file with same name
         player.uploadedRequirements = player.uploadedRequirements.filter(
           (existing) => existing.name !== newFile.name
         );
@@ -288,20 +286,19 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
       });
     }
 
-    // 4. UPDATE OTHER FIELDS
+    // Update the inputed data
     player.playerName = playerName;
     player.team = team;
     player.sex = sex;
-    player.teamApproval = false; // Reset approval on new submission
+    player.teamApproval = false; // Reset approval
 
-    // 5. UPDATE GAMES (Prevent duplicates)
+    // UPDATE GAMES (Prevent duplicates)
     const newGameNames = gameDocs.map((g) => `${g.category} ${g.gameType}`);
     
-    // Create a Set to ensure unique game names if they register for the same game twice
+    // For extra safety when joining games
     const combinedGames = [...(player.game || []), ...newGameNames];
     player.game = [...new Set(combinedGames)];
 
-    // 6. SAVE
     await player.save();
 
     res.json({ message: "Game(s) registered and files updated", player });
