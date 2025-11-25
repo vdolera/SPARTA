@@ -1,5 +1,5 @@
 import MainLayout from "../../components/MainLayout";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Calendar from 'react-calendar';
 import axios from 'axios';
 import "../../styles/Calendar.css";
@@ -17,6 +17,10 @@ const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [multiDayEvents, setMultiDayEvents] = useState([]);
+
+  // Event summary state (games / teams / players per event)
+  const [eventsSummary, setEventsSummary] = useState([]);
+  const [playerCountsByEvent, setPlayerCountsByEvent] = useState({});
 
   // List Modal State
   const [showListModal, setShowListModal] = useState(false);
@@ -43,7 +47,25 @@ const Dashboard = () => {
         const matches = [];
         const multiDay = [];
 
+        // build per-event summary while iterating games
+        const eventsMap = new Map(); // key = eventName
+
         res.data.forEach(game => {
+          const evtName = game.eventName || (game.eventTitle || 'Untitled Event');
+          if (!eventsMap.has(evtName)) {
+            eventsMap.set(evtName, {
+              title: evtName,
+              gamesCount: 0,
+              matchesCount: 0,
+              teamsSet: new Set(),
+              playersSet: new Set(),
+              teamsMap: new Map() // teamKey -> { id, name, playersSet }
+            });
+          }
+          const evt = eventsMap.get(evtName);
+          evt.gamesCount += 1;
+          evt.matchesCount += (game.matches || []).length;
+ 
           const gameDates = game.matches
             .filter(match => match.date)
             .map(match => new Date(match.date).toDateString());
@@ -59,23 +81,90 @@ const Dashboard = () => {
             };
             multiDay.push(dateRange);
           }
-
+ 
           game.matches.forEach(match => {
             if (match.date) {
-              matches.push({
-                date: new Date(match.date),
-                title: `${game.gameType} (${game.category})`,
-                location: match.location,
-                time: new Date(match.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                teams: match.teams.map(t => t.name).join(" vs "),
-                gameId: game._id || game.gameType
-              });
-            }
-          });
-        });
+              // collect teams & players per event
+              (match.teams || []).forEach(team => {
+                const teamKey = team._id ?? team.id ?? team.name;
+                const teamName = team.name ?? team.teamName ?? teamKey;
+                if (!teamKey) return;
+                evt.teamsSet.add(teamKey);
 
+                // ensure team entry exists
+                if (!evt.teamsMap.has(teamKey)) {
+                  evt.teamsMap.set(teamKey, {
+                    id: teamKey,
+                    name: teamName,
+                    playersSet: new Set()
+                  });
+                }
+                const teamEntry = evt.teamsMap.get(teamKey);
+
+                // collect team players (use 'players' or 'members' fallback)
+                const teamPlayers = team.players ?? team.members ?? [];
+                teamPlayers.forEach(p => {
+                  const pKey = p._id ?? p.id ?? p.email ?? p;
+                  if (pKey) {
+                    teamEntry.playersSet.add(pKey);
+                    evt.playersSet.add(pKey); // also count towards event total
+                  }
+                });
+              }); // end teams loop
+ 
+               matches.push({
+                 date: new Date(match.date),
+                 title: `${game.gameType} (${game.category})`,
+                 location: match.location,
+                 time: new Date(match.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                 teams: match.teams.map(t => t.name).join(" vs "),
+                 gameId: game._id || game.gameType
+               });
+             }
+           });
+         });
+ 
+       // build summary array with per-team counts
+       const summaryArray = Array.from(eventsMap.values()).map(e => ({
+         title: e.title,
+         gamesCount: e.gamesCount,
+         matchesCount: e.matchesCount,
+         teamsCount: e.teamsSet.size,
+         playersCount: e.playersSet.size,
+         // flatten teamsMap -> array { id, name, playerCount }
+         teamsBreakdown: Array.from(e.teamsMap.values()).map(t => ({
+           id: t.id,
+           name: t.name,
+           playerCount: t.playersSet.size
+         })).sort((a,b) => b.playerCount - a.playerCount)
+       }));
+
+       // Registered players count fetch
+       try {
+        const countsRes = await fetch(`http://localhost:5000/api/teams/player-counts?institution=${encodeURIComponent(user.institution)}&approved=true`);
+        const countsData = await countsRes.json();
+        const countsMap = {};
+        if (Array.isArray(countsData)) {
+          countsData.forEach((c) => (countsMap[c.eventName] = c));
+        } else if (countsData && countsData.eventName) {
+          countsMap[countsData.eventName] = countsData;
+        }
+
+        const finalSummary = summaryArray.map((s) => ({
+          ...s,
+          registeredPlayersCount: countsMap[s.title]?.totalPlayers ?? 0,
+          registeredTeamsBreakdown: countsMap[s.title]?.teams ?? [],
+        }));
+
+        setPlayerCountsByEvent(countsMap); // optional store
+        setEventsSummary(finalSummary);
+      } catch (err) {
+        console.error("Failed to fetch registered player counts:", err);
+        setEventsSummary([]); // reset to empty instead of undefined variable
+      }
         setMatchEvents(matches);
         setMultiDayEvents(multiDay);
+
       } catch (err) {
         console.error(err);
       } finally {
@@ -226,72 +315,114 @@ const Dashboard = () => {
     <MainLayout>
       <div className="dashboard-page-container">
 
-      {/* Main Dashboard Content */}
-        <div className="dashboard-main-content">
-          
-          <div className="calendar-container">
-            <Calendar 
-              onChange={onChange} 
-              value={date} 
-              tileContent={tileContent}
-              tileClassName={tileClassName}
-              className="custom-calendar"
-              showNeighboringMonth={false}
-              onClickDay={handleDateClick}
-            />
-          </div>
+        {/* Main Dashboard Content */}
+        <div style={{display:"flex", gap:"30px", flexDirection:"row", width: "100%"}}>
+          <div className="dashboard-main-content">
+            
+            <div className="calendar-container">
+              <Calendar 
+                onChange={onChange} 
+                value={date} 
+                tileContent={tileContent}
+                tileClassName={tileClassName}
+                className="custom-calendar"
+                showNeighboringMonth={false}
+                onClickDay={handleDateClick}
+              />
+            </div>
+
           </div>
 
-          {/* Announcements Container */}
+          {/* Side Content */}
           <div className="dashboard-side-content" >
 
-          <div style={{ flexGrow: 1, display: "flex", flexDirection: "column"}}>
-            <div className="upcoming-events">
-              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                <h3>ONGOING EVENTS</h3>
-                <button className="view-all-btn" onClick={() => openListModal("ongoing")}>View All</button>
+            <div style={{ flexGrow: 1, display: "flex", flexDirection: "column"}}>
+              <div className="upcoming-events">
+                <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                  <h3>ONGOING EVENTS</h3>
+                  <button className="view-all-btn" onClick={() => openListModal("ongoing")}>View All</button>
+                </div>
+                {loading ? (
+                  <p>Loading events...</p>
+                ) : ongoingEvents.length > 0 ? (
+                  <ul>
+                    {ongoingEvents.map((event, index) => (
+                      <li key={index} className="upcoming-event">
+                        <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                        {event.title} - {event.teams}
+                        <br />
+                        <span className="location">📍 {event.location}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p style={{padding: "10px"}}>Wohoo! You have no on-going event for today.</p>
+                )}
               </div>
-              {loading ? (
-                <p>Loading events...</p>
-              ) : ongoingEvents.length > 0 ? (
-                <ul>
-                  {ongoingEvents.map((event, index) => (
-                    <li key={index} className="upcoming-event">
-                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
-                      {event.title} - {event.teams}
-                      <br />
-                      <span className="location">📍 {event.location}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p style={{padding: "10px"}}>Wohoo! You have no on-going event for today.</p>
-              )}
-            </div>
 
-            <div className="upcoming-events">
-              <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                <h3>UPCOMING EVENTS</h3>
-                <button className="view-all-btn" onClick={() => openListModal("upcoming")}>View All</button>
+              <div className="upcoming-events">
+                <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                  <h3>UPCOMING EVENTS</h3>
+                  <button className="view-all-btn" onClick={() => openListModal("upcoming")}>View All</button>
+                </div>
+                {loading ? (
+                  <p>Loading events...</p>
+                  ) : upcomingEvents.length > 0 ? (
+                  <ul>
+                    {upcomingEvents.map((event, index) => (
+                      <li key={index} className="upcoming-event">
+                        <strong>{formatEventDate(event.date)} • {event.time}</strong>
+                        {event.title} - {event.teams}
+                        <br />
+                        <span className="location">📍 {event.location}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  ) : (
+                  <p>No upcoming events</p>
+                )}
               </div>
-              {loading ? (
-                <p>Loading events...</p>
-              ) : upcomingEvents.length > 0 ? (
-                <ul>
-                  {upcomingEvents.map((event, index) => (
-                    <li key={index} className="upcoming-event">
-                      <strong>{formatEventDate(event.date)} • {event.time}</strong>
-                      {event.title} - {event.teams}
-                      <br />
-                      <span className="location">📍 {event.location}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No upcoming events</p>
-              )}
             </div>
           </div>
+        </div>
+
+        {/* Events Summary (flashcards) */}
+        <div className="events-summary" style={{ marginTop: 12 }}>
+          {eventsSummary.length === 0 ? (
+            <p style={{ margin: 0, color: "#6b7280" }}>No event summary available</p>
+          ) : (
+            <div className="events-summary-grid">
+              {eventsSummary.map(s => (
+                <div key={s.title} className="event-card" role="group" aria-label={`${s.title} summary`}>
+                  <div className="event-card-title">{s.title}</div>
+                  <div className="event-card-chips">
+                    <div className="metric-chip">
+                      <div className="metric-value">{s.gamesCount}</div>
+                      <div className="metric-label">Games</div>
+                    </div>
+                    <div className="metric-chip">
+                      <div className="metric-value">{s.playersCount}</div>
+                      <div className="metric-label">Players (from matches)</div>
+                    </div>
+                    <div className="metric-chip">
+                      <div className="metric-value">{s.registeredPlayersCount ?? 0}</div>
+                      <div className="metric-label">Registered</div>
+                    </div>
+                    <div className="metric-chip">
+                      <div className="metric-value">{s.teamsCount}</div>
+                      <div className="metric-label">Teams</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="dashboard-stats">
+          <h4>{user.institution}</h4>
+                  
+            
         </div>
 
         {/* Event Modal */}
@@ -353,7 +484,7 @@ const Dashboard = () => {
             </div>
           </div>
         )}
-    
+      
       </div>
     </MainLayout>
   );

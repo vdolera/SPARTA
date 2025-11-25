@@ -1,11 +1,11 @@
 const express = require("express");
 const Team = require("../models/Team");
 const Game = require("../models/Game");
-const Coordinator = require("../models/Coordinator")
-
+const Coordinator = require("../models/Coordinator");
+const Player = require("../models/Player"); // add this near other requires
 
 const multer = require("multer");
-const upload = multer({ storage: multer.memoryStorage() }); 
+const upload = multer({ storage: multer.memoryStorage() });
 const path = require("path");
 const supabase = require("./supabaseClient");
 
@@ -33,7 +33,7 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
       const fileName = `teamIcon-${Date.now()}${fileExt}`;
 
       const { data, error } = await supabase.storage
-        .from("teams") 
+        .from("teams")
         .upload(fileName, req.file.buffer, {
           cacheControl: "3600",
           upsert: false,
@@ -220,6 +220,54 @@ router.delete("/team/:id", async (req, res) => {
   }
 });
 
+// New endpoint: aggregated player counts per event/team
+router.get("/teams/player-counts", async (req, res) => {
+  try {
+    const { institution, event, approved } = req.query;
+    if (!institution) return res.status(400).json({ message: "Institution is required" });
+
+    const match = { institution };
+
+    if (event) match.eventName = event;
+    // Only count players that have a team assigned, non-empty
+    match.team = { $exists: true, $ne: "" };
+    if (approved !== undefined) {
+      match.teamApproval = approved === "true";
+    }
+
+    const pipeline = [
+      { $match: match },
+      {
+        $group: {
+          _id: { eventName: "$eventName", teamName: "$team" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.eventName",
+          teams: { $push: { teamName: "$_id.teamName", count: "$count" } },
+          totalPlayers: { $sum: "$count" },
+        },
+      },
+      {
+        $project: { _id: 0, eventName: "$_id", teams: 1, totalPlayers: 1 },
+      },
+    ];
+
+    const results = await Player.aggregate(pipeline);
+
+    if (event) {
+      const single = results.find((r) => r.eventName === event) || { eventName: event, teams: [], totalPlayers: 0 };
+      return res.json(single);
+    }
+
+    res.json(results);
+  } catch (err) {
+    console.error("Error fetching player counts:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 
 

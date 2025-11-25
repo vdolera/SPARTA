@@ -163,7 +163,7 @@
   background: #fff;
   border: 2px solid #a56806;
   border-radius: 15px;
-  padding: 10px;
+  padding: 10px 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   font-family: Poppins, sans-serif;
   max-height: 35vh;        /* limit height */
@@ -233,6 +233,21 @@
 }
 .view-all-btn:hover {
   background: rgba(26,42,73,0.06);
+}
+
+.dashboard-stats {
+  width: 100%;
+  border: 2px solid #32815b;
+  border-radius: 10px;
+  height: 30vh;
+  margin-bottom: 25px;
+}
+
+.dashboard-stats h4 {
+  text-align: center;
+  padding: 10px;
+  font-family: Montserrat, sans-serif;
+  font-size: 18px;
 }
 
 /* === MODAL === */
@@ -321,90 +336,12 @@
   padding: 20px;
 }
 
-/* Announcement Container */
 .dashboard-page-container {
   display: flex;
+  flex-direction: column;
   justify-content: space-around;
   gap: 24px;
   width: 100%;
-}
-
-/* Announcements Column */
-.announcements-container {
-  flex-shrink: 0;  
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 2px solid #1a2a49;
-  border-radius: 10px;
-}
-
-/* ANNOUNCEMENT DIV */
-.announcements-list {
-  align-items: center;
-  flex-grow: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 10px;
-  margin: 5px;
-  border: 1px solid #d1d5db;
-  background: #ffffff;
-  width: 95%;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-
-.announcement-header {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  margin: 5px 15px;
-}
-
-.announcement-header h3 {
-  margin: 5px;
-  text-decoration: underline;
-}
-
-.announcement-block {
-  background: linear-gradient(180deg, #ce892c, #1a2a49);
-  padding: 2px;
-  border-radius: 12px;
-  width: 99%;
-}
-
-.announcement-block-contents {
-    background: white;
-    border-radius: 10px;
-    padding: 5px 10px;
-    font-family: Poppins, sans-serif;
-    min-height: 15vh;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-/* Custom Scrollbar */
-.announcements-list::-webkit-scrollbar {
-  width: 10px;
-}
-
-.announcements-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.announcements-list::-webkit-scrollbar-thumb {
-  background: #cfcfcf;
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-}
-
-.announcements-list::-webkit-scrollbar-thumb:hover {
-  background: #b5b5b5;
 }
 
 /* ===  MEDIA QUERIES === */
@@ -456,18 +393,6 @@
     font-size: 25px;
   }
 
-  .announcements-container {
-    height: calc(75vh - 18vh);
-  }
-
-  .announcement-block-contents {
-    font-size: 20px;
-  }
-
-  .announcement-block-contents > p {
-    font-size: 16px;
-  }
-
 }
 
 @media (min-width: 1273px) and (max-width: 1599px) {
@@ -498,10 +423,6 @@
     flex-direction: column;
     gap: 5px;
     width: 50vw;
-  }
-
-  .announcements-container {
-    height: calc(80vh - 12vh);
   }
 
 }
@@ -540,11 +461,76 @@
     text-align: center;
   }
 
-  .announcements-container {
-    width: 90%;
-    height: 60vh;
-    margin: auto;
-  }
+}
+
+/* Event summary flashcards */
+.events-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.event-card {
+  background: #fff;
+  border: 1px solid rgba(26,42,73,0.06);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 8px 20px rgba(10,18,40,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 96px;
+}
+
+.event-card-title {
+  font-weight: 800;
+  color: #1A2A49;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+}
+
+/* Chips row */
+.event-card-chips {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+/* individual metric chip */
+.metric-chip {
+  flex: 1 1 0;
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid rgba(15,23,42,0.04);
+  min-width: 64px;
+}
+
+.metric-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.metric-label {
+  font-size: 12px;
+  color: #475569;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .event-card { padding: 10px; }
+  .metric-value { font-size: 16px; }
+  .events-summary-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
 }
 
 .upcoming-events,
