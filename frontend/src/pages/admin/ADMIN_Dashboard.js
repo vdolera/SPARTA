@@ -18,161 +18,148 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [multiDayEvents, setMultiDayEvents] = useState([]);
 
-  // Event summary state (games / teams / players per event)
+  // Event summary state
   const [eventsSummary, setEventsSummary] = useState([]);
-  const [playerCountsByEvent, setPlayerCountsByEvent] = useState({});
 
   // List Modal State
   const [showListModal, setShowListModal] = useState(false);
   const [listModalTitle, setListModalTitle] = useState("");
   const [listModalItems, setListModalItems] = useState([]);
 
-
-  // Fetch Game schedules
+  // Fetch Dashboard Data
   useEffect(() => {
-    const fetchGames = async () => {
+    const fetchDashboardData = async () => {
       if (!user?.institution) {
         setLoading(false);
         return;
       }
-      try {
-        let url = `http://localhost:5000/api/games?institution=${encodeURIComponent(user.institution)}`;
 
-        if (user?.role === "co-organizer" || user?.role === "sub-organizer") {
-          url += `&eventName=${encodeURIComponent(user.eventName)}`;
-        }
-  
-        const res = await axios.get(url);
+      try {
+        setLoading(true);
+
+        // Active Events
+        const eventsUrl = `http://localhost:5000/api/active-events?institution=${encodeURIComponent(user.institution)}&email=${encodeURIComponent(user.email)}&role=${encodeURIComponent(user.role)}`;
         
+        // Games data (schedule) based on user role
+        let gamesUrl = `http://localhost:5000/api/games?institution=${encodeURIComponent(user.institution)}`;
+        if (user?.role === "co-organizer" || user?.role === "sub-organizer") {
+            gamesUrl += `&eventName=${encodeURIComponent(user.eventName)}`;
+        }
+
+        // Player Counts
+        const countsUrl = `http://localhost:5000/api/teams/player-counts?institution=${encodeURIComponent(user.institution)}&approved=true`;
+
+        // Teams per event
+        const teamsUrl = `http://localhost:5000/api/teams?institution=${encodeURIComponent(user.institution)}`;
+
+        // Fetch all
+        const [eventsRes, gamesRes, countsRes, teamsRes] = await Promise.all([
+            axios.get(eventsUrl),
+            axios.get(gamesUrl),
+            fetch(countsUrl).then(res => res.json()),
+            axios.get(teamsUrl) // Fetching the full teams list
+        ]);
+
+        const activeEvents = eventsRes.data;
+        const gamesData = gamesRes.data;
+        const playerCountsData = countsRes;
+        const allTeamsData = teamsRes.data;
+
+        // Games schedule
         const matches = [];
         const multiDay = [];
+        const gameStatsMap = {}; 
 
-        // build per-event summary while iterating games
-        const eventsMap = new Map(); // key = eventName
+        gamesData.forEach(game => {
+             const evtName = game.eventName;
+             
+             // Count Games (Original logic)
+             if (!gameStatsMap[evtName]) gameStatsMap[evtName] = 0;
+             gameStatsMap[evtName] += 1;
 
-        res.data.forEach(game => {
-          const evtName = game.eventName || (game.eventTitle || 'Untitled Event');
-          if (!eventsMap.has(evtName)) {
-            eventsMap.set(evtName, {
-              title: evtName,
-              gamesCount: 0,
-              matchesCount: 0,
-              teamsSet: new Set(),
-              playersSet: new Set(),
-              teamsMap: new Map() // teamKey -> { id, name, playersSet }
-            });
-          }
-          const evt = eventsMap.get(evtName);
-          evt.gamesCount += 1;
-          evt.matchesCount += (game.matches || []).length;
- 
-          const gameDates = game.matches
-            .filter(match => match.date)
-            .map(match => new Date(match.date).toDateString());
-          
-          const uniqueDates = [...new Set(gameDates)];
-          
-          if (uniqueDates.length > 1) {
-            const dateRange = {
-              gameId: game._id || game.gameType,
-              startDate: new Date(Math.min(...game.matches.filter(m => m.date).map(m => new Date(m.date)))),
-              endDate: new Date(Math.max(...game.matches.filter(m => m.date).map(m => new Date(m.date)))),
-              title: `${game.gameType} (${game.category})`
-            };
-            multiDay.push(dateRange);
-          }
- 
-          game.matches.forEach(match => {
-            if (match.date) {
-              // collect teams & players per event
-              (match.teams || []).forEach(team => {
-                const teamKey = team._id ?? team.id ?? team.name;
-                const teamName = team.name ?? team.teamName ?? teamKey;
-                if (!teamKey) return;
-                evt.teamsSet.add(teamKey);
-
-                // ensure team entry exists
-                if (!evt.teamsMap.has(teamKey)) {
-                  evt.teamsMap.set(teamKey, {
-                    id: teamKey,
-                    name: teamName,
-                    playersSet: new Set()
-                  });
+             // Process Matches for Calendar
+             if (game.matches && Array.isArray(game.matches)) {
+                
+                // Multi-day logic
+                const gameDates = game.matches.filter(match => match.date).map(match => new Date(match.date).toDateString());
+                const uniqueDates = [...new Set(gameDates)];
+                if (uniqueDates.length > 1) {
+                    multiDay.push({
+                        gameId: game._id || game.gameType,
+                        startDate: new Date(Math.min(...game.matches.filter(m => m.date).map(m => new Date(m.date)))),
+                        endDate: new Date(Math.max(...game.matches.filter(m => m.date).map(m => new Date(m.date)))),
+                        title: `${game.gameType} (${game.category})`
+                    });
                 }
-                const teamEntry = evt.teamsMap.get(teamKey);
 
-                // collect team players (use 'players' or 'members' fallback)
-                const teamPlayers = team.players ?? team.members ?? [];
-                teamPlayers.forEach(p => {
-                  const pKey = p._id ?? p.id ?? p.email ?? p;
-                  if (pKey) {
-                    teamEntry.playersSet.add(pKey);
-                    evt.playersSet.add(pKey); // also count towards event total
-                  }
+                // Single match logic
+                game.matches.forEach(match => {
+                    if (match.date) {
+                        matches.push({
+                            date: new Date(match.date),
+                            title: `${game.gameType} (${game.category})`,
+                            location: match.location,
+                            time: new Date(match.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                            teams: match.teams.map(t => t.name).join(" vs "),
+                            gameId: game._id || game.gameType,
+                            eventName: evtName
+                        });
+                    }
                 });
-              }); // end teams loop
- 
-               matches.push({
-                 date: new Date(match.date),
-                 title: `${game.gameType} (${game.category})`,
-                 location: match.location,
-                 time: new Date(match.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                 teams: match.teams.map(t => t.name).join(" vs "),
-                 gameId: game._id || game.gameType
-               });
              }
-           });
-         });
- 
-       // build summary array with per-team counts
-       const summaryArray = Array.from(eventsMap.values()).map(e => ({
-         title: e.title,
-         gamesCount: e.gamesCount,
-         matchesCount: e.matchesCount,
-         teamsCount: e.teamsSet.size,
-         // flatten teamsMap -> array { id, name, playerCount }
-         teamsBreakdown: Array.from(e.teamsMap.values()).map(t => ({
-           id: t.id,
-           name: t.name,
-           playerCount: t.playersSet.size
-         })).sort((a,b) => b.playerCount - a.playerCount)
-       }));
+        });
 
-       // Registered players count fetch
-       try {
-        const countsRes = await fetch(`http://localhost:5000/api/teams/player-counts?institution=${encodeURIComponent(user.institution)}&approved=true`);
-        const countsData = await countsRes.json();
-        const countsMap = {};
-        if (Array.isArray(countsData)) {
-          countsData.forEach((c) => (countsMap[c.eventName] = c));
-        } else if (countsData && countsData.eventName) {
-          countsMap[countsData.eventName] = countsData;
+        // Player counting
+        const playerCountsMap = {};
+        if (Array.isArray(playerCountsData)) {
+            playerCountsData.forEach((c) => (playerCountsMap[c.eventName] = c));
+        } else if (playerCountsData && playerCountsData.eventName) {
+            playerCountsMap[playerCountsData.eventName] = playerCountsData;
         }
 
-        const finalSummary = summaryArray.map((s) => ({
-          ...s,
-          registeredPlayersCount: countsMap[s.title]?.totalPlayers ?? 0,
-          registeredTeamsBreakdown: countsMap[s.title]?.teams ?? [],
-        }));
+        // For da per event datas
+        const summaryData = activeEvents.map(event => {
+            const eventName = event.eventName;
+            
+            // Get Games Count 
+            const totalGames = gameStatsMap[eventName] || 0;
+            
+            // Get Players Count
+            const pStats = playerCountsMap[eventName] || { totalPlayers: 0 };
 
-        setPlayerCountsByEvent(countsMap); // optional store
-        setEventsSummary(finalSummary);
-      } catch (err) {
-        console.error("Failed to fetch registered player counts:", err);
-        setEventsSummary([]); // reset to empty instead of undefined variable
-      }
+            // Number of teams per event 
+            const eventTeams = allTeamsData.filter(t => t.eventName === eventName);
+            const totalTeams = eventTeams.length;
+
+            // Find ongoing events
+            const today = new Date();
+            const start = new Date(event.eventStartDate);
+            const end = new Date(event.eventEndDate);
+            today.setHours(0,0,0,0); start.setHours(0,0,0,0); end.setHours(23,59,59,999);
+            const isOngoing = today >= start && today <= end;
+
+            return {
+                title: eventName,
+                gamesCount: totalGames, 
+                registeredPlayersCount: pStats.totalPlayers,
+                teamsCount: totalTeams,
+                isOngoing: isOngoing
+            };
+        });
+
+        setEventsSummary(summaryData);
         setMatchEvents(matches);
         setMultiDayEvents(multiDay);
 
       } catch (err) {
-        console.error(err);
+        console.error("Dashboard Fetch Error:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchGames();
-  }, [user?.institution, user?.eventName, user?.role]);
+    fetchDashboardData();
+  }, [user?.institution, user?.eventName, user?.role, user?.email]);
 
   const onChange = (newDate) => {
     setDate(newDate);
@@ -215,23 +202,17 @@ const Dashboard = () => {
   const tileClassName = ({ date, view }) => {
     if (view === 'month') {
       const classes = [];
-      
       const hasEvents = matchEvents.some(
         event => event.date.toDateString() === date.toDateString()
       );
-      
-      if (hasEvents) {
-        classes.push('react-calendar__tile--has-event');
-      }
+      if (hasEvents) classes.push('react-calendar__tile--has-event');
 
       multiDayEvents.forEach(eventRange => {
         if (date >= eventRange.startDate && date <= eventRange.endDate) {
           classes.push('react-calendar__tile--event-range');
-          
           if (date.toDateString() === eventRange.startDate.toDateString()) {
             classes.push('react-calendar__tile--event-range-start');
           }
-          
           if (date.toDateString() === eventRange.endDate.toDateString()) {
             classes.push('react-calendar__tile--event-range-end');
           }
@@ -267,19 +248,16 @@ const Dashboard = () => {
     );
   };
 
-  // compute start/end of today once
   const startOfToday = new Date();
   startOfToday.setHours(0, 0, 0, 0);
   const endOfToday = new Date();
   endOfToday.setHours(23, 59, 59, 999);
 
-  // ongoingEvents = events happening today
   const ongoingEvents = matchEvents
     .filter(event => event.date >= startOfToday && event.date <= endOfToday)
     .sort((a, b) => a.date - b.date)
     .slice(0, 5);
 
-  // upcomingEvents = events after today
   const upcomingEvents = matchEvents
     .filter(event => event.date > endOfToday)
     .sort((a, b) => a.date - b.date)
@@ -287,18 +265,16 @@ const Dashboard = () => {
 
   const openListModal = (type) => {
     const today = new Date();
-    const startOfToday = new Date(today); startOfToday.setHours(0,0,0,0);
-    const endOfToday = new Date(today); endOfToday.setHours(23,59,59,999);
+    const sToday = new Date(today); sToday.setHours(0,0,0,0);
+    const eToday = new Date(today); eToday.setHours(23,59,59,999);
 
     if (type === "ongoing") {
-      const items = matchEvents.filter(e => e.date >= startOfToday && e.date <= endOfToday)
-                               .sort((a,b) => a.date - b.date);
-      setListModalTitle("Ongoing Events");
+      const items = matchEvents.filter(e => e.date >= sToday && e.date <= eToday).sort((a,b) => a.date - b.date);
+      setListModalTitle("Ongoing Matches");
       setListModalItems(items);
     } else {
-      const items = matchEvents.filter(e => e.date > endOfToday)
-                               .sort((a,b) => a.date - b.date);
-      setListModalTitle("Upcoming Events");
+      const items = matchEvents.filter(e => e.date > eToday).sort((a,b) => a.date - b.date);
+      setListModalTitle("Upcoming Matches");
       setListModalItems(items);
     }
     setShowListModal(true);
@@ -317,7 +293,6 @@ const Dashboard = () => {
         {/* Main Dashboard Content */}
         <div style={{display:"flex", gap:"30px", flexDirection:"row", width: "100%"}}>
           <div className="dashboard-main-content">
-            
             <div className="calendar-container">
               <Calendar 
                 onChange={onChange} 
@@ -329,20 +304,19 @@ const Dashboard = () => {
                 onClickDay={handleDateClick}
               />
             </div>
-
           </div>
 
           {/* Side Content */}
           <div className="dashboard-side-content" >
-
             <div style={{ flexGrow: 1, display: "flex", flexDirection: "column"}}>
+              {/* Ongoing Matches List */}
               <div className="upcoming-events">
                 <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                  <h3>ONGOING EVENTS</h3>
+                  <h3>ONGOING MATCHES</h3>
                   <button className="view-all-btn" onClick={() => openListModal("ongoing")}>View All</button>
                 </div>
                 {loading ? (
-                  <p>Loading events...</p>
+                  <p>Loading...</p>
                 ) : ongoingEvents.length > 0 ? (
                   <ul>
                     {ongoingEvents.map((event, index) => (
@@ -355,17 +329,18 @@ const Dashboard = () => {
                     ))}
                   </ul>
                 ) : (
-                  <p style={{padding: "10px"}}>Wohoo! You have no on-going event for today.</p>
+                  <p style={{padding: "10px"}}>No matches scheduled for today.</p>
                 )}
               </div>
 
+              {/* Upcoming Matches List */}
               <div className="upcoming-events">
                 <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                  <h3>UPCOMING EVENTS</h3>
+                  <h3>UPCOMING MATCHES</h3>
                   <button className="view-all-btn" onClick={() => openListModal("upcoming")}>View All</button>
                 </div>
                 {loading ? (
-                  <p>Loading events...</p>
+                  <p>Loading...</p>
                   ) : upcomingEvents.length > 0 ? (
                   <ul>
                     {upcomingEvents.map((event, index) => (
@@ -378,7 +353,7 @@ const Dashboard = () => {
                     ))}
                   </ul>
                   ) : (
-                  <p>No upcoming events</p>
+                  <p>No upcoming matches</p>
                 )}
               </div>
             </div>
@@ -388,38 +363,37 @@ const Dashboard = () => {
         <div className="dashboard-stats">
           <h4>{user.institution}</h4>
 
-        {/* Events Summary (flashcards) */}
-        <div className="events-summary" style={{ marginTop: 12 }}>
-          {eventsSummary.length === 0 ? (
-            <p style={{ margin: 0, color: "#6b7280" }}>No event summary available</p>
-          ) : (
-            <div className="events-summary-grid">
-              {eventsSummary.map(s => (
-                <div key={s.title} className="event-card" role="group" aria-label={`${s.title} summary`}>
-                  <div className="event-card-title">{s.title}</div>
-                  <div className="event-card-chips">
-                    <div className="metric-chip">
-                      <div className="metric-value">{s.gamesCount}</div>
-                      <div className="metric-label">Games</div>
+          {/* Events Summary (flashcards) */}
+          <div className="events-summary" style={{ marginTop: 12 }}>
+            {loading ? <p>Loading Data...</p> : eventsSummary.length === 0 ? (
+              <p style={{ margin: 0, color: "#6b7280" }}>No active events found</p>
+            ) : (
+              <div className="events-summary-grid">
+                {eventsSummary.map(s => (
+                  <div key={s.title} className="event-card" >
+                    <div style={{display:"flex", justifyContent:"space-between", alignItems:"start"}}>
+                        <div className="event-card-title">{s.title}</div>
                     </div>
-                    <div className="metric-chip">
-                      <div className="metric-value">{s.registeredPlayersCount ?? 0}</div>
-                      <div className="metric-label">Registered Players</div>
-                    </div>
-                    <div className="metric-chip">
-                      <div className="metric-value">{s.teamsCount}</div>
-                      <div className="metric-label">Teams</div>
+                    
+                    <div className="event-card-chips">
+                      <div className="metric-chip">
+                        <div className="metric-value">{s.gamesCount}</div>
+                        <div className="metric-label">Games</div>
+                      </div>
+                      <div className="metric-chip">
+                        <div className="metric-value">{s.registeredPlayersCount}</div>
+                        <div className="metric-label">Registered Players</div>
+                      </div>
+                      <div className="metric-chip">
+                        <div className="metric-value">{s.teamsCount}</div>
+                        <div className="metric-label">Teams</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        
-                  
-            
+                ))}
+              </div>
+            )}
+          </div>  
         </div>
 
         {/* Event Modal */}
@@ -427,12 +401,7 @@ const Dashboard = () => {
           <div className="dashboard-event-modal-overlay" onClick={closeModal}>
             <div className="dashboard-event-modal" onClick={(e) => e.stopPropagation()}>
               <div className="dashboard-event-modal-header">
-                <h3>Events on {selectedDate.toLocaleDateString('en-US', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}</h3>
+                <h3>Scheduled on {selectedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h3>
                 <button className="close-modal" onClick={closeModal}>×</button>
               </div>
               
@@ -442,7 +411,6 @@ const Dashboard = () => {
                     <div style={{display: "flex", flexDirection: "column", margin: "2px"}} key={index} className="upcoming-event">
                       <strong>{event.title}</strong>
                       <div>{event.teams}</div>
-                      
                       <div className="location">📍 {event.location} <time>{event.time}</time> </div>
                     </div>
                   ))
