@@ -130,7 +130,6 @@ const Dashboard = () => {
          gamesCount: e.gamesCount,
          matchesCount: e.matchesCount,
          teamsCount: e.teamsSet.size,
-         playersCount: e.playersSet.size,
          // flatten teamsMap -> array { id, name, playerCount }
          teamsBreakdown: Array.from(e.teamsMap.values()).map(t => ({
            id: t.id,
@@ -401,12 +400,8 @@ const Dashboard = () => {
                       <div className="metric-label">Games</div>
                     </div>
                     <div className="metric-chip">
-                      <div className="metric-value">{s.playersCount}</div>
-                      <div className="metric-label">Players (from matches)</div>
-                    </div>
-                    <div className="metric-chip">
                       <div className="metric-value">{s.registeredPlayersCount ?? 0}</div>
-                      <div className="metric-label">Registered</div>
+                      <div className="metric-label">Registered Players</div>
                     </div>
                     <div className="metric-chip">
                       <div className="metric-value">{s.teamsCount}</div>
