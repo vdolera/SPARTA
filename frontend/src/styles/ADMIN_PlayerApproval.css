@@ -2,9 +2,8 @@
   font-family: Monteserrat, sans-serif;
   margin: 20px 0;
   font-size: 14px;
-  width: 62vw;
+  width: 80vw;
   margin: 0 auto;
-  padding-bottom: 10vh;
 }
 
 .approval-header {
@@ -69,11 +68,10 @@ th {
   font-family: Montserrat, sans-serif;
   text-align: center;
   justify-content: center;
-  padding: 15px;
-  width: 62vw;
+  width: 100%;
   margin: 20px auto;
   height: 50vh;
-  border: 2px solid #82859c;
+  border: 2px solid #82859c21;
   border-radius: 15px;
   background-color: #ffffff;
 }

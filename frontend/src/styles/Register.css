@@ -223,7 +223,7 @@
   .switch-button {
     margin-top: 0.5rem;
     background-color: transparent;
-    color: #05215e;
+    color: #000000;
     font-weight: 500;
     border: none;
     cursor: pointer;
@@ -233,8 +233,7 @@
   }
   
   .switch-button:hover {
-    background-color: #CE892C;
-    color: #ffffff;
+    color: #CE892C;
   }
   
   .toast {

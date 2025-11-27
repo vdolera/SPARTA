@@ -68,7 +68,7 @@
 @media (min-width: 1601px) {
   .event-main-header {
     gap: 0;
-    width: 80vw;
+    width: 100%;
   }
 
   .event-search-bar {
@@ -81,8 +81,7 @@
   }
 
   .event-list-container {
-    width: 80vw;
-    margin-top: 150px;
+    width: 100%;
   }
 
   .event-item {

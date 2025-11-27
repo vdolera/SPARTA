@@ -130,7 +130,8 @@
 .player-profile-container {
   display: flex;
   flex-direction: column;
-  max-width: 1000px;
+  align-items: center;
+  justify-content: center;
   margin: 25px auto;
   font-family: Arial, sans-serif;
   border-radius: 5px;

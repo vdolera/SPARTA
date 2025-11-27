@@ -1,3 +1,18 @@
+/* small screens tweak */
+@media (max-width: 480px) {
+  .team-pending-badge { min-width: 18px; height: 18px; font-size: 11px; }
+}
+
+@media (min-width: 1601px) {
+  .team-players-header {
+    justify-content: space-around;
+  }
+
+  .team-players-team {
+    width: 900px;
+  }
+}
+
 .team-players-container {
    max-width: 90vw;
 }
@@ -40,13 +55,10 @@
 }
 
 .team-pending-players {
-  width: 200px;
-  height: 125px;
   border-radius: 15px;
   width: 90%;
   height: fit-content;
-  margin: 0 auto;
-  margin: 5px auto;
+  margin: 15px auto;
   display: flex;
   justify-content: end;
 }
@@ -91,10 +103,6 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 
-/* small screens tweak */
-@media (max-width: 480px) {
-  .team-pending-badge { min-width: 18px; height: 18px; font-size: 11px; }
-}
 
 .team-players-table {
   width: 90%;
