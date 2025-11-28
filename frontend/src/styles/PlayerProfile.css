@@ -23,12 +23,11 @@
 @media (min-width: 1273px) and (max-width: 1599px) {
   .profile-view {
     flex-direction: row;
-    width: auto;  }
+    width: 100%;  }
 
   .player-profile-container {
     max-width: 1200px;
     gap: 20px;
-    padding: 20px;
   }
 
   .player-main-card {
@@ -132,7 +131,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 25px auto;
+  margin: 0 auto;
   font-family: Arial, sans-serif;
   border-radius: 5px;
 }
@@ -289,7 +288,7 @@
   display: flex;
   gap: 10px;
   justify-content: flex-end;
-  width: auto;
+  width: 100%;
 }
 
 .btn {

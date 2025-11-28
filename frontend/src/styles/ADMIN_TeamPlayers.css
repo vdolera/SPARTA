@@ -161,8 +161,9 @@ td > button {
   color: white;
   border: none;
   padding: 5px 10px;
-  border-radius: 10px;
+  border-radius: 5px;
   cursor: pointer;
   font-family: Montserrat, sans-serif;
   font-size: 14px;
+  width: 95px;
 }

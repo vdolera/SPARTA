@@ -171,7 +171,7 @@ const PlayerDashboard = () => {
   
   return (
     <PlayerMainLayout>
-    <div className="dashboard-page-container">
+    <div className="dashboard-page-container" style={{flexDirection: "row"}}>
 
       <div className="dashboard-main-content">
         <div className="calendar-container">

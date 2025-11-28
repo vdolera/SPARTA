@@ -1,6 +1,7 @@
 import React from 'react';
 import PlayerSideMenu from './P_SideMenu';
 import Header from './Header';
+import Breadcrumbs from './Breadcrumbs';
 import '../styles/MainLayout.css';
 
 const PlayerMainLayout = ({ children }) => {
@@ -9,6 +10,7 @@ const PlayerMainLayout = ({ children }) => {
       <PlayerSideMenu />
       <Header />
       <div className="main-content">
+        <Breadcrumbs />
         {children}
       </div>
     </>

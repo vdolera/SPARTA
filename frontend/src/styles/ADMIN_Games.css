@@ -1,21 +1,18 @@
 @media (max-width: 1272px) {
   .game-main-div {
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
   }
 }
 
 @media (min-width: 1273px) and (max-width: 1600px) {
   .game-main-div {
     grid-template-columns: repeat(6, 1fr);
-    gap: 15px;
   }
 }
 
 @media (min-width: 1601px)  {
   .game-main-div {
     grid-template-columns: repeat(8, 1fr);
-    gap: 15px;
   }
 
   .no-games-found {
@@ -39,7 +36,6 @@
 
 .game-main-div {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
   box-sizing: border-box;
   width: 100%;
   margin: 0 auto;

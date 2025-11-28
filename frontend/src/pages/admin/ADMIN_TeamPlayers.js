@@ -168,10 +168,10 @@ const TeamPlayers = () => {
                 <thead>
                   <tr>
                     <th>PLAYERS</th>
+                    <th>EMAIL</th>
                     <th>COURSE</th>
                     <th>GAME</th>
-                    <th>STATUS</th>
-                    <th>PROFILE</th>
+                    <th> </th>
                   </tr>
                 </thead>
                 <tbody>

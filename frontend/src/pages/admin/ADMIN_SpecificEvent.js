@@ -13,9 +13,10 @@ const SpecificEvent = () => {
     useEffect(() => {document.title = "SPARTA | " + decodedName;},[]);
 
     const navigate = useNavigate();
+
+
     const { eventName } = useParams();
     const decodedName = decodeURIComponent(eventName);
-
     const [event, setEventDetails] = useState(null);
 
     // Fetch Event details
