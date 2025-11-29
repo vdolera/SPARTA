@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import '../../styles/ADMIN_GameCreate.css'
 
 const CreateGame = () => {
-
   useEffect(() => { document.title = "SPARTA | Create Game"; }, []);
 
   const [gameType, setGameType] = useState("Basketball");
@@ -22,40 +21,29 @@ const CreateGame = () => {
   const [selectedCoordinators, setSelectedCoordinators] = useState([]);
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-
   const [modalMessage, setModalMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
-
   const [eventDetails, setEventDetails] = useState(null);
 
   const navigate = useNavigate();
   const { eventName } = useParams();
   const decodedEventName = decodeURIComponent(eventName);
-
   const user = JSON.parse(localStorage.getItem("auth"));
 
-  // Date format reader thingy
-  const formatDateTimeLocal = (isoString) => {
-    if (!isoString) return "";
-    try {
-      const date = new Date(isoString);
-      if (isNaN(date.getTime())) return ""; 
-      const offset = date.getTimezoneOffset() * 60000;
-      const localDate = new Date(date.getTime() - offset);
-      return localDate.toISOString().slice(0, 16); 
-    } catch (e) {
-      return "";
-    }
+  // Some date shits
+  const formatForInput = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    const tzOffset = d.getTimezoneOffset() * 60000;
+    const localISO = new Date(d - tzOffset).toISOString().slice(0, 16);
+    return localISO;
   };
 
-  const eventStartFormatted = formatDateTimeLocal(eventDetails?.eventStartDate);
-  const eventEndFormatted = formatDateTimeLocal(eventDetails?.eventEndDate);
-
-
-  // Fetch Event Details (for date validation) 
+  // Fetch Event Details
   useEffect(() => {
     const fetchEventDetails = async () => {
       if (!user?.institution || !decodedEventName) return;
+      
       try {
         const response = await fetch(`http://localhost:5000/api/events?institution=${encodeURIComponent(user.institution)}&name=${encodeURIComponent(decodedEventName)}`);
         
@@ -65,17 +53,27 @@ const CreateGame = () => {
         }
         
         const data = await response.json();
-        setEventDetails(data);
+
+        if (Array.isArray(data) && data.length > 0) {
+           const exactMatch = data.find(e => e.eventName === decodedEventName);
+           setEventDetails(exactMatch || data[0]);
+        } else if (data && typeof data === 'object') {
+           setEventDetails(data);
+        }
 
       } catch (error) {
         console.error("Error fetching event details:", error);
-        setModalMessage(`Error fetching event details: ${error.message}. Cannot validate game dates.`);
+        setModalMessage(`Error fetching event details: ${error.message}.`);
         setShowModal(true);
       }
     };
 
     fetchEventDetails();
   }, [user?.institution, decodedEventName]);
+
+  // Date restricter
+  const minDateLimit = eventDetails ? formatForInput(eventDetails.eventStartDate) : "";
+  const maxDateLimit = eventDetails ? formatForInput(eventDetails.eventEndDate) : "";
 
   // Fetch teams
   useEffect(() => {
@@ -88,22 +86,15 @@ const CreateGame = () => {
         console.error("Error fetching teams:", error);
       }
     };
-
-    if (user?.institution && decodedEventName) {
-      fetchTeams();
-    }
+    if (user?.institution && decodedEventName) fetchTeams();
   }, [user?.institution, decodedEventName]);
 
-  // Team select
   const toggleTeamSelection = (teamName) => {
     setSelectedTeams((prev) =>
-      prev.includes(teamName)
-        ? prev.filter((t) => t !== teamName)
-        : [...prev, teamName]
+      prev.includes(teamName) ? prev.filter((t) => t !== teamName) : [...prev, teamName]
     );
   };
 
-  // Game Creation
   const handleSubmit = async (e) => {
     e.preventDefault();
     const user = JSON.parse(localStorage.getItem("auth"));
@@ -127,9 +118,7 @@ const CreateGame = () => {
       formData.append("coordinators", JSON.stringify(selectedCoordinators));
       formData.append("referees", JSON.stringify(referees));
 
-      if (rulesFile) {
-        formData.append("rulesFile", rulesFile);
-      }
+      if (rulesFile) formData.append("rulesFile", rulesFile);
       formData.append("rulesText", rulesText);
 
       const response = await fetch("http://localhost:5000/api/games", {
@@ -170,7 +159,6 @@ const CreateGame = () => {
     fetchCoordinators();
   }, [user?.institution, decodedEventName]);
 
-  // Add coords
   const handleSelectCoordinator = (coord) => {
     if (!selectedCoordinators.some((c) => c._id === coord._id)) {
       setSelectedCoordinators((prev) => [...prev, coord]);
@@ -178,7 +166,6 @@ const CreateGame = () => {
     setSearch("");
   };
 
-  // Remove coord
   const handleRemoveCoordinator = (id) => {
     setSelectedCoordinators((prev) => prev.filter((c) => c._id !== id));
   };
@@ -189,7 +176,6 @@ const CreateGame = () => {
       !selectedCoordinators.some((sel) => sel._id === c._id)
   );
 
-  // Add Referee
   const handleAddReferee = () => {
     if (refereeInput.trim() && !referees.includes(refereeInput.trim())) {
       setReferees((prev) => [...prev, refereeInput.trim()]);
@@ -197,7 +183,6 @@ const CreateGame = () => {
     }
   };
 
-  // Remove referee
   const handleRemoveReferee = (name) => {
     setReferees((prev) => prev.filter((r) => r !== name));
   };
@@ -207,26 +192,18 @@ const CreateGame = () => {
       <>
         <div className="game-container">
           <div className="game-create-maindiv">
-
             <div className="game-form-header">
               <h1>Game Creation Form</h1>
             </div>
 
             <div className="game-form-container">
-
               <form className="game-forms" onSubmit={handleSubmit}>
-
-                {/* Game Type */}
-
                 <div className="game-details">
-
                   <div>
                     <h4>GAME DETAILS</h4>
-
                     <label className="game-label">
                       Game Type:
                       <select value={gameType} onChange={(e) => setGameType(e.target.value)} required >
-
                         <option value="Basketball">Basketball</option>
                         <option value="Volleyball">Volleyball</option>
                         <option value="Soccer">Soccer</option>
@@ -237,18 +214,12 @@ const CreateGame = () => {
                         <option value="Table Tennis">Table Tennis</option>
                         <option value="Tennis">Tennis</option>
                         <option value="Chess">Chess</option>
-
                       </select>
                     </label>
 
-                    {/* Game Category */}
                     <label className="game-label">
                       Category:
-                      <select
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        required
-                      >
+                      <select value={category} onChange={(e) => setCategory(e.target.value)} required >
                         <option value="Men">Men</option>
                         <option value="Women">Women</option>
                         <option value="Mixed">Mixed</option>
@@ -263,9 +234,8 @@ const CreateGame = () => {
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         required
-                        min={eventStartFormatted}
-                        max={eventEndFormatted}
-                        disabled={!eventDetails} 
+                        min={minDateLimit}
+                        max={maxDateLimit}
                       />
                     </label>
 
@@ -276,12 +246,20 @@ const CreateGame = () => {
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
                         required
-                        min={startDate || eventStartFormatted} 
-                        max={eventEndFormatted}
-                        disabled={!eventDetails} 
+                        // Date restriction base on event date
+                        min={startDate && startDate > minDateLimit ? startDate : minDateLimit}
+                        max={maxDateLimit}
                       />
                     </label>
+                    
                     {!eventDetails && <p style={{color: 'red', fontSize: '0.8em'}}>Loading event dates...</p>}
+                    
+                    {eventDetails && (
+                        <p style={{fontSize: '0.7rem', color: '#666', marginTop: '5px'}}>
+                            Event Duration: {minDateLimit.replace("T", " ")} to {maxDateLimit.replace("T", " ")}
+                        </p>
+                    )}
+
                   </div>
 
                   {/* Participating Teams */}
@@ -292,51 +270,29 @@ const CreateGame = () => {
                         <p>No teams available for this event.</p>
                       ) : (
                         <>
-                          {/* Toggle Select All */}
                           <button type="button" 
                             onClick={() => {
                               const allSelected = selectedTeams.length === availableTeams.length;
-                              setSelectedTeams(
-                                allSelected ? [] : availableTeams.map((t) => t.teamName)
-                              );
+                              setSelectedTeams(allSelected ? [] : availableTeams.map((t) => t.teamName));
                             }}
                             style={{
-                              margin: "5px 0 5px",
-                              padding: "5px 10px",
-                              backgroundColor:
-                                selectedTeams.length === availableTeams.length
-                                  ? "#b95454ff" 
-                                  : "#18593cff", 
-                              color: "white",
-                              border: "none",
-                              borderRadius: "6px",
-                              cursor: "pointer",
-                              
+                              margin: "5px 0 5px", padding: "5px 10px",
+                              backgroundColor: selectedTeams.length === availableTeams.length ? "#b95454ff" : "#18593cff", 
+                              color: "white", border: "none", borderRadius: "6px", cursor: "pointer",
                               transition: "background-color 0.2s ease",
                             }}
                           >
-                            {selectedTeams.length === availableTeams.length
-                              ? "Unselect All"
-                              : "Select All"}
+                            {selectedTeams.length === availableTeams.length ? "Unselect All" : "Select All"}
                           </button>
 
-                          {/* Individual team select list */}
                           <div className="team-buttons" style={{ marginTop: "10px" }}>
                             {availableTeams.map((team) => (
                               <button
-                                key={team._id}
-                                type="button"
-                                onClick={() => toggleTeamSelection(team.teamName)}
+                                key={team._id} type="button" onClick={() => toggleTeamSelection(team.teamName)}
                                 style={{
-                                  margin: "5px",
-                                  padding: "8px 12px",
-                                  backgroundColor: selectedTeams.includes(team.teamName)
-                                    ? "#181b59"
-                                    : "#ccc",
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "5px",
-                                  cursor: "pointer",
+                                  margin: "5px", padding: "8px 12px",
+                                  backgroundColor: selectedTeams.includes(team.teamName) ? "#181b59" : "#ccc",
+                                  color: "white", border: "none", borderRadius: "5px", cursor: "pointer",
                                   transition: "background-color 0.2s ease",
                                 }}
                               >
@@ -349,28 +305,17 @@ const CreateGame = () => {
                     </div>
                   </div>
 
-                  {/* Bracket Type */}
                   <div>
                     <h4>BRACKETING TYPE</h4>
                     <label>Please choose one type of bracketing</label>
                     <div className="bracket-selection">
-                      {[
-                        "Single Elimination",
-                        "Double Elimination",
-                        "Round Robin"
-                      ].map((type) => (
+                      {["Single Elimination", "Double Elimination", "Round Robin"].map((type) => (
                         <button
-                          key={type}
-                          type="button"
-                          onClick={() => setBracketType(type)}
+                          key={type} type="button" onClick={() => setBracketType(type)}
                           style={{
-                            margin: "5px",
-                            padding: "8px 12px",
+                            margin: "5px", padding: "8px 12px",
                             backgroundColor: bracketType === type ? "#181b59" : "#ccc",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "5px",
-                            cursor: "pointer",
+                            color: "white", border: "none", borderRadius: "5px", cursor: "pointer",
                           }}
                         >
                           {type}
@@ -380,110 +325,85 @@ const CreateGame = () => {
                   </div>
                 </div>
               
-              <div>
-                {/* Add Coordinator */}
-                <div className="game-organizers">
-                  <h4>SUB-ORGANIZERS</h4>
-                  <div className="game-org-field">
-                    <label>Assign Sub-Organizer/s for this game</label>
-                    <input
-                      type="text"
-                      placeholder="Enter Name or Select"
-                      value={search}
-                      onFocus={() => setShowDropdown(true)}
-                      onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-
-                    {showDropdown &&
-                      (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
-                        <ul className="dropdown">
-                          {(search ? filteredCoordinators : coordinators.filter(
-                            (c) => !selectedCoordinators.some((sel) => sel._id === c._id)
-                          )).map((c) => (
-                            <li
-                              key={c._id}
-                              onClick={() => handleSelectCoordinator(c)}
-                            >
-                              {c.name} ({c.role})
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                  </div>
-
-                  <div className="selected-tags">
-                    {selectedCoordinators.map((c) => (
-                      <span key={c._id} className="tag">
-                        {c.name}
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveCoordinator(c._id)}
-                        >
-                          ×
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Referee */}
-                  <h4>Referee Name</h4>
-                  <div className="game-ref-field">
-                    <input
-                      type="text"
-                      placeholder="Type referee name and press Add"
-                      style={{ margin: "5px", width: "60%" }}
-                      value={refereeInput}
-                      onChange={(e) => setRefereeInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" ? (e.preventDefault(), handleAddReferee()) : null}
-                    />
-                    <button type="button" onClick={handleAddReferee}>+ Add</button>
-                  </div>
-
-                  <div className="selected-tags">
-                    {referees.map((name, idx) => (
-                      <span key={idx} className="tag">
-                        {name}
-                        <button type="button" onClick={() => handleRemoveReferee(name)}>×</button>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="game-reqs-rules">
-                  <h4>RULES</h4>
-                  <div className="game-rules">
-                    <textarea
-                      value={rulesText}
-                      onChange={(e) => setRulesText(e.target.value)}
-                      placeholder="Enter rules (if not uploading file)"
-                      rows={5}
-                    />
-
-                    <div className="file-upload">
+                <div>
+                  <div className="game-organizers">
+                    <h4>SUB-ORGANIZERS</h4>
+                    <div className="game-org-field">
+                      <label>Assign Sub-Organizer/s for this game</label>
                       <input
-                        id="rulesFile"
-                        name="rulesFile"
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={(e) => setRulesFile(e.target.files[0])}
-                        style={{ display: "none" }}
+                        type="text" placeholder="Enter Name or Select" value={search}
+                        onFocus={() => setShowDropdown(true)}
+                        onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+                        onChange={(e) => setSearch(e.target.value)}
                       />
+                      {showDropdown &&
+                        (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
+                          <ul className="dropdown">
+                            {(search ? filteredCoordinators : coordinators.filter(
+                              (c) => !selectedCoordinators.some((sel) => sel._id === c._id)
+                            )).map((c) => (
+                              <li key={c._id} onClick={() => handleSelectCoordinator(c)}>
+                                {c.name} ({c.role})
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                    </div>
 
-                      <span className="file-name">
-                        {rulesFile ? rulesFile.name : "No file chosen"}
-                      </span>
+                    <div className="selected-tags">
+                      {selectedCoordinators.map((c) => (
+                        <span key={c._id} className="tag">
+                          {c.name}
+                          <button type="button" onClick={() => handleRemoveCoordinator(c._id)}>×</button>
+                        </span>
+                      ))}
+                    </div>
 
-                      <label htmlFor="rulesFile" className="upload-btn">
-                        Choose File
-                      </label>
+                    <h4>Referee Name</h4>
+                    <div className="game-ref-field">
+                      <input
+                        type="text" placeholder="Type referee name and press Add"
+                        style={{ margin: "5px", width: "60%" }}
+                        value={refereeInput}
+                        onChange={(e) => setRefereeInput(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" ? (e.preventDefault(), handleAddReferee()) : null}
+                      />
+                      <button type="button" onClick={handleAddReferee}>+ Add</button>
+                    </div>
+
+                    <div className="selected-tags">
+                      {referees.map((name, idx) => (
+                        <span key={idx} className="tag">
+                          {name}
+                          <button type="button" onClick={() => handleRemoveReferee(name)}>×</button>
+                        </span>
+                      ))}
                     </div>
                   </div>
-                </div>
-              </div>      
-            </form>
-            
-          </div>
+
+                  <div className="game-reqs-rules">
+                    <h4>RULES</h4>
+                    <div className="game-rules">
+                      <textarea
+                        value={rulesText} onChange={(e) => setRulesText(e.target.value)}
+                        placeholder="Enter rules (if not uploading file)" rows={5}
+                      />
+                      <div className="file-upload">
+                        <input
+                          id="rulesFile" name="rulesFile" type="file" accept=".pdf,.doc,.docx"
+                          onChange={(e) => setRulesFile(e.target.files[0])}
+                          style={{ display: "none" }}
+                        />
+                        <span className="file-name">
+                          {rulesFile ? rulesFile.name : "No file chosen"}
+                        </span>
+                        <label htmlFor="rulesFile" className="upload-btn">Choose File</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>    
+              </form>
+            </div>
 
             <div className="lower-buttons">
               <button type="button" onClick={() => navigate(-1)}>Cancel</button>
