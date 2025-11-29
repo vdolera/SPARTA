@@ -261,7 +261,7 @@ router.put('/event/:id', async (req, res) => {
       }
     }
 
-    // 3. Update the Event Document
+    // Update the Event Document
     const updatedEvent = await Event.findByIdAndUpdate(
       id,
       { 
@@ -277,7 +277,7 @@ router.put('/event/:id', async (req, res) => {
       { new: true }
     );
 
-    // 4. Handle New Invitations (Existing logic)
+    // Handle New Invitations 
     if (Array.isArray(coordinators)) {
       const existingCoords = await Coordinator.find({ eventName: updatedEvent.eventName });
 

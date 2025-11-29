@@ -13,6 +13,7 @@ export default function LoginPage() {
 
   const [showLoginSuccess, setShowLoginSuccess] = useState(false);
   const [showLoginFailed, setShowLoginFailed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -60,8 +61,8 @@ export default function LoginPage() {
           }
           }, 3000);
       } else {
+        setErrorMessage(data.message || "Login failed. Please try again.");
         setShowLoginFailed(true);
-        // alert(data.message || 'Login failed');
       }
     } catch (error) {
       
@@ -89,7 +90,7 @@ export default function LoginPage() {
       <div className="modal-overlay">
         <div className="modal">
           <h3>Login Failed</h3>
-          <p>Invalid email, password, or access key. Please try again.</p>
+          <p>{errorMessage}</p>
           <button onClick={() => setShowLoginFailed(false)}>Close</button>
         </div>
       </div>

@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const adminSchema = new mongoose.Schema({
-  email: String,
-  password: String,
-  institution: String,
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  password: { type: String, required: true },
+  institution: { type: String, required: true },
+  ok: { type: Boolean, default: false },
   role: { type: String, default: "admin" },
 });
 

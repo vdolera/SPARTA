@@ -71,7 +71,7 @@ export default function RegisterPage() {
             email: formData.email,
             password: formData.password,
             institution: formData.institution,
-            eventName: formData.event,
+            eventName: formData.eventName,
           };
 
     try {
@@ -85,7 +85,7 @@ export default function RegisterPage() {
 
       if (response.ok) {
         showToast(`Successfully registered as ${role}`, 'success');
-        setTimeout(() => navigate('/dashboard'), 8000);
+        setTimeout(() => navigate('/dashboard'), 2000);
       } else {
         showToast(data.message || 'Registration failed', 'error');
       }
@@ -164,7 +164,7 @@ export default function RegisterPage() {
             {role === 'player' && (
               <div className="form-group">
                 <label>Event</label>
-                <select name="event" value={formData.event} onChange={handleChange} required>
+                <select name="eventName" value={formData.eventName} onChange={handleChange} required>
                   <option value="">Select Event</option>
                   {events.map((ev) => (
                     <option key={ev._id} value={ev.eventName}>
