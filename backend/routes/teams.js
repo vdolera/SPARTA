@@ -16,7 +16,7 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
   try {
     const { teamName, teamManager, managerEmail, institution, teamColor, eventName, coordinators } = req.body;
 
-    if (!teamName || !teamManager || !managerEmail || !institution) {
+    if (!teamName || !institution) {
       return res.status(400).json({ message: "All fields are required." });
     }
 

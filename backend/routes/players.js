@@ -239,7 +239,6 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
     const gameDocs = await Game.find({ _id: { $in: validGameIds } });
     if (!gameDocs.length) return res.status(404).json({ message: "Games not found" });
   
-
     // New upload
     const newUploads = [];
 
@@ -247,7 +246,15 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
       const match = file.fieldname.match(/requirements\[(.+)\]/);
       const reqName = match ? match[1] : file.fieldname;
 
-      const uniqueFileName = `req-${Date.now()}-${file.originalname}`;
+      // Changing Space to uncerscore
+      const safePlayerName = playerName.trim().replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "");
+      const safeReqName = reqName.trim().replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "");
+
+      // 2. Get file format like png,pdf,jpeg
+      const fileExt = file.originalname.substring(file.originalname.lastIndexOf('.'));
+
+      // Naming
+      const uniqueFileName = `${safePlayerName}_${safeReqName}_${Date.now()}${fileExt}`;
 
       // Upload to Supabase
       const { error } = await supabase.storage
@@ -274,7 +281,7 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
       });
     }
 
-    // Overwrite existing data to prevent uncessesary files
+    // Overwrite existing data to prevent unnecessary files
     if (newUploads.length > 0) {
       newUploads.forEach((newFile) => {
         // Find file with same name
@@ -286,7 +293,7 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
       });
     }
 
-    // Update the inputed data
+    // Update the inputted data
     player.playerName = playerName;
     player.team = team;
     player.sex = sex;
