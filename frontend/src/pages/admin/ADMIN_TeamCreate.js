@@ -156,7 +156,7 @@ const CreateTeam = () => {
                       type="text"
                       value={teamManager}
                       onChange={(e) => setTeamManager(e.target.value)}
-                      required
+                      // required
                       placeholder=" "
                     />
                     <label>Team Manager</label>
@@ -167,7 +167,7 @@ const CreateTeam = () => {
                       type="email"
                       value={managerEmail}
                       onChange={(e) => setManagerEmail(e.target.value)}
-                      required
+                      // required
                       placeholder=" "
                     />
                     <label>Manager Email</label>

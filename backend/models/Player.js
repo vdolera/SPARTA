@@ -32,6 +32,6 @@ const playerSchema = new mongoose.Schema({
   age: { type: Number },
   weight: { type: Number },
   height: { type: Number }
-}, { timestamps: true });
+  }, { timestamps: true });
 
 module.exports = mongoose.model('Player', playerSchema);

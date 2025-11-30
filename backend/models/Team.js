@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const teamSchema = new mongoose.Schema(
   {
     teamName: { type: String, required: true },
-    teamManager: { type: String, required: true },
-    managerEmail: { type: String, required: true },
+    teamManager: { type: String, required: false },
+    managerEmail: { type: String, required: false },
     institution: { type: String, required: true },
     teamColor: { type: String, required: true },
     eventName: { type: String, required: true },

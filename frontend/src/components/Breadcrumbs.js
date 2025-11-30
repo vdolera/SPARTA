@@ -26,6 +26,7 @@ const ROUTE_CONFIG = {
 
   // Player routes
   "/dashboard": "Dashboard",
+  "/:userId/profile": "My Profile", // This will be overridden
   "/event": "Events",
   "/event/:eventName": "Event Details",
   "/event/:eventName/team/:teamName/players": "Team Players", // This will be overridden
@@ -75,6 +76,7 @@ const Breadcrumbs = () => {
       // Store pantheon event name when we encounter it
       if (segments[index - 1] === 'pantheon' && segment !== 'ranking' && segment !== 'players') {
         pantheonEventName = decodeURIComponent(segment);
+        return; // Skip the event name segment since it doesn't redirect to any page
       }
 
       // Get label from route config or format the segment
@@ -87,7 +89,7 @@ const Breadcrumbs = () => {
       
       // Custom handling for pending players page - show "Pending Players"
       if (currentPath.endsWith('/pending') && currentTeamName) {
-        label = `${currentTeamName} Pending Players`;
+        label = `Pending Players`;
       }
       
       // Custom handling for player profile page - show "Player Profile"
@@ -104,11 +106,28 @@ const Breadcrumbs = () => {
         }
       }
       
-      // Store pantheon event name when we encounter it
-        if (segments[index - 1] === 'pantheon' && segment !== 'ranking' && segment !== 'players') {
-          pantheonEventName = decodeURIComponent(segment);
-          return; // Skip the event name segment since it doesn't redirect to any page
+      // Custom handling for user profile page - show "My Profile" and skip user ID
+      if (currentPath.endsWith('/profile')) {
+        label = `My Profile`;
+        // Skip the user ID segment
+        const userIdSegment = segments[index - 1];
+        if (looksLikeId(userIdSegment)) {
+          // Remove the user ID breadcrumb if it was added
+          const userIdIndex = breadcrumbs.findIndex(crumb => 
+            crumb.path.endsWith(`/${userIdSegment}`) && looksLikeId(userIdSegment)
+          );
+          if (userIdIndex !== -1) {
+            breadcrumbs.splice(userIdIndex, 1);
+          }
         }
+        return; 
+      }
+      
+      // Custom handling for pantheon ranking page - show "CO ORGANIZER'S EVENT Ranking"
+      if (currentPath.endsWith('/ranking') && pantheonEventName) {
+        label = `${pantheonEventName} Ranking`;
+        return; // Skip further processing for this segment
+      }
       
       if (!label) {
         // For dynamic segments, use formatted version
@@ -147,6 +166,15 @@ const Breadcrumbs = () => {
       
       if (isPlayerIdSegment) {
         return; // Skip the player ID segment
+      }
+
+      // Skip user ID segments in profile routes
+      const isUserIdSegment = 
+        segments[index + 1] === 'profile' && 
+        looksLikeId(segment);
+      
+      if (isUserIdSegment) {
+        return; // Skip the user ID segment
       }
 
       // Only add to breadcrumbs if we have a meaningful label
