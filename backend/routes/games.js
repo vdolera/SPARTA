@@ -64,6 +64,20 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       referees,
     } = req.body;
 
+    // Stop creating if game already exist
+    const existingGame = await Game.findOne({
+      institution: institution,
+      eventName: eventName,
+      gameType: gameType,
+      category: category
+    });
+
+    if (existingGame) {
+      return res.status(409).json({ 
+        message: `A ${category} ${gameType} game already exists for this event.` 
+      });
+    }
+
     // DATE VALIDATION for game( event date to game)
     const parentEvent = await Event.findOne({
       eventName: eventName,
