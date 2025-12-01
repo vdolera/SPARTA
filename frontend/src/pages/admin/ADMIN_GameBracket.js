@@ -263,6 +263,93 @@ const GameBracket = () => {
         });
       }
     }
+    if (game.bracketType === "ADNU") {
+      // Helper to build bracket rounds
+      const buildBracketRounds = (matches, namePrefix) => {
+         if(!matches.length) return [];
+         const maxRound = Math.max(...matches.map(m => m.round));
+         const rounds = [];
+         for(let r=1; r<=maxRound; r++) {
+            const seeds = matches.filter(m => m.round === r).map(m => ({
+               id: m._id,
+               date: m.date ? new Date(m.date) : null, // Fix date rendering
+               teams: m.teams.map(t => ({ 
+                 name: t.name, 
+                 score: t.score, 
+                 winner: m.finalizeWinner && t.name === m.winner 
+               })),
+               finalizeWinner: m.finalizeWinner
+            }));
+            rounds.push({ title: `${namePrefix} Round ${r}`, seeds });
+         }
+         return rounds;
+      };
+
+      // 1. Group A Bracket
+      rounds.push({ 
+        title: "Group A", 
+        rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group A"), "A") 
+      });
+
+      // 2. Group B Bracket
+      rounds.push({ 
+        title: "Group B", 
+        rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group B"), "B") 
+      });
+
+      // 3. Playoffs (Manual Construction)
+      const sfMatches = game.matches.filter(m => m.bracket === "SF");
+      const finalMatch = game.matches.find(m => m.bracket === "Championship");
+      
+      const playoffRounds = [
+         { 
+           title: "Semi-Finals", 
+           seeds: sfMatches.map(m => ({
+               id: m._id, 
+               date: m.date ? new Date(m.date) : null,
+               teams: m.teams.map(t => ({ 
+                 name: t.name, 
+                 score: t.score, 
+                 winner: m.finalizeWinner && t.name === m.winner 
+               })),
+               finalizeWinner: m.finalizeWinner
+           }))
+         },
+         { 
+           title: "Championship", 
+           seeds: finalMatch ? [{
+               id: finalMatch._id, 
+               date: finalMatch.date ? new Date(finalMatch.date) : null,
+               teams: finalMatch.teams.map(t => ({ 
+                 name: t.name, 
+                 score: t.score, 
+                 winner: finalMatch.finalizeWinner && t.name === finalMatch.winner 
+               })),
+               finalizeWinner: finalMatch.finalizeWinner
+           }] : []
+         }
+      ];
+      
+      rounds.push({ title: "Playoffs", rounds: playoffRounds });
+
+      // 4. 3rd Place (Standalone)
+      const third = game.matches.find(m => m.bracket === "3rd Place");
+      if(third) {
+        rounds.push({ 
+          title: "3rd Place", 
+          seeds: [{
+             id: third._id, 
+             date: third.date ? new Date(third.date) : null,
+             teams: third.teams.map(t => ({ 
+               name: t.name, 
+               score: t.score, 
+               winner: third.finalizeWinner && t.name === third.winner 
+             })),
+             finalizeWinner: third.finalizeWinner
+          }]
+        });
+      }
+   }
     return rounds;
   };
 
@@ -371,6 +458,24 @@ const GameBracket = () => {
         tally.gold = sortedTeams[0] ? sortedTeams[0][0] : null;
         tally.silver = sortedTeams[1] ? sortedTeams[1][0] : null;
         tally.bronze = sortedTeams[2] ? sortedTeams[2][0] : null;
+      }
+      // --- FIX: ADNU Medal Logic ---
+      else if (bracketType === "ADNU") {
+        // Find the Championship match
+        const finalMatch = matches.find(m => m.bracket === "Championship");
+        
+        // Find the 3rd Place match
+        const thirdPlaceMatch = matches.find(m => m.bracket === "3rd Place");
+
+        if (finalMatch && finalMatch.finalizeWinner) {
+          tally.gold = finalMatch.winner;
+          // The silver medalist is the loser of the Championship match
+          tally.silver = finalMatch.teams.find(t => t.name !== finalMatch.winner)?.name;
+        }
+
+        if (thirdPlaceMatch && thirdPlaceMatch.finalizeWinner) {
+          tally.bronze = thirdPlaceMatch.winner;
+        }
       }
     } catch (e) {
       console.error("Error calculating medal tally:", e);
@@ -488,7 +593,17 @@ const GameBracket = () => {
   };
 
   const roundsData = makeRoundsFromMatches();
-  const isGameFinished = roundsData.some(r => r.title === "Champion");
+  
+  let isGameFinished = false;
+
+  if (game.bracketType === "ADNU") {
+    // For ADNU, check if the "Championship" match is finalized
+    const finalMatch = game.matches.find(m => m.bracket === "Championship");
+    isGameFinished = finalMatch && finalMatch.finalizeWinner;
+  } else {
+    // For others, keep looking for the "Champion" round title
+    isGameFinished = roundsData.some(r => r.title === "Champion");
+  }
 
   return (
     <MainLayout>
@@ -612,21 +727,45 @@ const GameBracket = () => {
           </div>
         )}
 
-        {game.bracketType === "Swiss" && (
-          <div className="swiss bracket-container">
-            <h2>Swiss Bracket</h2>
-            {roundsData.map((round, rIndex) => (
-              <div key={rIndex} className="swiss-round">
-                <h3 className="swiss-title">{round.title}</h3>
-                <div className="swiss-matches">
-                  {round.seeds.map((seed, sIndex) => (
-                    <React.Fragment key={sIndex}>
-                      {renderSeed({ seed })}
-                    </React.Fragment>
-                  ))}
+{game.bracketType === "ADNU" && (
+          <div className="rr-knockout-container" style={{display:'flex', flexDirection:'column', gap:'40px'}}>
+             
+             {/* Groups Area */}
+             <div style={{display:'flex', gap:'50px', justifyContent:'center', flexWrap:'wrap'}}>
+                {roundsData.filter(r => r.title.startsWith("Group")).map((group, idx) => (
+                   <div key={idx} className="group-stage">
+                      <h3>{group.title}</h3>
+                      {/* Group rounds structure: 
+                          group.rounds is an ARRAY of rounds (Round 1, Round 2)
+                          We use Bracket component to render it correctly
+                      */}
+                      <Bracket rounds={group.rounds || []} renderSeedComponent={renderSeed} />
+                   </div>
+                ))}
+             </div>
+
+             {/* Knockout Area */}
+             <div style={{borderTop:'2px solid #ccc', paddingTop:'20px', textAlign: 'center'}}>
+                <h2>Playoffs</h2>
+                {/* We look for "Playoffs" title now (not "Knockout") 
+                   because that is what we named it in makeRoundsFromMatches
+                */}
+                <Bracket 
+                  rounds={roundsData.find(r => r.title === "Playoffs")?.rounds || []} 
+                  renderSeedComponent={renderSeed} 
+                />
+                
+                {/* 3rd Place - Rendered Separately */}
+                <div style={{marginTop:'30px', display:'flex', flexDirection:'column', alignItems:'center'}}>
+                   <h4>3rd Place Match</h4>
+                   {/* We look for "3rd Place" (not "3rd Place Match") 
+                      Use optional chaining ?.seeds?.map to prevent crash if not found
+                   */}
+                   {roundsData.find(r => r.title === "3rd Place")?.seeds?.map((seed, i) => (
+                      <div key={i}>{renderSeed({seed})}</div>
+                   ))}
                 </div>
-              </div>
-            ))}
+             </div>
           </div>
         )}
       </div>

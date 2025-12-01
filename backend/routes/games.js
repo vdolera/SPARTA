@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const express = require("express");
 const Game = require("../models/Game");
 const Team = require("../models/Team");
@@ -19,6 +20,63 @@ function shuffleArray(array) {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+};
+
+// Helper: Generate Single Elim Bracket for a Group
+const generateGroupSE = (teams, groupName) => {
+  const matches = [];
+  const totalRounds = Math.ceil(Math.log2(teams.length));
+  
+  // 1. Create Round 1 Matches
+  const round1Matches = [];
+  for (let i = 0; i < teams.length; i += 2) {
+    round1Matches.push({
+      _id: new mongoose.Types.ObjectId(), // Generate ID now
+      bracket: groupName,
+      round: 1,
+      matchIndex: i / 2,
+      teams: [
+        { name: teams[i] || "TBD", score: null },
+        { name: teams[i + 1] || "TBD", score: null }
+      ],
+      winner: null,
+      finalizeWinner: false,
+      nextMatch: null // Will link below
+    });
+  }
+  matches.push(...round1Matches);
+
+  // 2. Create Subsequent Rounds
+  let prevRoundMatches = round1Matches;
+  for (let r = 2; r <= totalRounds; r++) {
+    const currentRoundMatches = [];
+    const numMatches = Math.pow(2, totalRounds - r);
+
+    for (let i = 0; i < numMatches; i++) {
+      const matchId = new mongoose.Types.ObjectId();
+      currentRoundMatches.push({
+        _id: matchId,
+        bracket: groupName,
+        round: r,
+        matchIndex: i,
+        teams: [{ name: "TBD", score: null }, { name: "TBD", score: null }],
+        winner: null,
+        finalizeWinner: false,
+        nextMatch: null
+      });
+
+      // Link previous round to this match
+      // The 2 matches from prev round (indices 2*i and 2*i+1) go here
+      const m1 = prevRoundMatches[i * 2];
+      const m2 = prevRoundMatches[i * 2 + 1];
+      if (m1) m1.nextMatch = matchId;
+      if (m2) m2.nextMatch = matchId;
+    }
+    matches.push(...currentRoundMatches);
+    prevRoundMatches = currentRoundMatches;
+  }
+
+  return matches;
 };
 
 // Function to save the medals to each team
@@ -344,6 +402,46 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       matches.push(...rrMatches);
     }
 
+    // NEW: ADNU (Group Single Elim + Crossover)
+    if (bracketType === "ADNU") {
+      const mid = Math.ceil(shuffledTeams.length / 2);
+      const groupA = shuffledTeams.slice(0, mid);
+      const groupB = shuffledTeams.slice(mid);
+
+      // 1. Generate Single Elim Brackets for A and B
+      matches.push(...generateGroupSE(groupA, "Group A"));
+      matches.push(...generateGroupSE(groupB, "Group B"));
+
+      // 2. Crossover Semi-Finals (SF)
+      // SF1: Winner A vs Loser B (Runner-up) 
+      // SF2: Winner B vs Loser A (Runner-up)
+      // *Note: "Loser" here means the loser of the Group Final (Rank 2)
+      matches.push({
+        bracket: "SF", round: 100, matchIndex: 0,
+        teams: [{ name: "Winner Group A", score: null }, { name: "Runner-Up Group B", score: null }],
+        finalizeWinner: false
+      });
+      matches.push({
+        bracket: "SF", round: 100, matchIndex: 1,
+        teams: [{ name: "Winner Group B", score: null }, { name: "Runner-Up Group A", score: null }],
+        finalizeWinner: false
+      });
+
+      // 3. 3rd Place
+      matches.push({
+        bracket: "3rd Place", round: 101, matchIndex: 0,
+        teams: [{ name: "Loser SF1", score: null }, { name: "Loser SF2", score: null }],
+        finalizeWinner: false
+      });
+
+      // 4. Championship
+      matches.push({
+        bracket: "Championship", round: 102, matchIndex: 0,
+        teams: [{ name: "Winner SF1", score: null }, { name: "Winner SF2", score: null }],
+        finalizeWinner: false
+      });
+    }
+
     const newGame = new Game({
       institution,
       gameType,
@@ -608,6 +706,105 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
             ];
           }
         }
+
+ // NEW: ADNU Advancement (Math-Based Logic)
+ if (game.bracketType === "ADNU") {
+
+  // --- LOGIC FOR GROUP STAGES (A & B) ---
+  if (match.bracket === "Group A" || match.bracket === "Group B") {
+    
+    // 1. Find out how many rounds are in this group
+    const groupMatches = game.matches.filter(m => m.bracket === match.bracket);
+    const maxRound = Math.max(...groupMatches.map(m => m.round));
+
+    // SCENARIO A: Standard Advancement (e.g., Round 1 -> Round 2)
+    if (match.round < maxRound) {
+       // Calculate the destination match mathematically
+       const nextRound = match.round + 1;
+       const nextMatchIndex = Math.floor(match.matchIndex / 2);
+       const nextTeamSlot = match.matchIndex % 2; // 0 = Top, 1 = Bottom
+
+       const nextMatch = game.matches.find(m => 
+         m.bracket === match.bracket && 
+         m.round === nextRound && 
+         m.matchIndex === nextMatchIndex
+       );
+
+       if (nextMatch) {
+         nextMatch.teams[nextTeamSlot].name = winnerName;
+         nextMatch.teams[nextTeamSlot].score = null; // Reset score for next game
+         game.markModified('matches'); // CRITICAL: Tell Mongo array changed
+       }
+    } 
+    
+    // SCENARIO B: Group Final (The Winner moves to SF)
+    else if (match.round === maxRound) {
+      
+      const isGroupA = match.bracket === "Group A";
+      
+      // Find the Semi-Final Matches
+      // SF Match 0 = SF1, SF Match 1 = SF2
+      const sf1 = game.matches.find(m => m.bracket === "SF" && m.matchIndex === 0);
+      const sf2 = game.matches.find(m => m.bracket === "SF" && m.matchIndex === 1);
+
+      if (isGroupA) {
+         // Winner of Group A -> Goes to SF1 (Slot 0)
+         if (sf1) {
+           sf1.teams[0].name = winnerName;
+           sf1.teams[0].score = null;
+         }
+         // Runner-Up (Loser) of Group A -> Goes to SF2 (Slot 1)
+         if (sf2) {
+           sf2.teams[1].name = loserName;
+           sf2.teams[1].score = null;
+         }
+      } else {
+         // Winner of Group B -> Goes to SF2 (Slot 0)
+         if (sf2) {
+           sf2.teams[0].name = winnerName;
+           sf2.teams[0].score = null;
+         }
+         // Runner-Up (Loser) of Group B -> Goes to SF1 (Slot 1)
+         if (sf1) {
+           sf1.teams[1].name = loserName;
+           sf1.teams[1].score = null;
+         }
+      }
+      game.markModified('matches');
+    }
+  }
+
+  // --- LOGIC FOR SEMI-FINALS ---
+  if (match.bracket === "SF") {
+    const finalMatch = game.matches.find(m => m.bracket === "Championship");
+    const thirdMatch = game.matches.find(m => m.bracket === "3rd Place");
+    
+    // SF1 (Index 0) fills Slot 0 in Finals
+    // SF2 (Index 1) fills Slot 1 in Finals
+    const slot = match.matchIndex; 
+
+    // Winner goes to Championship
+    if(finalMatch) {
+        finalMatch.teams[slot].name = winnerName;
+        finalMatch.teams[slot].score = null;
+    }
+    // Loser goes to 3rd Place
+    if(thirdMatch) {
+        thirdMatch.teams[slot].name = loserName;
+        thirdMatch.teams[slot].score = null;
+    }
+    game.markModified('matches');
+  }
+
+  // --- LOGIC FOR MEDALS ---
+  if (match.bracket === "Championship") {
+    await awardMedal(winnerName, game.eventName, game, 'gold');
+    await awardMedal(loserName, game.eventName, game, 'silver');
+  }
+  if (match.bracket === "3rd Place") {
+    await awardMedal(winnerName, game.eventName, game, 'bronze');
+  }
+}
 
         // Update Team collection
         const round = match.round;

@@ -309,7 +309,7 @@ const CreateGame = () => {
                     <h4>BRACKETING TYPE</h4>
                     <label>Please choose one type of bracketing</label>
                     <div className="bracket-selection">
-                      {["Single Elimination", "Double Elimination", "Round Robin"].map((type) => (
+                      {["Single Elimination", "Double Elimination", "Round Robin", "ADNU"].map((type) => (
                         <button
                           key={type} type="button" onClick={() => setBracketType(type)}
                           style={{

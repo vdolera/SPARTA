@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const matchSchema = new mongoose.Schema({
-  bracket: { type: String, enum: ["WB", "LB", "GF", "RR", "Swiss"], default: "WB" },
+  bracket: { type: String, enum: ["WB", "LB", "GF", "RR", "Swiss", "Group A", "Group B", "SF", "3rd Place", "Championship"], default: "WB" },
   round: { type: Number, required: true },
   matchIndex: { type: Number, required: true },
   teams: [{ 
@@ -32,7 +32,8 @@ const gameSchema = new mongoose.Schema({
     enum: [
       'Single Elimination',
       'Double Elimination',
-      'Round Robin'
+      'Round Robin',
+      'ADNU'
     ],
     required: true,
   },
