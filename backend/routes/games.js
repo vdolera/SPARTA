@@ -22,60 +22,34 @@ function shuffleArray(array) {
   return arr;
 };
 
-// Helper: Generate Single Elim Bracket for a Group
-const generateGroupSE = (teams, groupName) => {
+// --- HELPER: Generate Round Robin Matches ---
+const generateRRMatches = (teams, bracketName) => {
   const matches = [];
-  const totalRounds = Math.ceil(Math.log2(teams.length));
-  
-  // 1. Create Round 1 Matches
-  const round1Matches = [];
-  for (let i = 0; i < teams.length; i += 2) {
-    round1Matches.push({
-      _id: new mongoose.Types.ObjectId(), // Generate ID now
-      bracket: groupName,
-      round: 1,
-      matchIndex: i / 2,
-      teams: [
-        { name: teams[i] || "TBD", score: null },
-        { name: teams[i + 1] || "TBD", score: null }
-      ],
-      winner: null,
-      finalizeWinner: false,
-      nextMatch: null // Will link below
-    });
-  }
-  matches.push(...round1Matches);
+  // If odd number of teams, add dummy "BLANK"
+  const teamList = teams.length % 2 === 0 ? [...teams] : [...teams, "BLANK"];
+  const numTeams = teamList.length;
+  const numRounds = numTeams - 1;
+  const half = numTeams / 2;
 
-  // 2. Create Subsequent Rounds
-  let prevRoundMatches = round1Matches;
-  for (let r = 2; r <= totalRounds; r++) {
-    const currentRoundMatches = [];
-    const numMatches = Math.pow(2, totalRounds - r);
+  for (let r = 0; r < numRounds; r++) {
+    for (let i = 0; i < half; i++) {
+      const t1 = teamList[i];
+      const t2 = teamList[numTeams - 1 - i];
 
-    for (let i = 0; i < numMatches; i++) {
-      const matchId = new mongoose.Types.ObjectId();
-      currentRoundMatches.push({
-        _id: matchId,
-        bracket: groupName,
-        round: r,
-        matchIndex: i,
-        teams: [{ name: "TBD", score: null }, { name: "TBD", score: null }],
-        winner: null,
-        finalizeWinner: false,
-        nextMatch: null
-      });
-
-      // Link previous round to this match
-      // The 2 matches from prev round (indices 2*i and 2*i+1) go here
-      const m1 = prevRoundMatches[i * 2];
-      const m2 = prevRoundMatches[i * 2 + 1];
-      if (m1) m1.nextMatch = matchId;
-      if (m2) m2.nextMatch = matchId;
+      if (t1 !== "BLANK" && t2 !== "BLANK") {
+        matches.push({
+          bracket: bracketName,
+          round: r + 1,
+          matchIndex: i,
+          teams: [{ name: t1, score: null }, { name: t2, score: null }],
+          winner: null,
+          finalizeWinner: false
+        });
+      }
     }
-    matches.push(...currentRoundMatches);
-    prevRoundMatches = currentRoundMatches;
+    // Rotate teams (keep index 0 fixed)
+    teamList.splice(1, 0, teamList.pop());
   }
-
   return matches;
 };
 
@@ -402,28 +376,25 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       matches.push(...rrMatches);
     }
 
-    // NEW: ADNU (Group Single Elim + Crossover)
+    // NEW: ADNU (Round Robin Groups + Crossover)
     if (bracketType === "ADNU") {
       const mid = Math.ceil(shuffledTeams.length / 2);
       const groupA = shuffledTeams.slice(0, mid);
       const groupB = shuffledTeams.slice(mid);
 
-      // 1. Generate Single Elim Brackets for A and B
-      matches.push(...generateGroupSE(groupA, "Group A"));
-      matches.push(...generateGroupSE(groupB, "Group B"));
+      // 1. Generate Round Robin for Group A & B
+      matches.push(...generateRRMatches(groupA, "Group A"));
+      matches.push(...generateRRMatches(groupB, "Group B"));
 
       // 2. Crossover Semi-Finals (SF)
-      // SF1: Winner A vs Loser B (Runner-up) 
-      // SF2: Winner B vs Loser A (Runner-up)
-      // *Note: "Loser" here means the loser of the Group Final (Rank 2)
       matches.push({
         bracket: "SF", round: 100, matchIndex: 0,
-        teams: [{ name: "Winner Group A", score: null }, { name: "Runner-Up Group B", score: null }],
+        teams: [{ name: "Group A #1", score: null }, { name: "Group B #2", score: null }],
         finalizeWinner: false
       });
       matches.push({
         bracket: "SF", round: 100, matchIndex: 1,
-        teams: [{ name: "Winner Group B", score: null }, { name: "Runner-Up Group A", score: null }],
+        teams: [{ name: "Group B #1", score: null }, { name: "Group A #2", score: null }],
         finalizeWinner: false
       });
 
@@ -707,88 +678,67 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
           }
         }
 
- // NEW: ADNU Advancement (Math-Based Logic)
- if (game.bracketType === "ADNU") {
+// NEW: ADNU Advancement (RR Groups -> SF)
+if (game.bracketType === "ADNU") {
 
-  // --- LOGIC FOR GROUP STAGES (A & B) ---
+  // Case 1: Group Stage Match (A or B)
   if (match.bracket === "Group A" || match.bracket === "Group B") {
-    
-    // 1. Find out how many rounds are in this group
-    const groupMatches = game.matches.filter(m => m.bracket === match.bracket);
-    const maxRound = Math.max(...groupMatches.map(m => m.round));
+     const groupName = match.bracket;
+     const allGroupMatches = game.matches.filter(m => m.bracket === groupName);
+     
+     // Check if ALL matches in this group are finished
+     const allDone = allGroupMatches.every(m => m.finalizeWinner);
 
-    // SCENARIO A: Standard Advancement (e.g., Round 1 -> Round 2)
-    if (match.round < maxRound) {
-       // Calculate the destination match mathematically
-       const nextRound = match.round + 1;
-       const nextMatchIndex = Math.floor(match.matchIndex / 2);
-       const nextTeamSlot = match.matchIndex % 2; // 0 = Top, 1 = Bottom
+     if (allDone) {
+        // Calculate Rankings: Wins > Total Score
+        const stats = {}; 
+        // Initialize stats for teams in this group
+        allGroupMatches.forEach(m => {
+           m.teams.forEach(t => {
+              if (!stats[t.name]) stats[t.name] = { wins: 0, score: 0 };
+              stats[t.name].score += (t.score || 0);
+           });
+        });
+        
+        // Count wins
+        allGroupMatches.forEach(m => {
+           if (m.winner && stats[m.winner]) stats[m.winner].wins++;
+        });
 
-       const nextMatch = game.matches.find(m => 
-         m.bracket === match.bracket && 
-         m.round === nextRound && 
-         m.matchIndex === nextMatchIndex
-       );
+        // Sort
+        const rankedTeams = Object.keys(stats).sort((a, b) => {
+           if (stats[b].wins !== stats[a].wins) return stats[b].wins - stats[a].wins;
+           return stats[b].score - stats[a].score;
+        });
 
-       if (nextMatch) {
-         nextMatch.teams[nextTeamSlot].name = winnerName;
-         nextMatch.teams[nextTeamSlot].score = null; // Reset score for next game
-         game.markModified('matches'); // CRITICAL: Tell Mongo array changed
-       }
-    } 
-    
-    // SCENARIO B: Group Final (The Winner moves to SF)
-    else if (match.round === maxRound) {
-      
-      const isGroupA = match.bracket === "Group A";
-      
-      // Find the Semi-Final Matches
-      // SF Match 0 = SF1, SF Match 1 = SF2
-      const sf1 = game.matches.find(m => m.bracket === "SF" && m.matchIndex === 0);
-      const sf2 = game.matches.find(m => m.bracket === "SF" && m.matchIndex === 1);
+        // Assign to Semi-Finals
+        const top1 = rankedTeams[0];
+        const top2 = rankedTeams[1];
 
-      if (isGroupA) {
-         // Winner of Group A -> Goes to SF1 (Slot 0)
-         if (sf1) {
-           sf1.teams[0].name = winnerName;
-           sf1.teams[0].score = null;
-         }
-         // Runner-Up (Loser) of Group A -> Goes to SF2 (Slot 1)
-         if (sf2) {
-           sf2.teams[1].name = loserName;
-           sf2.teams[1].score = null;
-         }
-      } else {
-         // Winner of Group B -> Goes to SF2 (Slot 0)
-         if (sf2) {
-           sf2.teams[0].name = winnerName;
-           sf2.teams[0].score = null;
-         }
-         // Runner-Up (Loser) of Group B -> Goes to SF1 (Slot 1)
-         if (sf1) {
-           sf1.teams[1].name = loserName;
-           sf1.teams[1].score = null;
-         }
-      }
-      game.markModified('matches');
-    }
+        const sf1 = game.matches.find(m => m.bracket === "SF" && m.matchIndex === 0);
+        const sf2 = game.matches.find(m => m.bracket === "SF" && m.matchIndex === 1);
+
+        if (groupName === "Group A") {
+           if (sf1) { sf1.teams[0].name = top1; sf1.teams[0].score = null; } // A1 -> SF1
+           if (sf2) { sf2.teams[1].name = top2; sf2.teams[1].score = null; } // A2 -> SF2
+        } else {
+           if (sf2) { sf2.teams[0].name = top1; sf2.teams[0].score = null; } // B1 -> SF2
+           if (sf1) { sf1.teams[1].name = top2; sf1.teams[1].score = null; } // B2 -> SF1
+        }
+        game.markModified('matches');
+     }
   }
 
-  // --- LOGIC FOR SEMI-FINALS ---
+  // Case 2: Semi-Finals -> Final / 3rd
   if (match.bracket === "SF") {
     const finalMatch = game.matches.find(m => m.bracket === "Championship");
     const thirdMatch = game.matches.find(m => m.bracket === "3rd Place");
-    
-    // SF1 (Index 0) fills Slot 0 in Finals
-    // SF2 (Index 1) fills Slot 1 in Finals
-    const slot = match.matchIndex; 
+    const slot = match.matchIndex; // 0 or 1
 
-    // Winner goes to Championship
     if(finalMatch) {
         finalMatch.teams[slot].name = winnerName;
         finalMatch.teams[slot].score = null;
     }
-    // Loser goes to 3rd Place
     if(thirdMatch) {
         thirdMatch.teams[slot].name = loserName;
         thirdMatch.teams[slot].score = null;
@@ -796,7 +746,7 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
     game.markModified('matches');
   }
 
-  // --- LOGIC FOR MEDALS ---
+  // Case 3: Medals
   if (match.bracket === "Championship") {
     await awardMedal(winnerName, game.eventName, game, 'gold');
     await awardMedal(loserName, game.eventName, game, 'silver');

@@ -264,7 +264,7 @@ const GameBracket = () => {
       }
     }
     if (game.bracketType === "ADNU") {
-      // Helper to build bracket rounds
+      // Helper to build rounds
       const buildBracketRounds = (matches, namePrefix) => {
          if(!matches.length) return [];
          const maxRound = Math.max(...matches.map(m => m.round));
@@ -272,11 +272,9 @@ const GameBracket = () => {
          for(let r=1; r<=maxRound; r++) {
             const seeds = matches.filter(m => m.round === r).map(m => ({
                id: m._id,
-               date: m.date ? new Date(m.date) : null, // Fix date rendering
+               date: m.date ? new Date(m.date) : null,
                teams: m.teams.map(t => ({ 
-                 name: t.name, 
-                 score: t.score, 
-                 winner: m.finalizeWinner && t.name === m.winner 
+                 name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner 
                })),
                finalizeWinner: m.finalizeWinner
             }));
@@ -285,19 +283,11 @@ const GameBracket = () => {
          return rounds;
       };
 
-      // 1. Group A Bracket
-      rounds.push({ 
-        title: "Group A", 
-        rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group A"), "A") 
-      });
+      // 1. Groups
+      rounds.push({ title: "Group A", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group A"), "A") });
+      rounds.push({ title: "Group B", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group B"), "B") });
 
-      // 2. Group B Bracket
-      rounds.push({ 
-        title: "Group B", 
-        rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group B"), "B") 
-      });
-
-      // 3. Playoffs (Manual Construction)
+      // 2. Playoffs (Semi -> Final -> Champion)
       const sfMatches = game.matches.filter(m => m.bracket === "SF");
       const finalMatch = game.matches.find(m => m.bracket === "Championship");
       
@@ -305,46 +295,43 @@ const GameBracket = () => {
          { 
            title: "Semi-Finals", 
            seeds: sfMatches.map(m => ({
-               id: m._id, 
-               date: m.date ? new Date(m.date) : null,
-               teams: m.teams.map(t => ({ 
-                 name: t.name, 
-                 score: t.score, 
-                 winner: m.finalizeWinner && t.name === m.winner 
-               })),
+               id: m._id, date: game.startDate,
+               teams: m.teams.map(t => ({ name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner })),
                finalizeWinner: m.finalizeWinner
            }))
          },
          { 
            title: "Championship", 
            seeds: finalMatch ? [{
-               id: finalMatch._id, 
-               date: finalMatch.date ? new Date(finalMatch.date) : null,
-               teams: finalMatch.teams.map(t => ({ 
-                 name: t.name, 
-                 score: t.score, 
-                 winner: finalMatch.finalizeWinner && t.name === finalMatch.winner 
-               })),
+               id: finalMatch._id, date: game.endDate,
+               teams: finalMatch.teams.map(t => ({ name: t.name, score: t.score, winner: finalMatch.finalizeWinner && t.name === finalMatch.winner })),
                finalizeWinner: finalMatch.finalizeWinner
            }] : []
          }
       ];
+
+      // Add Champion Column if Final is done
+      if (finalMatch && finalMatch.finalizeWinner) {
+        playoffRounds.push({
+          title: "Champion",
+          seeds: [{
+            id: "champion", date: game.endDate,
+            teams: [{ name: finalMatch.winner, score: "WIN", winner: true }],
+            finalizeWinner: true
+          }]
+        });
+      }
       
       rounds.push({ title: "Playoffs", rounds: playoffRounds });
 
-      // 4. 3rd Place (Standalone)
+      // 3. 3rd Place
       const third = game.matches.find(m => m.bracket === "3rd Place");
       if(third) {
         rounds.push({ 
           title: "3rd Place", 
           seeds: [{
-             id: third._id, 
-             date: third.date ? new Date(third.date) : null,
-             teams: third.teams.map(t => ({ 
-               name: t.name, 
-               score: t.score, 
-               winner: third.finalizeWinner && t.name === third.winner 
-             })),
+             id: third._id, date: game.endDate,
+             teams: third.teams.map(t => ({ name: t.name, score: t.score, winner: third.finalizeWinner && t.name === third.winner })),
              finalizeWinner: third.finalizeWinner
           }]
         });
@@ -592,17 +579,14 @@ const GameBracket = () => {
     }
   };
 
-  const roundsData = makeRoundsFromMatches();
-  
   let isGameFinished = false;
-
+  const roundsData = makeRoundsFromMatches(); // Call this once to use result
+  
   if (game.bracketType === "ADNU") {
-    // For ADNU, check if the "Championship" match is finalized
-    const finalMatch = game.matches.find(m => m.bracket === "Championship");
-    isGameFinished = finalMatch && finalMatch.finalizeWinner;
+     const champRound = roundsData.find(r => r.title === "Playoffs")?.rounds?.find(sub => sub.title === "Champion");
+     isGameFinished = !!champRound;
   } else {
-    // For others, keep looking for the "Champion" round title
-    isGameFinished = roundsData.some(r => r.title === "Champion");
+     isGameFinished = roundsData.some(r => r.title === "Champion");
   }
 
   return (
@@ -730,16 +714,25 @@ const GameBracket = () => {
 {game.bracketType === "ADNU" && (
           <div className="rr-knockout-container" style={{display:'flex', flexDirection:'column', gap:'40px'}}>
              
-             {/* Groups Area */}
-             <div style={{display:'flex', gap:'50px', justifyContent:'center', flexWrap:'wrap'}}>
-                {roundsData.filter(r => r.title.startsWith("Group")).map((group, idx) => (
-                   <div key={idx} className="group-stage">
-                      <h3>{group.title}</h3>
-                      {/* Group rounds structure: 
-                          group.rounds is an ARRAY of rounds (Round 1, Round 2)
-                          We use Bracket component to render it correctly
-                      */}
-                      <Bracket rounds={group.rounds || []} renderSeedComponent={renderSeed} />
+             {/* Groups Area - MANUALLY RENDER AS GRID */}
+             <div style={{display:'flex', gap:'30px', justifyContent:'center', flexWrap:'wrap', width: '100%'}}>
+                {roundsData.filter(r => r.title.startsWith("Group")).map((group, gIdx) => (
+                   <div key={gIdx} className="group-stage" style={{backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px', border: '1px solid #ddd'}}>
+                      <h3 style={{textAlign: 'center', margin: '0 0 15px 0', borderBottom: '2px solid #181b59', paddingBottom: '5px'}}>{group.title}</h3>
+                      
+                      <div style={{display:'flex', gap:'20px'}}>
+                        {/* Iterate over rounds inside the group */}
+                        {group.rounds.map((round, rIdx) => (
+                          <div key={rIdx} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+                             <h4 style={{fontSize: '14px', textAlign:'center', color: '#666', margin: '0'}}>{round.title}</h4>
+                             {round.seeds.map((seed, sIdx) => (
+                                <div key={sIdx} style={{marginBottom: '5px'}}>
+                                   {renderSeed({seed, breakpoint: 0})} 
+                                </div>
+                             ))}
+                          </div>
+                        ))}
+                      </div>
                    </div>
                 ))}
              </div>
@@ -747,20 +740,14 @@ const GameBracket = () => {
              {/* Knockout Area */}
              <div style={{borderTop:'2px solid #ccc', paddingTop:'20px', textAlign: 'center'}}>
                 <h2>Playoffs</h2>
-                {/* We look for "Playoffs" title now (not "Knockout") 
-                   because that is what we named it in makeRoundsFromMatches
-                */}
                 <Bracket 
                   rounds={roundsData.find(r => r.title === "Playoffs")?.rounds || []} 
                   renderSeedComponent={renderSeed} 
                 />
                 
-                {/* 3rd Place - Rendered Separately */}
+                {/* 3rd Place */}
                 <div style={{marginTop:'30px', display:'flex', flexDirection:'column', alignItems:'center'}}>
                    <h4>3rd Place Match</h4>
-                   {/* We look for "3rd Place" (not "3rd Place Match") 
-                      Use optional chaining ?.seeds?.map to prevent crash if not found
-                   */}
                    {roundsData.find(r => r.title === "3rd Place")?.seeds?.map((seed, i) => (
                       <div key={i}>{renderSeed({seed})}</div>
                    ))}
