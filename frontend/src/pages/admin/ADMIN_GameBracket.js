@@ -278,14 +278,14 @@ const GameBracket = () => {
                })),
                finalizeWinner: m.finalizeWinner
             }));
-            rounds.push({ title: `${namePrefix} Round ${r}`, seeds });
+            rounds.push({ title: `Round ${r}`, seeds });
          }
          return rounds;
       };
 
       // 1. Groups
-      rounds.push({ title: "Group A", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group A"), "A") });
-      rounds.push({ title: "Group B", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group B"), "B") });
+      rounds.push({ title: "Category A", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group A"), "A") });
+      rounds.push({ title: "Category B", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group B"), "B") });
 
       // 2. Playoffs (Semi -> Final -> Champion)
       const sfMatches = game.matches.filter(m => m.bracket === "SF");
@@ -716,7 +716,7 @@ const GameBracket = () => {
              
              {/* Groups Area - MANUALLY RENDER AS GRID */}
              <div style={{display:'flex', gap:'30px', justifyContent:'center', flexWrap:'wrap', width: '100%'}}>
-                {roundsData.filter(r => r.title.startsWith("Group")).map((group, gIdx) => (
+                {roundsData.filter(r => r.title.startsWith("Category")).map((group, gIdx) => (
                    <div key={gIdx} className="group-stage" style={{backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px', border: '1px solid #ddd'}}>
                       <h3 style={{textAlign: 'center', margin: '0 0 15px 0', borderBottom: '2px solid #181b59', paddingBottom: '5px'}}>{group.title}</h3>
                       
