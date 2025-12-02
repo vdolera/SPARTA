@@ -15,6 +15,52 @@
     height: 50px;
   }
 
+  .spectator-event-list {
+    flex-direction: column;
+  }
+
+  .spectator-event-specifics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .spectator-specific-event-container > .event-header {
+    width: 85vw;
+    height: 5vh;
+    font-size: 14px;
+  }
+
+  .spectator-event-details {
+    width: 85vw;
+    height: 10vh;
+    gap: 2vw;
+  }
+
+  .spectator-event-details > .organizer-box,
+  .spectator-event-details > .date-box,
+  .spectator-event-details > .location-box {
+    min-width: 115px;
+  }
+
+  .spectator-event-details h3{
+    font-size: 14px;
+  }
+
+  .spectator-event-details p {
+    font-size: 12px;
+  }
+
+  .spectator-event-item {
+    width: 60vw;
+    box-shadow: 0 2px 12px rgba(30, 42, 73, 0.08);
+  }
+
+  .game-bracket-info h1 {
+    font-size: 25px;
+  }
+
 }
 
 @media (min-width: 769px) {
@@ -32,6 +78,26 @@
   .spectator-logo{
     width: 75px;
     height: 75px;
+  }
+
+}
+
+@media (min-width: 1273px) {
+  .spectator-event-specifics {
+    display: flex;
+    flex-direction: row;
+    gap: 10vh;
+    margin-top: 50px;
+  }
+
+  .event-header {
+    height: 5vh;
+  }
+
+  .spectator-event-details {
+    width: 55vw;
+    height: 15vh;
+    gap: 120px;
   }
 
 }
@@ -168,7 +234,6 @@ body {
 
 .spectator-event-list {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
     width: 100vw;
@@ -211,13 +276,10 @@ body {
   padding: 10px 20px;
 }
 
-.event-details {
+.spectator-event-details {
+  align-items: center;
   display: flex;
   flex-direction: row;
-  gap: 120px;
-  width: 55vw;
-  height: 20vh;
-  align-items: center;
   justify-content: center;
   border: 1px solid #ccc;
   border-radius: 0px 0px 10px 10px;
@@ -226,20 +288,21 @@ body {
   font-size: 15px;
 }
 
+.spectator-event-item {
+  height: fit-content;
+  box-shadow: 0 2px 12px rgba(30, 42, 73, 0.08);
+  border: none;
+  color: #000;
+  font-size: 20px;
+  margin: 5px;
+}
+
 p {
   color: black;
   font-size: 13px;
 }
 
-.event-specifics {
-  display: flex;
-  flex-direction: row;
-  gap: 10vh;
-  margin-top: 50px;
-
-}
-
-.event-specifics button {
+.spectator-event-specifics button {
   font-size: 16px;
   color: white;
   border: none;
