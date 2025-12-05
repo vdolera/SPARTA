@@ -1,6 +1,7 @@
 const express = require("express");
 const nodemailer = require("nodemailer")
 const Player = require("../models/Player");
+const Admin = require("../models/Admin")
 const Game = require("../models/Game");
 const mongoose = require("mongoose");
 
@@ -328,6 +329,43 @@ router.put("/players/:id/profile", async (req, res) => {
   const updatedPlayer = await Player.findByIdAndUpdate(req.params.id, req.body, { new: true });
   if (!updatedPlayer) return res.status(404).json({ message: "Player not found" });
   res.json(updatedPlayer);
+});
+
+// Update Name in header
+router.put('/players/users/:id', async (req, res) => {
+  try {
+    const { playerName } = req.body;
+    const id = req.params.id;
+
+    // Looking for player
+    let updatedUser = await Player.findByIdAndUpdate(
+      id, 
+      { playerName: playerName }, 
+      { new: true } 
+    );
+
+    // If not player, check admin
+    if (!updatedUser) {
+      console.log(`ID ${id} not found in Players. Checking Admins...`);
+      
+      updatedUser = await Admin.findByIdAndUpdate(
+        id,
+        { playerName: playerName }, 
+        { new: true }
+      );
+    }
+
+    // If not find
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User ID not found in Players or Admins." });
+    }
+    
+    res.json(updatedUser);
+
+  } catch (err) {
+    console.error("Update Error:", err);
+    res.status(500).json({ message: err.message });
+  }
 });
 
 // GET single player

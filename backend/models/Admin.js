@@ -6,6 +6,9 @@ const adminSchema = new mongoose.Schema({
   institution: { type: String, required: true },
   ok: { type: Boolean, default: false },
   role: { type: String, default: "admin" },
+
+  //For UserName (I didnt change the fieldName, need to change the logic in header if diff)
+  playerName: { type: String, trim: true },
 });
 
 module.exports = mongoose.model('Admin', adminSchema);

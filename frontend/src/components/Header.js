@@ -27,14 +27,14 @@ const Header = () => {
   const [showEditModal, setShowEditModal] = useState(false);
 
   // edit form state
-  const [nickname, setNickname] = useState(user?.playerName || '');
+  const [playerName, setplayerName] = useState(user?.playerName || '');
   const [photoFile, setPhotoFile] = useState(null);
   const [previewSrc, setPreviewSrc] = useState(user?.profilePic || null);
 
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    setNickname(user?.playerName || '');
+    setplayerName(user?.playerName || '');
     setPreviewSrc(user?.profilePic || null);
   }, [user]);
 
@@ -57,7 +57,7 @@ const Header = () => {
   const openEdit = () => {
     setDropdownOpen(false);
     setShowEditModal(true);
-    setNickname(user?.playerName || '');
+    setplayerName(user?.playerName || '');
     setPreviewSrc(user?.profilePic || null);
     setPhotoFile(null);
   };
@@ -69,18 +69,46 @@ const Header = () => {
     setPreviewSrc(URL.createObjectURL(f));
   };
 
+  // Update Name
   const handleSave = async (e) => {
     e.preventDefault();
-    // TODO: Upload photoFile to server and get URL, then save nickname + profilePic via API.
-    // For now update localStorage so UI reflects changes immediately.
-    const updated = { ...user, playerName: nickname, profilePic: previewSrc };
-    localStorage.setItem('auth', JSON.stringify(updated));
-    setUser(updated);
-    setShowEditModal(false);
+    try {
+      const updateData = {
+        playerName: playerName,
+        // profilePic: not yet
+      };
+
+      const response = await fetch(`http://localhost:5000/api/players/users/${user._id || user.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      if (response.ok) {
+        const updatedUserFromDB = await response.json();
+
+        // update the local storage data(auth)
+        const newAuthData = { ...user, ...updatedUserFromDB };
+        
+        localStorage.setItem('auth', JSON.stringify(newAuthData));
+        setUser(newAuthData);
+        setShowEditModal(false);
+        
+        // alert("Profile updated successfully!");
+      } else {
+        console.error("Failed to update profile");
+        // alert("Failed to save changes to the database.");
+      }
+
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
 
   const avatarSrc = user?.profilePic || '/SPARTA_Logo.png';
-  const displayName = user?.playerName || user?.nickname || user?.email?.split('@')[0] || 'User';
+  const displayName = user?.playerName || user?.email?.split('@')[0] || 'User';
 
   return (
     <div className="header">
@@ -91,7 +119,7 @@ const Header = () => {
       <div className="user-box" ref={dropdownRef}>
         
         <div className="user-meta">
-          <div className="user-nick"> Hi, {displayName} !</div>
+          <div className="user-nick"> Hi, {displayName}!</div>
           <div className="user-role">{user.role?.toUpperCase()}</div>
         </div>
 
@@ -131,7 +159,7 @@ const Header = () => {
               </div>
 
               <label className="input-label">
-                <input type="text" placeholder='Enter nickname' value={nickname} onChange={(e) => setNickname(e.target.value)} />
+                <input type="text" placeholder='Enter nickname' value={playerName} onChange={(e) => setplayerName(e.target.value)} />
               </label>
 
               <div className="readonly-info">
