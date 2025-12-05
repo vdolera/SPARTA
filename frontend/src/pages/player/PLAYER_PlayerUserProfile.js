@@ -12,6 +12,7 @@ const PlayerUserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("player");
   const [showToast, setShowToast] = useState(false);
+  const [medicalFormat, setMedicalFormat] = useState("paragraph"); // "paragraph" or "bullet"
 
   // Fetch user dertails
   useEffect(() => {
@@ -136,28 +137,68 @@ const PlayerUserProfile = () => {
                 <span className="profile-label">{field.label}</span>
                 {isEditing && field.name !== "sex" ? (
                   field.type === "select" ? (
-                  <select name={field.name} value={player[field.name] || ""} onChange={handleChange} className="profile-input">
-                    <option value="">Select Sex</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
+                    <select name={field.name} value={player[field.name] || ""} onChange={handleChange} className="profile-input">
+                      <option value="">Select Sex</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  ) : (
+                    <input
+                      type={field.type || "text"}
+                      name={field.name}
+                      value={player[field.name] || ""}
+                      onChange={handleChange}
+                      className="profile-input"
+                    />
+                  )
                 ) : (
-                  <input
-                    type={field.type || "text"}
-                    name={field.name}
-                    value={player[field.name] || ""}
-                    onChange={handleChange}
-                    className="profile-input"
-                  />
-                )
-              ) : (
-                <div className="profile-value-rect">{field.value}</div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                  <div className="profile-value-rect">{field.value}</div>
                 )}
+              </div>
+            ))}
+
+           {/* Medical History Field */}
+           <div className="profile-field medical-history-field">
+             <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8}}>
+               <span className="profile-label">Medical History</span>
+               {!isEditing && player.medicalHistory && (
+                 <button
+                   className="format-toggle-btn"
+                   onClick={() => setMedicalFormat(medicalFormat === "paragraph" ? "bullet" : "paragraph")}
+                   title="Toggle format"
+                 >
+                   {medicalFormat === "paragraph" ? "☐ Bullet" : "¶ Paragraph"}
+                 </button>
+               )}
+             </div>
+             {isEditing ? (
+               <textarea
+                 name="medicalHistory"
+                 value={player.medicalHistory || ""}
+                 onChange={handleChange}
+                 className="profile-textarea"
+                 placeholder="Enter medical history (one item per line for bullet format)"
+                 rows={5}
+               />
+             ) : player.medicalHistory ? (
+               medicalFormat === "paragraph" ? (
+                 <div className="profile-value-rect medical-paragraph">{player.medicalHistory}</div>
+               ) : (
+                 <div className="profile-value-rect medical-bullets">
+                   <ul>
+                     {player.medicalHistory.split("\n").filter(line => line.trim()).map((item, i) => (
+                       <li key={i}>{item.trim()}</li>
+                     ))}
+                   </ul>
+                 </div>
+               )
+             ) : (
+               <div className="profile-value-rect">N/A</div>
+             )}
+           </div>
+          </div>
+        )}
 
         {activeTab === "documents" && (
          <div className="documents-section">

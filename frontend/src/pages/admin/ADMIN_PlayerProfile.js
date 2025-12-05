@@ -10,6 +10,7 @@ const PlayerProfile = () => {
   const { playerId } = useParams();
   const [player, setPlayer] = useState({});
   const [activeTab, setActiveTab] = useState("player");
+  const [medicalFormat, setMedicalFormat] = useState("paragraph"); // "paragraph" or "bullet"
 
   // Fetch Player details
   useEffect(() => {
@@ -84,6 +85,37 @@ const PlayerProfile = () => {
                       <div className="profile-value-rect">{field.value}</div>
                     </div>
                   ))}
+
+                 {/* Medical History Field (Read-only with format toggle) */}
+                 <div className="profile-field medical-history-field">
+                   <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8}}>
+                     <span className="profile-label">Medical History</span>
+                     {player.medicalHistory && (
+                       <button
+                         className="format-toggle-btn"
+                         onClick={() => setMedicalFormat(medicalFormat === "paragraph" ? "bullet" : "paragraph")}
+                         title="Toggle format"
+                       >
+                         {medicalFormat === "paragraph" ? "☐ Bullet" : "¶ Paragraph"}
+                       </button>
+                     )}
+                   </div>
+                   {player.medicalHistory ? (
+                     medicalFormat === "paragraph" ? (
+                       <div className="profile-value-rect medical-paragraph">{player.medicalHistory}</div>
+                     ) : (
+                       <div className="profile-value-rect medical-bullets">
+                         <ul>
+                           {player.medicalHistory.split("\n").filter(line => line.trim()).map((item, i) => (
+                             <li key={i}>{item.trim()}</li>
+                           ))}
+                         </ul>
+                       </div>
+                     )
+                   ) : (
+                     <div className="profile-value-rect">N/A</div>
+                   )}
+                 </div>
                 </div>
               )}
               {activeTab === "history" && (
