@@ -117,7 +117,7 @@ const GameBracket = () => {
             .filter((m) => m.round === r)
             .map((m) => ({
               id: m._id,
-              date: game.startDate,
+              date: m.date ? new Date(m.date) : null,
               teams: m.teams.map((t) => ({
                 name: t?.name || "TBD",
                 score: t?.score ?? null,
@@ -218,7 +218,7 @@ const GameBracket = () => {
           .filter((m) => m.round === r)
           .map((m) => ({
             id: m._id,
-            date: game.startDate,
+            date: m.date ? new Date(m.date) : null,
             teams: m.teams.map((t) => ({
               name: t?.name || "TBD",
               score: t?.score ?? null,
@@ -295,7 +295,7 @@ const GameBracket = () => {
          { 
            title: "Semi-Finals", 
            seeds: sfMatches.map(m => ({
-               id: m._id, date: game.startDate,
+               id: m._id, date: m.date ? new Date(m.date) : null,
                teams: m.teams.map(t => ({ name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner })),
                finalizeWinner: m.finalizeWinner
            }))
@@ -479,12 +479,21 @@ const GameBracket = () => {
   };
 
   // Rendering Bracket
-  const renderSeed = (props) => (
+  const renderSeed = (props) => {
+    // Check if match is scheduled
+    const isScheduled = !!props.seed.date;
+    return (
     <Seed
       {...props}
       style={{ fontSize: "14px", cursor: props.seed.id === "champion" ? "default" : "pointer" }}
       onClick={() => {
         if (props.seed.id !== "champion") {
+          // If not scheduled yet
+          if (!isScheduled) {
+            alert("Please schedule this match before adding scores.");
+            return; 
+          }
+
           setSelectedMatch({ ...props.seed, type: "scores" });
           setTempScores(props.seed.teams.map((t) => t.score ?? 0));
         }
@@ -519,6 +528,11 @@ const GameBracket = () => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
+
+                if (!isScheduled) {
+                  alert("Please schedule the match first.");
+                  return;
+                }
                 setSelectedMatch({ ...props.seed, type: "scores" });
                 setTempScores(props.seed.teams.map((t) => t.score ?? 0));
               }}
@@ -529,7 +543,8 @@ const GameBracket = () => {
         )}
       </SeedItem>
     </Seed>
-  );
+    );
+  };
 
   // Scheduling
   const saveSchedule = async () => {
