@@ -303,7 +303,7 @@ const GameBracket = () => {
          { 
            title: "Championship", 
            seeds: finalMatch ? [{
-               id: finalMatch._id, date: game.endDate,
+               id: finalMatch._id, date: finalMatch.date ? new Date(finalMatch.date) : null,
                teams: finalMatch.teams.map(t => ({ name: t.name, score: t.score, winner: finalMatch.finalizeWinner && t.name === finalMatch.winner })),
                finalizeWinner: finalMatch.finalizeWinner
            }] : []
@@ -330,7 +330,7 @@ const GameBracket = () => {
         rounds.push({ 
           title: "3rd Place", 
           seeds: [{
-             id: third._id, date: game.endDate,
+             id: third._id, date: third.date ? new Date(third.date) : null,
              teams: third.teams.map(t => ({ name: t.name, score: t.score, winner: third.finalizeWinner && t.name === third.winner })),
              finalizeWinner: third.finalizeWinner
           }]

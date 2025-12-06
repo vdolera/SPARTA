@@ -2,15 +2,12 @@ import { RxDashboard } from "react-icons/rx";
 import { AiOutlineFire } from "react-icons/ai";
 import { FaUserCheck } from "react-icons/fa";
 import { GiGreekTemple } from "react-icons/gi";
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import '../styles/SideMenu.css';
 
 const SideMenu = () => {
 
-  const navigate = useNavigate();
   const location = useLocation();
-
-  const user = JSON.parse(localStorage.getItem("auth"));
 
    return (
     <div className="sidemenu">
