@@ -32,7 +32,8 @@ const playerSchema = new mongoose.Schema({
   age: { type: Number },
   weight: { type: Number },
   height: { type: Number },
-  medicalHistory: { type: String }
+  medicalHistory: { type: String },
+  profilePic: { type: String, default: null }
   }, { timestamps: true });
 
 module.exports = mongoose.model('Player', playerSchema);

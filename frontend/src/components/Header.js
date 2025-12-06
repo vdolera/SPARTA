@@ -69,37 +69,45 @@ const Header = () => {
     setPreviewSrc(URL.createObjectURL(f));
   };
 
-  // Update Name
+  // Update Name and pic
   const handleSave = async (e) => {
     e.preventDefault();
     try {
-      const updateData = {
-        playerName: playerName,
-        // profilePic: not yet
-      };
+      // Formdata for files
+      const formData = new FormData();
+      formData.append('playerName', playerName);
+      
+      // Only append the file if the user actually selected a new one
+      if (photoFile) {
+        formData.append('profilePic', photoFile); 
+      }
 
+      // Send to Backend
       const response = await fetch(`http://localhost:5000/api/players/users/${user._id || user.id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json', 
-        },
-        body: JSON.stringify(updateData),
+        body: formData, 
       });
 
       if (response.ok) {
         const updatedUserFromDB = await response.json();
 
-        // update the local storage data(auth)
-        const newAuthData = { ...user, ...updatedUserFromDB };
+        // Update Local Storage
+        const newAuthData = { 
+          ...user, 
+          ...updatedUserFromDB,
+          playerName: updatedUserFromDB.playerName,
+          profilePic: updatedUserFromDB.profilePic 
+        };
         
         localStorage.setItem('auth', JSON.stringify(newAuthData));
         setUser(newAuthData);
         setShowEditModal(false);
         
-        // alert("Profile updated successfully!");
+        alert("Profile updated successfully!");
       } else {
-        console.error("Failed to update profile");
-        // alert("Failed to save changes to the database.");
+        const errData = await response.json();
+        console.error("Failed to update profile:", errData);
+        alert(`Failed: ${errData.message}`);
       }
 
     } catch (error) {

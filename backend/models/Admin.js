@@ -9,6 +9,7 @@ const adminSchema = new mongoose.Schema({
 
   //For UserName (I didnt change the fieldName, need to change the logic in header if diff)
   playerName: { type: String, trim: true },
+  profilePic: { type: String, default: null },
 });
 
 module.exports = mongoose.model('Admin', adminSchema);

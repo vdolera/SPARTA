@@ -331,35 +331,65 @@ router.put("/players/:id/profile", async (req, res) => {
   res.json(updatedPlayer);
 });
 
-// Update Name in header
-router.put('/players/users/:id', async (req, res) => {
+// Update Name and pic
+router.put('/players/users/:id', upload.single('profilePic'), async (req, res) => {
   try {
     const { playerName } = req.body;
     const id = req.params.id;
+    let profilePictureUrl = null;
 
-    // Looking for player
+    // SUPABASE UPLOAD 
+    if (req.file) {
+      const fileExt = req.file.originalname.split('.').pop();
+      const uniqueFileName = `${id}_${Date.now()}.${fileExt}`;
+
+      // Upload
+      const { error } = await supabase.storage
+        .from("profilePics")
+        .upload(uniqueFileName, req.file.buffer, {
+          contentType: req.file.mimetype,
+          upsert: true,
+        });
+
+      if (error) {
+        console.error("Supabase upload error:", error);
+        return res.status(500).json({ message: "Failed to upload image" });
+      }
+
+      // Get Public URL
+      const { data: publicData } = supabase.storage
+        .from("profilePics")
+        .getPublicUrl(uniqueFileName);
+      
+      profilePictureUrl = publicData.publicUrl;
+    }
+
+    const updateData = { playerName };
+    
+    if (profilePictureUrl) {
+      updateData.profilePic = profilePictureUrl;
+    }
+
+    // Check Player First
     let updatedUser = await Player.findByIdAndUpdate(
       id, 
-      { playerName: playerName }, 
+      updateData, 
       { new: true } 
     );
 
-    // If not player, check admin
+    // If not Player, Then Admin
     if (!updatedUser) {
-      console.log(`ID ${id} not found in Players. Checking Admins...`);
-      
       updatedUser = await Admin.findByIdAndUpdate(
         id,
-        { playerName: playerName }, 
+        updateData, 
         { new: true }
       );
     }
 
-    // If not find
     if (!updatedUser) {
-      return res.status(404).json({ message: "User ID not found in Players or Admins." });
+      return res.status(404).json({ message: "User not found in Players or Admins." });
     }
-    
+
     res.json(updatedUser);
 
   } catch (err) {
