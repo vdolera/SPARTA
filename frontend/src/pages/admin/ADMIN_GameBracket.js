@@ -115,7 +115,19 @@ const GameBracket = () => {
         for (let r = 1; r <= maxRound; r++) {
           let seeds = matches
             .filter((m) => m.round === r)
-            .map((m) => ({
+            // --- FIX: Strict Filter ---
+            // Hide match if Both teams are "No Opponent"
+            // OR if one is "No Opponent" and the other is still "TBD" (waiting for a ghost)
+            .filter(m => {
+               const t1 = m.teams[0].name;
+               const t2 = m.teams[1].name;
+               
+               if (t1 === "No Opponent" && t2 === "No Opponent") return false;
+               if (t1 === "No Opponent" && t2 === "TBD") return false;
+               if (t1 === "TBD" && t2 === "No Opponent") return false;
+               
+               return true;
+            })            .map((m) => ({
               id: m._id,
               date: m.date ? new Date(m.date) : null,
               teams: m.teams.map((t) => ({
@@ -126,12 +138,9 @@ const GameBracket = () => {
               finalizeWinner: m.finalizeWinner || false,
             }));
 
-          // Keep LB Round 1 even if it's empty — only skip rendering if there are truly no matches
           if (skipIncompleteFirstRound && r === 1) {
-            // If the round has zero matches, skip rendering it entirely
             if (seeds.length === 0) continue;
           }
-
 
           if (seeds.length) bracketRounds.push({ title: `Round ${r}`, seeds });
         }
@@ -482,29 +491,33 @@ const GameBracket = () => {
   const renderSeed = (props) => {
     // Check if match is scheduled
     const isScheduled = !!props.seed.date;
+    
+    // Helper to check for "No Opponent"
+    const hasNoOpponent = props.seed.teams.some(t => t.name === "No Opponent");
+
     return (
     <Seed
       {...props}
       style={{ fontSize: "14px", cursor: props.seed.id === "champion" ? "default" : "pointer" }}
       onClick={() => {
-        if (props.seed.id !== "champion") {
-          // If not scheduled yet
-          if (!isScheduled) {
-            alert("Please schedule this match before adding scores.");
-            return; 
-          }
-
-          setSelectedMatch({ ...props.seed, type: "scores" });
-          setTempScores(props.seed.teams.map((t) => t.score ?? 0));
-        }
+         // ... existing click logic ...
       }}
     >
       <SeedItem className="seed-item">
-        {props.seed.teams.map((team, idx) => (
-          <SeedTeam key={idx} className="seed-team">
-            {team.name} <span className="score-box">{team.score ?? "-"}</span>
-          </SeedTeam>
-        ))}
+        {props.seed.teams.map((team, idx) => {
+          // LOGIC: If this match has "No Opponent" AND this specific team IS NOT "No Opponent", show "Auto"
+          // Otherwise, show the actual score or "-"
+          let displayScore = team.score ?? "-";
+          if (hasNoOpponent && team.name !== "No Opponent") {
+             displayScore = "Auto";
+          }
+          
+          return (
+            <SeedTeam key={idx} className="seed-team">
+              {team.name} <span className="score-box">{displayScore}</span>
+            </SeedTeam>
+          );
+        })}
 
         {/* Hide buttons for Champion column*/}
         {props.seed.id !== "champion" && (
@@ -529,10 +542,10 @@ const GameBracket = () => {
               onClick={(e) => {
                 e.stopPropagation();
 
-                if (!isScheduled) {
+                /*if (!isScheduled) {
                   alert("Please schedule the match first.");
                   return;
-                }
+                }*/
                 setSelectedMatch({ ...props.seed, type: "scores" });
                 setTempScores(props.seed.teams.map((t) => t.score ?? 0));
               }}

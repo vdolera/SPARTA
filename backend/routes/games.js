@@ -245,88 +245,168 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
     }
 
     if (bracketType === "Double Elimination") {
-      const numTeams = shuffledTeams.length;
-      // Calculate power of 2 size (e.g., 5 teams -> size 8)
+      // 1. Clone and Pad Teams
+      const bracketTeams = [...shuffledTeams];
+      const numTeams = bracketTeams.length;
       const size = Math.pow(2, Math.ceil(Math.log2(numTeams)));
       
-      const wbMatches = [];
-      const lbMatches = [];
-
-      // --- Winner Bracket Generation ---
-      // We generate a full bracket based on the 'size' (power of 2)
-      const totalWBRounds = Math.log2(size); // e.g., 8 teams -> 3 rounds (Q, S, F)
-
-      // WB Round 1
-      for (let i = 0; i < size / 2; i++) {
-        wbMatches.push({
-          bracket: "WB",
-          round: 1,
-          matchIndex: i,
-          teams: [
-            { name: shuffledTeams[i * 2] || "TBD", score: null },
-            { name: shuffledTeams[i * 2 + 1] || "TBD", score: null },
-          ],
-          winner: null,
-          finalizeWinner: false,
-          nextMatch: null, // Will be linked dynamically or by index math
-        });
+      while (bracketTeams.length < size) {
+        bracketTeams.push("No Opponent");
       }
 
-      // WB Later Rounds
-      for (let r = 2; r <= totalWBRounds; r++) {
+      const wbMatches = [];
+      const lbMatches = [];
+      const totalWBRounds = Math.log2(size);
+
+      // --- A. Generate Empty WB Matches ---
+      for (let r = 1; r <= totalWBRounds; r++) {
         const numMatches = size / Math.pow(2, r);
         for (let i = 0; i < numMatches; i++) {
+          // Fill Round 1 immediately, others are TBD
+          let teams = [{ name: "TBD", score: null }, { name: "TBD", score: null }];
+          if (r === 1) {
+            teams = [
+              { name: bracketTeams[i * 2], score: null },
+              { name: bracketTeams[i * 2 + 1], score: null }
+            ];
+          }
+          
           wbMatches.push({
-            bracket: "WB",
-            round: r,
-            matchIndex: i,
-            teams: [{ name: "TBD", score: null }, { name: "TBD", score: null }],
-            winner: null,
-            finalizeWinner: false,
+            bracket: "WB", round: r, matchIndex: i,
+            teams: teams,
+            winner: null, finalizeWinner: false
           });
         }
       }
 
-      // --- Loser Bracket Generation ---
-      // Standard Formula: Total LB Rounds = (Total WB Rounds - 1) * 2
-      // Sequence of matches per round for N=8 (WB Rounds=3): 2, 2, 1, 1
-      // Sequence for N=16 (WB Rounds=4): 4, 4, 2, 2, 1, 1
-      
+      // --- B. Generate Empty LB Matches ---
       const totalLBRounds = (totalWBRounds - 1) * 2;
-      let matchesInRound = size / 4; // Start with half the matches of WB Round 1
-
+      let matchesInRound = size / 4; 
       for (let r = 1; r <= totalLBRounds; r++) {
         for (let i = 0; i < matchesInRound; i++) {
           lbMatches.push({
-            bracket: "LB",
-            round: r,
-            matchIndex: i,
+            bracket: "LB", round: r, matchIndex: i,
             teams: [{ name: "TBD", score: null }, { name: "TBD", score: null }],
-            winner: null,
-            finalizeWinner: false,
+            winner: null, finalizeWinner: false
           });
         }
-        // In LB, the number of matches halves every *other* round
-        // Rounds 1,2 have N matches. Rounds 3,4 have N/2 matches.
-        if (r % 2 === 0) {
-          matchesInRound /= 2;
-        }
+        if (r % 2 === 0) matchesInRound /= 2;
       }
 
-      // --- Grand Final ---
-      // One GF match to start. If LB winner wins, a bracket reset match might be needed (logic handled in PUT)
+      // --- C. Generate Grand Final ---
       const gfMatch = {
-        bracket: "GF",
-        round: totalWBRounds + 1, // Visually comes after WB Final
-        matchIndex: 0,
+        bracket: "GF", round: totalWBRounds + 1, matchIndex: 0,
         teams: [{ name: "Winner WB", score: null }, { name: "Winner LB", score: null }],
-        winner: null,
-        finalizeWinner: false,
+        winner: null, finalizeWinner: false,
       };
 
-      matches.push(...wbMatches, ...lbMatches, gfMatch);
-    }
+      //Combine all matches temporarily for easier processing
+      const allMatches = [...wbMatches, ...lbMatches];
 
+      // --- D. ITERATIVE RESOLUTION (The Fix) ---
+      // We process WB rounds, then LB rounds, sequentially to handle "Chain Reactions"
+      
+      const resolveMatch = (m) => {
+         // Skip if already decided or not ready (TBD)
+         if (m.finalizeWinner) return;
+         if (m.teams[0].name === "TBD" || m.teams[1].name === "TBD") return;
+
+         let winner = null;
+         let loser = null;
+
+         // Check for No Opponent
+         if (m.teams[1].name === "No Opponent") {
+            winner = m.teams[0].name;
+            loser = "No Opponent";
+         } else if (m.teams[0].name === "No Opponent") {
+            winner = m.teams[1].name;
+            loser = "No Opponent";
+         } else if (m.teams[0].name === "No Opponent" && m.teams[1].name === "No Opponent") {
+            winner = "No Opponent";
+            loser = "No Opponent";
+         }
+
+         if (winner) {
+            m.winner = winner;
+            m.finalizeWinner = true;
+            
+            // Note: We do NOT set score to "Auto" string here to avoid DB errors. 
+            // We leave score as null, frontend handles the "Auto" label.
+
+            // 1. Advance Winner
+            if (m.bracket === "WB") {
+               const nextRound = m.round + 1;
+               const nextIndex = Math.floor(m.matchIndex / 2);
+               const nextSlot = m.matchIndex % 2;
+               
+               // Look in WB
+               const nextWB = allMatches.find(x => x.bracket === "WB" && x.round === nextRound && x.matchIndex === nextIndex);
+               if (nextWB) {
+                  nextWB.teams[nextSlot].name = winner;
+                  // RECURSIVE: Try to resolve the next match immediately if it's now fully populated
+                  resolveMatch(nextWB);
+               } else if (nextRound > totalWBRounds) {
+                  // Send to GF
+                  gfMatch.teams[0].name = winner;
+               }
+
+               // 2. Drop Loser to LB
+               // Logic: WB R1 -> LB R1. WB R2 -> LB R2 (Simplified mapping)
+               let lbRound = (m.round === 1) ? 1 : (m.round - 1) * 2; 
+               // Specific correction for Round 1 mapping:
+               // WB Match 0,1 -> LB Match 0. WB Match 2,3 -> LB Match 1.
+               let lbIndex = Math.floor(m.matchIndex / 2); 
+               
+               // For later rounds, standard DE mapping is complex, using simplified "fill first available":
+               // But for R1/R2 this math holds.
+               
+               // Find target LB Match
+               let targetLB = allMatches.find(x => x.bracket === "LB" && x.round === lbRound && x.matchIndex === lbIndex);
+               
+               // Fallback: If specific index mapping fails (due to different bracket structures), find first TBD in that round
+               if (!targetLB && lbRound > 0) {
+                 targetLB = allMatches.find(x => x.bracket === "LB" && x.round === lbRound && x.teams.some(t=>t.name==="TBD"));
+               }
+
+               if (targetLB) {
+                  const lbSlot = targetLB.teams.findIndex(t => t.name === "TBD" || t.name === "No Opponent"); // Overwrite No Opponent if overlapping
+                  if (lbSlot !== -1) {
+                     targetLB.teams[lbSlot].name = loser;
+                     // RECURSIVE: Resolve LB match immediately (e.g., Real Team vs No Opponent)
+                     resolveMatch(targetLB);
+                  }
+               }
+
+            } else if (m.bracket === "LB") {
+               // Advance LB Winner
+               const nextRound = m.round + 1;
+               // LB Logic: Round 1->2 (halves matches), Round 2->3 (same matches)
+               // Determine if we shrink matches or keep same count
+               const currentCount = allMatches.filter(x => x.bracket === "LB" && x.round === m.round).length;
+               const nextCount = allMatches.filter(x => x.bracket === "LB" && x.round === nextRound).length;
+               
+               let nextIndex = (currentCount === nextCount) ? m.matchIndex : Math.floor(m.matchIndex / 2);
+
+               const nextLB = allMatches.find(x => x.bracket === "LB" && x.round === nextRound && x.matchIndex === nextIndex);
+               if (nextLB) {
+                  const slot = nextLB.teams.findIndex(t => t.name === "TBD");
+                  if (slot !== -1) {
+                    nextLB.teams[slot].name = winner;
+                    resolveMatch(nextLB);
+                  }
+               } else if (nextRound > totalLBRounds) {
+                  // Send to GF
+                  gfMatch.teams[1].name = winner;
+               }
+            }
+         }
+      };
+
+      // Trigger Resolution for all Round 1 matches to start the chain
+      allMatches.filter(m => m.bracket === "WB" && m.round === 1).forEach(m => resolveMatch(m));
+
+      matches.push(...allMatches, gfMatch);
+    }
 
     if (bracketType === "Round Robin") {
       const rrMatches = [];
@@ -437,48 +517,6 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
   }
 });
 
-//Delete games
-router.delete("/games/:id", async (req, res) => {
-  try {
-    const deletedGame = await Game.findByIdAndDelete(req.params.id);
-    if (!deletedGame) return res.status(404).json({ message: "Game not found" });
-    res.json({ message: "Game deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ message: "Error deleting game", error: err.message });
-  }
-});
-
-
-// GET games
-router.get('/games', async (req, res) => {
-  try {
-    const { institution, eventName } = req.query;
-
-    if (!institution) {
-      return res.status(400).json({ message: 'Institution is required' });
-    }
-
-    const query = { institution };
-    if (eventName) query.eventName = eventName;
-    const games = await Game.find(query);
-    res.json(games);
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// GET single game
-router.get('/games/:id', async (req, res) => {
-  try {
-    const game = await Game.findById(req.params.id);
-    if (!game) return res.status(404).json({ message: "Game not found" });
-    res.json(game);
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-
 // UPDATE match score
 router.put("/games/:id/matches/:matchId", async (req, res) => {
   try {
@@ -537,8 +575,8 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
           }
         }
 
-        // ===============================================
-        //  2. DOUBLE ELIMINATION ADVANCEMENT
+      // ===============================================
+        //  2. DOUBLE ELIMINATION ADVANCEMENT (CORRECTED FOR PUT)
         // ===============================================
         if (game.bracketType === "Double Elimination") {
           
@@ -547,19 +585,20 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
             const wbMatches = game.matches.filter(m => m.bracket === "WB");
             const maxWBRound = Math.max(...wbMatches.map(m => m.round));
 
-            // WB Final -> Winner to Grand Final
+            // 1. Advance Winner in WB
             if (match.round === maxWBRound) {
+               // WB Final -> Winner goes to Grand Final (Slot 0)
                const gfMatch = game.matches.find(m => m.bracket === "GF");
                if (gfMatch) {
                  gfMatch.teams[0].name = winnerName; 
                  gfMatch.teams[0].score = null;
                }
-            } 
-            // Normal Advancement
-            else {
+            } else {
+               // Normal Round -> Winner goes to Next WB Round
                const nextWBRound = match.round + 1;
                const nextWBIndex = Math.floor(match.matchIndex / 2);
                const nextWB = game.matches.find(m => m.bracket === "WB" && m.round === nextWBRound && m.matchIndex === nextWBIndex);
+               
                if (nextWB) {
                  const slot = match.matchIndex % 2;
                  nextWB.teams[slot].name = winnerName;
@@ -567,19 +606,56 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
                }
             }
 
-            // Drop Loser to LB
-            let lbDropRound = (match.round === 1) ? 1 : (match.round - 1) * 2;
+            // 2. Drop Loser to Loser Bracket (LB)
+            // If the opponent was "No Opponent", the "loser" is "No Opponent"
+            const actualLoserName = loserName || "No Opponent";
+
+            // Calculate where they drop in LB
+            // Standard Double Elim drop logic:
+            // WB Round 1 -> LB Round 1
+            // WB Round 2 -> LB Round 2 (or 3 depending on variant, assuming standard here)
+            // *Simplified mapping for this bracket engine:*
+            // Drop Round = (match.round === 1) ? 1 : (match.round - 1) * 2;
+            
+            let lbDropRound;
+            if (match.round === 1) {
+              lbDropRound = 1;
+            } else {
+              // WB R2 losers drop to LB R2 (cross-over usually happens here in standard, simplifying to direct drop)
+              // Note: Standard DE brackets switch drop patterns. 
+              // For valid generation, ensure your POST logic aligns with this. 
+              // Assuming standard pattern: WB Loser R(n) drops to LB R(n*2 - 1) or R(n*2 - 2)
+              // Let's stick to the previous functional logic you had:
+              lbDropRound = (match.round - 1) * 2; 
+              if (match.round === 1) lbDropRound = 1; 
+            }
+
+            // Find valid target matches in LB
             let lbTargetMatches = game.matches
                .filter(m => m.bracket === "LB" && m.round === lbDropRound)
                .sort((a,b) => a.matchIndex - b.matchIndex);
             
-            let target = lbTargetMatches.find(m => m.teams.some(t => t.name === "TBD" || t.name === "TBD"));
+            // Find a spot that is "TBD" or "No Opponent"
+            // We search for a slot that hasn't been taken by a real loser yet
+            let target = lbTargetMatches.find(m => 
+                m.teams.some(t => t.name === "TBD" || t.name === "No Opponent")
+            );
+            
+            // Refined Logic for specific index dropping (better for brackets)
+            // If dropping from WB Index 0 -> usually drops to specific LB Index
+            if (match.round === 1) {
+                // Round 1 drop is direct: WB Index 0,1 -> LB Index 0
+                const targetIndex = Math.floor(match.matchIndex / 2);
+                target = game.matches.find(m => m.bracket === "LB" && m.round === 1 && m.matchIndex === targetIndex);
+            }
+
             if (target) {
-               const slot = target.teams.findIndex(t => t.name === "TBD" || t.name === "TBD");
-               if (slot !== -1) {
-                  target.teams[slot].name = loserName;
-                  target.teams[slot].score = null;
-               }
+               // Find empty slot (TBD) or No Opponent slot to overwrite
+               const slot = target.teams.findIndex(t => t.name === "TBD" || t.name === "No Opponent");
+               const safeSlot = slot !== -1 ? slot : 0; // Fallback
+               
+               target.teams[safeSlot].name = actualLoserName;
+               target.teams[safeSlot].score = null;
             }
           }
 
@@ -588,7 +664,7 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
              const lbMatches = game.matches.filter(m => m.bracket === "LB");
              const maxLBRound = Math.max(...lbMatches.map(m => m.round));
 
-             // LB Final -> Winner to Grand Final
+             // LB Final -> Winner to Grand Final (Slot 1)
              if (match.round === maxLBRound) {
                 const gfMatch = game.matches.find(m => m.bracket === "GF");
                 if (gfMatch) {
@@ -599,9 +675,11 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
              // Normal Advancement
              else {
                 const nextLBRound = match.round + 1;
+                // Calculate next match index
                 const currentRoundCount = game.matches.filter(m => m.bracket === "LB" && m.round === match.round).length;
                 const nextRoundCount = game.matches.filter(m => m.bracket === "LB" && m.round === nextLBRound).length;
                 
+                // If round counts are equal, index stays same. If next round is smaller, index halves.
                 let nextLBIndex = (currentRoundCount === nextRoundCount) ? match.matchIndex : Math.floor(match.matchIndex / 2);
                 
                 const nextLB = game.matches.find(m => m.bracket === "LB" && m.round === nextLBRound && m.matchIndex === nextLBIndex);
@@ -614,90 +692,26 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
              }
           }
 
-          // Medals
+          // Medals and GF Logic
           if (match.bracket === "GF") {
              await awardMedal(winnerName, game.eventName, game, 'gold');
              await awardMedal(loserName, game.eventName, game, 'silver');
              
+             // Find Bronze (Winner of LB Finals)
              const lbMatches = game.matches.filter(m => m.bracket === "LB");
              const maxLBRound = Math.max(...lbMatches.map(m => m.round));
              const lbFinal = lbMatches.find(m => m.round === maxLBRound);
+             
+             // The loser of LB final is not Bronze, the loser of LB Final is 4th? 
+             // Actually: Gold/Silver are in GF. Bronze is the one who lost to the GF loser.
+             // That means Bronze is the loser of the LB Final.
              if (lbFinal && lbFinal.winner) {
                 const bronzeWinner = lbFinal.teams.find(t => t.name !== lbFinal.winner)?.name;
                 await awardMedal(bronzeWinner, game.eventName, game, 'bronze');
              }
           }
-          game.markModified('matches');
-        }
-
-        // ===============================================
-        //  3. ADNU (Round Robin Groups + Knockout)
-        // ===============================================
-        if (game.bracketType === "ADNU") {
-          // Group Stage Logic
-          if (match.bracket === "Group A" || match.bracket === "Group B") {
-             const groupMatches = game.matches.filter(m => m.bracket === match.bracket);
-             const allDone = groupMatches.every(m => m.finalizeWinner);
-
-             if (allDone) {
-                // Calculate Rankings
-                const stats = {}; 
-                groupMatches.forEach(m => {
-                   m.teams.forEach(t => {
-                      if (!stats[t.name]) stats[t.name] = { wins: 0, score: 0 };
-                      stats[t.name].score += (t.score || 0);
-                   });
-                });
-                groupMatches.forEach(m => {
-                   if (m.winner && stats[m.winner]) stats[m.winner].wins++;
-                });
-
-                const rankedTeams = Object.keys(stats).sort((a, b) => {
-                   if (stats[b].wins !== stats[a].wins) return stats[b].wins - stats[a].wins;
-                   return stats[b].score - stats[a].score;
-                });
-
-                const top1 = rankedTeams[0];
-                const top2 = rankedTeams[1];
-
-                const sf1 = game.matches.find(m => m.bracket === "SF" && m.matchIndex === 0);
-                const sf2 = game.matches.find(m => m.bracket === "SF" && m.matchIndex === 1);
-
-                if (match.bracket === "Group A") {
-                   if (sf1) { sf1.teams[0].name = top1; sf1.teams[0].score = null; }
-                   if (sf2) { sf2.teams[1].name = top2; sf2.teams[1].score = null; }
-                } else {
-                   if (sf2) { sf2.teams[0].name = top1; sf2.teams[0].score = null; }
-                   if (sf1) { sf1.teams[1].name = top2; sf1.teams[1].score = null; }
-                }
-             }
-          }
-
-          // Semi-Finals Logic
-          if (match.bracket === "SF") {
-            const finalMatch = game.matches.find(m => m.bracket === "Championship");
-            const thirdMatch = game.matches.find(m => m.bracket === "3rd Place");
-            const slot = match.matchIndex; 
-
-            if(finalMatch) {
-                finalMatch.teams[slot].name = winnerName;
-                finalMatch.teams[slot].score = null;
-            }
-            if(thirdMatch) {
-                thirdMatch.teams[slot].name = loserName;
-                thirdMatch.teams[slot].score = null;
-            }
-          }
-
-          // Medals
-          if (match.bracket === "Championship") {
-            await awardMedal(winnerName, game.eventName, game, 'gold');
-            await awardMedal(loserName, game.eventName, game, 'silver');
-          }
-          if (match.bracket === "3rd Place") {
-            await awardMedal(winnerName, game.eventName, game, 'bronze');
-          }
           
+          // CRITICAL: Save the array changes
           game.markModified('matches');
         }
 
@@ -750,6 +764,46 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
   }
 });
 
+//Delete games
+router.delete("/games/:id", async (req, res) => {
+  try {
+    const deletedGame = await Game.findByIdAndDelete(req.params.id);
+    if (!deletedGame) return res.status(404).json({ message: "Game not found" });
+    res.json({ message: "Game deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error deleting game", error: err.message });
+  }
+});
+
+
+// GET games
+router.get('/games', async (req, res) => {
+  try {
+    const { institution, eventName } = req.query;
+
+    if (!institution) {
+      return res.status(400).json({ message: 'Institution is required' });
+    }
+
+    const query = { institution };
+    if (eventName) query.eventName = eventName;
+    const games = await Game.find(query);
+    res.json(games);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET single game
+router.get('/games/:id', async (req, res) => {
+  try {
+    const game = await Game.findById(req.params.id);
+    if (!game) return res.status(404).json({ message: "Game not found" });
+    res.json(game);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 // UPDATE match schedule
 router.put("/games/:gameId/matches/:matchId/schedule", async (req, res) => {
