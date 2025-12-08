@@ -129,6 +129,8 @@
   .event-name {
     font-size: 20px;
     height: 8vh;
+    padding-top: 10px;
+    padding-left: 10px;
   }
 
   .event-name p {
