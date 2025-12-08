@@ -11,12 +11,13 @@ import '../../styles/ADMIN_SpecificEvents.css';
 const SpecificEvent = () => {
 
     useEffect(() => {document.title = "SPARTA | " + decodedName;},[]);
-
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem("auth"));
 
     const { eventName } = useParams();
     const decodedName = decodeURIComponent(eventName);
     const [event, setEventDetails] = useState(null);
+    const [teamCount, setTeamCount] = useState(0);
 
     // Fetch Event details
     useEffect(() => {
@@ -33,10 +34,37 @@ const SpecificEvent = () => {
     }, [decodedName]);
 
 
+    // Fetch Team numbers
+    useEffect(() => {
+      const fetchTeamCount = async () => {
+          // Need event ID to be safe, but if your API allows name, use that.
+          // Assuming your backend supports filtering by event ID or name.
+          if (!event?._id) return; 
+
+          try {
+              const res = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&eventId=${event._id}`);
+              const data = await res.json();
+              
+              if (Array.isArray(data)) {
+                  setTeamCount(data.length);
+              }
+          } catch (err) {
+              console.error("Error fetching teams count:", err);
+          }
+      };
+
+      if (event && user) {
+          fetchTeamCount();
+      }
+  }, [event, user]);
+
+  const isGameDisabled = teamCount < 2;
+
     // Game button nav
     const handleGameClick = () => {
         navigate(`/admin/event/${encodeURIComponent(decodedName)}/game`);
       };
+      
 
     // Team button nav
     const handleTeamClick = () => {
@@ -81,14 +109,25 @@ const SpecificEvent = () => {
 
                 <div className="event-specifics">
 
-                    <button className="btn-team" onClick={handleTeamClick}>
+                <button className="btn-team" onClick={handleTeamClick}>
                       <div className="btn-content">
                         <TiGroupOutline size={48} /> 
                         <span>Team</span>
                       </div>
                     </button>
 
-                    <button className="btn-game" onClick={handleGameClick}>
+                    <button 
+                        className={`btn-game ${isGameDisabled ? "disabled" : ""}`} 
+                        onClick={handleGameClick}
+                        disabled={isGameDisabled}
+                        title={isGameDisabled ? "Need at least 2 teams to manage games" : ""}
+                        style={isGameDisabled ? { 
+                            backgroundColor: "#ccc", 
+                            cursor: "not-allowed", 
+                            opacity: 0.7,
+                            filter: "grayscale(100%)" 
+                        } : {}}
+                    >
                       <div className="btn-content">
                         <LuSwords size={48} /> 
                         <span>Game</span>
