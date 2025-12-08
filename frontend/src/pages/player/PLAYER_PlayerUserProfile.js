@@ -55,46 +55,37 @@ const PlayerUserProfile = () => {
     }
   };
 
-  // Edit & Save (Now using FormData)
+  // Edit & Save (JSON Version - No Image Upload)
   const handleSave = async () => {
     try {
-      const formData = new FormData();
-      
-      // 1. Append all text fields from player object
-      Object.keys(player).forEach(key => {
-        // Exclude specific fields if needed, or arrays like uploadedRequirements
-        if (key !== 'uploadedRequirements' && key !== 'profilePic' && player[key] !== null) {
-            formData.append(key, player[key]);
-        }
-      });
-
-      // 2. Append the new photo if selected
-      if (photoFile) {
-        formData.append("profilePic", photoFile);
-      }
+      // 1. Create a simple object (NOT FormData)
+      const updateData = {
+        team: player.team,
+        jerseyNumber: player.jerseyNumber,
+        birthDate: player.birthDate,
+        age: player.age,
+        sex: player.sex,
+        course: player.course,
+        contactNumber: player.contactNumber,
+        permanentAddress: player.permanentAddress,
+        weight: player.weight,
+        height: player.height,
+        medicalHistory: player.medicalHistory
+        // Note: We do NOT send profilePic here
+      };
 
       const res = await fetch(`http://localhost:5000/api/players/${userId}/profile`, {
         method: "PUT",
-        // No Content-Type header needed for FormData; browser sets it automatically
-        body: formData, 
+        // 2. Set Header to JSON
+        headers: { "Content-Type": "application/json" },
+        // 3. Send stringified object
+        body: JSON.stringify(updateData), 
       });
 
       if (res.ok) {
         const updated = await res.json();
         setPlayer(updated);
-        setPhotoFile(null); // Reset file input
         setIsEditing(false);
-        
-        // Update local storage so Header updates immediately too
-        const authData = JSON.parse(localStorage.getItem("auth"));
-        if (authData && authData._id === userId) {
-             const newAuth = { ...authData, ...updated };
-             localStorage.setItem("auth", JSON.stringify(newAuth));
-             // Force a reload if you want Header to update instantly, 
-             // or rely on Header's own internal state update if it listens to storage
-             window.dispatchEvent(new Event("storage")); 
-        }
-
         setShowToast(true);
         setTimeout(() => setShowToast(false), 3000);
       } else {
