@@ -13,12 +13,10 @@ const PlayerUserProfile = () => {
   const [activeTab, setActiveTab] = useState("player");
   const [showToast, setShowToast] = useState(false);
   const [medicalFormat, setMedicalFormat] = useState("paragraph");
+  const [history, setHistory] = useState([]);
 
-  // New State for Image Upload
-  const [photoFile, setPhotoFile] = useState(null);
   const [previewSrc, setPreviewSrc] = useState(null);
-  const fileInputRef = useRef(null); // Reference to hidden input
-
+  
   // Fetch user details
   useEffect(() => {
     const fetchProfile = async () => {
@@ -37,22 +35,6 @@ const PlayerUserProfile = () => {
 
   const handleChange = (e) => {
     setPlayer({ ...player, [e.target.name]: e.target.value });
-  };
-
-  // Handle File Selection
-  const handlePhotoChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setPhotoFile(file);
-      setPreviewSrc(URL.createObjectURL(file));
-    }
-  };
-
-  // Trigger file input click
-  const triggerFileInput = () => {
-    if (isEditing && fileInputRef.current) {
-      fileInputRef.current.click();
-    }
   };
 
   // Edit & Save (JSON Version - No Image Upload)
@@ -96,6 +78,21 @@ const PlayerUserProfile = () => {
     }
   };
 
+  // Fetch History
+  useEffect(() => {
+    const fetchHistory = async () => {
+      if (!player.email) return;
+      try {
+        const res = await fetch(`http://localhost:5000/api/players/history?email=${encodeURIComponent(player.email)}`);
+        const data = await res.json();
+        setHistory(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error fetching history:", err);
+      }
+    };
+    fetchHistory();
+  }, [player.email]);
+
   return (
     <PlayerMainLayout>
       <div className="player-profile-container">
@@ -106,8 +103,6 @@ const PlayerUserProfile = () => {
               <button className="btn save-btn" onClick={handleSave}>Save</button>
               <button className="btn cancel-btn" onClick={() => {
                 setIsEditing(false);
-                setPhotoFile(null);
-                setPreviewSrc(player.profilePic || "/default-pfp.jpg"); // Revert preview
               }}>Cancel</button>
             </>
           ) : (
@@ -131,14 +126,7 @@ const PlayerUserProfile = () => {
   
 
               {/* Hidden File Input */}
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handlePhotoChange} 
-                accept="image/*" 
-                style={{ display: "none" }} 
-              />
-
+        
               <p><b>{player.playerName || "N/A"}</b></p>
               <p>{player.institution}</p>
             </div>
@@ -256,6 +244,39 @@ const PlayerUserProfile = () => {
                    <div className="profile-value-rect">N/A</div>
                  )}
                </div>
+              </div>
+            )}
+
+{activeTab === "history" && (
+              <div className="documents-section">
+                {history.length > 0 ? (
+                  <div className="table-container">
+                    <table className="documents-table">
+                      <thead>
+                        <tr>
+                          <th>Event Name</th>
+                          <th>Team</th>
+                          <th>Game(s) Played</th>
+                          <th>Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {history.map((record, idx) => (
+                          <tr key={idx} className="document-row">
+                            <td className="requirement-name">{record.eventName}</td>
+                            <td>{record.team}</td>
+                            <td>{Array.isArray(record.game) ? record.game.join(", ") : record.game}</td>
+                            <td className="file-link">
+                                {new Date(record.archivedAt).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p style={{padding: '20px', textAlign: 'center', color: '#666'}}>No past event history found for this player.</p>
+                )}
               </div>
             )}
 

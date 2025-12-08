@@ -18,6 +18,7 @@ app.use(
 
 // For sending day before schedule notifs
 const notificationService = require("./routes/notificationService");
+const cleanPlayerService = require('./routes/cleanPlayerService');
 
 // API Routes
 app.use("/api", require("./routes/auth"));
@@ -45,6 +46,7 @@ mongoose.connect(process.env.MONGO_URI)
       
       // Start the notification service
       notificationService.start();
+      cleanPlayerService.start();
     });
     
   })

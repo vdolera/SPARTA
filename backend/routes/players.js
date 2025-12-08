@@ -14,6 +14,16 @@ const supabase = require("./supabaseClient");
 const upload = multer({ storage: multer.memoryStorage() });
 
 // GET pending players to enter the insitution
+router.get("/players/pending", async (req, res) => {
+  const { institution } = req.query;
+  try {
+    const players = await Player.find({ approved: false, institution });
+    res.json(players);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching players", error: err.message });
+  }
+});
+
 // GET Pending Players for a Team
 router.get('/players/team-pending', async (req, res) => {
   try {
