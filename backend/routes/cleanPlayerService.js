@@ -6,7 +6,7 @@ const History = require('../models/History'); // Adjust path
 const start = () => {
   // Run every day at 00:00 (Midnight)
   // For testing, change '0 0 * * *' to '* * * * *' (every minute)
-  cron.schedule('* * * * *', async () => {
+  cron.schedule('0 0 * * *', async () => {
     console.log("Running Daily Event Cleanup...");
     
     try {

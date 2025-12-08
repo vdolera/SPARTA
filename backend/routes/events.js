@@ -375,45 +375,6 @@ router.delete('/event/:id', async (req, res) => {
   }
 });
 
-// 1. END EVENT (Archive Players -> Delete Players)
-router.post('/events/:id/end', async (req, res) => {
-  try {
-    const eventId = req.params.id;
-
-    // A. Find the event to get the name
-    const eventDoc = await Event.findById(eventId);
-    if (!eventDoc) return res.status(404).json({ message: "Event not found" });
-
-    // B. Find all players in this event
-    const players = await Player.find({ eventId: eventId });
-
-    if (players.length > 0) {
-      // C. Prepare History Records
-      const historyRecords = players.map(p => ({
-        email: p.email,
-        institution: p.institution,
-        eventName: eventDoc.eventName, // Save the static name
-        team: p.team || "No Team",
-        game: p.game || []
-      }));
-
-      // D. Bulk Insert into History
-      await History.insertMany(historyRecords);
-
-      // E. Delete Players from Active Collection
-      await Player.deleteMany({ eventId: eventId });
-    }
-
-    res.json({ 
-      message: `Event ended successfully. ${players.length} player records archived.` 
-    });
-
-  } catch (err) {
-    console.error("Error ending event:", err);
-    res.status(500).json({ message: "Server error ending event" });
-  }
-});
-
 // 2. GET Player History (By Email)
 router.get('/players/history', async (req, res) => {
   try {
