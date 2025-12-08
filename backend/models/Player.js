@@ -4,11 +4,7 @@ const playerSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   password: { type: String, required: true },
   institution: { type: String, required: true },
-  eventId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Event',
-    required: true 
-  },
+  eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event',required: true },
   eventName: { type: String, required: true },
   role: {type:String, default: "player"},
 

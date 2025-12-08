@@ -56,13 +56,17 @@ const generateRRMatches = (teams, bracketName) => {
 // Function to save the medals to each team
 async function awardMedal(teamName, eventName, game, medal) {
   try {
-    if (!teamName || teamName === "TBD") return;
+    if (!teamName || teamName === "TBD" || teamName === "No Opponent") return;
 
     const gameName = `${game.category} ${game.gameType}`;
 
-    // Use find team and add medal
-    await Team.updateOne(
-      { teamName: teamName, eventName: eventName },
+    // FIX: Search by 'institution' and 'event' (ID), NOT eventName
+    const updateResult = await Team.updateOne(
+      { 
+        teamName: teamName, 
+        institution: game.institution,
+        event: game.eventId // <--- CRITICAL FIX: Use the ID link
+      },
       {
         // prevents duplicate medals
         $addToSet: {
@@ -74,7 +78,13 @@ async function awardMedal(teamName, eventName, game, medal) {
         }
       }
     );
-    console.log(`Awarded ${medal} to ${teamName} for ${gameName}`);
+
+    if (updateResult.matchedCount === 0) {
+      console.log(`Medal Warning: Could not find team "${teamName}" to award ${medal}. Check ID/Spelling.`);
+    } else {
+      console.log(`Awarded ${medal} to ${teamName} for ${gameName}`);
+    }
+
   } catch (err) {
     console.error(`Failed to award ${medal} to ${teamName}`, err);
   }
@@ -526,14 +536,67 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
     const match = game.matches.id(matchId);
     if (!match) return res.status(404).json({ message: "Match not found" });
 
-    // Store old scores for team stats
+    // 1. Store old scores BEFORE updating the match object
+    // We need this to calculate the difference (delta) to add/subtract from the total
     const oldScore1 = match.teams[0].score || 0;
     const oldScore2 = match.teams[1].score || 0;
 
-    // Update current match
+    // 2. Update the Match Object
     match.teams[0].score = Number(score1);
     match.teams[1].score = Number(score2);
 
+    // ===============================================
+    //  MOVED: UPDATE TEAM STATS (LIVE SCORE LOGIC)
+    //  We do this NOW, so it updates on every keystroke/save
+    // ===============================================
+    const round = match.round;
+
+    // Search for the teams using ID
+    const team1 = await Team.findOne({ 
+        teamName: match.teams[0].name, 
+        institution: game.institution, 
+        event: game.eventId 
+    });
+
+    const team2 = await Team.findOne({ 
+        teamName: match.teams[1].name, 
+        institution: game.institution, 
+        event: game.eventId 
+    });
+
+    if (team1) {
+      // Calculate new total: (Current Total - Old Match Score + New Match Score)
+      team1.totalScore = (team1.totalScore || 0) - oldScore1 + Number(score1);
+      
+      if (!team1.roundScores) team1.roundScores = [];
+      const roundEntry = team1.roundScores.find((r) => r.round === round);
+      
+      if (roundEntry) {
+        roundEntry.score = Number(score1);
+      } else {
+        team1.roundScores.push({ round, score: Number(score1) });
+      }
+      await team1.save();
+    }
+
+    if (team2) {
+      team2.totalScore = (team2.totalScore || 0) - oldScore2 + Number(score2);
+      
+      if (!team2.roundScores) team2.roundScores = [];
+      const roundEntry = team2.roundScores.find((r) => r.round === round);
+      
+      if (roundEntry) {
+        roundEntry.score = Number(score2);
+      } else {
+        team2.roundScores.push({ round, score: Number(score2) });
+      }
+      await team2.save();
+    }
+    // ===============================================
+    //  END OF TEAM STATS UPDATE
+    // ===============================================
+
+    // 3. Handle Winner Finalization (If applicable)
     if (finalizeWinner) {
       const winnerIdx = score1 > score2 ? 0 : score2 > score1 ? 1 : null;
       const loserIdx = winnerIdx === 0 ? 1 : winnerIdx === 1 ? 0 : null;
@@ -730,28 +793,54 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
            }
         }
 
-        // Update Team collection stats
         const round = match.round;
-        const team1 = await Team.findOne({ teamName: match.teams[0].name, eventName: game.eventName });
-        const team2 = await Team.findOne({ teamName: match.teams[1].name, eventName: game.eventName });
+        // Update Team collection stats
+        const team1 = await Team.findOne({ 
+          teamName: match.teams[0].name, 
+          institution: game.institution, 
+          event: game.eventId // <--- CRITICAL FIX: Use ID link
+      });
 
-        if (team1) {
-          team1.totalScore = (team1.totalScore || 0) - oldScore1 + Number(score1);
-          const roundEntry = team1.roundScores.find((r) => r.round === round);
-          if (roundEntry) roundEntry.score = Number(score1);
-          else team1.roundScores.push({ round, score: Number(score1) });
-          await team1.save();
-        }
+      const team2 = await Team.findOne({ 
+          teamName: match.teams[1].name, 
+          institution: game.institution, 
+          event: game.eventId // <--- CRITICAL FIX: Use ID link
+      });
 
-        if (team2) {
-          team2.totalScore = (team2.totalScore || 0) - oldScore2 + Number(score2);
-          const roundEntry = team2.roundScores.find((r) => r.round === round);
-          if (roundEntry) roundEntry.score = Number(score2);
-          else team2.roundScores.push({ round, score: Number(score2) });
-          await team2.save();
+      if (team1) {
+        team1.totalScore = (team1.totalScore || 0) - oldScore1 + Number(score1);
+        
+        // Ensure roundScores array exists
+        if (!team1.roundScores) team1.roundScores = [];
+        
+        const roundEntry = team1.roundScores.find((r) => r.round === round);
+        if (roundEntry) {
+          roundEntry.score = Number(score1);
+        } else {
+          team1.roundScores.push({ round, score: Number(score1) });
         }
+        await team1.save();
+      } else {
+          console.log(`Warning: Team 1 (${match.teams[0].name}) not found for stats update.`);
+      }
+
+      if (team2) {
+        team2.totalScore = (team2.totalScore || 0) - oldScore2 + Number(score2);
+        
+        if (!team2.roundScores) team2.roundScores = [];
+
+        const roundEntry = team2.roundScores.find((r) => r.round === round);
+        if (roundEntry) {
+          roundEntry.score = Number(score2);
+        } else {
+          team2.roundScores.push({ round, score: Number(score2) });
+        }
+        await team2.save();
+      } else {
+          console.log(`Warning: Team 2 (${match.teams[1].name}) not found for stats update.`);
       }
     }
+  }
 
     await game.save();
     res.json(game);

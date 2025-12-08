@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const feedbackSchema = new mongoose.Schema({
+  eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
   eventName: { type: String, required: true },
   institution: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "Player", required: true },

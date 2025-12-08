@@ -7,11 +7,7 @@ const teamSchema = new mongoose.Schema(
     managerEmail: { type: String, required: false },
     institution: { type: String, required: true },
     teamColor: { type: String, required: true },
-    event: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'Event',
-      required: true 
-    },
+    event: { type: mongoose.Schema.Types.ObjectId, ref: 'Event',required: true },
     teamIcon: { type: String, default: null },
     coordinators: { type: [String], default: [] },
 

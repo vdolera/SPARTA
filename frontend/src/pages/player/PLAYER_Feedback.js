@@ -10,8 +10,9 @@ const PlayerFeedback = () => {
 
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
-
   const userId = JSON.parse(localStorage.getItem("auth"));
+
+  const [eventDetails, setEventDetails] = useState(null);
   const [user, setUser] = useState(null);
   const [showOverlay, setShowOverlay] = useState(false);
   const [feedback, setFeedback] = useState("");
@@ -23,7 +24,7 @@ const PlayerFeedback = () => {
   // Toast helper
   const showToastMessage = (message, type) => {
     setShowToast({ show: true, message, type });
-    setTimeout(() => setShowToast({ show: false, message: "", type: "" }), 5000);
+    setTimeout(() => setShowToast({ show: true, message: "", type: "" }), 15000);
   };
 
   // Fetch player data
@@ -41,28 +42,60 @@ const PlayerFeedback = () => {
     fetchUser();
   }, [userId]);
 
+// Fetch event details
+  useEffect(() => {
+    const fetchEventId = async () => {
+      try {
+        // Fetch all events for institution
+        const res = await fetch(`http://localhost:5000/api/events?institution=${encodeURIComponent(userId?.institution)}`);
+        const data = await res.json();
+        
+        if (Array.isArray(data)) {
+          // Find the specific event
+          const found = data.find(e => e.eventName === decodedEvent);
+          if (found) {
+            setEventDetails(found);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching event details:", err);
+      }
+    };
+
+    if (userId?.institution && decodedEvent) {
+      fetchEventId();
+    }
+  }, [userId?.institution, decodedEvent]);
+
   // Fetch Feedbacks
   useEffect(() => {
     const fetchFeedbacks = async () => {
+      // Wait for ID to be found
+      if (!eventDetails?._id) return;
+
       try {
-        const res = await fetch(`http://localhost:5000/api/feedback/${decodedEvent}`);
+        // Use query param ?eventId=...
+        const res = await fetch(`http://localhost:5000/api/feedback?eventId=${eventDetails._id}`);
         const data = await res.json();
-        setFeedbacks(data);
+        setFeedbacks(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error fetching feedbacks:", err);
       }
     };
+
     fetchFeedbacks();
-  }, [decodedEvent]);
+  }, [eventDetails]);
 
   // Post Feedback
   const handlePost = async () => {
+    
     try {
       const res = await fetch("http://localhost:5000/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           eventName: decodedEvent,
+          eventId: eventDetails._id,
           institution: user.institution,
           userId: user._id,
           playerName: user.playerName,

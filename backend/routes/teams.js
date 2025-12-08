@@ -127,34 +127,57 @@ router.get('/team', async (req, res) => {
 // GET detailed team scores
 router.get("/teams/scores", async (req, res) => {
   try {
-    const { institution, event } = req.query;
-    if (!institution || !event) {
-      return res.status(400).json({ message: "Institution and event are required" });
+    // 1. Capture 'eventId' sent from Frontend
+    const { institution, eventId, event } = req.query;
+
+    if (!institution) {
+      return res.status(400).json({ message: "Institution is required" });
     }
 
-    const teams = await Team.find({ institution, eventName: event });
+    const query = { institution };
 
-    // Calculate grandTotal (medal score) and medal counts for each team
+    // 2. Map 'eventId' (Frontend) -> 'event' (Database Field)
+    if (eventId) {
+      query.event = eventId; 
+    } 
+    // Fallback for old calls
+    else if (event) {
+        // If it looks like an ID, use it as ID
+        if (event.match(/^[0-9a-fA-F]{24}$/)) {
+            query.event = event;
+        } else {
+            // Only use eventName if your schema still supports it (Your current schema does not)
+             console.log("Warning: Querying by name is deprecated for this schema");
+             return res.json([]); 
+        }
+    }
+
+    // 3. Find teams using the correct query
+    const teams = await Team.find(query);
+
+    // 4. Calculate Scores (Logic remains the same)
     const teamsWithTally = teams.map(team => {
       let grandTotal = 0;
       let gold = 0;
       let silver = 0;
       let bronze = 0;
 
-      team.medals.forEach(medal => {
-        if (medal.medal === 'gold') {
-          grandTotal += 3; // 3 points for gold
-          gold++;
-        } else if (medal.medal === 'silver') {
-          grandTotal += 2; // 2 points for silver
-          silver++;
-        } else if (medal.medal === 'bronze') {
-          grandTotal += 1; // 1 point for bronze
-          bronze++;
-        }
-      });
+      if (team.medals && Array.isArray(team.medals)) {
+        team.medals.forEach(medal => {
+          if (medal.medal === 'gold') {
+            grandTotal += 3;
+            gold++;
+          } else if (medal.medal === 'silver') {
+            grandTotal += 2;
+            silver++;
+          } else if (medal.medal === 'bronze') {
+            grandTotal += 1;
+            bronze++;
+          }
+        });
+      }
       
-      const teamObject = team.toObject(); // Get a plain JS object
+      const teamObject = team.toObject();
       teamObject.grandTotal = grandTotal;
       teamObject.gold = gold;
       teamObject.silver = silver;
@@ -163,15 +186,15 @@ router.get("/teams/scores", async (req, res) => {
       return teamObject;
     });
 
-    // Sort by grandTotal (highest first), then by gold, then silver, etc.
+    // 5. Sort
     teamsWithTally.sort((a, b) => {
       if (b.grandTotal !== a.grandTotal) return b.grandTotal - a.grandTotal;
       if (b.gold !== a.gold) return b.gold - a.gold;
-      if (b.silver !== a.silver) return b.silver - a.silver;
       return b.bronze - a.bronze;
     });
 
     res.json(teamsWithTally);
+
   } catch (error) {
     console.error("Error fetching team scores:", error);
     res.status(500).json({ message: "Server error" });

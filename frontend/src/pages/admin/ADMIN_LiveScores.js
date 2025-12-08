@@ -11,25 +11,62 @@ const LiveScores = () => {
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
   const [teams, setTeams] = useState([]);
+  const [eventDetails, setEventDetails] = useState(null); // Store ID here
   const user = JSON.parse(localStorage.getItem("auth"));
 
-  // Fetch teams with scores
+  // 1. Fetch Event ID (The bridge from Name -> ID)
   useEffect(() => {
-    const fetchTeams = async () => {
+    const fetchEventId = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEvent)}`);
-        const data = await response.json();
-        // Data is already sorted by the backend
-        setTeams(data);
-      } catch (error) {
-        console.error("Error fetching teams:", error);
+        // Fetch all events for institution
+        const res = await fetch(`http://localhost:5000/api/events?institution=${encodeURIComponent(user?.institution)}`);
+        const data = await res.json();
+        
+        if (Array.isArray(data)) {
+          // Find the specific event
+          const found = data.find(e => e.eventName === decodedEvent);
+          if (found) {
+            setEventDetails(found);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching event details:", err);
       }
     };
-  
+
     if (user?.institution && decodedEvent) {
-      fetchTeams();
+      fetchEventId();
     }
-  }, [user?.institution, decodedEvent]); 
+  }, [user?.institution, decodedEvent]);
+
+
+  // 2. Fetch teams with scores (Using Event ID)
+ // Fetch teams with scores
+ useEffect(() => {
+  const fetchTeams = async () => {
+    if (!eventDetails?._id) return; // Wait for ID
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/teams/scores?institution=${encodeURIComponent(user?.institution)}&eventId=${eventDetails._id}`);
+      const data = await response.json();
+      
+      // --- FIX: Ensure data is an array before setting state ---
+      if (Array.isArray(data)) {
+        setTeams(data);
+      } else {
+        console.warn("API returned non-array:", data);
+        setTeams([]); // Fallback to empty array prevents crash
+      }
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+      setTeams([]);
+    }
+  };
+
+  if (user?.institution && eventDetails) {
+    fetchTeams();
+  }
+}, [user?.institution, eventDetails]);
   
   const rankedTeams = teams;
 
@@ -60,7 +97,7 @@ const LiveScores = () => {
           ) : (
             <div className="teams-list">
               
-              {rankedTeams.map((team, idx) => (
+              {Array.isArray(rankedTeams) && rankedTeams.map((team, idx) => (
                 <div
                   className="team-score"
                   key={team._id || idx}
@@ -71,7 +108,7 @@ const LiveScores = () => {
                     <span>{team.teamName}</span>
                   </span>
 
-                  {/* ADDED MEDAL DISPLAY */}
+                  {/* MEDAL DISPLAY */}
                   <span className="medal-tally-display">
                     {team.gold > 0 && <span>🥇 {team.gold}</span>}
                     {team.silver > 0 && <span>🥈 {team.silver}</span>}

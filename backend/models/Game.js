@@ -16,11 +16,7 @@ const matchSchema = new mongoose.Schema({
 }, { _id: true });
 
 const gameSchema = new mongoose.Schema({
-  eventId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Event',
-    required: true 
-  },
+  eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event',required: true },
   institution: { type: String, required: true },
   gameType: { type: String, required: true },
   category: { type: String, enum: ['Men', 'Women', 'Mixed'], required: true },

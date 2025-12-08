@@ -10,21 +10,54 @@ const Feedback = () => {
 
   const { eventName } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
+  const userId = JSON.parse(localStorage.getItem("auth"));
+
+  const [eventDetails, setEventDetails] = useState(null);
   const [feedbacks, setFeedbacks] = useState([]);
 
-  // Fetch Feedbacks
+
+  // Fetch event details
   useEffect(() => {
-    const fetchFeedbacks = async () => {
+    const fetchEventId = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/feedback/${decodedEvent}`);
+        // Fetch all events for institution
+        const res = await fetch(`http://localhost:5000/api/events?institution=${encodeURIComponent(userId?.institution)}`);
         const data = await res.json();
-        setFeedbacks(data);
+        
+        if (Array.isArray(data)) {
+          // Find the specific event
+          const found = data.find(e => e.eventName === decodedEvent);
+          if (found) {
+            setEventDetails(found);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching event details:", err);
+      }
+    };
+
+    if (userId?.institution && decodedEvent) {
+      fetchEventId();
+    }
+  }, [userId?.institution, decodedEvent]);
+   // Fetch Feedbacks
+   useEffect(() => {
+    const fetchFeedbacks = async () => {
+      // Wait for ID to be found
+      if (!eventDetails?._id) return;
+
+      try {
+        // Use query param ?eventId=...
+        const res = await fetch(`http://localhost:5000/api/feedback?eventId=${eventDetails._id}`);
+        const data = await res.json();
+        setFeedbacks(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error fetching feedbacks:", err);
       }
     };
+
     fetchFeedbacks();
-  }, [decodedEvent]);
+  }, [eventDetails]);
 
   return (
     <MainLayout>
