@@ -291,7 +291,7 @@ const Dashboard = () => {
       <div className="dashboard-page-container">
 
         {/* Main Dashboard Content */}
-        <div className="dashboard-main-content" style={{display:"flex", width: "100%"}}>
+        <div className="dashboard-main-content" style={{display:"flex", width: "100%", gap: "30px"}}>
           <div className="dashboard-main-content">
             <div className="calendar-container">
               <Calendar 
