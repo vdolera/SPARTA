@@ -45,8 +45,8 @@
 
   .event-specifics button {
     height: 190px;
-    width: 150px;
     font-size: 14px;
+    width: 150px;
   }
 
   .event-specifics {
@@ -84,6 +84,13 @@
   .event-header, .event-details {
     width: 50vw;
   }
+
+  .event-specifics button {
+    height: 190px;
+    font-size: 14px;
+    width: 150px;
+  }
+
 
   .event-details {
     gap: 80px;

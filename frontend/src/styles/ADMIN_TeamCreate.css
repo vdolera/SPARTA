@@ -1,6 +1,22 @@
-@media (min-width: 1024px) and (max-width: 1599px) {
+@media (min-width: 1273px) and (max-width: 1599px) {
   .team-create-maindiv {
     width: 45vw;
+  }
+
+}
+@media (min-width: 1600px) {
+  .team-create-maindiv {
+    width: 35vw;
+  }
+
+  .team-form-header {
+    width: 40vw;
+    padding: 16px;
+  }
+
+  .team-form-container {
+    width: 40vw;
+    padding: 0 16px;
   }
 
 }
