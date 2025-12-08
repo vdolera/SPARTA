@@ -28,6 +28,31 @@ const Teams = () => {
   const [search, setSearch] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [gamesExist, setGamesExist] = useState(false);
+  const [eventDetails, setEventDetails] = useState(null);
+
+
+  useEffect(() => {
+    const fetchEventId = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/events?institution=${user?.institution}`);
+        const data = await res.json();
+        
+        if (Array.isArray(data)) {
+          const found = data.find(e => e.eventName === decodedName);
+          if (found) {
+            setEventDetails(found);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching event details:", err);
+      }
+    };
+
+    if (user?.institution && decodedName) {
+      fetchEventId();
+    }
+  }, [user?.institution, decodedName]);
+
   // Fetch Coords
   useEffect(() => {
     const fetchCoordinators = async () => {
@@ -56,22 +81,30 @@ const Teams = () => {
     return matchesSearch && !alreadySelected;
   });
 
-  // Fetch teams
-  useEffect(() => {
-    const fetchTeams = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
-        const data = await response.json();
-        setTeams(data);
-      } catch (error) {
-        console.error("Error fetching teams:", error);
-      }
-    };
+ // Fetch teams
+ useEffect(() => {
+  const fetchTeams = async () => {
+    if (!eventDetails?._id) return; 
 
-    if (user?.institution && decodedName) {
-      fetchTeams();
+    try {
+      const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${eventDetails._id}`);
+      const data = await response.json();
+      
+      if (Array.isArray(data)) {
+        setTeams(data);
+      } else {
+        console.warn("API did not return an array:", data);
+        setTeams([]); 
+      }
+   
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+      setTeams([]); 
     }
-  }, [user?.institution, decodedName]);
+  };
+
+  fetchTeams();
+}, [user?.institution, eventDetails]);
 
   // Fetch Games
   useEffect(() => {
@@ -94,7 +127,9 @@ const Teams = () => {
 
   // Create team button nav
   const handleAddTeam = () => {
-    navigate(`/admin/event/${encodeURIComponent(decodedName)}/addteam`);
+    navigate(`/admin/event/${encodeURIComponent(decodedName)}/addteam`, { 
+      state: { id: eventDetails._id } 
+    });
   };
 
   // Selected Team button nav

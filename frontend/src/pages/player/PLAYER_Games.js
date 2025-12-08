@@ -14,6 +14,7 @@ const PlayerGame = () => {
   const user = JSON.parse(localStorage.getItem("auth"));
   const { eventName } = useParams();
   const decodedName = decodeURIComponent(eventName);
+  const userInstitution = user?.institution;
   const navigate = useNavigate();
 
   const [gamesByType, setGamesByType] = useState({});
@@ -31,6 +32,7 @@ const PlayerGame = () => {
   const [gender, setGender] = useState("");
   const [gamesSelected, setGamesSelected] = useState([]);
   const [eventRequirements, setEventRequirements] = useState([]);
+  const [eventDetails, setEventDetails] = useState(null);
 
   // For default data when it have one, this for registering
   useEffect(() => {
@@ -58,41 +60,96 @@ const PlayerGame = () => {
     Chess: GiChessKnight,
   };
 
-  // Fetch Games
   useEffect(() => {
-    const fetchGames = async () => {
+    const fetchEventId = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedName)}`);
-        const data = await response.json();
+        const res = await fetch(`http://localhost:5000/api/events?institution=${user?.institution}`);
+        const data = await res.json();
+        
+        if (Array.isArray(data)) {
+          const found = data.find(e => e.eventName === decodedName);
+          if (found) {
+            setEventDetails(found);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching event details:", err);
+      }
+    };
+
+    if (user?.institution && decodedName) {
+      fetchEventId();
+    }
+  }, [user?.institution, decodedName]);
+
+// Fetch Games
+useEffect(() => {
+  const fetchGames = async () => {
+    // Safety Check: Don't fetch if we don't have the Event ID yet
+    if (!eventDetails?._id) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventId=${eventDetails._id}`
+      );
+      const data = await response.json();
+
+      if (Array.isArray(data)) {
+        // 1. THIS IS THE MISSING LINE (Populates the Modal Checkboxes)
+        setGames(data);
+
+        // 2. Group games for the Dashboard Buttons
         const grouped = {};
         data.forEach((game) => {
           const key = `${game.category} ${game.gameType}`;
-          if (!grouped[key]) grouped[key] = [];
+          if (!grouped[key]) {
+            grouped[key] = [];
+          }
           grouped[key].push(game);
         });
 
         setGamesByType(grouped);
-        setGames(data);
-      } catch (error) {
-        console.error("Error fetching games:", error);
+      } else {
+        console.warn("Games API returned non-array:", data);
+        setGames([]);
+        setGamesByType({});
       }
-    };
-    fetchGames();
-  }, [user?.institution, decodedName]);
+    } catch (error) {
+      console.error("Error fetching games:", error);
+    }
+  };
 
-  // Fetch teams
-  useEffect(() => {
-    const fetchTeams = async () => {
-      try {
-        const res = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedName)}`);
-        const data = await res.json();
+  fetchGames();
+}, [userInstitution, eventDetails]);
+
+// Fetch teams
+useEffect(() => {
+  const fetchTeams = async () => {
+    // 1. Safety: Wait until we have the Event ID
+    if (!eventDetails?._id) return;
+
+    try {
+      // 2. Use 'eventId' instead of 'event' (name)
+      const res = await fetch(
+        `http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&eventId=${eventDetails._id}`
+      );
+      
+      const data = await res.json();
+      
+      // 3. Populate state safely
+      if (Array.isArray(data)) {
         setTeams(data);
-      } catch (err) {
-        console.error("Error fetching teams:", err);
+      } else {
+        setTeams([]);
       }
-    };
-    fetchTeams();
-  }, [user?.institution, decodedName]);
+    } catch (err) {
+      console.error("Error fetching teams:", err);
+      setTeams([]);
+    }
+  };
+
+  fetchTeams();
+}, [user?.institution, eventDetails]); // Depend on eventDetails
 
   // Fetch Reqiorements
   useEffect(() => {
@@ -225,18 +282,20 @@ const PlayerGame = () => {
               <div>
                 <label className="form-label">Team:</label>
                 <select
-                  value={team || user?.team || ""}
-                  onChange={(e) => setTeam(e.target.value)}
-                  required
-                  className="form-input"
-                >
-                  <option value="">Select Team</option>
-                  {teams.map((t) => (
-                    <option key={t._id} value={t.teamName}>
-                      {t.teamName}
-                    </option>
-                  ))}
-                </select>
+  value={team || user?.team || ""}
+  onChange={(e) => setTeam(e.target.value)}
+  required
+  className="form-input"
+>
+  <option value="">Select Team</option>
+  
+  {/* FIX: Add safety check "Array.isArray(teams) &&" */}
+  {Array.isArray(teams) && teams.map((t) => (
+    <option key={t._id} value={t.teamName}>
+      {t.teamName}
+    </option>
+  ))}
+</select>
               </div>
 
               <div>

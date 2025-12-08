@@ -4,6 +4,7 @@ const Admin = require('../models/Admin');
 const Coordinator = require('../models/Coordinator')
 const Player = require('../models/Player');
 const Institution = require('../models/Institution');
+const Event = require('../models/Event'); 
 
 const router = express.Router();
 
@@ -33,7 +34,7 @@ const transporter = nodemailer.createTransport({
 // REGISTER
 router.post('/auth/register/:role', async (req, res) => {
   const { role } = req.params;
-  const { email, password, institution, eventName } = req.body;
+  const { email, password, institution, eventId } = req.body;
   const Model = getModelByRole(role);
   if (!Model) return res.status(400).json({ message: 'Invalid role' });
 
@@ -41,8 +42,23 @@ router.post('/auth/register/:role', async (req, res) => {
     const existing = await Model.findOne({ email });
     if (existing) return res.status(409).json({ message: 'Email already in use' });
 
+    let finalEventName = undefined;
+
+    if (role === 'player') {
+      if (!eventId) {
+        return res.status(400).json({ message: "Event is required for players." });
+      }
+
+      const eventDef = await Event.findById(eventId);
+      if (!eventDef) {
+        return res.status(404).json({ message: "Selected event not found." });
+      }
+      
+      finalEventName = eventDef.eventName; 
+    }
+
     const hashed = await bcrypt.hash(password, 10);
-    const user = new Model({ email, password: hashed, institution, ...(role === 'player' && { eventName }), ...(role === 'admin' && { ok: false }) });
+    const user = new Model({ email, password: hashed, institution, ...(role === 'player' && { eventId: eventId, eventName: finalEventName }), ...(role === 'admin' && { ok: false }) });
     await user.save();
 
     res.status(201).json({ message: `${role} registered successfully` });

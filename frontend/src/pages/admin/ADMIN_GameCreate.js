@@ -1,6 +1,6 @@
 import MainLayout from "../../components/MainLayout";
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import '../../styles/ADMIN_GameCreate.css'
 
 const CreateGame = () => {
@@ -26,6 +26,8 @@ const CreateGame = () => {
   const [eventDetails, setEventDetails] = useState(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const [eventId, setEventId] = useState(location.state?.id || null);
   const { eventName } = useParams();
   const decodedEventName = decodeURIComponent(eventName);
   const user = JSON.parse(localStorage.getItem("auth"));
@@ -76,18 +78,30 @@ const CreateGame = () => {
   const maxDateLimit = eventDetails ? formatForInput(eventDetails.eventEndDate) : "";
 
   // Fetch teams
-  useEffect(() => {
-    const fetchTeams = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(decodedEventName)}`);
-        const data = await response.json();
+useEffect(() => {
+  const fetchTeams = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(eventId)}`);
+      const data = await response.json();
+      
+      // OLD CODE (CAUSING THE CRASH):
+      // setAvailableTeams(data); 
+
+      // NEW FIXED CODE:
+      if (Array.isArray(data)) {
         setAvailableTeams(data);
-      } catch (error) {
-        console.error("Error fetching teams:", error);
+      } else {
+        console.warn("Teams API returned non-array:", data);
+        setAvailableTeams([]); // Fallback to empty array so .map doesn't crash
       }
-    };
-    if (user?.institution && decodedEventName) fetchTeams();
-  }, [user?.institution, decodedEventName]);
+
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+      setAvailableTeams([]); // Safety fallback
+    }
+  };
+  if (user?.institution && decodedEventName) fetchTeams();
+}, [user?.institution, decodedEventName]);
 
   const toggleTeamSelection = (teamName) => {
     setSelectedTeams((prev) =>
@@ -113,7 +127,7 @@ const CreateGame = () => {
       formData.append("startDate", startDate);
       formData.append("endDate", endDate);
       formData.append("bracketType", bracketType);
-      formData.append("eventName", decodedEventName);
+      formData.append("eventId", eventId);
       formData.append("teams", JSON.stringify(selectedTeams));
       formData.append("coordinators", JSON.stringify(selectedCoordinators));
       formData.append("referees", JSON.stringify(referees));

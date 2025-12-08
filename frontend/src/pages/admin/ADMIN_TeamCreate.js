@@ -1,6 +1,6 @@
 import MainLayout from "../../components/MainLayout";
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "../../styles/ADMIN_TeamCreate.css";
 
 const CreateTeam = () => {
@@ -8,6 +8,7 @@ const CreateTeam = () => {
   useEffect(() => {document.title = "SPARTA | Create Team";},[]);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [teamName, setTeamName] = useState("");
   const [teamManager, setTeamManager] = useState("");
   const [managerEmail, setManagerEmail] = useState("");
@@ -24,6 +25,7 @@ const CreateTeam = () => {
   const [toastType, setToastType] = useState("success"); 
 
   const decodedEventName = decodeURIComponent(eventName);
+  const [eventId, setEventId] = useState(location.state?.id || null);
 
   // Team Creation
   const handleCreate = async (e) => {
@@ -43,7 +45,7 @@ const CreateTeam = () => {
       formData.append("managerEmail", managerEmail);
       formData.append("institution", institution);
       formData.append("teamColor", teamColor);
-      formData.append("eventName", decodedEventName);
+      formData.append("eventId", eventId);
       formData.append("coordinators", JSON.stringify(selectedCoordinators));
       if (teamIcon) {
         formData.append("teamIcon", teamIcon);

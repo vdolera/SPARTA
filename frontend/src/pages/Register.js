@@ -10,7 +10,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     institution: '',
-    eventName: '',
+    eventId: '',
   });
 
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
@@ -21,6 +21,7 @@ export default function RegisterPage() {
     document.title = "SPARTA | Register";
   }, []);
 
+  // Fetch institution
   useEffect(() => {
     const fetchInstitutions = async () => {
       try {
@@ -71,7 +72,7 @@ export default function RegisterPage() {
             email: formData.email,
             password: formData.password,
             institution: formData.institution,
-            eventName: formData.eventName,
+            eventId: formData.eventId,
           };
 
     try {
@@ -164,10 +165,10 @@ export default function RegisterPage() {
             {role === 'player' && (
               <div className="form-group">
                 <label>Event</label>
-                <select name="eventName" value={formData.eventName} onChange={handleChange} required>
+                <select name="eventId" value={formData.eventId} onChange={handleChange} required>
                   <option value="">Select Event</option>
                   {events.map((ev) => (
-                    <option key={ev._id} value={ev.eventName}>
+                    <option key={ev._id} value={ev._id}>
                       {ev.eventName}
                     </option>
                   ))}

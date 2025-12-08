@@ -90,16 +90,26 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       startDate,
       endDate,
       teams,
-      eventName,
+      eventId,
       bracketType,
       coordinators,
       referees,
     } = req.body;
 
-    // Stop creating if game already exist
+    const parentEvent = await Event.findOne({
+      _id: eventId,
+      institution: institution
+    });
+
+    if (!parentEvent) {
+      return res.status(404).json({ message: "Parent event not found (ID Invalid). Cannot create game." });
+    }
+
+    // 2. CHECK FOR DUPLICATES
+    // Using eventId ensures we are checking the exact specific event
     const existingGame = await Game.findOne({
       institution: institution,
-      eventName: eventName,
+      eventId: eventId, 
       gameType: gameType,
       category: category
     });
@@ -110,16 +120,8 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       });
     }
 
-    // DATE VALIDATION for game( event date to game)
-    const parentEvent = await Event.findOne({
-      eventName: eventName,
-      institution: institution
-    });
-
-    if (!parentEvent) {
-      return res.status(404).json({ message: "Parent event not found. Cannot create game." });
-    }
-
+    // 3. DATE VALIDATION
+    // Now we use the dates from the securely fetched parentEvent
     const gameStart = new Date(startDate);
     const gameEnd = new Date(endDate);
     const eventStart = new Date(parentEvent.eventStartDate);
@@ -170,7 +172,6 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
           return res.status(500).json({ message: "Failed to upload rules file" });
         }
 
-        // Get public URL
         const { data: urlData } = supabase.storage.from("rules").getPublicUrl(fileName);
         finalRules = urlData.publicUrl;
 
@@ -182,7 +183,6 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       finalRules = req.body.rulesText.trim();
     }
 
-    // Final check for rules
     if (!finalRules || finalRules.trim() === "") {
       return res.status(400).json({ message: "Rules (file or text) are required" });
     }
@@ -193,7 +193,7 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       !category ||
       !startDate ||
       !endDate ||
-      !eventName ||
+      !eventId || // Check ID, not name
       !bracketType
     ) {
       return res.status(400).json({ message: "All fields are required" });
@@ -201,10 +201,6 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
 
     if (!parsedTeams || parsedTeams.length < 2) {
       return res.status(400).json({ message: "At least 2 teams are required" });
-    }
-
-    if (!finalRules || finalRules.trim() === "") {
-      return res.status(400).json({ message: "Rules (file or text) are required" });
     }
 
     const matches = [];
@@ -487,7 +483,8 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       startDate,
       endDate,
       teams: shuffledTeams,
-      eventName,
+      eventId: eventId,          
+      eventName: parentEvent.eventName,
       bracketType,
       matches,
       coordinators: parsedCoordinators,
@@ -779,14 +776,14 @@ router.delete("/games/:id", async (req, res) => {
 // GET games
 router.get('/games', async (req, res) => {
   try {
-    const { institution, eventName } = req.query;
+    const { institution, eventId } = req.query;
 
     if (!institution) {
       return res.status(400).json({ message: 'Institution is required' });
     }
 
     const query = { institution };
-    if (eventName) query.eventName = eventName;
+    if (eventId) query.eventId = eventId;
     const games = await Game.find(query);
     res.json(games);
   } catch (err) {

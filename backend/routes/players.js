@@ -3,6 +3,7 @@ const nodemailer = require("nodemailer")
 const Player = require("../models/Player");
 const Admin = require("../models/Admin")
 const Game = require("../models/Game");
+const Event = require("../models/Event");
 const mongoose = require("mongoose");
 
 
@@ -13,24 +14,52 @@ const supabase = require("./supabaseClient");
 const upload = multer({ storage: multer.memoryStorage() });
 
 // GET pending players to enter the insitution
-router.get("/players/pending", async (req, res) => {
-  const { institution } = req.query; 
+// GET Pending Players for a Team
+router.get('/players/team-pending', async (req, res) => {
   try {
-    const players = await Player.find({ approved: false, institution });
-    res.json(players);
-  } catch (err) {
-    res.status(500).json({ message: "Error fetching players", error: err.message });
-  }
-});
+    const { institution, eventName, team } = req.query;
 
-// GET pending players that are regesting for a team
-router.get("/players/team-pending", async (req, res) => {
-  const { institution, eventName, team } = req.query; 
-  try {
-    const players = await Player.find({ approved: true, institution, eventName, team, teamApproval: false });
-    res.json(players);
+    console.log(`Fetching Pending for: ${team} in ${eventName}`);
+
+    // 1. Find the Event ID (Safe Link)
+    const eventDoc = await Event.findOne({ institution, eventName });
+    
+    if (!eventDoc) {
+      console.log("Event not found.");
+      return res.json([]); 
+    }
+
+    // 2. Find Players
+    // Logic: 
+    // - Must match Institution, Team, and Event ID
+    // - Must be APPROVED by Admin (approved: true) 
+    // - Must be WAITING for Team (teamApproval: false)
+    const players = await Player.find({
+      institution,
+      team,
+      eventId: eventDoc._id,  // Linking by ID
+      approved: true,         // Player is valid in the system
+      teamApproval: false     // But waiting for YOU to accept them
+    });
+
+    console.log(`Found ${players.length} pending players.`);
+
+    // 3. Format data
+    const formattedPlayers = players.map(p => ({
+      _id: p._id,
+      playerName: p.playerName,
+      email: p.email,
+      team: p.team,
+      // FIX: Your register route saves strings to 'game', so just join them
+      game: Array.isArray(p.game) ? p.game.join(', ') : p.game, 
+      uploadedRequirements: p.uploadedRequirements || [] 
+    }));
+
+    res.json(formattedPlayers);
+
   } catch (err) {
-    res.status(500).json({ message: "Error fetching players", error: err.message });
+    console.error("Error fetching pending players:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -319,9 +348,31 @@ router.put("/players/:id/register-game", upload.any(), async (req, res) => {
 
 // GET players by team
 router.get("/players", async (req, res) => {
-  const { institution, eventName, team, teamApproval } = req.query;
-  const players = await Player.find({ institution, team, eventName, teamApproval: true });
-  res.json(players);
+  try {
+    const { institution, eventName, team } = req.query;
+
+    // 1. Safety: Find the Event ID from the Name
+    const eventDoc = await Event.findOne({ institution, eventName });
+    
+    if (!eventDoc) {
+      // If event not found (or renamed), return empty list
+      return res.json([]); 
+    }
+
+    // 2. Find Players using the Event ID
+    const players = await Player.find({ 
+      institution, 
+      team, 
+      eventId: eventDoc._id, // <--- CRITICAL FIX: Match by ID
+      approved: true,        // Must be system approved
+      teamApproval: true     // Must be accepted by the team
+    });
+
+    res.json(players);
+  } catch (err) {
+    console.error("Error fetching team players:", err);
+    res.status(500).json({ message: "Server error fetching players" });
+  }
 });
 
 // UPDATE profile

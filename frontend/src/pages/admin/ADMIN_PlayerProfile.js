@@ -33,11 +33,14 @@ const PlayerProfile = () => {
 
             <div className="player-main-card">
 
-              <div className="profile-pic">
-                <img src={player.profilePicture || "/default-pfp.jpg"} alt="Profile" onError={(e) => { e.target.src = "default-pic.png"; }}
+            <div className="profile-pic" style={{ position: 'relative' }}>
+            <img
+                  src={player.profilePic || "/default-pfp.jpg"}
+                  alt="Profile"
+                  onError={(e) => { e.target.src = "/default-pfp.jpg"; }}
                 />
-                <p> <b>{player.playerName || "N/A"}</b> </p>
-                <p> {player.institution}</p>
+                <p><b>{player.playerName || "N/A"}</b></p>
+                <p>{player.institution}</p>
               </div>
 
               <div className="profile-details">

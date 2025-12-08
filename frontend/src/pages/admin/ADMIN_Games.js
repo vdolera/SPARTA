@@ -23,6 +23,7 @@ const Game = () => {
   const [gameToDelete, setGameToDelete] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [eventDetails, setEventDetails] = useState(null);
 
   const filteredGames = Object.entries(gamesByType).filter(([combinedType]) =>
     combinedType.toLowerCase().includes(searchQuery.toLowerCase())
@@ -41,12 +42,34 @@ const Game = () => {
     Chess: GiChessKnight,
   };
 
+  useEffect(() => {
+    const fetchEventId = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/events?institution=${user?.institution}`);
+        const data = await res.json();
+        
+        if (Array.isArray(data)) {
+          const found = data.find(e => e.eventName === decodedName);
+          if (found) {
+            setEventDetails(found);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching event details:", err);
+      }
+    };
+
+    if (user?.institution && decodedName) {
+      fetchEventId();
+    }
+  }, [user?.institution, decodedName]);
+
   // Fetch Games
   useEffect(() => {
     const fetchGames = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventName=${encodeURIComponent(decodedName)}`
+          `http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventId=${eventDetails._id}`
         );
         const data = await response.json();
 
@@ -66,11 +89,13 @@ const Game = () => {
     };
 
     fetchGames();
-  }, [userInstitution, decodedName]);
+  }, [userInstitution, eventDetails]);
 
   // Add Game button 
   const handleAddGame = () => {
-    navigate(`/admin/event/${encodeURIComponent(decodedName)}/addgame`);
+    navigate(`/admin/event/${encodeURIComponent(decodedName)}/addgame`, { 
+      state: { id: eventDetails._id } 
+    });
   };
 
   // show confirmation modal

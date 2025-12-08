@@ -185,13 +185,20 @@ router.get("/active-events", async (req, res) => {
     } else if (role === "player") {
       // Players only see the event they registered to
       const player = await Player.findOne({ email, institution });
-    
-      events = await Event.find({
-        institution,
-        eventEndDate: { $gte: today },
-        eventName: player.eventName
-      });
-    }
+      if (player && player.eventId) {
+        events = await Event.find({
+          institution,
+          eventEndDate: { $gte: today },
+          _id: player.eventId
+        });
+      } else if (player && player.eventName) {
+         events = await Event.find({
+          institution,
+          eventEndDate: { $gte: today },
+          eventName: player.eventName
+        });
+        }
+    }   
     
     console.log("Events fetched:", events);
     res.json(events);

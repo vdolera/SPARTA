@@ -1,6 +1,6 @@
 const express = require("express");
 const Team = require("../models/Team");
-const Game = require("../models/Game");
+const Event = require('../models/Event');
 const Coordinator = require("../models/Coordinator");
 const Player = require("../models/Player"); // add this near other requires
 
@@ -14,7 +14,12 @@ const router = express.Router();
 // Team Creation
 router.post("/team", upload.single("teamIcon"), async (req, res) => {
   try {
-    const { teamName, teamManager, managerEmail, institution, teamColor, eventName, coordinators } = req.body;
+    const { teamName, teamManager, managerEmail, institution, teamColor, eventId, coordinators } = req.body;
+
+    const eventExists = await Event.findById(eventId);
+    if (!eventExists) {
+      return res.status(404).json({ message: "Invalid Event ID. Event not found." });
+    }
 
     if (!teamName || !institution) {
       return res.status(400).json({ message: "All fields are required." });
@@ -60,7 +65,7 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
       managerEmail,
       institution,
       teamColor,
-      eventName,
+      event: eventId,
       teamIcon: teamIconUrl, // store Supabase URL
       coordinators: coordinators ? JSON.parse(coordinators) : []
     });
@@ -77,7 +82,9 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
 // GET teams
 router.get('/teams', async (req, res) => {
   try {
-    const { institution, event } = req.query;
+    // 1. Get parameters from Frontend
+    // Frontend sends 'eventId', but we also grab 'event' just in case
+    const { institution, eventId, event } = req.query;
 
     if (!institution) {
       return res.status(400).json({ message: 'Institution is required' });
@@ -85,11 +92,19 @@ router.get('/teams', async (req, res) => {
 
     const query = { institution };
 
-    if (event) {
-      query.eventName = event;
+    // 2. Map 'eventId' from URL -> 'event' in Database
+    if (eventId) {
+      query.event = eventId; // <--- THIS IS THE FIX. match schema field name 'event'
+    } 
+    // Fallback for old code using 'event' param
+    else if (event) {
+       query.event = event;
     }
 
-    const teams = await Team.find(query);
+    // 3. Find teams where institution matches AND event matches
+    const teams = await Team.find(query)
+      .populate('event', 'eventName'); // Optional: populate to see event details
+    
     res.status(200).json(teams);
   } catch (err) {
     console.error("Error fetching teams:", err);
