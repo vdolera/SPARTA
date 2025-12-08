@@ -1,6 +1,77 @@
 /* small screens tweak */
-@media (max-width: 480px) {
-  .team-pending-badge { min-width: 18px; height: 18px; font-size: 11px; }
+@media (max-width: 769px) {
+
+  .team-players-container {
+    margin: 0 auto;
+  }
+
+  .team-pending-badge {
+    min-width: 18px;
+    height: 18px;
+    font-size: 11px;
+  }
+
+  .team-stats {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .team-players-header {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .team-players-team {
+    width: 95%;
+  }
+
+   .team-players-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .team-players-table table {
+    width: 100%;
+    min-width: 700px; /* adjust: minimum table width before scroll appears */
+    border-collapse: collapse;
+  }
+
+  .team-players-table th,
+  .team-players-table td {
+    padding: 10px 8px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  /* Optional visual: make the table compact on mobile */
+  .team-players-table table {
+    box-shadow: none;
+    border: 0;
+  }
+
+  .team-players-table thead th {
+    background: #f8fafc;
+    font-weight: 700;
+  }
+}
+
+@media (min-width: 770px) and (max-width: 1599px) {
+  .team-players-header {
+    flex-direction: row;
+    gap: 15px;
+  }
+
+  .team-players-team {
+    width: 700px;
+  }
+
+  .team-stats {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+  }
 }
 
 @media (min-width: 1601px) {
@@ -11,7 +82,16 @@
   .team-players-team {
     width: 900px;
   }
+
+  .team-stats {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+  }
+
+
 }
+
 
 .team-players-container {
    max-width: 90vw;
@@ -22,7 +102,6 @@
   color: #333;
   font-family: Montserrat, sans-serif;
   display: flex;
-  flex-direction: row;
   gap: 20px;
   justify-content: center;
 }
@@ -30,7 +109,6 @@
 .team-players-team {
   font-size: 40px;
   color: white;
-  width: 700px;
   height: 125px;
   border-radius: 15px;
   padding-left: 25px;

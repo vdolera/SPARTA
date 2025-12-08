@@ -1,3 +1,262 @@
+/* === MODERN MINIMALIST REGISTER REDESIGN === */
+
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+}
+
+.register-box {
+  background-color: #ffffff;
+  box-shadow: 0 20px 60px rgba(10, 18, 40, 0.08);
+  border: 1px solid #ce892c;
+  border-radius: 20px;
+  padding: 48px;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Poppins', sans-serif;
+  gap: 60px;
+  max-width: 1000px;
+  width: 90%;
+}
+
+.register-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 0;
+}
+
+.register-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+}
+
+.register-image {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* === ROLE SELECTOR === */
+.role-buttons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 28px;
+  background: transparent;
+  border-radius: 0;
+  height: auto;
+  padding: 0;
+}
+
+.role-button {
+  flex: 1;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #e5e7eb;
+  background: transparent;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.role-button:hover {
+  border-color: #ce892c;
+  color: #ce892c;
+}
+
+.role-button.active {
+  background: linear-gradient(135deg, #1a2a49 0%, #2d3a5c 100%);
+  color: white;
+  border-color: transparent;
+}
+
+.role-button.admin,
+.role-button.player {
+  border-radius: 10px;
+  margin: auto;
+}
+
+/* === FORM === */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 300px;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.register-form label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a2a49;
+}
+
+.register-form input,
+.register-form select {
+  padding: 12px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafbfc;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s ease;
+  color: #374151;
+}
+
+.register-form input:focus,
+.register-form select:focus {
+  outline: none;
+  border-color: #ce892c;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(206, 137, 44, 0.1);
+}
+
+.register-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  padding-right: 38px;
+}
+
+.register-form select option {
+  background: white;
+  color: #374151;
+  padding: 8px;
+}
+
+/* === BUTTON === */
+.register-button {
+  background: linear-gradient(135deg, #1a2a49 0%, #2d3a5c 100%);
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 15px;
+  margin-top: 8px;
+  box-shadow: 0 4px 12px rgba(26, 42, 73, 0.15);
+}
+
+.register-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(206, 137, 44, 0.2);
+  background: linear-gradient(135deg, #ce892c 0%, #b8750a 100%);
+}
+
+.register-button:active {
+  transform: translateY(0);
+}
+
+/* === SWITCH BUTTON === */
+.switch-button {
+  background: transparent;
+  border: none;
+  color: #ce892c;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 0;
+  margin-left: 4px;
+  transition: color 0.2s ease;
+}
+
+.switch-button:hover {
+  color: #1a2a49;
+  text-decoration: underline;
+}
+
+/* === FOOTER TEXT === */
+.register-form > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.register-form p {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* === TOAST NOTIFICATIONS === */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(10, 18, 40, 0.15);
+  font-family: 'Poppins', sans-serif;
+  animation: slideInUp 0.3s ease-out forwards, slideOutDown 0.3s ease-out forwards 7.5s;
+  z-index: 1000;
+}
+
+.toast-success {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+/* === ANIMATIONS === */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* === RESPONSIVE: Your Exact Media Queries Preserved === */
 @media (max-width: 1272px) {
   .register-box {
     width: 600px;
@@ -44,7 +303,6 @@
     font-size: 0.75rem;
     padding: 3px 5px;
   }
-  
 }
 
 @media (min-width: 1273px) {
@@ -84,201 +342,38 @@
 
 }
 
-.register-container {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-    outline-offset: -2px;
-  }
-  
+@media (max-width: 768px) {
   .register-box {
-    background-color: white;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    outline: 2px #CE892C solid;
-    border-radius: 1rem;
-    display: flex;
-    justify-content: space-between;
-    font-family: Poppins, sans-serif;
+    flex-direction: column;
+    padding: 24px 20px;
+    gap: 30px;
+    margin: 0 15px;
+    height: fit-content;
+
   }
 
+  .register-left,
   .register-right {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 50%;
-  }
-
-  .register-left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 50%;
+    width: 100%;
+    padding: 0;
   }
 
   .register-image {
-    width: 70%;
-    max-width: 400px;
-    height: auto;
-    object-fit: contain;
+    max-width: 185px;
   }
-  
-  .role-buttons {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .role-button {
-    padding: 0.5rem 1rem;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .role-button.admin {
-    border-radius: 25px;
-  }
-  
-  .role-button.player {
-    border-radius: 25px;
-  }
-  
-  .role-button.active {
-    background-color: #063D73;
-    color: white;
-  }
-  
-  .role-button.inactive {
-    background-color: #CE892C;
-    color: white;
-  }
-  
+
   .register-form {
-    display: flex;
-    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
   }
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .form-group select {
-  appearance: none; 
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding: 0.6rem 0.5rem 0.6rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
-  color: #333;
-  cursor: pointer;
-  transition: border 0.2s, box-shadow 0.2s;
+  .role-buttons {
+    max-width: 100%;
   }
 
-  .register-form label {
-    font-weight: 500;
-    color: #374151;
-  }
-  
-  .register-form input {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
-  
-  .register-form input:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
-  }
-  
-  .form-group select option {
-    border-radius: 10px;
-  }
-  
-  .register-button {
-    background-color: #1e40af;
-    color: white;
-    max-width: fit-content;
-    font-weight: bold;
-    margin: 0 auto;
-    padding: 0.5rem;
-    border-radius: 0.375rem;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .register-button:hover {
-    background-color: #CE892C;
-  }
-  
-  .switch-button {
-    margin-top: 0.5rem;
-    background-color: transparent;
-    color: #000000;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    text-decoration: underline;
-    transition: color 0.3s ease;
-    border-radius: 5px;
-  }
-  
-  .switch-button:hover {
-    color: #CE892C;
-  }
-  
   .toast {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  padding: 0.9rem 1.5rem;
-  border-radius: 8px;
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 500;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  opacity: 0;
-  transform: translateY(20px);
-  animation: toastIn 0.3s forwards, toastOut 0.3s forwards 7.5s;
-  z-index: 100;
-  font-family: Montserrat, sans-serif;
-}
-
-.toast-success {
-  background-color: #137f3b;
-}
-
-.toast-error {
-  background-color: #ef4444;
-}
-
-@keyframes toastIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes toastOut {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(20px);
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
   }
 }

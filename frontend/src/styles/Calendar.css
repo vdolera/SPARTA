@@ -396,6 +396,11 @@
 }
 
 @media (min-width: 1273px) and (max-width: 1599px) {
+.dashboard-main-content {
+    flex-direction: row;
+    gap: 20px;
+  }
+
   .dashboard-container {
     grid-template-columns: 1fr 350px;
     gap: 20px;
@@ -449,7 +454,7 @@
     width: 90%;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 30px;
     margin: 0 auto;
   }
 
@@ -473,6 +478,7 @@
 
 .events-summary {
   text-align: center;
+  margin-top: 12px;
 }
 
 .event-card {
@@ -535,42 +541,126 @@
   letter-spacing: 0.6px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 640px) {
-  .event-card { padding: 10px; }
-  .metric-value { font-size: 16px; }
-  .events-summary-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
-}
 
-.upcoming-events,
-.dashboard-event-modal {
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #cfcfcf transparent;
-}
+@media (max-width: 768px) {
+  :root {
+    --sm-header-height: 56px;
+    --sm-sidemenu-height: 64px;
+    --sm-gap: 12px;
+  }
 
-.upcoming-events::-webkit-scrollbar,
-.dashboard-event-modal::-webkit-scrollbar {
-  width: 10px;
-}
+  .dashboard-page-container {
+    flex-direction: column;
+  }
 
-.upcoming-events::-webkit-scrollbar-track,
-.dashboard-event-modal::-webkit-scrollbar-track {
-  background: transparent;
-}
+  .dashboard-container {
+    grid-template-columns: 1fr;
+    gap: var(--sm-gap);
+    padding: 16px;
+    padding-top: calc(var(--sm-header-height) + var(--sm-sidemenu-height) + 16px);
+    max-width: 100%;
+  }
 
-.upcoming-events::-webkit-scrollbar-thumb,
-.dashboard-event-modal::-webkit-scrollbar-thumb {
-  background: #cfcfcf;
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-}
+  .react-calendar__month-view__weekdays__weekday {
+    text-align: center;
+  }
 
-.upcoming-events::-webkit-scrollbar-thumb:hover,
-.dashboard-event-modal::-webkit-scrollbar-thumb:hover {
-  background: #b5b5b5;
-}
+  .calendar-container, .upcoming-events, .dashboard-stats {
+    border-radius: 10px;
+    padding: 0px;
+    margin: 5px 0;
+  }
 
-.dashboard-event-modal .calendar-events-list{ scrollbar-width: thin; }
-.dashboard-event-modal::-webkit-scrollbar { width: 10px; }
-.dashboard-event-modal::-webkit-scrollbar-thumb { background: #cfcfcf; border-radius: 10px; }
+  .dashboard-stats {
+    margin: 0 auto;
+    width: 95%;
+    height: fit-content;
+  }
+
+  .dashboard-main-content { 
+    width: 100%; 
+    gap: 5px;
+    flex-direction: column;
+  }
+
+  .dashboard-side-content {
+    width: 100%;
+    margin-top: 8px;
+    display: block;
+    gap: 5px;
+  }
+
+  .events-summary {
+    margin-top: 0px;
+  }
+
+  .upcoming-events {
+    max-height: none;
+    overflow: visible;
+    width: 95%;
+  }
+
+  .upcoming-events > div {
+    width: 95%;
+    margin: 0 auto;
+  }
+
+  .upcoming-events ul {
+    margin: 0 auto;
+    width: 95%;
+  }
+
+  .event-card { 
+    height: 85px; 
+    padding: 10px; 
+    margin: 5px 15px; 
+  }
+
+  .event-card-title { 
+    font-size: 13px; 
+  }
+
+  .metric-value { 
+    font-size: 16px; 
+  }
+
+  .metric-label { 
+    font-size: 11px; 
+  }
+
+  .events-summary-grid { 
+    display: flex;
+    flex-direction: column;;
+  }
+
+  .dashboard-event-modal {
+    max-width: 95%;
+    width: 100%;
+    margin: 0 8px;
+    border-radius: 12px;
+  }
+
+  .dashboard-event-modal .calendar-events-list ul { 
+    gap: 8px; 
+  }
+
+  /* Calendar tile adjustments */
+  .react-calendar__tile {
+    min-height: 45px;
+    padding: 5px 2px;
+    font-size: 12px;
+  }
+
+  .react-calendar__navigation {
+    margin-bottom: 0px;
+  }
+
+  main, .dashboard-page-container { 
+    margin-top: 0; 
+  }
+
+  /* Ensure modals overlay topbars */
+  .dashboard-event-modal-overlay { 
+    z-index: 3000; 
+  }
+}

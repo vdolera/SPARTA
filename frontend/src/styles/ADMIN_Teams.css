@@ -1,12 +1,17 @@
-@media (max-width: 1023px) {
+@media (max-width: 769px) {
   .teams-event ul {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .teams-event {
     margin: 10px auto;
     display: grid;
+  }
+
+  .team-btn {
+    width: 40vw;
+    height: 26vh;
   }
 }
 
@@ -20,12 +25,22 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
   }
+
+  .team-btn {
+    width: 40vw;
+    height: 26vh;
+  }
 }
 
 @media (min-width: 1600px) {
   .teams-event ul {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+  }
+
+  .team-btn {
+    width: 40vw;
+    height: 26vh;
   }
 }
 
@@ -110,11 +125,9 @@ h3 {
 .team-btn {
   cursor: pointer;
   border: 1px solid rgb(255, 255, 255);
-  border-radius: 6px;
+  border-radius: 10px;
   margin: 10px 0;
   padding: 5px;
-  min-width: 22vh;
-  min-height: 29vh;
   font-family: Paytone One, sans-serif;
   font-size: 20px;
   text-transform: uppercase;
