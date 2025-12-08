@@ -10,6 +10,8 @@
 
   .event-specifics button {
     margin: 0 auto;
+    height: 190px;
+    width: 150px;
   }
 
   .event-header {
@@ -39,6 +41,12 @@
 
   .event-header, .event-details {
     width: 75vw;
+  }
+
+  .event-specifics button {
+    height: 190px;
+    width: 150px;
+    font-size: 14px;
   }
 
   .event-specifics {
@@ -97,12 +105,12 @@
   }
 
   .event-header, .event-details {
-    width: 75vw;
+    width: 50vw;
   }
 
   .event-details {
     gap: 120px;
-    height: 10vh;
+    height: 17vh;
     font-size: 10px;
   }
 
@@ -181,8 +189,6 @@ p {
   border: none;
   border-radius: 15px;
   cursor: pointer;
-  width: 150px;
-  height: 190px;
 }
 
 .event-specifics .btn-game {

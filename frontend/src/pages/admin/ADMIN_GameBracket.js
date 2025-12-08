@@ -745,14 +745,14 @@ const GameBracket = () => {
              {/* Groups Area - MANUALLY RENDER AS GRID */}
              <div style={{display:'flex', gap:'30px', justifyContent:'center', flexWrap:'wrap', width: '100%'}}>
                 {roundsData.filter(r => r.title.startsWith("Category")).map((group, gIdx) => (
-                   <div key={gIdx} className="group-stage" style={{backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px', border: '1px solid #ddd'}}>
-                      <h3 style={{textAlign: 'center', margin: '0 0 15px 0', borderBottom: '2px solid #181b59', paddingBottom: '5px'}}>{group.title}</h3>
+                   <div key={gIdx} className="group-stage" style={{backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '10px', border: '2px solid #1a2a49'}}>
+                      <h3 style={{color: "#1a2a49", backgroundColor: '#f9f9f9',textAlign: 'center', margin: '0 0 15px 0', borderBottom: '2px solid #181b59', paddingBottom: '5px'}}>{group.title}</h3>
                       
                       <div style={{display:'flex', gap:'20px'}}>
                         {/* Iterate over rounds inside the group */}
                         {group.rounds.map((round, rIdx) => (
                           <div key={rIdx} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
-                             <h4 style={{fontSize: '14px', textAlign:'center', color: '#666', margin: '0'}}>{round.title}</h4>
+                             <h4 style={{color: "#1a2a49", fontSize: '14px', textAlign:'center', color: '#666', margin: '0'}}>{round.title}</h4>
                              {round.seeds.map((seed, sIdx) => (
                                 <div key={sIdx} style={{marginBottom: '5px'}}>
                                    {renderSeed({seed, breakpoint: 0})} 
@@ -766,7 +766,7 @@ const GameBracket = () => {
              </div>
 
              {/* Knockout Area */}
-             <div style={{borderTop:'2px solid #ccc', paddingTop:'20px', textAlign: 'center'}}>
+             <div style={{backgroundColor: '#f9f9f9', color: "#1a2a49", border:'2px solid #ccc', borderRadius: '10px', padding:'35px', textAlign: 'center'}}>
                 <h2>Playoffs</h2>
                 <Bracket 
                   rounds={roundsData.find(r => r.title === "Playoffs")?.rounds || []} 
