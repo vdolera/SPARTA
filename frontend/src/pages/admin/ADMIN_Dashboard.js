@@ -291,7 +291,7 @@ const Dashboard = () => {
       <div className="dashboard-page-container">
 
         {/* Main Dashboard Content */}
-        <div style={{display:"flex", gap:"30px", flexDirection:"row", width: "100%"}}>
+        <div className="dashboard-main-content" style={{display:"flex", width: "100%"}}>
           <div className="dashboard-main-content">
             <div className="calendar-container">
               <Calendar 
@@ -308,7 +308,7 @@ const Dashboard = () => {
 
           {/* Side Content */}
           <div className="dashboard-side-content" >
-            <div style={{ flexGrow: 1, display: "flex", flexDirection: "column"}}>
+            <div style={{ flexGrow: 1, display: "flex", flexDirection: "column", alignItems: "center"}}>
               {/* Ongoing Matches List */}
               <div className="upcoming-events">
                 <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
@@ -363,7 +363,7 @@ const Dashboard = () => {
         <div className="dashboard-stats">
           <h4>{user.institution}</h4>
           {/* Events Summary*/}
-          <div className="events-summary" style={{ marginTop: 12 }}>
+          <div className="events-summary">
             {loading ? <p>Loading Data...</p> : eventsSummary.length === 0 ? (
               <p style={{ margin: 0, color: "#6b7280" }}>No active events found</p>
             ) : (

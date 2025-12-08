@@ -197,3 +197,90 @@
     display: none;
   }
 }
+
+@media (max-width: 768px) {
+  .sidemenu {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 5rem;
+    height: 7.5vh;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5px 0px;
+    border-radius: 0;
+    box-shadow: 0 2px 12px rgba(10,18,40,0.04);
+    border-bottom: 1px solid rgba(15,23,42,0.06);
+    gap: 6px;
+    z-index: 2200;
+  }
+
+  .sidemenu-logo { 
+    display: none;
+  }
+
+  .logo-img { 
+    display: none;
+  }
+
+  .sidemenu-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    width: 100%;
+  }
+
+  .sidemenu-list li {
+    margin: 0;
+  }
+
+  /* Hide all text labels, show only icons */
+  .sidemenu-list a {
+    font-size: 0;
+    padding: 10px 8px;
+    border-radius: 8px;
+    background: transparent;
+    transition: all 0.2s ease;
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hide text inside links */
+  .sidemenu-list a .label,
+  .sidemenu-list a .text,
+  .sidemenu-list a span {
+    display: none !important;
+  }
+
+  /* Show only SVG/icon and keep it centered */
+  .sidemenu-list a > svg,
+  .sidemenu-list a i {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    font-size: 18px;
+  }
+
+  /* Hover effect for icons */
+  .sidemenu-list a:hover {
+    background: rgba(206, 137, 44, 0.1);
+    border-radius: 8px;
+  }
+
+  .sidemenu-list .active {
+    background: #CE892C;
+    border-radius: 8px;
+  }
+}

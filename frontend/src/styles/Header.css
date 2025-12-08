@@ -207,5 +207,42 @@
     font-size: 18px;
     margin-left: 4rem;
   }
+}
+
+/* Responsive: mobile (<= 768px) header layout */
+@media (max-width: 768px) {
+  .header {
+    position: fixed;
+    top: 0;
+    left: -50px;
+    right: 0;
+    height: 56px;
+    z-index: 2200;
+    padding: 0 12px;
+  }
+
+  .header-content { 
+    padding: 0; 
+    width: 100%; 
+  }
+
+  .header .user-box { 
+    margin-left: 6px; 
+    font-size: 12px;
+  }
+
+  .user-meta {
+    width: 30vw;
+  }
+
+  .user-box {
+    padding: 6px 10px;
+    height: 25px;
+  }
+
+  .user-nick {
+    font-size: 12px;
+  }
+
 
 }
