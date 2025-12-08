@@ -66,13 +66,13 @@ const CreateTeam = () => {
         setTimeout(() => {
           setShowToast(false);
           navigate(-1);
-        }, 5000);
+        }, 1000);
       } else {
         setToastMessage(data.message || "Failed to create team.");
         setToastType("error");
         setShowToast(true);
 
-        setTimeout(() => setShowToast(false), 5000);
+        setTimeout(() => setShowToast(false), 2000);
       }
       } catch (error) {
         console.error("Error creating team:", error);
@@ -81,7 +81,7 @@ const CreateTeam = () => {
         setToastType("error");
         setShowToast(true);
 
-        setTimeout(() => setShowToast(false), 5000);
+        setTimeout(() => setShowToast(false), 2000);
       }
   };
 

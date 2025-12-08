@@ -106,24 +106,34 @@ const Teams = () => {
   fetchTeams();
 }, [user?.institution, eventDetails]);
 
-  // Fetch Games
-  useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}&eventName=${encodeURIComponent(decodedName)}`);
-        const games = await response.json();
+// Fetch Games
+useEffect(() => {
+  const fetchGames = async () => {
+    // Safety: Wait for Event ID (matches our previous fixes)
+    if (!eventDetails?._id) return;
 
-     // If any game exists for this event, set to true
-     if (games.length > 0) {
-      setGamesExist(true);
-    } 
-      } catch (error) {
-        console.error("Error fetching games:", error);
+    try {
+      // 1. Fetch using eventId for accuracy
+      const response = await fetch(
+        `http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}&eventId=${eventDetails._id}`
+      );
+      const games = await response.json();
+
+      // 2. FIX: Explicitly set true OR false
+      if (Array.isArray(games) && games.length > 0) {
+        setGamesExist(true);
+      } else {
+        setGamesExist(false); // <--- THIS WAS MISSING
       }
-    };
+      
+    } catch (error) {
+      console.error("Error fetching games:", error);
+      setGamesExist(false); // Allow adding teams if check fails
+    }
+  };
 
-    fetchGames();
-  }, [user?.institution, decodedName]);
+  fetchGames();
+}, [user?.institution, eventDetails]);
 
   // Create team button nav
   const handleAddTeam = () => {

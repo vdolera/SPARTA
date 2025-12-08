@@ -148,7 +148,7 @@ useEffect(() => {
         setTimeout(() => {
           setShowModal(false);
           navigate(-1);
-        }, 5000);
+        }, 1000);
       } else {
         setModalMessage("Failed! " + data.message);
         setShowModal(true);
