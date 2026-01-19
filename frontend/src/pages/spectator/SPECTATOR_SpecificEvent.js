@@ -1,4 +1,4 @@
-import { useNavigate,useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { TiGroupOutline } from "react-icons/ti";
 import { LuSwords } from "react-icons/lu";
@@ -8,17 +8,17 @@ import '../../styles/ADMIN_SpecificEvents.css';
 
 const SpectatorSpecificEvent = () => {
 
-  useEffect(() => {document.title = "SPARTA | " + decodedName},[]);
+  useEffect(() => { document.title = "SPARTA | " + decodedName }, []);
 
-    const navigate = useNavigate();
-    const { institution, eventName } = useParams();
-    const decodedName = decodeURIComponent(eventName);
-    const decodedInstitution = decodeURIComponent(institution);
+  const navigate = useNavigate();
+  const { institution, eventName } = useParams();
+  const decodedName = decodeURIComponent(eventName);
+  const decodedInstitution = decodeURIComponent(institution);
 
-    const [event, setEventDetails] = useState(null);
+  const [event, setEventDetails] = useState(null);
 
-    // Fetch Event details
-    useEffect(() => {
+  // Fetch Event details
+  useEffect(() => {
     const fetchEventDetails = async () => {
       try {
         const response = await fetch(
@@ -28,99 +28,93 @@ const SpectatorSpecificEvent = () => {
         setEventDetails(data);
       } catch (error) {
         console.error("Error fetching event details:", error);
-       }
-      };
-      fetchEventDetails();
-    }, [decodedName]);
+      }
+    };
+    fetchEventDetails();
+  }, [decodedName]);
 
-    const handleGameClick = () => {
-        navigate(`/spectator/${encodeURIComponent(decodedInstitution)}/${encodeURIComponent(decodedName)}/game`);
-      };
+  const handleGameClick = () => {
+    navigate(`/spectator/${encodeURIComponent(decodedInstitution)}/${encodeURIComponent(decodedName)}/game`);
+  };
 
-    const handleTeamClick = () => {
-      navigate(`/event/${encodeURIComponent(decodedName)}/team/players`);
-      };  
+  const handleTeamClick = () => {
+    navigate(`/spectator/${encodeURIComponent(decodedInstitution)}/${encodeURIComponent(decodedName)}/teams`);
+  };
 
-    const handleScoreClick = () => {
-        navigate(`/event/${encodeURIComponent(decodedName)}/liveScores`);
-      };
+  const handleScoreClick = () => {
+    navigate(`/spectator/${encodeURIComponent(decodedInstitution)}/${encodeURIComponent(decodedName)}/liveScores`);
+  };
 
-    const handleFeedbackClick = () => {
-        navigate(`/event/${encodeURIComponent(decodedName)}/feedback`);
-      };
+  const handleFeedbackClick = () => {
+    navigate(`/event/${encodeURIComponent(decodedName)}/feedback`);
+  };
 
-    return (
+  return (
 
-            <div className="spectator-specific-event-container">
+    <div className="spectator-specific-event-container">
 
-              <div className="spectator-header">
-                  <div className="header-text">
-                      SPARTA SPECTATOR LIVE VIEWING
-                  </div>
-              </div>
+      <div className="spectator-header">
+        <div className="header-text">
+          SPARTA SPECTATOR LIVE VIEWING
+        </div>
+      </div>
 
-              <div className="logo-div">
-                  <div className="logo-container">
-                      <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
-                  </div>
-              </div>
-                    
-                <div className="event-header" >
-                    <h2>{decodedName}</h2>
-                </div>
-                
-                <div className="event-details">
+      <div className="logo-div">
+        <div className="logo-container">
+          <img src="/SPARTA_Logo.png" alt="SPARTA Logo" className="spectator-logo" />
+        </div>
+      </div>
 
-                    <div className="organizer-box">
-                        <h3>Organizer Details</h3>
-                        <p>Name: {event?.userName}</p>
+      <div className="event-header" >
+        <h2>{decodedName}</h2>
+      </div>
 
-                    </div>
-                    <div className="date-box">
-                        <h3>Event Date</h3>
-                        <p>Start: {event?.eventStartDate ? new Date(event.eventStartDate).toLocaleDateString() : "Loading..."}</p>
-                        <p>End: {event?.eventEndDate ? new Date(event.eventEndDate).toLocaleDateString() : "Loading..."}</p>
-                    </div>
+      <div className="event-details">
 
-                    <div className="location-box">
-                        <h3>Event Location</h3>
-                        <p>Venue: {event?.location}</p>
-                    </div>
-                </div>
+        <div className="organizer-box">
+          <h3>Organizer Details</h3>
+          <p>Name: {event?.userName}</p>
 
-                <div className="event-specifics">
+        </div>
+        <div className="date-box">
+          <h3>Event Date</h3>
+          <p>Start: {event?.eventStartDate ? new Date(event.eventStartDate).toLocaleDateString() : "Loading..."}</p>
+          <p>End: {event?.eventEndDate ? new Date(event.eventEndDate).toLocaleDateString() : "Loading..."}</p>
+        </div>
 
-                    <button className="btn-team" 
-                    // onClick={handleTeamClick}
-                    style={{backgroundColor: "gray"}}
-                    >
-                      <div className="btn-content">
-                        <TiGroupOutline size={48} /> {/* Larger icon */}
-                        <span>Team</span>
-                      </div>
-                    </button>
+        <div className="location-box">
+          <h3>Event Location</h3>
+          <p>Venue: {event?.location}</p>
+        </div>
+      </div>
 
-                    <button className="btn-game" onClick={handleGameClick}>
-                      <div className="btn-content">
-                        <LuSwords size={48} /> {/* Larger icon */}
-                        <span>Game</span>
-                      </div>
-                    </button>
+      <div className="event-specifics">
 
-                    <button className="btn-score" 
-                    // onClick={handleScoreClick}
-                    style={{backgroundColor: "gray"}}
-                    >
-                      <div className="btn-content">
-                        <MdOutlineScoreboard size={48} /> {/* Larger icon */}
-                        <span>Live Score</span>
-                      </div>
-                    </button>
+        <button className="btn-team" onClick={handleTeamClick}>
+          <div className="btn-content">
+            <TiGroupOutline size={48} />
+            <span>Team</span>
+          </div>
+        </button>
 
-                </div>
-                
-            </div>
-    );
+        <button className="btn-game" onClick={handleGameClick}>
+          <div className="btn-content">
+            <LuSwords size={48} /> {/* Larger icon */}
+            <span>Game</span>
+          </div>
+        </button>
+
+        <button className="btn-score" onClick={handleScoreClick}>
+          <div className="btn-content">
+            <MdOutlineScoreboard size={48} />
+            <span>Live Score</span>
+          </div>
+        </button>
+
+      </div>
+
+    </div>
+  );
 };
 
 export default SpectatorSpecificEvent;

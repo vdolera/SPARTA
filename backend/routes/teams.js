@@ -25,7 +25,7 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    const existing = await Team.findOne({ teamName, institution });
+    const existing = await Team.findOne({ teamName, institution, event: eventId });
     if (existing) {
       return res.status(409).json({ message: "Team already exists in this institution." });
     }
@@ -82,8 +82,7 @@ router.post("/team", upload.single("teamIcon"), async (req, res) => {
 // GET teams
 router.get('/teams', async (req, res) => {
   try {
-    // 1. Get parameters from Frontend
-    // Frontend sends 'eventId', but we also grab 'event' just in case
+    // Get parameters
     const { institution, eventId, event } = req.query;
 
     if (!institution) {
@@ -92,18 +91,18 @@ router.get('/teams', async (req, res) => {
 
     const query = { institution };
 
-    // 2. Map 'eventId' from URL -> 'event' in Database
+    // Map 'eventId' from URL
     if (eventId) {
-      query.event = eventId; // <--- THIS IS THE FIX. match schema field name 'event'
+      query.event = eventId; 
     } 
-    // Fallback for old code using 'event' param
+    // For old code using 'event' 
     else if (event) {
        query.event = event;
     }
 
-    // 3. Find teams where institution matches AND event matches
+    // Find teams where institution matches & event matches
     const teams = await Team.find(query)
-      .populate('event', 'eventName'); // Optional: populate to see event details
+      .populate('event', 'eventName');
     
     res.status(200).json(teams);
   } catch (err) {
@@ -127,7 +126,7 @@ router.get('/team', async (req, res) => {
 // GET detailed team scores
 router.get("/teams/scores", async (req, res) => {
   try {
-    // 1. Capture 'eventId' sent from Frontend
+    // Capture 'eventId'
     const { institution, eventId, event } = req.query;
 
     if (!institution) {
@@ -136,26 +135,24 @@ router.get("/teams/scores", async (req, res) => {
 
     const query = { institution };
 
-    // 2. Map 'eventId' (Frontend) -> 'event' (Database Field)
+    // Map 'eventId'
     if (eventId) {
       query.event = eventId; 
     } 
-    // Fallback for old calls
+    // For old process
     else if (event) {
-        // If it looks like an ID, use it as ID
         if (event.match(/^[0-9a-fA-F]{24}$/)) {
             query.event = event;
         } else {
-            // Only use eventName if your schema still supports it (Your current schema does not)
              console.log("Warning: Querying by name is deprecated for this schema");
              return res.json([]); 
         }
     }
 
-    // 3. Find teams using the correct query
+    // Find teams using the correct query
     const teams = await Team.find(query);
 
-    // 4. Calculate Scores (Logic remains the same)
+    // Calculate Scores
     const teamsWithTally = teams.map(team => {
       let grandTotal = 0;
       let gold = 0;

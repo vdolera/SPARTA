@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import '../styles/Login.css';
 
 export default function LoginPage() {
@@ -19,6 +20,42 @@ export default function LoginPage() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Google Login Handler
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/google-login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          token: credentialResponse.credential, 
+          role: role // Send the selected role
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setShowLoginSuccess(true);
+        localStorage.setItem('auth', JSON.stringify(data.user));
+        
+        setTimeout(() => {
+          if (['admin', 'co-organizer', 'sub-organizer'].includes(role)) {
+            navigate('/admin/dashboard');
+          } else if (role === 'player') {
+            navigate('/dashboard');
+          }
+        }, 3000);
+      } else {
+        setErrorMessage(data.message || "Google Login failed.");
+        setShowLoginFailed(true);
+      }
+    } catch (error) {
+      console.error('Google Login Error:', error);
+      setErrorMessage("Network error. Please try again.");
+      setShowLoginFailed(true);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -190,6 +227,20 @@ export default function LoginPage() {
                 <label className="label-login" htmlFor="accessKey">Access Key</label>
               </div>
             )}
+
+            {/* Place Google Login Button BELOW the normal login button */}
+            <div style={{ margin: "20px 0", display: "flex", justifyContent: "center" }}>
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => {
+                      setErrorMessage("Google Sign In was unsuccessful.");
+                      setShowLoginFailed(true);
+                    }}
+                    theme="filled_blue"
+                    shape="pill"
+                    text="continue_with"
+                  />
+               </div>
 
             <button type="submit" className="login-button">
               Login as {role.charAt(0).toUpperCase() + role.slice(1)}

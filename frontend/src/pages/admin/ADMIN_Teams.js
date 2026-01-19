@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import "../../styles/ADMIN_Teams.css";
 import { VscSearchStop } from "react-icons/vsc";
 import { MoreVertical } from "lucide-react";
+import { FaFileImport } from "react-icons/fa";
 
 const Teams = () => {
 
@@ -30,26 +31,44 @@ const Teams = () => {
   const [gamesExist, setGamesExist] = useState(false);
   const [eventDetails, setEventDetails] = useState(null);
 
+  // --- IMPORT STATE ---
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [allEvents, setAllEvents] = useState([]);
+  const [selectedImportEvent, setSelectedImportEvent] = useState("");
+  const [pastTeams, setPastTeams] = useState([]);
+  const [selectedTeamsToCopy, setSelectedTeamsToCopy] = useState([]);
 
+  // Fetch Events (Current Event Details AND Past Events for Import)
   useEffect(() => {
-    const fetchEventId = async () => {
+    const fetchEventData = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/events?institution=${user?.institution}`);
-        const data = await res.json();
-        
-        if (Array.isArray(data)) {
-          const found = data.find(e => e.eventName === decodedName);
-          if (found) {
-            setEventDetails(found);
-          }
+        // 1. Fetch Active Events (To find the current event details)
+        const activeRes = await fetch(`http://localhost:5000/api/events?institution=${user?.institution}`);
+        const activeData = await activeRes.json();
+
+        if (Array.isArray(activeData)) {
+          const found = activeData.find(e => e.eventName === decodedName);
+          if (found) setEventDetails(found);
         }
+
+        // 2. Fetch PAST Events (Specifically for the Import Dropdown)
+        // We use your existing /past-events route here
+        const pastRes = await fetch(`http://localhost:5000/api/past-events?institution=${user?.institution}`);
+        const pastData = await pastRes.json();
+
+        if (Array.isArray(pastData)) {
+          // Sort them by newest first so it's easier to find recent events
+          const sortedPast = pastData.sort((a, b) => new Date(b.eventEndDate) - new Date(a.eventEndDate));
+          setAllEvents(sortedPast);
+        }
+
       } catch (err) {
-        console.error("Error fetching event details:", err);
+        console.error("Error fetching event data:", err);
       }
     };
 
     if (user?.institution && decodedName) {
-      fetchEventId();
+      fetchEventData();
     }
   }, [user?.institution, decodedName]);
 
@@ -75,65 +94,117 @@ const Teams = () => {
   const filteredCoordinators = coordinators.filter((c) => {
     const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase());
     const alreadySelected = !!editTeam?.coordinators?.some((sel) =>
-      // sel can be either an id string or a coordinator object
       typeof sel === "string" ? sel === c._id : sel?._id === c._id
     );
     return matchesSearch && !alreadySelected;
   });
 
  // Fetch teams
- useEffect(() => {
-  const fetchTeams = async () => {
+ const fetchTeams = async () => {
     if (!eventDetails?._id) return; 
-
     try {
       const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${eventDetails._id}`);
       const data = await response.json();
-      
       if (Array.isArray(data)) {
         setTeams(data);
       } else {
-        console.warn("API did not return an array:", data);
         setTeams([]); 
       }
-   
     } catch (error) {
       console.error("Error fetching teams:", error);
       setTeams([]); 
     }
   };
 
+ useEffect(() => {
   fetchTeams();
 }, [user?.institution, eventDetails]);
 
 // Fetch Games
 useEffect(() => {
   const fetchGames = async () => {
-    // Safety: Wait for Event ID (matches our previous fixes)
     if (!eventDetails?._id) return;
-
     try {
-      // 1. Fetch using eventId for accuracy
       const response = await fetch(
         `http://localhost:5000/api/games?institution=${encodeURIComponent(user?.institution)}&eventId=${eventDetails._id}`
       );
       const games = await response.json();
-
-      // 2. FIX: Explicitly set true OR false
       if (Array.isArray(games) && games.length > 0) {
         setGamesExist(true);
       } else {
-        setGamesExist(false); // <--- THIS WAS MISSING
+        setGamesExist(false); 
       }
-      
     } catch (error) {
       console.error("Error fetching games:", error);
-      setGamesExist(false); // Allow adding teams if check fails
+      setGamesExist(false); 
+    }
+  };
+  fetchGames();
+}, [user?.institution, eventDetails]);
+
+  // --- IMPORT LOGIC ---
+  const handleSelectImportEvent = async (e) => {
+    const eventId = e.target.value;
+    setSelectedImportEvent(eventId);
+    setSelectedTeamsToCopy([]);
+    
+    if(!eventId) {
+        setPastTeams([]);
+        return;
+    }
+
+    try {
+        const res = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${eventId}`);
+        const data = await res.json();
+        if(Array.isArray(data)) setPastTeams(data);
+    } catch(err) {
+        console.error(err);
     }
   };
 
-  fetchGames();
-}, [user?.institution, eventDetails]);
+  const toggleImportSelection = (team) => {
+    if (selectedTeamsToCopy.find(t => t._id === team._id)) {
+        setSelectedTeamsToCopy(prev => prev.filter(t => t._id !== team._id));
+    } else {
+        setSelectedTeamsToCopy(prev => [...prev, team]);
+    }
+  };
+
+  const submitImportTeams = async () => {
+     if(selectedTeamsToCopy.length === 0) return;
+
+     let successCount = 0;
+     
+     for (const team of selectedTeamsToCopy) {
+        const formData = new FormData();
+        formData.append("institution", user.institution);
+        formData.append("eventId", eventDetails._id); // Assign to CURRENT event
+        formData.append("teamName", team.teamName);
+        formData.append("teamManager", team.teamManager || "");
+        formData.append("managerEmail", team.managerEmail || "");
+        formData.append("teamColor", team.teamColor || "#A96B24");
+        // We do not copy coordinators/players to avoid ID conflicts, just the team shell
+        // If team icon exists (URL), we might need logic to handle it, skipping for now or passing URL if backend supports
+        
+        try {
+            const res = await fetch("http://localhost:5000/api/team", {
+                method: "POST",
+                body: formData
+            });
+            if(res.ok) successCount++;
+        } catch(err) {
+            console.error("Failed to copy team", team.teamName);
+        }
+     }
+
+     setToastMessage(`Successfully imported ${successCount} teams.`);
+     setToastType("success");
+     setShowToast(true);
+     setShowImportModal(false);
+     fetchTeams(); // Refresh list
+     setTimeout(() => setShowToast(false), 3000);
+  };
+
 
   // Create team button nav
   const handleAddTeam = () => {
@@ -230,9 +301,19 @@ useEffect(() => {
               style={{ marginRight: "16px" }}
             />
             {(user.role === "admin" || user.role === "co-organizer") && (
-            <button className="new-team-btn" onClick={handleAddTeam} disabled={gamesExist} title={gamesExist ? "Games are in progress. New teams cannot be added." : "Add a new team"}>
-              + New Team
-            </button>
+             <div style={{display:'flex', gap:'10px'}}>
+                <button 
+                    className="new-team-btn" 
+                    style={{backgroundColor: "#b95454", width: "auto", padding: "0 15px"}}
+                    onClick={() => setShowImportModal(true)} 
+                    disabled={gamesExist}
+                >
+                    <FaFileImport style={{marginRight: "5px"}}/> Import Teams
+                </button>
+                <button className="new-team-btn" onClick={handleAddTeam} disabled={gamesExist} title={gamesExist ? "Games are in progress. New teams cannot be added." : "Add a new team"}>
+                + New Team
+                </button>
+             </div>
             )}
           </div>
 
@@ -305,11 +386,70 @@ useEffect(() => {
         </div>
       </div>
       
+      {/* Import Modal */}
+      {showImportModal && (
+        <div className="modal-overlay">
+            <div className="modal" style={{maxWidth: "500px", width: "90%"}}>
+                <h2>Import Teams from Past Event</h2>
+                <hr />
+                <div style={{margin: "15px 0"}}>
+                    <label>Select Event:</label>
+                    <select 
+                        style={{width: "100%", padding: "8px", marginTop: "5px"}}
+                        value={selectedImportEvent}
+                        onChange={handleSelectImportEvent}
+                    >
+                        <option value="">-- Select an Event --</option>
+                        {allEvents.map(evt => (
+                            <option key={evt._id} value={evt._id}>{evt.eventName}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {selectedImportEvent && (
+                    <div style={{maxHeight: "300px", overflowY: "auto", border: "1px solid #ddd", padding: "10px", borderRadius: "4px"}}>
+                        {pastTeams.length === 0 ? (
+                            <p>No teams found in selected event.</p>
+                        ) : (
+                            <>
+                                <div style={{marginBottom:"10px", fontWeight:"bold"}}>Select Teams to Copy:</div>
+                                {pastTeams.map(team => (
+                                    <div key={team._id} style={{display:"flex", alignItems:"center", marginBottom:"5px"}}>
+                                        <input 
+                                            type="checkbox" 
+                                            checked={!!selectedTeamsToCopy.find(t => t._id === team._id)}
+                                            onChange={() => toggleImportSelection(team)}
+                                            style={{marginRight: "10px"}}
+                                        />
+                                        <div 
+                                            style={{
+                                                width:"20px", height:"20px", 
+                                                backgroundColor: team.teamColor || "#ccc", 
+                                                marginRight:"10px", borderRadius:"3px"
+                                            }}
+                                        ></div>
+                                        <span>{team.teamName}</span>
+                                    </div>
+                                ))}
+                            </>
+                        )}
+                    </div>
+                )}
+
+                <div className="modal-actions">
+                    <button onClick={() => setShowImportModal(false)}>Cancel</button>
+                    <button onClick={submitImportTeams} disabled={selectedTeamsToCopy.length === 0}>Import Selected</button>
+                </div>
+            </div>
+        </div>
+      )}
+
       {/* Edit Modal */}
       {editTeam && (
         <div className="modal-overlay">
           <div className="team-edit-modal">
-            <h2 style={{paddingBottom: "10px", textAlign: "center"}}>EDIT TEAM</h2>
+            {/* ... [Rest of Edit Modal Code remains same] ... */}
+             <h2 style={{paddingBottom: "10px", textAlign: "center"}}>EDIT TEAM</h2>
             <form
               className="team-edit-form"
               onSubmit={(e) => {
@@ -317,162 +457,51 @@ useEffect(() => {
                 handleEditSave();
               }}
             >
-              {/* Team Name */}
               <div className="teamedit-form-group">
-                <label>
-                  Team Name:
-                  <input
-                    type="text"
-                    value={editTeam.teamName}
-                    onChange={(e) =>
-                      setEditTeam({ ...editTeam, teamName: e.target.value })
-                    }
-                    required
-                  />
-                </label>
+                <label>Team Name: <input type="text" value={editTeam.teamName} onChange={(e) => setEditTeam({ ...editTeam, teamName: e.target.value })} required /></label>
               </div>
-
-              {/* Team Manager */}
               <div className="teamedit-form-group">
-                <label>
-                  Team Manager:
-                  <input
-                    type="text"
-                    value={editTeam.teamManager || ""}
-                    onChange={(e) =>
-                      setEditTeam({ ...editTeam, teamManager: e.target.value })
-                    }
-                  />
-                </label>
+                <label>Team Manager: <input type="text" value={editTeam.teamManager || ""} onChange={(e) => setEditTeam({ ...editTeam, teamManager: e.target.value })} /></label>
               </div>
-
-              {/* Manager Email */}
               <div className="teamedit-form-group">
-                <label>
-                  Manager Email:
-                  <input
-                    type="email"
-                    value={editTeam.managerEmail || ""}
-                    onChange={(e) =>
-                      setEditTeam({ ...editTeam, managerEmail: e.target.value })
-                    }
-                  />
-                </label>
+                <label>Manager Email: <input type="email" value={editTeam.managerEmail || ""} onChange={(e) => setEditTeam({ ...editTeam, managerEmail: e.target.value })} /></label>
               </div>
-
-              {/* Team Color */}
               <div className="teamedit-form-group">
                 <label style={{fontFamily: "Montserrat, sans-serif", fontSize: "14px", color: "black"}} className="color-picker">
-                  Team Color:
-                  <input
-                    type="color"
-                    value={editTeam.teamColor || "#A96B24"}
-                    onChange={(e) =>
-                      setEditTeam({ ...editTeam, teamColor: e.target.value })
-                    }
-                  />
+                  Team Color: <input type="color" value={editTeam.teamColor || "#A96B24"} onChange={(e) => setEditTeam({ ...editTeam, teamColor: e.target.value })} />
                 </label>
               </div>
-
-              
-              {/* Team Icon */}
-
               <label style={{fontWeight: "600"}}> Team Icon: </label>
                 <div className="file-upload" style={{width: "80%", margin: "5px auto"}}>
-
-                  <input
-                    id="file-upload"
-                    name="file-upload"
-                    type="file"
-                    accept="image/*"
-                    style={{display: "none"}}
-                    onChange={(e) =>
-                      setEditTeam({ ...editTeam, newIcon: e.target.files[0] })
-                    }
-                    />
-                  <label htmlFor="file-upload" className="upload-btn">
-                    Upload Attachment
-                  </label>
+                  <input id="file-upload" name="file-upload" type="file" accept="image/*" style={{display: "none"}} onChange={(e) => setEditTeam({ ...editTeam, newIcon: e.target.files[0] })} />
+                  <label htmlFor="file-upload" className="upload-btn">Upload Attachment</label>
                 </div>
-
-              {/* Sub-organizers */}
+              {/* Sub-organizers (kept same) */}
               <div className="teamedit-form-group" style={{ marginTop: "20px" }}>
-                <div>
+                 {/* ... Existing logic for coords ... */}
+                 <div>
                   <label>Assign Sub-Organizer/s</label>
                   <div className="multi-select">
-                    <input
-                      type="text"
-                      placeholder="Enter Name or Select"
-                      value={search}
-                      onFocus={() => setShowDropdown(true)}
-                      onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-
-                    {showDropdown &&
-                      (filteredCoordinators.length > 0 ||
-                        (!search && coordinators.length > 0)) && (
+                    <input type="text" placeholder="Enter Name or Select" value={search} onFocus={() => setShowDropdown(true)} onBlur={() => setTimeout(() => setShowDropdown(false), 150)} onChange={(e) => setSearch(e.target.value)} />
+                    {showDropdown && (filteredCoordinators.length > 0 || (!search && coordinators.length > 0)) && (
                         <ul className="dropdown">
-                          {(search
-                            ? filteredCoordinators
-                            : coordinators.filter(
-                              (c) =>
-                                !editTeam.coordinators?.some(
-                                  (sel) => sel._id === c._id
-                                )
-                            )
-                          ).map((c) => (
-                            <li
-                              key={c._id}
-                              onClick={() =>
-                                setEditTeam({
-                                  ...editTeam,
-                                  coordinators: [...(editTeam.coordinators || []), c],
-                                })
-                              }
-                            >
-                              {c.name} ({c.role})
-                            </li>
+                          {(search ? filteredCoordinators : coordinators.filter((c) => !editTeam.coordinators?.some((sel) => sel._id === c._id))).map((c) => (
+                            <li key={c._id} onClick={() => setEditTeam({...editTeam, coordinators: [...(editTeam.coordinators || []), c],})}>{c.name} ({c.role})</li>
                           ))}
                         </ul>
                       )}
                   </div>
-
                 <div className="selected-tags">
                   {editTeam.coordinators?.map((c) => {
-                    // support both object and id-string shapes
                     const id = typeof c === "string" ? c : c?._id;
                     const label = (typeof c === "string" ? (coordinators.find(x => x._id === c)?.name || c) : c?.name) || id;
-                    return (
-                      <span key={id} className="tag">
-                        {label}
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setEditTeam({
-                              ...editTeam,
-                              coordinators: editTeam.coordinators.filter((co) =>
-                                typeof co === "string" ? co !== id : co?._id !== id
-                              ),
-                            })
-                          }
-                        >
-                            ×
-                        </button>
-                      </span>
-                    );
+                    return ( <span key={id} className="tag"> {label} <button type="button" onClick={() => setEditTeam({ ...editTeam, coordinators: editTeam.coordinators.filter((co) => typeof co === "string" ? co !== id : co?._id !== id ), }) } > × </button> </span> );
                   })}
                 </div>
-
                 </div>
               </div>
-
-              {/* Modal actions */}
               <div className="teamedit-modal-actions">
-                
-                <button type="button" onClick={() => setEditTeam(null)}>
-                  Cancel
-                </button>
+                <button type="button" onClick={() => setEditTeam(null)}>Cancel</button>
                 <button type="submit">Save</button>
               </div>
             </form>
@@ -494,7 +523,7 @@ useEffect(() => {
           </div>
         )}
 
-        {/* Toast (matches Register.js classes) */}
+        {/* Toast */}
         {showToast && (
           <div className={`toast ${toastType === "success" ? "toast-success" : "toast-error"}`}>
             {toastMessage}

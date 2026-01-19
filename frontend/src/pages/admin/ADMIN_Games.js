@@ -6,6 +6,7 @@ import { MdSportsVolleyball, MdSportsKabaddi } from "react-icons/md";
 import { BiSolidBaseball, BiBaseball } from "react-icons/bi";
 import { FaCircleQuestion } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
+import { FaFileImport } from "react-icons/fa"; // Import Icon
 import '../../styles/ADMIN_Games.css';
 
 const Game = () => {
@@ -25,6 +26,13 @@ const Game = () => {
   const [toastMessage, setToastMessage] = useState("");
   const [eventDetails, setEventDetails] = useState(null);
 
+  // --- IMPORT STATE ---
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [allEvents, setAllEvents] = useState([]);
+  const [selectedImportEvent, setSelectedImportEvent] = useState("");
+  const [pastGames, setPastGames] = useState([]);
+  const [selectedGamesToCopy, setSelectedGamesToCopy] = useState([]);
+
   const filteredGames = Object.entries(gamesByType).filter(([combinedType]) =>
     combinedType.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -43,53 +51,132 @@ const Game = () => {
   };
 
   useEffect(() => {
-    const fetchEventId = async () => {
+    const fetchEventData = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/events?institution=${user?.institution}`);
-        const data = await res.json();
-        
-        if (Array.isArray(data)) {
-          const found = data.find(e => e.eventName === decodedName);
-          if (found) {
-            setEventDetails(found);
-          }
+        // 1. Fetch Active Events (To find current event details)
+        const activeRes = await fetch(`http://localhost:5000/api/events?institution=${user?.institution}`);
+        const activeData = await activeRes.json();
+
+        if (Array.isArray(activeData)) {
+          const found = activeData.find(e => e.eventName === decodedName);
+          if (found) setEventDetails(found);
         }
+
+        // 2. Fetch PAST Events (For Import Dropdown)
+        const pastRes = await fetch(`http://localhost:5000/api/past-events?institution=${user?.institution}`);
+        const pastData = await pastRes.json();
+
+        if (Array.isArray(pastData)) {
+           const sortedPast = pastData.sort((a, b) => new Date(b.eventEndDate) - new Date(a.eventEndDate));
+           setAllEvents(sortedPast);
+        }
+
       } catch (err) {
-        console.error("Error fetching event details:", err);
+        console.error("Error fetching event data:", err);
       }
     };
 
     if (user?.institution && decodedName) {
-      fetchEventId();
+      fetchEventData();
     }
   }, [user?.institution, decodedName]);
 
   // Fetch Games
+  const fetchGames = async () => {
+    if(!eventDetails?._id) return;
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventId=${eventDetails._id}`
+      );
+      const data = await response.json();
+
+      const grouped = {};
+      data.forEach((game) => {
+        const key = `${game.category} ${game.gameType}`;
+        if (!grouped[key]) {
+          grouped[key] = [];
+        }
+        grouped[key].push(game);
+      });
+
+      setGamesByType(grouped);
+    } catch (error) {
+      console.error("Error fetching games:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventId=${eventDetails._id}`
-        );
-        const data = await response.json();
-
-        const grouped = {};
-        data.forEach((game) => {
-          const key = `${game.category} ${game.gameType}`;
-          if (!grouped[key]) {
-            grouped[key] = [];
-          }
-          grouped[key].push(game);
-        });
-
-        setGamesByType(grouped);
-      } catch (error) {
-        console.error("Error fetching games:", error);
-      }
-    };
-
     fetchGames();
   }, [userInstitution, eventDetails]);
+
+  // --- IMPORT LOGIC ---
+  const handleSelectImportEvent = async (e) => {
+    const eventId = e.target.value;
+    setSelectedImportEvent(eventId);
+    setSelectedGamesToCopy([]);
+    
+    if(!eventId) {
+        setPastGames([]);
+        return;
+    }
+
+    try {
+        const res = await fetch(`http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventId=${eventId}`);
+        const data = await res.json();
+        if(Array.isArray(data)) setPastGames(data);
+    } catch(err) {
+        console.error(err);
+    }
+  };
+
+  const toggleImportSelection = (game) => {
+    if (selectedGamesToCopy.find(g => g._id === game._id)) {
+        setSelectedGamesToCopy(prev => prev.filter(g => g._id !== game._id));
+    } else {
+        setSelectedGamesToCopy(prev => [...prev, game]);
+    }
+  };
+
+  const submitImportGames = async () => {
+    if(selectedGamesToCopy.length === 0) return;
+
+    let successCount = 0;
+    
+    for (const game of selectedGamesToCopy) {
+       const formData = new FormData();
+       formData.append("institution", user.institution);
+       formData.append("eventId", eventDetails._id);
+       formData.append("eventName", eventDetails.eventName);
+       
+       formData.append("gameType", game.gameType);
+       formData.append("category", game.category);
+       formData.append("bracketType", game.bracketType);
+       
+       // CRITICAL: We use current event dates to avoid validation errors
+       formData.append("startDate", eventDetails.eventStartDate);
+       formData.append("endDate", eventDetails.eventEndDate);
+       
+       // Teams and Rules
+       formData.append("teams", JSON.stringify(game.teams || [])); // Copy Participating teams
+       if(game.rules) formData.append("rulesText", game.rules); // Send as text (works if it is a string URL or plain text)
+
+       try {
+           const res = await fetch("http://localhost:5000/api/games", {
+               method: "POST",
+               body: formData
+           });
+           if(res.ok) successCount++;
+       } catch(err) {
+           console.error("Failed to copy game", game.gameType);
+       }
+    }
+
+    setToastMessage(`Successfully copied ${successCount} games.`);
+    setShowToast(true);
+    setShowImportModal(false);
+    fetchGames(); // Refresh list
+    setTimeout(() => setShowToast(false), 5000);
+ };
 
   // Add Game button 
   const handleAddGame = () => {
@@ -169,7 +256,16 @@ const Game = () => {
           onChange={e => setSearchQuery(e.target.value)}
         />
         {(user.role === "admin" || user.role === "co-organizer") && (
-        <button className="new-game-btn" onClick={handleAddGame}> + Add Game </button>
+          <div style={{display:'flex', gap: '10px'}}>
+             <button 
+                className="new-game-btn" 
+                style={{backgroundColor: "#b95454", width: "auto", padding: "0 15px"}}
+                onClick={() => setShowImportModal(true)}
+            > 
+                <FaFileImport style={{marginRight: "5px"}}/> Import Game 
+            </button>
+             <button className="new-game-btn" onClick={handleAddGame}> + Add Game </button>
+          </div>
         )}
       </div>
 
@@ -215,6 +311,60 @@ const Game = () => {
           })
         )}
       </div>
+
+      {/* Import Modal */}
+      {showImportModal && (
+        <div className="modal-overlay">
+            <div className="modal" style={{maxWidth: "500px", width: "90%"}}>
+                <h2>Copy Games from Past Event</h2>
+                <hr />
+                <div style={{margin: "15px 0"}}>
+                    <label>Select Event:</label>
+                    <select 
+                        style={{width: "100%", padding: "8px", marginTop: "5px"}}
+                        value={selectedImportEvent}
+                        onChange={handleSelectImportEvent}
+                    >
+                        <option value="">-- Select an Event --</option>
+                        {allEvents.map(evt => (
+                            <option key={evt._id} value={evt._id}>{evt.eventName}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {selectedImportEvent && (
+                    <div style={{maxHeight: "300px", overflowY: "auto", border: "1px solid #ddd", padding: "10px", borderRadius: "4px"}}>
+                        {pastGames.length === 0 ? (
+                            <p>No games found in selected event.</p>
+                        ) : (
+                            <>
+                                <div style={{marginBottom:"10px", fontWeight:"bold"}}>Select Games to Copy:</div>
+                                {pastGames.map(game => (
+                                    <div key={game._id} style={{display:"flex", alignItems:"center", marginBottom:"5px", padding: "5px", borderBottom: "1px solid #eee"}}>
+                                        <input 
+                                            type="checkbox" 
+                                            checked={!!selectedGamesToCopy.find(g => g._id === game._id)}
+                                            onChange={() => toggleImportSelection(game)}
+                                            style={{marginRight: "10px"}}
+                                        />
+                                        <div>
+                                           <div style={{fontWeight: "bold"}}>{game.category} {game.gameType}</div>
+                                           <div style={{fontSize: "0.8em", color: "#666"}}>{game.teams.length} Teams | {game.bracketType}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </>
+                        )}
+                    </div>
+                )}
+
+                <div className="modal-actions">
+                    <button onClick={() => setShowImportModal(false)}>Cancel</button>
+                    <button onClick={submitImportGames} disabled={selectedGamesToCopy.length === 0}>Copy Selected</button>
+                </div>
+            </div>
+        </div>
+      )}
 
       {/* Delete confirmation modal */}
       {showDeleteModal && gameToDelete && (

@@ -4,6 +4,10 @@ import { useParams } from "react-router-dom";
 import { Bracket, Seed, SeedItem, SeedTeam } from "react-brackets";
 import "../../styles/bracket.css";
 
+// 1. IMPORT PDF LIBRARIES
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
 const GameBracket = () => {
 
   useEffect(() => { document.title = "SPARTA | Game Bracket"; }, []);
@@ -11,6 +15,8 @@ const GameBracket = () => {
   const { eventName, game: gameId } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
   const [game, setGame] = useState(null);
+  const [parentEvent, setParentEvent] = useState(null); 
+
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [tempScores, setTempScores] = useState([]);
   const [showRulesModal, setShowRulesModal] = useState(false);
@@ -41,6 +47,141 @@ const GameBracket = () => {
     const interval = setInterval(fetchGame, 2000);
     return () => clearInterval(interval);
   }, [gameId]);
+
+  // Fetch event dates
+  useEffect(() => {
+    const fetchParentEvent = async () => {
+        if (!game) return;
+        try {
+            const res = await fetch(`http://localhost:5000/api/events?institution=${encodeURIComponent(game.institution)}&name=${encodeURIComponent(game.eventName)}`);
+            const data = await res.json();
+            
+            if (Array.isArray(data) && data.length > 0) {
+                // Find exact match
+                const found = data.find(e => e.eventName === game.eventName);
+                setParentEvent(found || data[0]);
+            }
+        } catch (err) {
+            console.error("Error fetching parent event:", err);
+        }
+    };
+    fetchParentEvent();
+  }, [game]);
+
+  // Export function
+  const exportToPDF = () => {
+    if (!game) return;
+    const doc = new jsPDF();
+
+    // -- Header --
+    doc.setFontSize(18);
+    doc.text("OFFICIAL GAME RESULT REPORT", 14, 20);
+    
+    doc.setFontSize(12);
+    doc.text(`Event: ${game.eventName}`, 14, 30);
+    doc.text(`Game: ${game.category} ${game.gameType}`, 14, 36);
+    doc.text(`Bracket Type: ${game.bracketType}`, 14, 42);
+    doc.text(`Date Generated: ${new Date().toLocaleDateString()}`, 14, 48);
+
+    // -- Medal Tally Section --
+    const tally = calculateMedalTally();
+    doc.setFontSize(14);
+    doc.text("Medal Tally", 14, 60);
+    
+    const tallyData = [
+      ["Rank", "Team Name"],
+      ["Gold", tally.gold || "N/A"],
+      ["Silver", tally.silver || "N/A"],
+      ["Bronze", tally.bronze || "N/A"]
+    ];
+
+    // FIX 2: Use autoTable(doc, options) instead of doc.autoTable(options)
+    autoTable(doc, {
+      startY: 65,
+      head: [tallyData[0]],
+      body: tallyData.slice(1),
+      theme: 'striped',
+      headStyles: { fillColor: [24, 27, 89] } // SPARTA Blue
+    });
+
+    // -- Match History Table --
+    // Get the final Y position from the previous table
+    const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 80;
+    
+    doc.text("Match History & Scores", 14, finalY + 15);
+
+    // Sort matches by Round/Bracket for readability
+    const sortedMatches = [...game.matches].sort((a, b) => a.round - b.round);
+
+    const matchRows = sortedMatches.map((m) => {
+      const t1 = m.teams[0];
+      const t2 = m.teams[1];
+      const scoreStr = `${t1.score ?? 0} - ${t2.score ?? 0}`;
+      const winnerStr = m.finalizeWinner ? m.winner : "Pending";
+      const bracketStr = m.bracket === "WB" ? "Winner's" : m.bracket === "LB" ? "Loser's" : m.bracket;
+      
+      return [
+        `R${m.round} (${bracketStr})`,
+        t1.name,
+        scoreStr,
+        t2.name,
+        winnerStr,
+        m.date ? new Date(m.date).toLocaleDateString() : "TBD"
+      ];
+    });
+
+    // FIX 2: Use autoTable(doc, options) here as well
+    autoTable(doc, {
+      startY: finalY + 20,
+      head: [['Round', 'Team A', 'Score', 'Team B', 'Winner', 'Date']],
+      body: matchRows,
+      theme: 'grid',
+      headStyles: { fillColor: [185, 84, 84] }, // SPARTA Red
+      styles: { fontSize: 8 }
+    });
+
+    doc.save(`${game.eventName}_${game.gameType}_Report.pdf`);
+  };
+
+  const exportToCSV = () => {
+    if (!game) return;
+
+    // CSV Header
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Bracket,Round,Match Index,Team 1,Score 1,Team 2,Score 2,Winner,Date,Location\n";
+
+    // CSV Rows
+    game.matches.forEach((m) => {
+      const t1 = m.teams[0];
+      const t2 = m.teams[1];
+      const dateStr = m.date ? new Date(m.date).toISOString().split('T')[0] : "TBD";
+      
+      // Escape commas in names
+      const row = [
+        m.bracket,
+        m.round,
+        m.matchIndex,
+        `"${t1.name}"`,
+        t1.score ?? 0,
+        `"${t2.name}"`,
+        t2.score ?? 0,
+        `"${m.winner || "Pending"}"`,
+        dateStr,
+        `"${m.location || ""}"`
+      ].join(",");
+      
+      csvContent += row + "\n";
+    });
+
+    // Download Logic
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `${game.eventName}_${game.gameType}_Results.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   if (!game) {
     return (
@@ -115,17 +256,12 @@ const GameBracket = () => {
         for (let r = 1; r <= maxRound; r++) {
           let seeds = matches
             .filter((m) => m.round === r)
-            // --- FIX: Strict Filter ---
-            // Hide match if Both teams are "No Opponent"
-            // OR if one is "No Opponent" and the other is still "TBD" (waiting for a ghost)
             .filter(m => {
                const t1 = m.teams[0].name;
                const t2 = m.teams[1].name;
-               
                if (t1 === "No Opponent" && t2 === "No Opponent") return false;
                if (t1 === "No Opponent" && t2 === "TBD") return false;
                if (t1 === "TBD" && t2 === "No Opponent") return false;
-               
                return true;
             })            .map((m) => ({
               id: m._id,
@@ -149,11 +285,7 @@ const GameBracket = () => {
       };
 
       const wbRounds = makeBracketRounds(wbMatches);
-
-      // Get raw LB rounds
       const rawLBRounds = makeBracketRounds(lbMatches, false);
-
-      // Renumber LB rounds so they're sequential (start at 1)
       const lbRounds = rawLBRounds.map((round, idx) => ({
         ...round,
         title: `Round ${idx + 1}`,
@@ -162,20 +294,15 @@ const GameBracket = () => {
       rounds.push({ title: "WB", rounds: wbRounds });
       rounds.push({ title: "LB", rounds: lbRounds });
 
-
-      //  Only show Grand Final when both WB Final & LB Final are decided
       if (gfMatches.length > 0) {
         const gf = gfMatches[0];
-
         const wbFinalDone = game.matches.some(
           (m) => m.bracket === "WB" && m.finalizeWinner && m.round === Math.max(...wbRounds.map(r => parseInt(r.title.split(" ")[1])))
         );
-
         const lbFinalDone = game.matches.some(
           (m) => m.bracket === "LB" && m.finalizeWinner && m.round === Math.max(...lbRounds.map(r => parseInt(r.title.split(" ")[1])))
         );
 
-        // Render GF only when WB and LB are both done
         if (wbFinalDone && lbFinalDone) {
           rounds.push({
             title: "Grand Final",
@@ -193,7 +320,6 @@ const GameBracket = () => {
             ],
           });
 
-          //  Show Champion only AFTER GF is finalized
           if (gf.finalizeWinner && gf.winner) {
             rounds.push({
               title: "Champion",
@@ -238,7 +364,6 @@ const GameBracket = () => {
         rounds.push({ title: `Round ${r}`, seeds });
       }
 
-      // Only calculate Champion if ALL matches are finalized
       const allMatchesDone = rrMatches.every((m) => m.finalizeWinner);
       if (allMatchesDone) {
         const winCount = {};
@@ -247,14 +372,11 @@ const GameBracket = () => {
             winCount[m.winner] = (winCount[m.winner] || 0) + 1;
           }
         });
-
-        // Find team(s) with max wins
         const maxWins = Math.max(...Object.values(winCount));
         const champions = Object.entries(winCount)
           .filter(([_, wins]) => wins === maxWins)
           .map(([team]) => team);
 
-        // Add Champion column
         rounds.push({
           title: "Champion",
           seeds: champions.map((champ, idx) => ({
@@ -273,7 +395,6 @@ const GameBracket = () => {
       }
     }
     if (game.bracketType === "ADNU") {
-      // Helper to build rounds
       const buildBracketRounds = (matches, namePrefix) => {
          if(!matches.length) return [];
          const maxRound = Math.max(...matches.map(m => m.round));
@@ -292,11 +413,9 @@ const GameBracket = () => {
          return rounds;
       };
 
-      // 1. Groups
       rounds.push({ title: "Category A", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group A"), "A") });
       rounds.push({ title: "Category B", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group B"), "B") });
 
-      // 2. Playoffs (Semi -> Final -> Champion)
       const sfMatches = game.matches.filter(m => m.bracket === "SF");
       const finalMatch = game.matches.find(m => m.bracket === "Championship");
       
@@ -319,7 +438,6 @@ const GameBracket = () => {
          }
       ];
 
-      // Add Champion Column if Final is done
       if (finalMatch && finalMatch.finalizeWinner) {
         playoffRounds.push({
           title: "Champion",
@@ -333,7 +451,6 @@ const GameBracket = () => {
       
       rounds.push({ title: "Playoffs", rounds: playoffRounds });
 
-      // 3. 3rd Place
       const third = game.matches.find(m => m.bracket === "3rd Place");
       if(third) {
         rounds.push({ 
@@ -349,7 +466,58 @@ const GameBracket = () => {
     return rounds;
   };
 
-  // Live Score
+  // Scheduling
+  const saveSchedule = async () => {
+    if (!selectedMatch) return;
+    try {
+      if (selectedMatch.date && parentEvent) {
+        const schedDate = new Date(selectedMatch.date);
+        const eventStart = new Date(parentEvent.eventStartDate);
+        const eventEnd = new Date(parentEvent.eventEndDate);
+
+        if (schedDate < eventStart || schedDate > eventEnd) {
+          alert(`Date must be between Event Start (${eventStart.toLocaleString()}) and Event End (${eventEnd.toLocaleString()})`);
+          return;
+        }
+      }
+
+      let formattedDate = null;
+      if (selectedMatch.date) {
+        formattedDate = new Date(selectedMatch.date);
+      }
+
+      const scheduleData = {
+        date: formattedDate,
+        location: selectedMatch.location || null,
+      };
+
+      const response = await fetch(
+        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(scheduleData),
+        }
+      );
+
+      // Handle backend error messages (double check)
+      if (!response.ok) {
+          const errData = await response.json();
+          alert(`Failed: ${errData.message}`);
+          return;
+      }
+
+      const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+      const updatedGame = await res.json();
+
+      setGame(updatedGame);
+      setSelectedMatch(null);
+    } catch (err) {
+      console.error("Error updating schedule:", err);
+      alert("Failed to update schedule. Please try again.");
+    }
+  };
+
   const handleTempScoreChange = async (idx, newScore) => {
     setTempScores((prev) => {
       const updated = [...prev];
@@ -376,7 +544,6 @@ const GameBracket = () => {
     }
   };
 
- // Finalized Scoring
  const saveScores = async () => {
   if (!selectedMatch) return;
   try {
@@ -393,24 +560,20 @@ const GameBracket = () => {
       }
     );
 
-    // Get full game data
     const updatedGame = await response.json();
 
     if (!response.ok) {
-      // Handle errors
       console.error("Error finalizing match:", updatedGame.message);
       alert(`Failed to save: ${updatedGame.message || 'Server error'}`);
       return;
     }
     setGame(updatedGame);
-
     setSelectedMatch(null);
   } catch (err) {
     console.error("Error finalizing match:", err);
   }
 };
 
-  // Medal tally
   const calculateMedalTally = () => {
     const { bracketType, matches, teams } = game;
     let tally = { gold: null, silver: null, bronze: null };
@@ -433,7 +596,6 @@ const GameBracket = () => {
           const lbMatches = matches.filter(m => m.bracket === "LB");
           const maxLbRound = Math.max(...lbMatches.map(m => m.round));
           const lbFinal = lbMatches.find(m => m.round === maxLbRound && m.finalizeWinner);
-
           if (lbFinal) {
             tally.bronze = lbFinal.teams.find(t => t.name !== lbFinal.winner)?.name;
           }
@@ -442,33 +604,23 @@ const GameBracket = () => {
         const rrMatches = matches.filter(m => m.bracket === "RR");
         const winCount = {};
         teams.forEach(team => { winCount[team] = 0; });
-
         rrMatches.forEach(m => {
           if (m.finalizeWinner && m.winner) {
             winCount[m.winner] = (winCount[m.winner] || 0) + 1;
           }
         });
-
         const sortedTeams = Object.entries(winCount).sort(([, winsA], [, winsB]) => winsB - winsA);
-
         tally.gold = sortedTeams[0] ? sortedTeams[0][0] : null;
         tally.silver = sortedTeams[1] ? sortedTeams[1][0] : null;
         tally.bronze = sortedTeams[2] ? sortedTeams[2][0] : null;
       }
-      // --- FIX: ADNU Medal Logic ---
       else if (bracketType === "ADNU") {
-        // Find the Championship match
         const finalMatch = matches.find(m => m.bracket === "Championship");
-        
-        // Find the 3rd Place match
         const thirdPlaceMatch = matches.find(m => m.bracket === "3rd Place");
-
         if (finalMatch && finalMatch.finalizeWinner) {
           tally.gold = finalMatch.winner;
-          // The silver medalist is the loser of the Championship match
           tally.silver = finalMatch.teams.find(t => t.name !== finalMatch.winner)?.name;
         }
-
         if (thirdPlaceMatch && thirdPlaceMatch.finalizeWinner) {
           tally.bronze = thirdPlaceMatch.winner;
         }
@@ -477,7 +629,6 @@ const GameBracket = () => {
       console.error("Error calculating medal tally:", e);
       return { gold: "Error", silver: "Error", bronze: "Error" };
     }
-
     return tally;
   };
 
@@ -487,26 +638,16 @@ const GameBracket = () => {
     setShowTallyModal(true);
   };
 
-  // Rendering Bracket
   const renderSeed = (props) => {
-    // Check if match is scheduled
-    const isScheduled = !!props.seed.date;
-    
-    // Helper to check for "No Opponent"
     const hasNoOpponent = props.seed.teams.some(t => t.name === "No Opponent");
 
     return (
     <Seed
       {...props}
       style={{ fontSize: "14px", cursor: props.seed.id === "champion" ? "default" : "pointer" }}
-      onClick={() => {
-         // ... existing click logic ...
-      }}
     >
       <SeedItem className="seed-item">
         {props.seed.teams.map((team, idx) => {
-          // LOGIC: If this match has "No Opponent" AND this specific team IS NOT "No Opponent", show "Auto"
-          // Otherwise, show the actual score or "-"
           let displayScore = team.score ?? "-";
           if (hasNoOpponent && team.name !== "No Opponent") {
              displayScore = "Auto";
@@ -519,7 +660,6 @@ const GameBracket = () => {
           );
         })}
 
-        {/* Hide buttons for Champion column*/}
         {props.seed.id !== "champion" && (
           <div className="match-actions">
             <button
@@ -537,15 +677,9 @@ const GameBracket = () => {
             >
               Schedule
             </button>
-
             <button
               onClick={(e) => {
                 e.stopPropagation();
-
-                /*if (!isScheduled) {
-                  alert("Please schedule the match first.");
-                  return;
-                }*/
                 setSelectedMatch({ ...props.seed, type: "scores" });
                 setTempScores(props.seed.teams.map((t) => t.score ?? 0));
               }}
@@ -559,57 +693,8 @@ const GameBracket = () => {
     );
   };
 
-  // Scheduling
-  const saveSchedule = async () => {
-    if (!selectedMatch) return;
-
-    try {
-      // Check date if valid
-      if (selectedMatch.date) {
-        const schedDate = new Date(selectedMatch.date);
-        const gameStart = new Date(game.startDate);
-        const gameEnd = new Date(game.endDate);
-
-        if (schedDate < gameStart || schedDate > gameEnd) {
-          alert(`Date must be between ${new Date(game.startDate).toLocaleString()} and ${new Date(game.endDate).toLocaleString()}`);
-          return;
-        }
-      }
-
-      let formattedDate = null;
-      if (selectedMatch.date) {
-        formattedDate = new Date(selectedMatch.date);
-      }
-
-      const scheduleData = {
-        date: formattedDate,
-        location: selectedMatch.location || null,
-      };
-
-      await fetch(
-        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}/schedule`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(scheduleData),
-        }
-      );
-
-      // refresh game after saving
-      const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
-      const updatedGame = await res.json();
-
-      setGame(updatedGame);
-      setSelectedMatch(null);
-    } catch (err) {
-      console.error("Error updating schedule:", err);
-      alert("Failed to update schedule. Please try again.");
-    }
-  };
-
   let isGameFinished = false;
-  const roundsData = makeRoundsFromMatches(); // Call this once to use result
-  
+  const roundsData = makeRoundsFromMatches(); 
   if (game.bracketType === "ADNU") {
      const champRound = roundsData.find(r => r.title === "Playoffs")?.rounds?.find(sub => sub.title === "Champion");
      isGameFinished = !!champRound;
@@ -625,45 +710,45 @@ const GameBracket = () => {
         <p><b>Schedule:</b> {new Date(game.startDate).toLocaleString()} - {new Date(game.endDate).toLocaleString()}</p>
         <p><b>Bracket Type:</b> {game.bracketType}</p>
 
-         {/*Vid button*/}
         {game.videoLink && (
-          <p>
-            <a href={game.videoLink} target="_blank" rel="noopener noreferrer">
-              Watch Video
-            </a>
-          </p>
+          <p><a href={game.videoLink} target="_blank" rel="noopener noreferrer">Watch Video</a></p>
         )}
 
         <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap", alignItems: "center", justifyContent: "center", width: "100%", margin: "0 auto" }}>
           <div className="rules-section">
             {game.rules ? (
               <button onClick={() => setShowRulesModal(true)}>View Rules</button>
-            ) : (
-              <p>No rules provided.</p>
-            )}
+            ) : ( <p>No rules provided.</p> )}
           </div>
 
-          {/*Add vid button*/}
           <div className="video-section">
-            <button
-              onClick={() =>
-                setSelectedMatch({
-                  type: "video",
-                  videoLink: game.videoLink || "",
-                })
-              }
-            >
+            <button onClick={() => setSelectedMatch({ type: "video", videoLink: game.videoLink || "", })}>
               Add Video Link
             </button>
           </div>
 
-          {/*Medal tally button*/}
           {isGameFinished && (
+            <>
             <div className="medal-tally-section">
               <button onClick={handleShowTally}>View Medal Tally</button>
             </div>
-          )}
 
+            <div className="export-section" style={{ display: 'flex', gap: '10px' }}>
+                <button 
+                    onClick={exportToPDF}
+                    style={{ backgroundColor: '#b95454', color: 'white' }}
+                >
+                    Export PDF
+                </button>
+                <button 
+                    onClick={exportToCSV}
+                    style={{ backgroundColor: '#18593c', color: 'white' }}
+                >
+                    Export CSV
+                </button>
+              </div>
+              </>
+          )}
         </div>
       </div>
 
@@ -673,17 +758,8 @@ const GameBracket = () => {
             <h2>Game Rules</h2>
             <hr />
             {game.rules.endsWith(".pdf") ? (
-              <iframe
-                src={game.rules}
-                title="Rules PDF"
-                width="100%"
-                height="500px"
-                style={{ border: "none" }}
-              />
-            ) : (
-              <p style={{ whiteSpace: "pre-wrap" }}>{game.rules}</p>
-            )}
-
+              <iframe src={game.rules} title="Rules PDF" width="100%" height="500px" style={{ border: "none" }} />
+            ) : ( <p style={{ whiteSpace: "pre-wrap" }}>{game.rules}</p> )}
             <button onClick={() => setShowRulesModal(false)}>Close</button>
           </div>
         </div>
@@ -691,8 +767,7 @@ const GameBracket = () => {
 
       <div className="bracket-container">
         {game.bracketType === "Single Elimination" && (
-          <div className="single-elim">
-            <Bracket rounds={roundsData} renderSeedComponent={renderSeed} /></div>
+          <div className="single-elim"><Bracket rounds={roundsData} renderSeedComponent={renderSeed} /></div>
         )}
 
         {game.bracketType === "Double Elimination" && (
@@ -701,7 +776,6 @@ const GameBracket = () => {
               <h2>Winner's Bracket</h2>
               <Bracket rounds={roundsData.find(r => r.title === "WB")?.rounds || []} renderSeedComponent={renderSeed} />
             </div>
-
             <div className="double-elim" style={{ display: "flex", justifyContent: "center", gap: "80px", margin: "40px 0" }}>
               {roundsData.filter(r => r.title === "Grand Final" || r.title === "Champion")
                 .map((round, i) => (
@@ -711,7 +785,6 @@ const GameBracket = () => {
                   </div>
                 ))}
             </div>
-
             <div className="double-elim">
               <h2>Loser's Bracket</h2>
               <Bracket rounds={roundsData.find(r => r.title === "LB")?.rounds || []} renderSeedComponent={renderSeed} />
@@ -728,9 +801,7 @@ const GameBracket = () => {
                   <h3 className="rr-title">{round.title}</h3>
                   <div className="rr-matches">
                     {round.seeds.map((seed, sIndex) => (
-                      <React.Fragment key={sIndex}>
-                        {renderSeed({ seed })}
-                      </React.Fragment>
+                      <React.Fragment key={sIndex}> {renderSeed({ seed })} </React.Fragment>
                     ))}
                   </div>
                 </div>
@@ -739,24 +810,18 @@ const GameBracket = () => {
           </div>
         )}
 
-{game.bracketType === "ADNU" && (
+        {game.bracketType === "ADNU" && (
           <div className="rr-knockout-container" style={{display:'flex', flexDirection:'column', gap:'40px'}}>
-             
-             {/* Groups Area - MANUALLY RENDER AS GRID */}
              <div style={{display:'flex', gap:'30px', justifyContent:'center', flexWrap:'wrap', width: '100%'}}>
                 {roundsData.filter(r => r.title.startsWith("Category")).map((group, gIdx) => (
-                   <div key={gIdx} className="group-stage" style={{backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '10px', border: '2px solid #1a2a49'}}>
-                      <h3 style={{color: "#1a2a49", backgroundColor: '#f9f9f9',textAlign: 'center', margin: '0 0 15px 0', borderBottom: '2px solid #181b59', paddingBottom: '5px'}}>{group.title}</h3>
-                      
+                   <div key={gIdx} className="group-stage" style={{backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px', border: '1px solid #ddd'}}>
+                      <h3 style={{textAlign: 'center', margin: '0 0 15px 0', borderBottom: '2px solid #181b59', paddingBottom: '5px'}}>{group.title}</h3>
                       <div style={{display:'flex', gap:'20px'}}>
-                        {/* Iterate over rounds inside the group */}
                         {group.rounds.map((round, rIdx) => (
                           <div key={rIdx} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
-                             <h4 style={{color: "#1a2a49", fontSize: '14px', textAlign:'center', color: '#666', margin: '0'}}>{round.title}</h4>
+                             <h4 style={{fontSize: '14px', textAlign:'center', color: '#666', margin: '0'}}>{round.title}</h4>
                              {round.seeds.map((seed, sIdx) => (
-                                <div key={sIdx} style={{marginBottom: '5px'}}>
-                                   {renderSeed({seed, breakpoint: 0})} 
-                                </div>
+                                <div key={sIdx} style={{marginBottom: '5px'}}> {renderSeed({seed, breakpoint: 0})} </div>
                              ))}
                           </div>
                         ))}
@@ -764,16 +829,9 @@ const GameBracket = () => {
                    </div>
                 ))}
              </div>
-
-             {/* Knockout Area */}
-             <div style={{backgroundColor: '#f9f9f9', color: "#1a2a49", border:'2px solid #ccc', borderRadius: '10px', padding:'35px', textAlign: 'center'}}>
+             <div style={{borderTop:'2px solid #ccc', paddingTop:'20px', textAlign: 'center'}}>
                 <h2>Playoffs</h2>
-                <Bracket 
-                  rounds={roundsData.find(r => r.title === "Playoffs")?.rounds || []} 
-                  renderSeedComponent={renderSeed} 
-                />
-                
-                {/* 3rd Place */}
+                <Bracket rounds={roundsData.find(r => r.title === "Playoffs")?.rounds || []} renderSeedComponent={renderSeed} />
                 <div style={{marginTop:'30px', display:'flex', flexDirection:'column', alignItems:'center'}}>
                    <h4>3rd Place Match</h4>
                    {roundsData.find(r => r.title === "3rd Place")?.seeds?.map((seed, i) => (
@@ -791,14 +849,8 @@ const GameBracket = () => {
             {selectedMatch.type === "rules" ? (
               <>
                 <h3>Rules PDF</h3>
-                <iframe
-                  src={`http://localhost:5000${game.rules}`}
-                  title="Rules PDF"
-                  className="w-full h-[80vh] rounded-md"
-                />
-                <div className="modal-actions">
-                  <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
-                </div>
+                <iframe src={`http://localhost:5000${game.rules}`} title="Rules PDF" className="w-full h-[80vh] rounded-md" />
+                <div className="modal-actions"><button type="button" onClick={() => setSelectedMatch(null)}>Close</button></div>
               </>
             ) : selectedMatch.type === "schedule" ? (
               <>
@@ -811,24 +863,16 @@ const GameBracket = () => {
                       type="datetime-local"
                       style={{ width: "150px" }}
                       value={selectedMatch.date || ""}
-                      min={formatForInput(game.startDate)}
-                      max={formatForInput(game.endDate)}
+                      min={parentEvent ? formatForInput(parentEvent.eventStartDate) : formatForInput(game.startDate)}
+                      max={parentEvent ? formatForInput(parentEvent.eventEndDate) : formatForInput(game.endDate)}
                       onChange={(e) => setSelectedMatch({ ...selectedMatch, date: e.target.value })}
                     />
                   </div>
-
                   <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
                     <label>Location : </label>
-                    <input
-                      type="text"
-                      style={{ width: "150px" }}
-                      value={selectedMatch.location || ""}
-                      onChange={(e) => setSelectedMatch({ ...selectedMatch, location: e.target.value })}
-                    />
+                    <input type="text" style={{ width: "150px" }} value={selectedMatch.location || ""} onChange={(e) => setSelectedMatch({ ...selectedMatch, location: e.target.value })} />
                   </div>
-
                   <div className="modal-actions">
-
                     <button type="button" onClick={() => setSelectedMatch(null)}>Cancel</button>
                     <button type="button" onClick={saveSchedule}> Save Schedule </button>
                   </div>
@@ -840,77 +884,44 @@ const GameBracket = () => {
                 <hr />
                 {selectedMatch.teams.map((team, idx) => (
                   <div key={idx} className="score-input">
-                    <label style={{ marginLeft: "10px" }}>
-                      {team.name} Score:
-                    </label>
-
-                    <input
-                      type="number"
-                      style={{ width: "50px", marginRight: "10px" }}
-                      value={tempScores[idx]}
-                      onChange={(e) => handleTempScoreChange(idx, Number(e.target.value))}
-                    />
-
+                    <label style={{ marginLeft: "10px" }}>{team.name} Score:</label>
+                    <input type="number" style={{ width: "50px", marginRight: "10px" }} value={tempScores[idx]} onChange={(e) => handleTempScoreChange(idx, Number(e.target.value))} />
                   </div>
                 ))}
                 <div className="modal-actions">
-
                   <button type="button" onClick={() => setSelectedMatch(null)}>Close</button>
                   <button type="button" onClick={saveScores}>Save</button>
-
                 </div>
               </>
             ) : selectedMatch.type === "video" && (
               <>
                 <h3>Add Video Link</h3>
                 <hr />
-                <input
-                  type="text"
-                  placeholder="Enter video URL"
-                  value={selectedMatch.videoLink || ""}
-                  onChange={(e) =>
-                    setSelectedMatch({ ...selectedMatch, videoLink: e.target.value })
-                  }
-                />
+                <input type="text" placeholder="Enter video URL" value={selectedMatch.videoLink || ""} onChange={(e) => setSelectedMatch({ ...selectedMatch, videoLink: e.target.value })} />
                 <div className="modal-actions">
                   <button onClick={() => setSelectedMatch(null)}>Cancel</button>
-
-                  <button
-                    type="button"
-                    onClick={async () => {
+                  <button type="button" onClick={async () => {
                       try {
                         await fetch(`http://localhost:5000/api/${gameId}/video`, {
-                          method: "PUT",
-                          headers: { "Content-Type": "application/json" },
+                          method: "PUT", headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ videoLink: selectedMatch.videoLink }),
                         });
-
-                        // Refresh game after saving
                         const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
                         const updated = await res.json();
                         setGame(updated);
-
                         setSelectedMatch(null);
-                      } catch (err) {
-                        console.error("Error saving video link:", err);
-                        alert("Failed to save video link.");
-                      }
-                    }}
-                  >
-                    Save
-                  </button>
+                      } catch (err) { console.error("Error saving video link:", err); alert("Failed to save video link."); }
+                    }} > Save </button>
                 </div>
               </>
-            )
-            }
+            )}
           </div>
         </div>
       )}
-      {/*Medal tally modal*/}
       {showTallyModal && medalTally && (
         <div className="modal-overlay">
           <div className="modal medal-tally-modal">
-            <h2 >MEDAL TALLY</h2>
+            <h2>MEDAL TALLY</h2>
             <hr />
             <div className="tally-content" style={{ padding: '5px', lineHeight: '2' }}>
               <p>🥇 <strong>Gold:</strong> {medalTally.gold || 'N/A'}</p>

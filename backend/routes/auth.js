@@ -6,7 +6,112 @@ const Player = require('../models/Player');
 const Institution = require('../models/Institution');
 const Event = require('../models/Event'); 
 
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const crypto = require('crypto');
+
 const router = express.Router();
+
+// GOOGLE Register
+router.post('/auth/google-register', async (req, res) => {
+  const { token, role, institution, eventId } = req.body;
+
+  try {
+    // Verify Google Token
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const { email } = ticket.getPayload();
+
+    // Select Model
+    const Model = getModelByRole(role);
+    if (!Model) return res.status(400).json({ message: 'Invalid role' });
+
+    // Check if Acc Already Exists
+    const existing = await Model.findOne({ email });
+    if (existing) {
+      return res.status(409).json({ message: 'User already exists. Please Login.' });
+    }
+
+    // Validate Required Fields based on Role
+    if (!institution) return res.status(400).json({ message: 'Institution is required.' });
+    
+    let finalEventName = undefined;
+    if (role === 'player') {
+      if (!eventId) return res.status(400).json({ message: 'Event is required for players.' });
+      
+      const eventDef = await Event.findById(eventId);
+      if (!eventDef) return res.status(404).json({ message: 'Selected event not found.' });
+      finalEventName = eventDef.eventName;
+    }
+
+    // Create User
+    // Generate an automatic password
+    const randomPassword = crypto.randomBytes(16).toString('hex'); 
+    const hashed = await bcrypt.hash(randomPassword, 10);
+
+    const user = new Model({
+      email,
+      password: hashed, 
+      institution,
+      ...(role === 'player' && { eventId: eventId, eventName: finalEventName }),
+      ...(role === 'admin' && { ok: false }),
+    });
+
+    await user.save();
+
+    res.status(201).json({ message: `${role} registered via Google successfully`, user });
+
+  } catch (err) {
+    console.error("Google Register Error:", err);
+    res.status(500).json({ message: 'Google Registration failed', error: err.message });
+  }
+});
+
+// GOOGLE Login
+router.post('/auth/google-login', async (req, res) => {
+  const { token, role } = req.body;
+
+  try {
+    // Verify Google Token
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const { email } = ticket.getPayload();
+
+    // Select Model based on Role
+    const Model = getModelByRole(role);
+    if (!Model) return res.status(400).json({ message: 'Invalid role selected' });
+
+    // Find User in DB
+    const query = { email };
+    if (role === 'co-organizer' || role === 'sub-organizer') query.role = role;
+
+    const user = await Model.findOne(query);
+
+    if (!user) {
+      return res.status(404).json({ message: `No ${role} account found with this Google email.` });
+    }
+
+    // Role-Specific login
+    if (role === 'admin' && !user.ok) {
+      return res.status(403).json({ message: 'Admin account not approved yet.' });
+    }
+    
+    if (role === 'player' && !user.approved) {
+      return res.status(403).json({ message: 'Your account is not approved yet.' });
+    }
+
+    res.json({ message: `Google Login successful as ${role}`, user });
+
+  } catch (err) {
+    console.error("Google Auth Error:", err);
+    res.status(500).json({ message: 'Google Login failed', error: err.message });
+  }
+});
 
 // Helps get model by role
 const getModelByRole = (role) => {

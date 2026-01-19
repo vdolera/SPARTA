@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import '../styles/Register.css';
 
 export default function RegisterPage() {
@@ -36,6 +37,7 @@ export default function RegisterPage() {
     fetchInstitutions();
   }, []);
 
+  // Fetch institution events
   useEffect(() => {
     if (role === 'player' && formData.institution) {
       fetch(
@@ -58,6 +60,7 @@ export default function RegisterPage() {
     }, 5000);
   };
 
+  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -89,6 +92,44 @@ export default function RegisterPage() {
         setTimeout(() => navigate('/dashboard'), 2000);
       } else {
         showToast(data.message || 'Registration failed', 'error');
+      }
+    } catch (error) {
+      console.error('Error registering:', error);
+      showToast('Something went wrong!', 'error');
+    }
+  };
+
+  // GOOGLE SIGNUP
+  const handleGoogleSignup = async (credentialResponse) => {
+    // Make sure institution and Event are selected
+    if (!formData.institution) {
+      showToast("Please select your Institution first.", "error");
+      return;
+    }
+    if (role === 'player' && !formData.eventId) {
+      showToast("Please select an Event first.", "error");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/google-register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: credentialResponse.credential,
+          role: role,
+          institution: formData.institution,
+          eventId: formData.eventId
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showToast(`Successfully registered as ${role}`, 'success');
+        setTimeout(() => navigate('/'), 2000); 
+      } else {
+        showToast(data.message || 'Google Registration failed', 'error');
       }
     } catch (error) {
       console.error('Error registering:', error);
@@ -179,6 +220,24 @@ export default function RegisterPage() {
             <button type="submit" className="register-button">
               Register as {role.charAt(0).toUpperCase() + role.slice(1)}
             </button>
+
+            {/* Google Signup */}
+            <div style={{ 
+              marginTop: '15px', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              gap: '10px' 
+            }}>
+              <p style={{fontSize: '14px', color: '#666'}}>Or register with</p>
+              <GoogleLogin
+                onSuccess={handleGoogleSignup}
+                onError={() => showToast("Google Signup Failed", "error")}
+                text="signup_with"
+                shape="pill"
+                theme="outline"
+              />
+            </div>
 
             <button type="button" className="switch-button" onClick={() => navigate('/Service')}>
               Can't find your institution?<br /> Register your institution here.
