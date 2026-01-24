@@ -206,7 +206,7 @@
 .login-form input[type="email"],
 .login-form input[type="password"],
 .login-form input[type="text"] {
-  width: 100%;
+  width: 90%;
 }
 
 .label-login {

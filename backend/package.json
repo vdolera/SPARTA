@@ -18,16 +18,20 @@
     "cors": "^2.8.5",
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
+    "fontkit": "^1.9.0",
     "google-auth-library": "^10.5.0",
     "jwt-decode": "^4.0.0",
-    "mongoose": "^8.16.1",
+    "mongodb": "^5.9.2",
+    "mongoose": "^7.8.8",
     "multer": "^2.0.2",
     "node-cron": "^3.0.3",
     "nodemailer": "^7.0.12",
-    "path-to-regexp": "^8.3.0",
-    "pdfkit": "^0.17.2",
+    "path-to-regexp": "^1.8.0",
+    "pdfkit": "^0.13.0",
     "react-calendar": "^6.0.0",
-    "simple-update-notifier": "^2.0.0"
+    "regexp": "^1.0.0",
+    "simple-update-notifier": "^2.0.0",
+    "unicode-properties": "^1.4.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

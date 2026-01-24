@@ -228,7 +228,11 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Place Google Login Button BELOW the normal login button */}
+            <button type="submit" className="login-button">
+              Login as {role.charAt(0).toUpperCase() + role.slice(1)}
+            </button>
+
+                        {/* Place Google Login Button BELOW the normal login button */}
             <div style={{ margin: "20px 0", display: "flex", justifyContent: "center" }}>
                   <GoogleLogin
                     onSuccess={handleGoogleSuccess}
@@ -240,11 +244,7 @@ export default function LoginPage() {
                     shape="pill"
                     text="continue_with"
                   />
-               </div>
-
-            <button type="submit" className="login-button">
-              Login as {role.charAt(0).toUpperCase() + role.slice(1)}
-            </button>
+            </div>
 
             <div style={{ textAlign: 'center', marginTop: '0px' }}>
               <p>
