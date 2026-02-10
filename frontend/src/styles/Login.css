@@ -259,7 +259,6 @@ input:not(:placeholder-shown) + .label-login {
 .login-form > div:last-child {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   margin-top: 8px;
   padding-top: 12px;
   border-top: 1px solid #e5e7eb;

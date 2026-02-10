@@ -233,7 +233,7 @@ export default function LoginPage() {
             </button>
 
                         {/* Place Google Login Button BELOW the normal login button */}
-            <div style={{ margin: "20px 0", display: "flex", justifyContent: "center" }}>
+            <div style={{ margin: "5px 0", display: "flex", justifyContent: "center" }}>
                   <GoogleLogin
                     onSuccess={handleGoogleSuccess}
                     onError={() => {
