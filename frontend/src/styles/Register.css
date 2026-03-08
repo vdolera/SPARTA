@@ -15,7 +15,6 @@
   box-shadow: 0 20px 60px rgba(10, 18, 40, 0.08);
   border: 1px solid #ce892c;
   border-radius: 20px;
-  padding: 48px;
   display: flex;
   justify-content: space-between;
   font-family: 'Poppins', sans-serif;
@@ -261,7 +260,7 @@
   .register-box {
     width: 600px;
     height: 500px;
-    padding: 0.5rem;
+    padding-top: 0.5rem;
   }
 
   .register-left {
@@ -308,7 +307,7 @@
 @media (min-width: 1273px) {
   .register-box {
     width: 700px;
-    padding: 1.5rem;
+    padding: 0.5rem 5rem;
   }
 
   .register-left {
