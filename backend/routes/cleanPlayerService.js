@@ -8,7 +8,7 @@ const History = require('../models/History');
 
 // transporter
 const transporter = nodemailer.createTransport({
-  service: 'gmail', 
+  service: 'gmail',
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
@@ -48,7 +48,7 @@ const generateAndSendCertificate = async (player, event) => {
           resolve();
         } catch (emailErr) {
           console.error(`Failed to send email to ${player.email}:`, emailErr);
-          resolve(); 
+          resolve();
         }
       });
 
@@ -97,7 +97,7 @@ const generateAndSendCertificate = async (player, event) => {
 // Cleaning Players from archive events
 const start = () => {
   // Run every day at 00:00 
-  cron.schedule('0 0 * * *', async () => {
+  cron.schedule('* * * * *', async () => {
     console.log("Running Daily Event Cleanup...");
 
     try {
@@ -115,10 +115,10 @@ const start = () => {
 
           // Generate Certificates
           console.log("Generating certificates...");
-          
+
           for (const player of players) {
             if (player.email) {
-                await generateAndSendCertificate(player, event);
+              await generateAndSendCertificate(player, event);
             }
           }
 
@@ -145,4 +145,4 @@ const start = () => {
   });
 };
 
-module.exports = { start };
+module.exports = { start, generateAndSendCertificate };
