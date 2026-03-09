@@ -97,7 +97,7 @@ const generateAndSendCertificate = async (player, event) => {
 // Cleaning Players from archive events
 const start = () => {
   // Run every day at 00:00 
-  cron.schedule('* * * * *', async () => {
+  cron.schedule('0 0 * * *', async () => {
     console.log("Running Daily Event Cleanup...");
 
     try {
