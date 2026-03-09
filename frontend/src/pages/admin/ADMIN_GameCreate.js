@@ -45,22 +45,22 @@ const CreateGame = () => {
   useEffect(() => {
     const fetchEventDetails = async () => {
       if (!user?.institution || !decodedEventName) return;
-      
+
       try {
         const response = await fetch(`http://localhost:5000/api/events?institution=${encodeURIComponent(user.institution)}&name=${encodeURIComponent(decodedEventName)}`);
-        
+
         if (!response.ok) {
           const errData = await response.json();
           throw new Error(errData.message || "Event not found");
         }
-        
+
         const data = await response.json();
 
         if (Array.isArray(data) && data.length > 0) {
-           const exactMatch = data.find(e => e.eventName === decodedEventName);
-           setEventDetails(exactMatch || data[0]);
+          const exactMatch = data.find(e => e.eventName === decodedEventName);
+          setEventDetails(exactMatch || data[0]);
         } else if (data && typeof data === 'object') {
-           setEventDetails(data);
+          setEventDetails(data);
         }
 
       } catch (error) {
@@ -78,30 +78,30 @@ const CreateGame = () => {
   const maxDateLimit = eventDetails ? formatForInput(eventDetails.eventEndDate) : "";
 
   // Fetch teams
-useEffect(() => {
-  const fetchTeams = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(eventId)}`);
-      const data = await response.json();
-      
-      // OLD CODE (CAUSING THE CRASH):
-      // setAvailableTeams(data); 
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${encodeURIComponent(eventId)}`);
+        const data = await response.json();
 
-      // NEW FIXED CODE:
-      if (Array.isArray(data)) {
-        setAvailableTeams(data);
-      } else {
-        console.warn("Teams API returned non-array:", data);
-        setAvailableTeams([]); // Fallback to empty array so .map doesn't crash
+        // OLD CODE (CAUSING THE CRASH):
+        // setAvailableTeams(data); 
+
+        // NEW FIXED CODE:
+        if (Array.isArray(data)) {
+          setAvailableTeams(data);
+        } else {
+          console.warn("Teams API returned non-array:", data);
+          setAvailableTeams([]); // Fallback to empty array so .map doesn't crash
+        }
+
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+        setAvailableTeams([]); // Safety fallback
       }
-
-    } catch (error) {
-      console.error("Error fetching teams:", error);
-      setAvailableTeams([]); // Safety fallback
-    }
-  };
-  if (user?.institution && decodedEventName) fetchTeams();
-}, [user?.institution, decodedEventName]);
+    };
+    if (user?.institution && decodedEventName) fetchTeams();
+  }, [user?.institution, decodedEventName]);
 
   const toggleTeamSelection = (teamName) => {
     setSelectedTeams((prev) =>
@@ -265,13 +265,13 @@ useEffect(() => {
                         max={maxDateLimit}
                       />
                     </label>
-                    
-                    {!eventDetails && <p style={{color: 'red', fontSize: '0.8em'}}>Loading event dates...</p>}
-                    
+
+                    {!eventDetails && <p style={{ color: 'red', fontSize: '0.8em' }}>Loading event dates...</p>}
+
                     {eventDetails && (
-                        <p style={{fontSize: '0.7rem', color: '#666', marginTop: '5px'}}>
-                            Event Duration: {minDateLimit.replace("T", " ")} to {maxDateLimit.replace("T", " ")}
-                        </p>
+                      <p style={{ fontSize: '0.7rem', color: '#666', marginTop: '5px' }}>
+                        Event Duration: {minDateLimit.replace("T", " ")} to {maxDateLimit.replace("T", " ")}
+                      </p>
                     )}
 
                   </div>
@@ -284,14 +284,14 @@ useEffect(() => {
                         <p>No teams available for this event.</p>
                       ) : (
                         <>
-                          <button type="button" 
+                          <button type="button"
                             onClick={() => {
                               const allSelected = selectedTeams.length === availableTeams.length;
                               setSelectedTeams(allSelected ? [] : availableTeams.map((t) => t.teamName));
                             }}
                             style={{
                               margin: "5px 0 5px", padding: "5px 10px",
-                              backgroundColor: selectedTeams.length === availableTeams.length ? "#b95454ff" : "#18593cff", 
+                              backgroundColor: selectedTeams.length === availableTeams.length ? "#b95454ff" : "#18593cff",
                               color: "white", border: "none", borderRadius: "6px", cursor: "pointer",
                               transition: "background-color 0.2s ease",
                             }}
@@ -323,7 +323,7 @@ useEffect(() => {
                     <h4>BRACKETING TYPE</h4>
                     <label>Please choose one type of bracketing</label>
                     <div className="bracket-selection">
-                      {["Single Elimination", "Double Elimination", "Round Robin", "ADNU"].map((type) => (
+                      {["Single Elimination", "Double Elimination", "Round Robin", "Group Stage + Playoffs"].map((type) => (
                         <button
                           key={type} type="button" onClick={() => setBracketType(type)}
                           style={{
@@ -338,7 +338,7 @@ useEffect(() => {
                     </div>
                   </div>
                 </div>
-              
+
                 <div>
                   <div className="game-organizers">
                     <h4>SUB-ORGANIZERS</h4>
@@ -415,7 +415,7 @@ useEffect(() => {
                       </div>
                     </div>
                   </div>
-                </div>    
+                </div>
               </form>
             </div>
 

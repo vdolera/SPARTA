@@ -30,6 +30,17 @@ app.use("/api", require("./routes/feedback"));
 app.use("/api", require("./routes/announcements"));
 app.use("/uploads", express.static("./uploads"));
 
+// testing for cert
+app.post("/api/test-certificate", async (req, res) => {
+  try {
+    const { player, event } = req.body;
+    await cleanPlayerService.generateAndSendCertificate(player, event);
+    res.status(200).json({ message: "Certificate sent successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to send certificate", details: err });
+  }
+});
+
 // Default Route
 app.get("/", (req, res) => {
   res.send("Server is running...");
@@ -39,15 +50,15 @@ app.get("/", (req, res) => {
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected");
-    
+
     // Start Server *after* DB connection is successful
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server running on port ${PORT}`);
-      
+
       // Start the notification service
       notificationService.start();
       cleanPlayerService.start();
     });
-    
+
   })
   .catch(err => console.log("Failed to connect to MongoDB:", err));

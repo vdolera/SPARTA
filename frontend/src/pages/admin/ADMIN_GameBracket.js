@@ -15,7 +15,7 @@ const GameBracket = () => {
   const { eventName, game: gameId } = useParams();
   const decodedEvent = decodeURIComponent(eventName);
   const [game, setGame] = useState(null);
-  const [parentEvent, setParentEvent] = useState(null); 
+  const [parentEvent, setParentEvent] = useState(null);
 
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [tempScores, setTempScores] = useState([]);
@@ -51,19 +51,19 @@ const GameBracket = () => {
   // Fetch event dates
   useEffect(() => {
     const fetchParentEvent = async () => {
-        if (!game) return;
-        try {
-            const res = await fetch(`http://localhost:5000/api/events?institution=${encodeURIComponent(game.institution)}&name=${encodeURIComponent(game.eventName)}`);
-            const data = await res.json();
-            
-            if (Array.isArray(data) && data.length > 0) {
-                // Find exact match
-                const found = data.find(e => e.eventName === game.eventName);
-                setParentEvent(found || data[0]);
-            }
-        } catch (err) {
-            console.error("Error fetching parent event:", err);
+      if (!game) return;
+      try {
+        const res = await fetch(`http://localhost:5000/api/events?institution=${encodeURIComponent(game.institution)}&name=${encodeURIComponent(game.eventName)}`);
+        const data = await res.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          // Find exact match
+          const found = data.find(e => e.eventName === game.eventName);
+          setParentEvent(found || data[0]);
         }
+      } catch (err) {
+        console.error("Error fetching parent event:", err);
+      }
     };
     fetchParentEvent();
   }, [game]);
@@ -76,7 +76,7 @@ const GameBracket = () => {
     // -- Header --
     doc.setFontSize(18);
     doc.text("OFFICIAL GAME RESULT REPORT", 14, 20);
-    
+
     doc.setFontSize(12);
     doc.text(`Event: ${game.eventName}`, 14, 30);
     doc.text(`Game: ${game.category} ${game.gameType}`, 14, 36);
@@ -87,7 +87,7 @@ const GameBracket = () => {
     const tally = calculateMedalTally();
     doc.setFontSize(14);
     doc.text("Medal Tally", 14, 60);
-    
+
     const tallyData = [
       ["Rank", "Team Name"],
       ["Gold", tally.gold || "N/A"],
@@ -107,7 +107,7 @@ const GameBracket = () => {
     // -- Match History Table --
     // Get the final Y position from the previous table
     const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 80;
-    
+
     doc.text("Match History & Scores", 14, finalY + 15);
 
     // Sort matches by Round/Bracket for readability
@@ -119,7 +119,7 @@ const GameBracket = () => {
       const scoreStr = `${t1.score ?? 0} - ${t2.score ?? 0}`;
       const winnerStr = m.finalizeWinner ? m.winner : "Pending";
       const bracketStr = m.bracket === "WB" ? "Winner's" : m.bracket === "LB" ? "Loser's" : m.bracket;
-      
+
       return [
         `R${m.round} (${bracketStr})`,
         t1.name,
@@ -155,7 +155,7 @@ const GameBracket = () => {
       const t1 = m.teams[0];
       const t2 = m.teams[1];
       const dateStr = m.date ? new Date(m.date).toISOString().split('T')[0] : "TBD";
-      
+
       // Escape commas in names
       const row = [
         m.bracket,
@@ -169,7 +169,7 @@ const GameBracket = () => {
         dateStr,
         `"${m.location || ""}"`
       ].join(",");
-      
+
       csvContent += row + "\n";
     });
 
@@ -257,13 +257,13 @@ const GameBracket = () => {
           let seeds = matches
             .filter((m) => m.round === r)
             .filter(m => {
-               const t1 = m.teams[0].name;
-               const t2 = m.teams[1].name;
-               if (t1 === "No Opponent" && t2 === "No Opponent") return false;
-               if (t1 === "No Opponent" && t2 === "TBD") return false;
-               if (t1 === "TBD" && t2 === "No Opponent") return false;
-               return true;
-            })            .map((m) => ({
+              const t1 = m.teams[0].name;
+              const t2 = m.teams[1].name;
+              if (t1 === "No Opponent" && t2 === "No Opponent") return false;
+              if (t1 === "No Opponent" && t2 === "TBD") return false;
+              if (t1 === "TBD" && t2 === "No Opponent") return false;
+              return true;
+            }).map((m) => ({
               id: m._id,
               date: m.date ? new Date(m.date) : null,
               teams: m.teams.map((t) => ({
@@ -394,23 +394,23 @@ const GameBracket = () => {
         });
       }
     }
-    if (game.bracketType === "ADNU") {
+    if (game.bracketType === "Group Stage + Playoffs") {
       const buildBracketRounds = (matches, namePrefix) => {
-         if(!matches.length) return [];
-         const maxRound = Math.max(...matches.map(m => m.round));
-         const rounds = [];
-         for(let r=1; r<=maxRound; r++) {
-            const seeds = matches.filter(m => m.round === r).map(m => ({
-               id: m._id,
-               date: m.date ? new Date(m.date) : null,
-               teams: m.teams.map(t => ({ 
-                 name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner 
-               })),
-               finalizeWinner: m.finalizeWinner
-            }));
-            rounds.push({ title: `Round ${r}`, seeds });
-         }
-         return rounds;
+        if (!matches.length) return [];
+        const maxRound = Math.max(...matches.map(m => m.round));
+        const rounds = [];
+        for (let r = 1; r <= maxRound; r++) {
+          const seeds = matches.filter(m => m.round === r).map(m => ({
+            id: m._id,
+            date: m.date ? new Date(m.date) : null,
+            teams: m.teams.map(t => ({
+              name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner
+            })),
+            finalizeWinner: m.finalizeWinner
+          }));
+          rounds.push({ title: `Round ${r}`, seeds });
+        }
+        return rounds;
       };
 
       rounds.push({ title: "Category A", rounds: buildBracketRounds(game.matches.filter(m => m.bracket === "Group A"), "A") });
@@ -418,24 +418,24 @@ const GameBracket = () => {
 
       const sfMatches = game.matches.filter(m => m.bracket === "SF");
       const finalMatch = game.matches.find(m => m.bracket === "Championship");
-      
+
       const playoffRounds = [
-         { 
-           title: "Semi-Finals", 
-           seeds: sfMatches.map(m => ({
-               id: m._id, date: m.date ? new Date(m.date) : null,
-               teams: m.teams.map(t => ({ name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner })),
-               finalizeWinner: m.finalizeWinner
-           }))
-         },
-         { 
-           title: "Championship", 
-           seeds: finalMatch ? [{
-               id: finalMatch._id, date: finalMatch.date ? new Date(finalMatch.date) : null,
-               teams: finalMatch.teams.map(t => ({ name: t.name, score: t.score, winner: finalMatch.finalizeWinner && t.name === finalMatch.winner })),
-               finalizeWinner: finalMatch.finalizeWinner
-           }] : []
-         }
+        {
+          title: "Semi-Finals",
+          seeds: sfMatches.map(m => ({
+            id: m._id, date: m.date ? new Date(m.date) : null,
+            teams: m.teams.map(t => ({ name: t.name, score: t.score, winner: m.finalizeWinner && t.name === m.winner })),
+            finalizeWinner: m.finalizeWinner
+          }))
+        },
+        {
+          title: "Championship",
+          seeds: finalMatch ? [{
+            id: finalMatch._id, date: finalMatch.date ? new Date(finalMatch.date) : null,
+            teams: finalMatch.teams.map(t => ({ name: t.name, score: t.score, winner: finalMatch.finalizeWinner && t.name === finalMatch.winner })),
+            finalizeWinner: finalMatch.finalizeWinner
+          }] : []
+        }
       ];
 
       if (finalMatch && finalMatch.finalizeWinner) {
@@ -448,21 +448,21 @@ const GameBracket = () => {
           }]
         });
       }
-      
+
       rounds.push({ title: "Playoffs", rounds: playoffRounds });
 
       const third = game.matches.find(m => m.bracket === "3rd Place");
-      if(third) {
-        rounds.push({ 
-          title: "3rd Place", 
+      if (third) {
+        rounds.push({
+          title: "3rd Place",
           seeds: [{
-             id: third._id, date: third.date ? new Date(third.date) : null,
-             teams: third.teams.map(t => ({ name: t.name, score: t.score, winner: third.finalizeWinner && t.name === third.winner })),
-             finalizeWinner: third.finalizeWinner
+            id: third._id, date: third.date ? new Date(third.date) : null,
+            teams: third.teams.map(t => ({ name: t.name, score: t.score, winner: third.finalizeWinner && t.name === third.winner })),
+            finalizeWinner: third.finalizeWinner
           }]
         });
       }
-   }
+    }
     return rounds;
   };
 
@@ -502,9 +502,9 @@ const GameBracket = () => {
 
       // Handle backend error messages (double check)
       if (!response.ok) {
-          const errData = await response.json();
-          alert(`Failed: ${errData.message}`);
-          return;
+        const errData = await response.json();
+        alert(`Failed: ${errData.message}`);
+        return;
       }
 
       const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
@@ -544,35 +544,35 @@ const GameBracket = () => {
     }
   };
 
- const saveScores = async () => {
-  if (!selectedMatch) return;
-  try {
-    const response = await fetch(
-      `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          score1: tempScores[0],
-          score2: tempScores[1],
-          finalizeWinner: true,
-        }),
+  const saveScores = async () => {
+    if (!selectedMatch) return;
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/games/${gameId}/matches/${selectedMatch.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            score1: tempScores[0],
+            score2: tempScores[1],
+            finalizeWinner: true,
+          }),
+        }
+      );
+
+      const updatedGame = await response.json();
+
+      if (!response.ok) {
+        console.error("Error finalizing match:", updatedGame.message);
+        alert(`Failed to save: ${updatedGame.message || 'Server error'}`);
+        return;
       }
-    );
-
-    const updatedGame = await response.json();
-
-    if (!response.ok) {
-      console.error("Error finalizing match:", updatedGame.message);
-      alert(`Failed to save: ${updatedGame.message || 'Server error'}`);
-      return;
+      setGame(updatedGame);
+      setSelectedMatch(null);
+    } catch (err) {
+      console.error("Error finalizing match:", err);
     }
-    setGame(updatedGame);
-    setSelectedMatch(null);
-  } catch (err) {
-    console.error("Error finalizing match:", err);
-  }
-};
+  };
 
   const calculateMedalTally = () => {
     const { bracketType, matches, teams } = game;
@@ -614,7 +614,7 @@ const GameBracket = () => {
         tally.silver = sortedTeams[1] ? sortedTeams[1][0] : null;
         tally.bronze = sortedTeams[2] ? sortedTeams[2][0] : null;
       }
-      else if (bracketType === "ADNU") {
+      else if (bracketType === "Group Stage + Playoffs") {
         const finalMatch = matches.find(m => m.bracket === "Championship");
         const thirdPlaceMatch = matches.find(m => m.bracket === "3rd Place");
         if (finalMatch && finalMatch.finalizeWinner) {
@@ -642,64 +642,64 @@ const GameBracket = () => {
     const hasNoOpponent = props.seed.teams.some(t => t.name === "No Opponent");
 
     return (
-    <Seed
-      {...props}
-      style={{ fontSize: "14px", cursor: props.seed.id === "champion" ? "default" : "pointer" }}
-    >
-      <SeedItem className="seed-item">
-        {props.seed.teams.map((team, idx) => {
-          let displayScore = team.score ?? "-";
-          if (hasNoOpponent && team.name !== "No Opponent") {
-             displayScore = "Auto";
-          }
-          
-          return (
-            <SeedTeam key={idx} className="seed-team">
-              {team.name} <span className="score-box">{displayScore}</span>
-            </SeedTeam>
-          );
-        })}
+      <Seed
+        {...props}
+        style={{ fontSize: "14px", cursor: props.seed.id === "champion" ? "default" : "pointer" }}
+      >
+        <SeedItem className="seed-item">
+          {props.seed.teams.map((team, idx) => {
+            let displayScore = team.score ?? "-";
+            if (hasNoOpponent && team.name !== "No Opponent") {
+              displayScore = "Auto";
+            }
 
-        {props.seed.id !== "champion" && (
-          <div className="match-actions">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                const fullMatch = game.matches.find(m => m._id === props.seed.id);
-                setSelectedMatch({
-                  ...fullMatch,
-                  id: fullMatch._id,
-                  type: "schedule",
-                  date: fullMatch.date ? formatForInput(fullMatch.date) : "",
-                  location: fullMatch.location || "",
-                });
-              }}
-            >
-              Schedule
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedMatch({ ...props.seed, type: "scores" });
-                setTempScores(props.seed.teams.map((t) => t.score ?? 0));
-              }}
-            >
-              Scores
-            </button>
-          </div>
-        )}
-      </SeedItem>
-    </Seed>
+            return (
+              <SeedTeam key={idx} className="seed-team">
+                {team.name} <span className="score-box">{displayScore}</span>
+              </SeedTeam>
+            );
+          })}
+
+          {props.seed.id !== "champion" && (
+            <div className="match-actions">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const fullMatch = game.matches.find(m => m._id === props.seed.id);
+                  setSelectedMatch({
+                    ...fullMatch,
+                    id: fullMatch._id,
+                    type: "schedule",
+                    date: fullMatch.date ? formatForInput(fullMatch.date) : "",
+                    location: fullMatch.location || "",
+                  });
+                }}
+              >
+                Schedule
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedMatch({ ...props.seed, type: "scores" });
+                  setTempScores(props.seed.teams.map((t) => t.score ?? 0));
+                }}
+              >
+                Scores
+              </button>
+            </div>
+          )}
+        </SeedItem>
+      </Seed>
     );
   };
 
   let isGameFinished = false;
-  const roundsData = makeRoundsFromMatches(); 
-  if (game.bracketType === "ADNU") {
-     const champRound = roundsData.find(r => r.title === "Playoffs")?.rounds?.find(sub => sub.title === "Champion");
-     isGameFinished = !!champRound;
+  const roundsData = makeRoundsFromMatches();
+  if (game.bracketType === "Group Stage + Playoffs") {
+    const champRound = roundsData.find(r => r.title === "Playoffs")?.rounds?.find(sub => sub.title === "Champion");
+    isGameFinished = !!champRound;
   } else {
-     isGameFinished = roundsData.some(r => r.title === "Champion");
+    isGameFinished = roundsData.some(r => r.title === "Champion");
   }
 
   return (
@@ -718,7 +718,7 @@ const GameBracket = () => {
           <div className="rules-section">
             {game.rules ? (
               <button onClick={() => setShowRulesModal(true)}>View Rules</button>
-            ) : ( <p>No rules provided.</p> )}
+            ) : (<p>No rules provided.</p>)}
           </div>
 
           <div className="video-section">
@@ -729,25 +729,25 @@ const GameBracket = () => {
 
           {isGameFinished && (
             <>
-            <div className="medal-tally-section">
-              <button onClick={handleShowTally}>View Medal Tally</button>
-            </div>
+              <div className="medal-tally-section">
+                <button onClick={handleShowTally}>View Medal Tally</button>
+              </div>
 
-            <div className="export-section" style={{ display: 'flex', gap: '10px' }}>
-                <button 
-                    onClick={exportToPDF}
-                    style={{ backgroundColor: '#b95454', color: 'white' }}
+              <div className="export-section" style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  onClick={exportToPDF}
+                  style={{ backgroundColor: '#b95454', color: 'white' }}
                 >
-                    Export PDF
+                  Export PDF
                 </button>
-                <button 
-                    onClick={exportToCSV}
-                    style={{ backgroundColor: '#18593c', color: 'white' }}
+                <button
+                  onClick={exportToCSV}
+                  style={{ backgroundColor: '#18593c', color: 'white' }}
                 >
-                    Export CSV
+                  Export CSV
                 </button>
               </div>
-              </>
+            </>
           )}
         </div>
       </div>
@@ -759,7 +759,7 @@ const GameBracket = () => {
             <hr />
             {game.rules.endsWith(".pdf") ? (
               <iframe src={game.rules} title="Rules PDF" width="100%" height="500px" style={{ border: "none" }} />
-            ) : ( <p style={{ whiteSpace: "pre-wrap" }}>{game.rules}</p> )}
+            ) : (<p style={{ whiteSpace: "pre-wrap" }}>{game.rules}</p>)}
             <button onClick={() => setShowRulesModal(false)}>Close</button>
           </div>
         </div>
@@ -795,7 +795,7 @@ const GameBracket = () => {
         {game.bracketType === "Round Robin" && (
           <div className="round-robin bracket-container">
             <h2>Round Robin</h2>
-            <div style={{display: "grid", gridTemplateColumns: "repeat(4, 1fr)"}}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
               {roundsData.map((round, rIndex) => (
                 <div key={rIndex} className="rr-round">
                   <h3 className="rr-title">{round.title}</h3>
@@ -810,35 +810,35 @@ const GameBracket = () => {
           </div>
         )}
 
-        {game.bracketType === "ADNU" && (
-          <div className="rr-knockout-container" style={{display:'flex', flexDirection:'column', gap:'40px'}}>
-             <div style={{display:'flex', gap:'30px', justifyContent:'center', flexWrap:'wrap', width: '100%'}}>
-                {roundsData.filter(r => r.title.startsWith("Category")).map((group, gIdx) => (
-                   <div key={gIdx} className="group-stage" style={{backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px', border: '1px solid #ddd'}}>
-                      <h3 style={{textAlign: 'center', margin: '0 0 15px 0', borderBottom: '2px solid #181b59', paddingBottom: '5px'}}>{group.title}</h3>
-                      <div style={{display:'flex', gap:'20px'}}>
-                        {group.rounds.map((round, rIdx) => (
-                          <div key={rIdx} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
-                             <h4 style={{fontSize: '14px', textAlign:'center', color: '#666', margin: '0'}}>{round.title}</h4>
-                             {round.seeds.map((seed, sIdx) => (
-                                <div key={sIdx} style={{marginBottom: '5px'}}> {renderSeed({seed, breakpoint: 0})} </div>
-                             ))}
-                          </div>
+        {game.bracketType === "Group Stage + Playoffs" && (
+          <div className="rr-knockout-container" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+            <div style={{ display: 'flex', gap: '30px', justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
+              {roundsData.filter(r => r.title.startsWith("Category")).map((group, gIdx) => (
+                <div key={gIdx} className="group-stage" style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '8px', border: '1px solid #ddd' }}>
+                  <h3 style={{ textAlign: 'center', margin: '0 0 15px 0', borderBottom: '2px solid #181b59', paddingBottom: '5px' }}>{group.title}</h3>
+                  <div style={{ display: 'flex', gap: '20px' }}>
+                    {group.rounds.map((round, rIdx) => (
+                      <div key={rIdx} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <h4 style={{ fontSize: '14px', textAlign: 'center', color: '#666', margin: '0' }}>{round.title}</h4>
+                        {round.seeds.map((seed, sIdx) => (
+                          <div key={sIdx} style={{ marginBottom: '5px' }}> {renderSeed({ seed, breakpoint: 0 })} </div>
                         ))}
                       </div>
-                   </div>
-                ))}
-             </div>
-             <div style={{borderTop:'2px solid #ccc', paddingTop:'20px', textAlign: 'center'}}>
-                <h2>Playoffs</h2>
-                <Bracket rounds={roundsData.find(r => r.title === "Playoffs")?.rounds || []} renderSeedComponent={renderSeed} />
-                <div style={{marginTop:'30px', display:'flex', flexDirection:'column', alignItems:'center'}}>
-                   <h4>3rd Place Match</h4>
-                   {roundsData.find(r => r.title === "3rd Place")?.seeds?.map((seed, i) => (
-                      <div key={i}>{renderSeed({seed})}</div>
-                   ))}
+                    ))}
+                  </div>
                 </div>
-             </div>
+              ))}
+            </div>
+            <div style={{ borderTop: '2px solid #ccc', paddingTop: '20px', textAlign: 'center' }}>
+              <h2>Playoffs</h2>
+              <Bracket rounds={roundsData.find(r => r.title === "Playoffs")?.rounds || []} renderSeedComponent={renderSeed} />
+              <div style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <h4>3rd Place Match</h4>
+                {roundsData.find(r => r.title === "3rd Place")?.seeds?.map((seed, i) => (
+                  <div key={i}>{renderSeed({ seed })}</div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -901,17 +901,17 @@ const GameBracket = () => {
                 <div className="modal-actions">
                   <button onClick={() => setSelectedMatch(null)}>Cancel</button>
                   <button type="button" onClick={async () => {
-                      try {
-                        await fetch(`http://localhost:5000/api/${gameId}/video`, {
-                          method: "PUT", headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ videoLink: selectedMatch.videoLink }),
-                        });
-                        const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
-                        const updated = await res.json();
-                        setGame(updated);
-                        setSelectedMatch(null);
-                      } catch (err) { console.error("Error saving video link:", err); alert("Failed to save video link."); }
-                    }} > Save </button>
+                    try {
+                      await fetch(`http://localhost:5000/api/${gameId}/video`, {
+                        method: "PUT", headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ videoLink: selectedMatch.videoLink }),
+                      });
+                      const res = await fetch(`http://localhost:5000/api/games/${gameId}`);
+                      const updated = await res.json();
+                      setGame(updated);
+                      setSelectedMatch(null);
+                    } catch (err) { console.error("Error saving video link:", err); alert("Failed to save video link."); }
+                  }} > Save </button>
                 </div>
               </>
             )}
