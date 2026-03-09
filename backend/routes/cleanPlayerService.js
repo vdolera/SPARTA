@@ -57,24 +57,24 @@ const generateAndSendCertificate = async (player, event) => {
       doc.rect(20, 20, doc.page.width - 40, doc.page.height - 40).stroke();
 
       // Header
-      doc.fontSize(30).font('Helvetica-Bold').text('CERTIFICATE OF PARTICIPATION', { align: 'center', valign: 'center' });
+      doc.fontSize(30).font('Times New Roman').text('CERTIFICATE OF PARTICIPATION', { align: 'center', valign: 'center' });
       doc.moveDown();
 
       // Body
-      doc.fontSize(20).font('Helvetica').text('This is presented to', { align: 'center' });
+      doc.fontSize(15).font('Times New Roman').text('This  certificate of particpation hereby is presented to', { align: 'center' });
       doc.moveDown();
 
-      doc.fontSize(35).fillColor('#b95454').text(player.playerName || "Participant", { align: 'center', underline: true });
+      doc.fontSize(20).fillColor('#b95454').text(player.playerName || "Participant", { align: 'center', underline: true });
       doc.fillColor('black');
       doc.moveDown();
 
-      doc.fontSize(20).text('For successfully participating in the event:', { align: 'center' });
+      doc.fontSize(15).text('For their active and successful participation in the event:', { align: 'center' });
       doc.moveDown();
 
-      doc.fontSize(25).font('Helvetica-Bold').text(event.eventName, { align: 'center' });
+      doc.fontSize(25).font('Times New Roman').text(event.eventName, { align: 'center' });
       doc.moveDown();
 
-      doc.fontSize(15).font('Helvetica').text(`Held at ${event.location || "SPARTA Venue"}`, { align: 'center' });
+      doc.fontSize(15).font('Times New Roman').text(`Held at ${event.location || "SPARTA Venue"}`, { align: 'center' });
       doc.fontSize(15).text(`Date: ${new Date(event.eventEndDate).toLocaleDateString()}`, { align: 'center' });
 
       // Footer

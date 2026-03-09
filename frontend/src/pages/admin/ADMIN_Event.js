@@ -18,6 +18,8 @@ const Event = () => {
   const [, setNewSubOrganizer] = useState(""); 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoEvent, setInfoEvent] = useState(null);
   const user = JSON.parse(localStorage.getItem("auth"));
 
   // Fetch events
@@ -63,6 +65,12 @@ const Event = () => {
   const cancelDelete = () => {
     setDeleteModalOpen(false);
     setDeleteTarget(null);
+  };
+
+  const handleShowInfo = (event) => {
+    setInfoEvent(event);
+    setShowInfoModal(true);
+    setMenuOpen(null);
   };
 
   // Edit event
@@ -130,6 +138,9 @@ const Event = () => {
 
                     {menuOpen === event._id && (
                       <div className="dropdown-menu">
+                        <div className="dropdown-item" onClick={() => handleShowInfo(event)}>
+                          Info
+                        </div>
                         <div className="dropdown-item" onClick={() => setEditEvent(event)}>
                           Edit
                         </div>
@@ -377,6 +388,53 @@ const Event = () => {
               <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 12 }}>
                 <button className="modal-cancel-btn" type="button" onClick={cancelDelete}>Cancel</button>
                 <button className="modal-save-btn" type="button" onClick={performDelete} style={{ background: "#d32f2f" }}>Delete</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Info Modal */}
+        {showInfoModal && infoEvent && (
+          <div className="modal-event-overlay" onClick={() => setShowInfoModal(false)}>
+            <div className="event-info-modal" onClick={(e) => e.stopPropagation()}>
+              <h2>EVENT INFO</h2>
+              <div className="info-content">
+                <p><strong>Name:</strong> {infoEvent.eventName}</p>
+                <p><strong>Organizer:</strong> {
+                  infoEvent.createdBy?.name || 
+                  infoEvent.createdByName || 
+                  infoEvent.organizerName || 
+                  infoEvent.organizer?.name || 
+                  "--"
+                }</p>
+                <p><strong>Organizer Email:</strong> {
+                  infoEvent.createdBy?.email || 
+                  infoEvent.createdByEmail || 
+                  infoEvent.organizerEmail || 
+                  infoEvent.organizer?.email || 
+                  "--"
+                }</p>
+                <p><strong>Duration:</strong> {infoEvent.eventStartDate ? new Date(infoEvent.eventStartDate).toLocaleDateString() : "--"} - {infoEvent.eventEndDate ? new Date(infoEvent.eventEndDate).toLocaleDateString() : "--"}</p>
+                <p><strong>Location:</strong> {infoEvent.location || "--"}</p>
+                <p><strong>Description:</strong></p>
+                <p style={{marginLeft: "1rem", fontStyle: "italic"}}>{infoEvent.description || "No description provided."}</p>
+                <p><strong>Co & Sub-Organizers:</strong></p>
+                {infoEvent.coordinators && infoEvent.coordinators.length > 0 ? (
+                  <div className="coordinators-list">
+                    {infoEvent.coordinators.map((coord, idx) => (
+                      <div key={idx} className="coordinator-info">
+                        <span className="coordinator-role">{coord.role === "co-organizer" ? "Co-Organizer" : "Sub-Organizer"}:</span>
+                        <span className="coordinator-name">{coord.name}</span>
+                        <span className="coordinator-email">({coord.email})</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No assigned co & sub-organizers</p>
+                )}
+              </div>
+              <div className="modal-actions">
+                <button onClick={() => setShowInfoModal(false)}>Close</button>
               </div>
             </div>
           </div>

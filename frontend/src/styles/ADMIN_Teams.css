@@ -200,6 +200,194 @@ h3 {
   margin-top: 6px !important;
 }
 
+/* Import Modal Content Styling */
+.import-modal-content {
+  margin: 1rem 0;
+}
+
+.import-modal-content label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1A2A49;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Inter', 'Montserrat', sans-serif;
+}
+
+/* Custom Dropdown Styling */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1A2A49;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Inter', 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.dropdown-trigger:hover {
+  border-color: #CE892C;
+  background-color: #f8f9fa;
+}
+
+.dropdown-trigger:focus {
+  border-color: #FF9800;
+  box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
+  outline: none;
+}
+
+.selected-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-arrow {
+  transition: transform 0.3s ease;
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-left: 0.5rem;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 2px solid #e9ecef;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-height: 280px; /* 7 items * ~40px each */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #CE892C #f1f1f1;
+}
+
+.dropdown-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.dropdown-list::-webkit-scrollbar-thumb {
+  background: #CE892C;
+  border-radius: 3px;
+}
+
+.dropdown-list::-webkit-scrollbar-thumb:hover {
+  background: #b5841f;
+}
+
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: 'Inter', 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  color: #1A2A49;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #CE892C;
+}
+
+.dropdown-item:first-child:hover {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.import-teams-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 2px solid #e9ecef;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #f8f9fa;
+  margin-top: 1rem;
+}
+
+.import-teams-list p {
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.team-selection-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.team-selection-item:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.team-selection-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 0.75rem;
+  accent-color: #FF9800;
+  cursor: pointer;
+}
+
+.team-color-indicator {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  margin-right: 0.75rem;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.team-name-text {
+  font-weight: 500;
+  color: #1A2A49;
+  font-family: 'Inter', 'Montserrat', sans-serif;
+}
+
+.select-teams-header {
+  margin-bottom: 1rem;
+  font-weight: 700;
+  color: #1A2A49;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .team-menu-container {
   position: absolute;
   top: 20px;
@@ -379,4 +567,60 @@ h3 {
 .teamedit-modal-actions button:last-child {
     background: #0f8942;
     color: white;
+}
+
+/* Team Info Modal Styles */
+.team-info-modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 450px;
+  width: 90%;
+  animation: slideIn 0.3s ease-out;
+  position: relative;
+  z-index: 2100;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.team-info-modal h2 {
+  margin: 0 0 1rem 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.info-content p {
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
+}
+
+.info-list {
+  list-style: disc;
+  margin: 0.5rem 0 0 1.25rem;
+  padding: 0;
+  color: var(--text-primary);
+}
+
+.team-info-modal .modal-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.team-info-modal .modal-actions button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary-color);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.team-info-modal .modal-actions button:hover {
+  background: var(--secondary-color);
 }

@@ -19,6 +19,8 @@ const Teams = () => {
   const [editTeam, setEditTeam] = useState(null); 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [teamToDelete, setTeamToDelete] = useState(null);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [infoTeam, setInfoTeam] = useState(null);
   const [showToast, setShowToast] = useState(false);
   const [toastType, setToastType] = useState("success");
   const [toastMessage, setToastMessage] = useState("");
@@ -37,6 +39,7 @@ const Teams = () => {
   const [selectedImportEvent, setSelectedImportEvent] = useState("");
   const [pastTeams, setPastTeams] = useState([]);
   const [selectedTeamsToCopy, setSelectedTeamsToCopy] = useState([]);
+  const [isEventDropdownOpen, setIsEventDropdownOpen] = useState(false);
 
   // Fetch Events (Current Event Details AND Past Events for Import)
   useEffect(() => {
@@ -147,6 +150,7 @@ useEffect(() => {
     const eventId = e.target.value;
     setSelectedImportEvent(eventId);
     setSelectedTeamsToCopy([]);
+    setIsEventDropdownOpen(false);
     
     if(!eventId) {
         setPastTeams([]);
@@ -157,6 +161,26 @@ useEffect(() => {
         const res = await fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${eventId}`);
         const data = await res.json();
         if(Array.isArray(data)) setPastTeams(data);
+    } catch(err) {
+        console.error(err);
+    }
+  };
+
+  const handleEventSelection = (eventId, eventName) => {
+    setSelectedImportEvent(eventId);
+    setSelectedTeamsToCopy([]);
+    setIsEventDropdownOpen(false);
+    
+    if(!eventId) {
+        setPastTeams([]);
+        return;
+    }
+
+    try {
+        const res = fetch(`http://localhost:5000/api/teams?institution=${encodeURIComponent(user?.institution)}&event=${eventId}`);
+        res.then(response => response.json()).then(data => {
+            if(Array.isArray(data)) setPastTeams(data);
+        });
     } catch(err) {
         console.error(err);
     }
@@ -222,6 +246,11 @@ useEffect(() => {
   const handleDelete = (team) => {
     setTeamToDelete(team);
     setShowDeleteModal(true);
+  };
+
+  const handleShowInfo = (team) => {
+    setInfoTeam(team);
+    setShowInfoModal(true);
   };
   
   // Confirm delete
@@ -359,19 +388,24 @@ useEffect(() => {
                       />
                       {menuOpen === team._id && (
                         <div className="menu-dropdown">
+                          <button className="dropdown-item" onClick={() => handleShowInfo(team)}>
+                            Info
+                          </button>
+                          
                           <button
-                      className="dropdown-item"
-                      onClick={() => {
-                        const normalizedCoordinators = (team.coordinators || []).map((coord) =>
-                          typeof coord === "string"
-                            ? coordinators.find((c) => c._id === coord) || { _id: coord, name: coord }
-                            : coord
-                        );
-                        setEditTeam({ ...team, coordinators: normalizedCoordinators });
-                      }}
-                    >
-                      Edit
-                    </button>
+                            className="dropdown-item"
+                            onClick={() => {
+                              const normalizedCoordinators = (team.coordinators || []).map((coord) =>
+                                typeof coord === "string"
+                                  ? coordinators.find((c) => c._id === coord) || { _id: coord, name: coord }
+                                  : coord
+                              );
+                              setEditTeam({ ...team, coordinators: normalizedCoordinators });
+                            }}
+                          >
+                            Edit
+                          </button>
+                          
                           <button className="dropdown-item delete" onClick={() => handleDelete(team)}>
                             Delete
                           </button>
@@ -392,43 +426,64 @@ useEffect(() => {
             <div className="modal" style={{maxWidth: "500px", width: "90%"}}>
                 <h2>Import Teams from Past Event</h2>
                 <hr />
-                <div style={{margin: "15px 0"}}>
+                <div className="import-modal-content">
                     <label>Select Event:</label>
-                    <select 
-                        style={{width: "100%", padding: "8px", marginTop: "5px"}}
-                        value={selectedImportEvent}
-                        onChange={handleSelectImportEvent}
-                    >
-                        <option value="">-- Select an Event --</option>
-                        {allEvents.map(evt => (
-                            <option key={evt._id} value={evt._id}>{evt.eventName}</option>
-                        ))}
-                    </select>
+                    <div className="custom-dropdown">
+                        <div 
+                            className="dropdown-trigger"
+                            onClick={() => setIsEventDropdownOpen(!isEventDropdownOpen)}
+                        >
+                            <span className="selected-text">
+                                {selectedImportEvent 
+                                    ? allEvents.find(evt => evt._id === selectedImportEvent)?.eventName || "-- Select an Event --"
+                                    : "-- Select an Event --"
+                                }
+                            </span>
+                            <span className={`dropdown-arrow ${isEventDropdownOpen ? 'open' : ''}`}>
+                                ▼
+                            </span>
+                        </div>
+                        {isEventDropdownOpen && (
+                            <div className="dropdown-list">
+                                <div 
+                                    className="dropdown-item"
+                                    onClick={() => handleEventSelection("", "")}
+                                >
+                                    -- Select an Event --
+                                </div>
+                                {allEvents.map(evt => (
+                                    <div 
+                                        key={evt._id} 
+                                        className="dropdown-item"
+                                        onClick={() => handleEventSelection(evt._id, evt.eventName)}
+                                    >
+                                        {evt.eventName}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {selectedImportEvent && (
-                    <div style={{maxHeight: "300px", overflowY: "auto", border: "1px solid #ddd", padding: "10px", borderRadius: "4px"}}>
+                    <div className="import-teams-list">
                         {pastTeams.length === 0 ? (
                             <p>No teams found in selected event.</p>
                         ) : (
                             <>
-                                <div style={{marginBottom:"10px", fontWeight:"bold"}}>Select Teams to Copy:</div>
+                                <div className="select-teams-header">Select Teams to Copy:</div>
                                 {pastTeams.map(team => (
-                                    <div key={team._id} style={{display:"flex", alignItems:"center", marginBottom:"5px"}}>
+                                    <div key={team._id} className="team-selection-item">
                                         <input 
                                             type="checkbox" 
                                             checked={!!selectedTeamsToCopy.find(t => t._id === team._id)}
                                             onChange={() => toggleImportSelection(team)}
-                                            style={{marginRight: "10px"}}
                                         />
                                         <div 
-                                            style={{
-                                                width:"20px", height:"20px", 
-                                                backgroundColor: team.teamColor || "#ccc", 
-                                                marginRight:"10px", borderRadius:"3px"
-                                            }}
+                                            className="team-color-indicator"
+                                            style={{ backgroundColor: team.teamColor || "#ccc" }}
                                         ></div>
-                                        <span>{team.teamName}</span>
+                                        <span className="team-name-text">{team.teamName}</span>
                                     </div>
                                 ))}
                             </>
@@ -518,6 +573,36 @@ useEffect(() => {
               <div className="confirm-modal-actions">
                 <button className="btn cancel" onClick={cancelDelete}>Cancel</button>
                 <button className="btn confirm" onClick={confirmDeleteTeam}>Delete</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Info Modal */}
+        {showInfoModal && infoTeam && (
+          <div className="modal-overlay" role="dialog" aria-modal="true">
+            <div className="team-info-modal" onClick={(e) => e.stopPropagation()}>
+              <h2>TEAM INFO</h2>
+              <div className="info-content">
+                <p><strong>Name:</strong> {infoTeam.teamName}</p>
+                <p><strong>Manager:</strong> {infoTeam.teamManager || "--"}</p>
+                <p><strong>Manager Email:</strong> {infoTeam.managerEmail || "--"}</p>
+                <p><strong>Sub-Organizers:</strong></p>
+                {infoTeam.coordinators && infoTeam.coordinators.length > 0 ? (
+                  <ul className="info-list">
+                    {infoTeam.coordinators.map((c, idx) => {
+                      const name = typeof c === "string" ?
+                        (coordinators.find(x => x._id === c)?.name || c) :
+                        c?.name || c;
+                      return <li key={idx}>{name}</li>;
+                    })}
+                  </ul>
+                ) : (
+                  <p>No assigned sub-organizers</p>
+                )}
+              </div>
+              <div className="modal-actions">
+                <button onClick={() => setShowInfoModal(false)}>Close</button>
               </div>
             </div>
           </div>

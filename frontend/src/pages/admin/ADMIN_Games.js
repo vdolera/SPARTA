@@ -32,6 +32,7 @@ const Game = () => {
   const [selectedImportEvent, setSelectedImportEvent] = useState("");
   const [pastGames, setPastGames] = useState([]);
   const [selectedGamesToCopy, setSelectedGamesToCopy] = useState([]);
+  const [isEventDropdownOpen, setIsEventDropdownOpen] = useState(false);
 
   const filteredGames = Object.entries(gamesByType).filter(([combinedType]) =>
     combinedType.toLowerCase().includes(searchQuery.toLowerCase())
@@ -114,6 +115,7 @@ const Game = () => {
     const eventId = e.target.value;
     setSelectedImportEvent(eventId);
     setSelectedGamesToCopy([]);
+    setIsEventDropdownOpen(false);
     
     if(!eventId) {
         setPastGames([]);
@@ -124,6 +126,26 @@ const Game = () => {
         const res = await fetch(`http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventId=${eventId}`);
         const data = await res.json();
         if(Array.isArray(data)) setPastGames(data);
+    } catch(err) {
+        console.error(err);
+    }
+  };
+
+  const handleEventSelection = (eventId, eventName) => {
+    setSelectedImportEvent(eventId);
+    setSelectedGamesToCopy([]);
+    setIsEventDropdownOpen(false);
+    
+    if(!eventId) {
+        setPastGames([]);
+        return;
+    }
+
+    try {
+        const res = fetch(`http://localhost:5000/api/games?institution=${encodeURIComponent(userInstitution)}&eventId=${eventId}`);
+        res.then(response => response.json()).then(data => {
+            if(Array.isArray(data)) setPastGames(data);
+        });
     } catch(err) {
         console.error(err);
     }
@@ -318,38 +340,62 @@ const Game = () => {
             <div className="modal" style={{maxWidth: "500px", width: "90%"}}>
                 <h2>Copy Games from Past Event</h2>
                 <hr />
-                <div style={{margin: "15px 0"}}>
+                <div className="import-modal-content">
                     <label>Select Event:</label>
-                    <select 
-                        style={{width: "100%", padding: "8px", marginTop: "5px"}}
-                        value={selectedImportEvent}
-                        onChange={handleSelectImportEvent}
-                    >
-                        <option value="">-- Select an Event --</option>
-                        {allEvents.map(evt => (
-                            <option key={evt._id} value={evt._id}>{evt.eventName}</option>
-                        ))}
-                    </select>
+                    <div className="custom-dropdown">
+                        <div 
+                            className="dropdown-trigger"
+                            onClick={() => setIsEventDropdownOpen(!isEventDropdownOpen)}
+                        >
+                            <span className="selected-text">
+                                {selectedImportEvent 
+                                    ? allEvents.find(evt => evt._id === selectedImportEvent)?.eventName || "-- Select an Event --"
+                                    : "-- Select an Event --"
+                                }
+                            </span>
+                            <span className={`dropdown-arrow ${isEventDropdownOpen ? 'open' : ''}`}>
+                                ▼
+                            </span>
+                        </div>
+                        {isEventDropdownOpen && (
+                            <div className="dropdown-list">
+                                <div 
+                                    className="dropdown-item"
+                                    onClick={() => handleEventSelection("", "")}
+                                >
+                                    -- Select an Event --
+                                </div>
+                                {allEvents.map(evt => (
+                                    <div 
+                                        key={evt._id} 
+                                        className="dropdown-item"
+                                        onClick={() => handleEventSelection(evt._id, evt.eventName)}
+                                    >
+                                        {evt.eventName}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {selectedImportEvent && (
-                    <div style={{maxHeight: "300px", overflowY: "auto", border: "1px solid #ddd", padding: "10px", borderRadius: "4px"}}>
+                    <div className="import-teams-list">
                         {pastGames.length === 0 ? (
                             <p>No games found in selected event.</p>
                         ) : (
                             <>
-                                <div style={{marginBottom:"10px", fontWeight:"bold"}}>Select Games to Copy:</div>
+                                <div className="select-teams-header">Select Games to Copy:</div>
                                 {pastGames.map(game => (
-                                    <div key={game._id} style={{display:"flex", alignItems:"center", marginBottom:"5px", padding: "5px", borderBottom: "1px solid #eee"}}>
+                                    <div key={game._id} className="team-selection-item">
                                         <input 
                                             type="checkbox" 
                                             checked={!!selectedGamesToCopy.find(g => g._id === game._id)}
                                             onChange={() => toggleImportSelection(game)}
-                                            style={{marginRight: "10px"}}
                                         />
-                                        <div>
-                                           <div style={{fontWeight: "bold"}}>{game.category} {game.gameType}</div>
-                                           <div style={{fontSize: "0.8em", color: "#666"}}>{game.teams.length} Teams | {game.bracketType}</div>
+                                        <div className="game-info">
+                                           <div className="game-name">{game.category} {game.gameType}</div>
+                                           <div className="game-details">{game.teams.length} Teams | {game.bracketType}</div>
                                         </div>
                                     </div>
                                 ))}
