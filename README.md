@@ -7,24 +7,24 @@
 
 <hr />
 
-## ✨ Features
+## Features
 - **Event Management**: Create, schedule, and organize tournaments and matches.
 - **Participant Profiles & Rosters**: Keep track of players and team assignments.
 - **Real-Time Scoring & Brackets**: Update and monitor scores and tournament standings dynamically.
 - **Automated Issuance**: Automatically generate and distribute certificates to participating players.
 - **Role-Based Access**: Specialized dashboards for Admins, Co-organizers, Sub-organizers, and Players.
 
-## 🚀 Tech Stack
+## Tech Stack
 - **Frontend:** React.js
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB (Mongoose)
 
 ---
 
-## 💻 Getting Started
+## Getting Started
 
 ### Prerequisites
-Make sure you have Node.js and npm installed on your machine.
+Node.js and npm must be installed on your device.
 
 ### Installation & Setup
 
@@ -33,20 +33,23 @@ Make sure you have Node.js and npm installed on your machine.
 # Initialize project / install required dependencies
 npm init -y 
 
+# Install all dependencies
+npm install
+
 # Install specific packages as needed
 npm install [package_name]
 ```
 
 **Running the Backend:**
-Navigate to the `backend/` directory and run the development server.
+Navigate to the `backend/` directory and run the server.
 ```bash
 cd backend
 npm run dev
-# Starts the server (usually on http://localhost:5000)
+# Starts the backendserver
 ```
 
 **Running the Frontend:**
-Navigate to the `frontend/` directory and boot up the React application.
+On another terminal, navigate to the `frontend/` directory and start the React website.
 ```bash
 cd frontend
 npm start
@@ -55,5 +58,3 @@ npm start
 *Note: You can also use `npm run build` in the frontend to compile the final build and check if there are any errors.*
 
 ---
-
-*This application is constantly maintained and updated to provide the best sports management experience.*
