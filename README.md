@@ -40,6 +40,44 @@ npm install
 npm install [package_name]
 ```
 
+### Environment Variables Setup
+
+You will need to create two separate `.env` files (one in the backend and one in the frontend) to store your sensitive credentials.
+
+**1. Create `backend/.env`**
+Create a new file called `.env` in the `backend/` folder and add the following keys with your actual database and email credentials:
+
+```env
+# MongoDB Connection
+MONGO_URI=mongodb://username:password@your_cluster.../?ssl=true&authSource=admin&replicaSet=your_replica_set&appName=SPARTA
+PORT=5000
+
+# Authentication
+JWT_SECRET=your_jwt_secret_key
+
+# Event Emails & Certificates (Nodemailer)
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+
+# Google OAuth Login
+GOOGLE_CLIENT_ID=your_id.apps.googleusercontent.com
+
+# Supabase Storage 
+SUPABASE_URL=https://your_app.supabase.co
+SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+**2. Create `frontend/.env`**
+Create a new file called `.env` in the `frontend/` folder so the React Login component can communicate with Google OAuth:
+
+```env
+REACT_APP_GOOGLE_CLIENT_ID=your_id.apps.googleusercontent.com
+```
+
+### Running the Application
+
 **Running the Backend:**
 Navigate to the `backend/` directory and run the server.
 ```bash
