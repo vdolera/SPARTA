@@ -42,15 +42,15 @@ npm install [package_name]
 
 ### Environment Variables Setup
 
-You will need to create two separate `.env` files (one in the backend and one in the frontend) to store your sensitive credentials.
+You will need to create two separate `.env` files (one in the backend and one in the frontend) to store your credentials.
 
 **1. Create `backend/.env`**
 Create a new file called `.env` in the `backend/` folder and add the following keys with your actual database and email credentials:
 
 ```env
 # MongoDB Connection
-MONGO_URI=mongodb://username:password@your_cluster.../?ssl=true&authSource=admin&replicaSet=your_replica_set&appName=SPARTA
-PORT=5000
+MONGO_URI=your_mongodb_url
+PORT=your_backend_port
 
 # Authentication
 JWT_SECRET=your_jwt_secret_key
@@ -65,7 +65,7 @@ SMTP_PORT=587
 GOOGLE_CLIENT_ID=your_id.apps.googleusercontent.com
 
 # Supabase Storage 
-SUPABASE_URL=https://your_app.supabase.co
+SUPABASE_URL=your_supabase_url
 SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
