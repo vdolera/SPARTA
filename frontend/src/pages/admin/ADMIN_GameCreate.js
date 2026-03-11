@@ -8,8 +8,6 @@ const CreateGame = () => {
 
   const [gameType, setGameType] = useState("Basketball");
   const [category, setCategory] = useState("Men");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [bracketType, setBracketType] = useState("Single Elimination");
   const [rulesText, setRulesText] = useState("");
   const [rulesFile, setRulesFile] = useState(null);
@@ -124,8 +122,6 @@ const CreateGame = () => {
       formData.append("institution", user.institution);
       formData.append("gameType", gameType);
       formData.append("category", category);
-      formData.append("startDate", startDate);
-      formData.append("endDate", endDate);
       formData.append("bracketType", bracketType);
       formData.append("eventId", eventId);
       formData.append("teams", JSON.stringify(selectedTeams));
@@ -239,40 +235,6 @@ const CreateGame = () => {
                         <option value="Mixed">Mixed</option>
                       </select>
                     </label>
-
-                    {/* Game Duration */}
-                    <label className="game-label">
-                      Game Start Date:
-                      <input
-                        type="datetime-local"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        required
-                        min={minDateLimit}
-                        max={maxDateLimit}
-                      />
-                    </label>
-
-                    <label className="game-label">
-                      Game End Date:
-                      <input
-                        type="datetime-local"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        required
-                        // Date restriction base on event date
-                        min={startDate && startDate > minDateLimit ? startDate : minDateLimit}
-                        max={maxDateLimit}
-                      />
-                    </label>
-
-                    {!eventDetails && <p style={{ color: 'red', fontSize: '0.8em' }}>Loading event dates...</p>}
-
-                    {eventDetails && (
-                      <p style={{ fontSize: '0.7rem', color: '#666', marginTop: '5px' }}>
-                        Event Duration: {minDateLimit.replace("T", " ")} to {maxDateLimit.replace("T", " ")}
-                      </p>
-                    )}
 
                   </div>
 

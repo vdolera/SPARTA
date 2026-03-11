@@ -4,27 +4,27 @@ const matchSchema = new mongoose.Schema({
   bracket: { type: String, enum: ["WB", "LB", "GF", "RR", "Swiss", "Group A", "Group B", "SF", "3rd Place", "Championship"], default: "WB" },
   round: { type: Number, required: true },
   matchIndex: { type: Number, required: true },
-  teams: [{ 
+  teams: [{
     name: { type: String, default: "TBD" },
     score: { type: Number, default: null }
   }],
   winner: { type: String, default: null },
-  finalizeWinner: { type: Boolean, default: false }, 
-  date: { type: Date, default: null },  
+  finalizeWinner: { type: Boolean, default: false },
+  date: { type: Date, default: null },
   location: { type: String, default: "" },
   notificationSent: { type: Boolean, default: false },
 }, { _id: true });
 
 const gameSchema = new mongoose.Schema({
-  eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event',required: true },
+  eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
   institution: { type: String, required: true },
   gameType: { type: String, required: true },
   category: { type: String, enum: ['Men', 'Women', 'Mixed'], required: true },
-  startDate: { type: Date, required: true },
-  endDate: { type: Date, required: true },
-  teams: { type: [String], required: true },       
-  rules: { type: String, required: true }, 
-  videoLink: { type: String, default:""},      
+  startDate: { type: Date, required: false },
+  endDate: { type: Date, required: false },
+  teams: { type: [String], required: true },
+  rules: { type: String, required: true },
+  videoLink: { type: String, default: "" },
   eventName: { type: String, required: true },
   coordinators: { type: [String], default: [] },
   referees: { type: [String], default: [] },

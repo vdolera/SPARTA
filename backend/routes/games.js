@@ -62,8 +62,8 @@ async function awardMedal(teamName, eventName, game, medal) {
 
     // FSearch by 'institution' and 'event',
     const updateResult = await Team.updateOne(
-      { 
-        teamName: teamName, 
+      {
+        teamName: teamName,
         institution: game.institution,
         event: game.eventId
       },
@@ -97,8 +97,6 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       institution,
       gameType,
       category,
-      startDate,
-      endDate,
       teams,
       eventId,
       bracketType,
@@ -118,42 +116,20 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
     // Check duplicate games
     const existingGame = await Game.findOne({
       institution: institution,
-      eventId: eventId, 
+      eventId: eventId,
       gameType: gameType,
       category: category
     });
 
     if (existingGame) {
-      return res.status(409).json({ 
-        message: `A ${category} ${gameType} game already exists for this event.` 
+      return res.status(409).json({
+        message: `A ${category} ${gameType} game already exists for this event.`
       });
     }
 
-    // Date validation
-    const gameStart = new Date(startDate);
-    const gameEnd = new Date(endDate);
-    const eventStart = new Date(parentEvent.eventStartDate);
-    const eventEnd = new Date(parentEvent.eventEndDate);
-
-    if (isNaN(gameStart.getTime()) || isNaN(gameEnd.getTime())) {
-      return res.status(400).json({ message: "Invalid game start or end date." });
-    }
-
-    if (gameStart < eventStart) {
-      return res.status(400).json({
-        message: `Game start date cannot be before the event start date (${eventStart.toLocaleDateString()}).`
-      });
-    }
-
-    if (gameEnd > eventEnd) {
-      return res.status(400).json({
-        message: `Game end date cannot be after the event end date (${eventEnd.toLocaleDateString()}).`
-      });
-    }
-
-    if (gameStart > gameEnd) {
-      return res.status(400).json({ message: "Game start date must be before its end date." });
-    }
+    // Inherit dates from the Parent Event
+    const startDate = parentEvent.eventStartDate;
+    const endDate = parentEvent.eventEndDate;
 
     // Translation(Parsing) thingy chuchu
     const parsedTeams = JSON.parse(teams || "[]");
@@ -199,8 +175,6 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       !institution ||
       !gameType ||
       !category ||
-      !startDate ||
-      !endDate ||
       !eventId ||
       !bracketType
     ) {
@@ -253,7 +227,7 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       const bracketTeams = [...shuffledTeams];
       const numTeams = bracketTeams.length;
       const size = Math.pow(2, Math.ceil(Math.log2(numTeams)));
-      
+
       while (bracketTeams.length < size) {
         bracketTeams.push("No Opponent");
       }
@@ -273,7 +247,7 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
               { name: bracketTeams[i * 2 + 1], score: null }
             ];
           }
-          
+
           wbMatches.push({
             bracket: "WB", round: r, matchIndex: i,
             teams: teams,
@@ -284,7 +258,7 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
 
       // Generate Empty LB Matches 
       const totalLBRounds = (totalWBRounds - 1) * 2;
-      let matchesInRound = size / 4; 
+      let matchesInRound = size / 4;
       for (let r = 1; r <= totalLBRounds; r++) {
         for (let i = 0; i < matchesInRound; i++) {
           lbMatches.push({
@@ -308,84 +282,84 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
 
       // FIX(I duuno wat dis fix)
       const resolveMatch = (m) => {
-         if (m.finalizeWinner) return;
-         if (m.teams[0].name === "TBD" || m.teams[1].name === "TBD") return;
+        if (m.finalizeWinner) return;
+        if (m.teams[0].name === "TBD" || m.teams[1].name === "TBD") return;
 
-         let winner = null;
-         let loser = null;
+        let winner = null;
+        let loser = null;
 
-         // Check for No Opponent
-         if (m.teams[1].name === "No Opponent") {
-            winner = m.teams[0].name;
-            loser = "No Opponent";
-         } else if (m.teams[0].name === "No Opponent") {
-            winner = m.teams[1].name;
-            loser = "No Opponent";
-         } else if (m.teams[0].name === "No Opponent" && m.teams[1].name === "No Opponent") {
-            winner = "No Opponent";
-            loser = "No Opponent";
-         }
+        // Check for No Opponent
+        if (m.teams[1].name === "No Opponent") {
+          winner = m.teams[0].name;
+          loser = "No Opponent";
+        } else if (m.teams[0].name === "No Opponent") {
+          winner = m.teams[1].name;
+          loser = "No Opponent";
+        } else if (m.teams[0].name === "No Opponent" && m.teams[1].name === "No Opponent") {
+          winner = "No Opponent";
+          loser = "No Opponent";
+        }
 
-         if (winner) {
-            m.winner = winner;
-            m.finalizeWinner = true;
+        if (winner) {
+          m.winner = winner;
+          m.finalizeWinner = true;
 
-            // Advance Winner
-            if (m.bracket === "WB") {
-               const nextRound = m.round + 1;
-               const nextIndex = Math.floor(m.matchIndex / 2);
-               const nextSlot = m.matchIndex % 2;
-               
-               const nextWB = allMatches.find(x => x.bracket === "WB" && x.round === nextRound && x.matchIndex === nextIndex);
-               if (nextWB) {
-                  nextWB.teams[nextSlot].name = winner;
-                  resolveMatch(nextWB);
-               } else if (nextRound > totalWBRounds) {
-                  gfMatch.teams[0].name = winner;
-               }
+          // Advance Winner
+          if (m.bracket === "WB") {
+            const nextRound = m.round + 1;
+            const nextIndex = Math.floor(m.matchIndex / 2);
+            const nextSlot = m.matchIndex % 2;
 
-               // Drop Loser to LB
-               let lbRound = (m.round === 1) ? 1 : (m.round - 1) * 2; 
-               let lbIndex = Math.floor(m.matchIndex / 2); 
-
-               // Find target LB Match
-               let targetLB = allMatches.find(x => x.bracket === "LB" && x.round === lbRound && x.matchIndex === lbIndex);
-               
-               // Fallback
-               if (!targetLB && lbRound > 0) {
-                 targetLB = allMatches.find(x => x.bracket === "LB" && x.round === lbRound && x.teams.some(t=>t.name==="TBD"));
-               }
-
-               if (targetLB) {
-                  const lbSlot = targetLB.teams.findIndex(t => t.name === "TBD" || t.name === "No Opponent");
-                  if (lbSlot !== -1) {
-                     targetLB.teams[lbSlot].name = loser;
-                     resolveMatch(targetLB);
-                  }
-               }
-
-            } else if (m.bracket === "LB") {
-               // Advance LB Winner
-               const nextRound = m.round + 1;
-               // LB Logic
-               const currentCount = allMatches.filter(x => x.bracket === "LB" && x.round === m.round).length;
-               const nextCount = allMatches.filter(x => x.bracket === "LB" && x.round === nextRound).length;
-               
-               let nextIndex = (currentCount === nextCount) ? m.matchIndex : Math.floor(m.matchIndex / 2);
-
-               const nextLB = allMatches.find(x => x.bracket === "LB" && x.round === nextRound && x.matchIndex === nextIndex);
-               if (nextLB) {
-                  const slot = nextLB.teams.findIndex(t => t.name === "TBD");
-                  if (slot !== -1) {
-                    nextLB.teams[slot].name = winner;
-                    resolveMatch(nextLB);
-                  }
-               } else if (nextRound > totalLBRounds) {
-                  // Send to GF
-                  gfMatch.teams[1].name = winner;
-               }
+            const nextWB = allMatches.find(x => x.bracket === "WB" && x.round === nextRound && x.matchIndex === nextIndex);
+            if (nextWB) {
+              nextWB.teams[nextSlot].name = winner;
+              resolveMatch(nextWB);
+            } else if (nextRound > totalWBRounds) {
+              gfMatch.teams[0].name = winner;
             }
-         }
+
+            // Drop Loser to LB
+            let lbRound = (m.round === 1) ? 1 : (m.round - 1) * 2;
+            let lbIndex = Math.floor(m.matchIndex / 2);
+
+            // Find target LB Match
+            let targetLB = allMatches.find(x => x.bracket === "LB" && x.round === lbRound && x.matchIndex === lbIndex);
+
+            // Fallback
+            if (!targetLB && lbRound > 0) {
+              targetLB = allMatches.find(x => x.bracket === "LB" && x.round === lbRound && x.teams.some(t => t.name === "TBD"));
+            }
+
+            if (targetLB) {
+              const lbSlot = targetLB.teams.findIndex(t => t.name === "TBD" || t.name === "No Opponent");
+              if (lbSlot !== -1) {
+                targetLB.teams[lbSlot].name = loser;
+                resolveMatch(targetLB);
+              }
+            }
+
+          } else if (m.bracket === "LB") {
+            // Advance LB Winner
+            const nextRound = m.round + 1;
+            // LB Logic
+            const currentCount = allMatches.filter(x => x.bracket === "LB" && x.round === m.round).length;
+            const nextCount = allMatches.filter(x => x.bracket === "LB" && x.round === nextRound).length;
+
+            let nextIndex = (currentCount === nextCount) ? m.matchIndex : Math.floor(m.matchIndex / 2);
+
+            const nextLB = allMatches.find(x => x.bracket === "LB" && x.round === nextRound && x.matchIndex === nextIndex);
+            if (nextLB) {
+              const slot = nextLB.teams.findIndex(t => t.name === "TBD");
+              if (slot !== -1) {
+                nextLB.teams[slot].name = winner;
+                resolveMatch(nextLB);
+              }
+            } else if (nextRound > totalLBRounds) {
+              // Send to GF
+              gfMatch.teams[1].name = winner;
+            }
+          }
+        }
       };
 
       allMatches.filter(m => m.bracket === "WB" && m.round === 1).forEach(m => resolveMatch(m));
@@ -472,7 +446,7 @@ router.post("/games", upload.single("rulesFile"), async (req, res) => {
       startDate,
       endDate,
       teams: shuffledTeams,
-      eventId: eventId,          
+      eventId: eventId,
       eventName: parentEvent.eventName,
       bracketType,
       matches,
@@ -526,24 +500,24 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
     const round = match.round;
 
     // Search for the teams using ID
-    const team1 = await Team.findOne({ 
-        teamName: match.teams[0].name, 
-        institution: game.institution, 
-        event: game.eventId 
+    const team1 = await Team.findOne({
+      teamName: match.teams[0].name,
+      institution: game.institution,
+      event: game.eventId
     });
 
-    const team2 = await Team.findOne({ 
-        teamName: match.teams[1].name, 
-        institution: game.institution, 
-        event: game.eventId 
+    const team2 = await Team.findOne({
+      teamName: match.teams[1].name,
+      institution: game.institution,
+      event: game.eventId
     });
 
     if (team1) {
       team1.totalScore = (team1.totalScore || 0) - oldScore1 + Number(score1);
-      
+
       if (!team1.roundScores) team1.roundScores = [];
       const roundEntry = team1.roundScores.find((r) => r.round === round);
-      
+
       if (roundEntry) {
         roundEntry.score = Number(score1);
       } else {
@@ -554,10 +528,10 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
 
     if (team2) {
       team2.totalScore = (team2.totalScore || 0) - oldScore2 + Number(score2);
-      
+
       if (!team2.roundScores) team2.roundScores = [];
       const roundEntry = team2.roundScores.find((r) => r.round === round);
-      
+
       if (roundEntry) {
         roundEntry.score = Number(score2);
       } else {
@@ -582,9 +556,9 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
           // Logic
           const nextRound = match.round + 1;
           const nextIndex = Math.floor(match.matchIndex / 2);
-          const nextSlot = match.matchIndex % 2; 
+          const nextSlot = match.matchIndex % 2;
 
-          const nextM = game.matches.find(m => 
+          const nextM = game.matches.find(m =>
             m.round === nextRound && m.matchIndex === nextIndex
           );
 
@@ -604,7 +578,7 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
 
         // DOUBLE ELIMINATION
         if (game.bracketType === "Double Elimination") {
-          
+
           // Winner Bracket 
           if (match.bracket === "WB") {
             const wbMatches = game.matches.filter(m => m.bracket === "WB");
@@ -612,172 +586,172 @@ router.put("/games/:id/matches/:matchId", async (req, res) => {
 
             // Advance Winner in WB
             if (match.round === maxWBRound) {
-               // WB Final, Winner goes to Grand Final
-               const gfMatch = game.matches.find(m => m.bracket === "GF");
-               if (gfMatch) {
-                 gfMatch.teams[0].name = winnerName; 
-                 gfMatch.teams[0].score = null;
-               }
+              // WB Final, Winner goes to Grand Final
+              const gfMatch = game.matches.find(m => m.bracket === "GF");
+              if (gfMatch) {
+                gfMatch.teams[0].name = winnerName;
+                gfMatch.teams[0].score = null;
+              }
             } else {
-               // Normal Round, Winner goes to Next WB Round
-               const nextWBRound = match.round + 1;
-               const nextWBIndex = Math.floor(match.matchIndex / 2);
-               const nextWB = game.matches.find(m => m.bracket === "WB" && m.round === nextWBRound && m.matchIndex === nextWBIndex);
-               
-               if (nextWB) {
-                 const slot = match.matchIndex % 2;
-                 nextWB.teams[slot].name = winnerName;
-                 nextWB.teams[slot].score = null;
-               }
+              // Normal Round, Winner goes to Next WB Round
+              const nextWBRound = match.round + 1;
+              const nextWBIndex = Math.floor(match.matchIndex / 2);
+              const nextWB = game.matches.find(m => m.bracket === "WB" && m.round === nextWBRound && m.matchIndex === nextWBIndex);
+
+              if (nextWB) {
+                const slot = match.matchIndex % 2;
+                nextWB.teams[slot].name = winnerName;
+                nextWB.teams[slot].score = null;
+              }
             }
 
             const actualLoserName = loserName || "No Opponent";
-            
+
             let lbDropRound;
             if (match.round === 1) {
               lbDropRound = 1;
             } else {
-              lbDropRound = (match.round - 1) * 2; 
-              if (match.round === 1) lbDropRound = 1; 
+              lbDropRound = (match.round - 1) * 2;
+              if (match.round === 1) lbDropRound = 1;
             }
 
             // Find valid target matches in LB
             let lbTargetMatches = game.matches
-               .filter(m => m.bracket === "LB" && m.round === lbDropRound)
-               .sort((a,b) => a.matchIndex - b.matchIndex);
-            
-            let target = lbTargetMatches.find(m => 
-                m.teams.some(t => t.name === "TBD" || t.name === "No Opponent")
+              .filter(m => m.bracket === "LB" && m.round === lbDropRound)
+              .sort((a, b) => a.matchIndex - b.matchIndex);
+
+            let target = lbTargetMatches.find(m =>
+              m.teams.some(t => t.name === "TBD" || t.name === "No Opponent")
             );
- 
+
             if (match.round === 1) {
-                const targetIndex = Math.floor(match.matchIndex / 2);
-                target = game.matches.find(m => m.bracket === "LB" && m.round === 1 && m.matchIndex === targetIndex);
+              const targetIndex = Math.floor(match.matchIndex / 2);
+              target = game.matches.find(m => m.bracket === "LB" && m.round === 1 && m.matchIndex === targetIndex);
             }
 
             if (target) {
-               // Find empty slot (TBD) or No Opponent slot to overwrite
-               const slot = target.teams.findIndex(t => t.name === "TBD" || t.name === "No Opponent");
-               const safeSlot = slot !== -1 ? slot : 0; 
-               
-               target.teams[safeSlot].name = actualLoserName;
-               target.teams[safeSlot].score = null;
+              // Find empty slot (TBD) or No Opponent slot to overwrite
+              const slot = target.teams.findIndex(t => t.name === "TBD" || t.name === "No Opponent");
+              const safeSlot = slot !== -1 ? slot : 0;
+
+              target.teams[safeSlot].name = actualLoserName;
+              target.teams[safeSlot].score = null;
             }
           }
 
           // Loser Bracket 
           if (match.bracket === "LB") {
-             const lbMatches = game.matches.filter(m => m.bracket === "LB");
-             const maxLBRound = Math.max(...lbMatches.map(m => m.round));
+            const lbMatches = game.matches.filter(m => m.bracket === "LB");
+            const maxLBRound = Math.max(...lbMatches.map(m => m.round));
 
-             if (match.round === maxLBRound) {
-                const gfMatch = game.matches.find(m => m.bracket === "GF");
-                if (gfMatch) {
-                  gfMatch.teams[1].name = winnerName;
-                  gfMatch.teams[1].score = null;
-                }
-             }
-             // Normal Advancement
-             else {
-                const nextLBRound = match.round + 1;
-                // Calculate next match index
-                const currentRoundCount = game.matches.filter(m => m.bracket === "LB" && m.round === match.round).length;
-                const nextRoundCount = game.matches.filter(m => m.bracket === "LB" && m.round === nextLBRound).length;
-                
-                let nextLBIndex = (currentRoundCount === nextRoundCount) ? match.matchIndex : Math.floor(match.matchIndex / 2);
-                
-                const nextLB = game.matches.find(m => m.bracket === "LB" && m.round === nextLBRound && m.matchIndex === nextLBIndex);
-                if (nextLB) {
-                   const slot = nextLB.teams.findIndex(t => t.name === "TBD");
-                   const safeSlot = slot !== -1 ? slot : 0;
-                   nextLB.teams[safeSlot].name = winnerName;
-                   nextLB.teams[safeSlot].score = null;
-                }
-             }
+            if (match.round === maxLBRound) {
+              const gfMatch = game.matches.find(m => m.bracket === "GF");
+              if (gfMatch) {
+                gfMatch.teams[1].name = winnerName;
+                gfMatch.teams[1].score = null;
+              }
+            }
+            // Normal Advancement
+            else {
+              const nextLBRound = match.round + 1;
+              // Calculate next match index
+              const currentRoundCount = game.matches.filter(m => m.bracket === "LB" && m.round === match.round).length;
+              const nextRoundCount = game.matches.filter(m => m.bracket === "LB" && m.round === nextLBRound).length;
+
+              let nextLBIndex = (currentRoundCount === nextRoundCount) ? match.matchIndex : Math.floor(match.matchIndex / 2);
+
+              const nextLB = game.matches.find(m => m.bracket === "LB" && m.round === nextLBRound && m.matchIndex === nextLBIndex);
+              if (nextLB) {
+                const slot = nextLB.teams.findIndex(t => t.name === "TBD");
+                const safeSlot = slot !== -1 ? slot : 0;
+                nextLB.teams[safeSlot].name = winnerName;
+                nextLB.teams[safeSlot].score = null;
+              }
+            }
           }
 
           // Medals and GF Logic
           if (match.bracket === "GF") {
-             await awardMedal(winnerName, game.eventName, game, 'gold');
-             await awardMedal(loserName, game.eventName, game, 'silver');
-             
-             const lbMatches = game.matches.filter(m => m.bracket === "LB");
-             const maxLBRound = Math.max(...lbMatches.map(m => m.round));
-             const lbFinal = lbMatches.find(m => m.round === maxLBRound);
-             
-             if (lbFinal && lbFinal.winner) {
-                const bronzeWinner = lbFinal.teams.find(t => t.name !== lbFinal.winner)?.name;
-                await awardMedal(bronzeWinner, game.eventName, game, 'bronze');
-             }
+            await awardMedal(winnerName, game.eventName, game, 'gold');
+            await awardMedal(loserName, game.eventName, game, 'silver');
+
+            const lbMatches = game.matches.filter(m => m.bracket === "LB");
+            const maxLBRound = Math.max(...lbMatches.map(m => m.round));
+            const lbFinal = lbMatches.find(m => m.round === maxLBRound);
+
+            if (lbFinal && lbFinal.winner) {
+              const bronzeWinner = lbFinal.teams.find(t => t.name !== lbFinal.winner)?.name;
+              await awardMedal(bronzeWinner, game.eventName, game, 'bronze');
+            }
           }
-          
+
           game.markModified('matches');
         }
 
         // ROUND ROBIN
         if (game.bracketType === "Round Robin") {
-           const allMatchesDone = game.matches.every(m => m.finalizeWinner || m._id === match._id);
-           if (allMatchesDone) {
-              const winCount = {};
-              game.teams.forEach(team => { winCount[team] = 0; });
-              game.matches.forEach(m => {
-                 if (m.winner) winCount[m.winner] = (winCount[m.winner] || 0) + 1;
-              });
-              const sortedTeams = Object.entries(winCount).sort(([, a], [, b]) => b - a);
-              if (sortedTeams[0]) await awardMedal(sortedTeams[0][0], game.eventName, game, 'gold');
-              if (sortedTeams[1]) await awardMedal(sortedTeams[1][0], game.eventName, game, 'silver');
-              if (sortedTeams[2]) await awardMedal(sortedTeams[2][0], game.eventName, game, 'bronze');
-           }
+          const allMatchesDone = game.matches.every(m => m.finalizeWinner || m._id === match._id);
+          if (allMatchesDone) {
+            const winCount = {};
+            game.teams.forEach(team => { winCount[team] = 0; });
+            game.matches.forEach(m => {
+              if (m.winner) winCount[m.winner] = (winCount[m.winner] || 0) + 1;
+            });
+            const sortedTeams = Object.entries(winCount).sort(([, a], [, b]) => b - a);
+            if (sortedTeams[0]) await awardMedal(sortedTeams[0][0], game.eventName, game, 'gold');
+            if (sortedTeams[1]) await awardMedal(sortedTeams[1][0], game.eventName, game, 'silver');
+            if (sortedTeams[2]) await awardMedal(sortedTeams[2][0], game.eventName, game, 'bronze');
+          }
         }
 
         const round = match.round;
         // Update Team collection stats
-        const team1 = await Team.findOne({ 
-          teamName: match.teams[0].name, 
-          institution: game.institution, 
-          event: game.eventId 
-      });
+        const team1 = await Team.findOne({
+          teamName: match.teams[0].name,
+          institution: game.institution,
+          event: game.eventId
+        });
 
-      const team2 = await Team.findOne({ 
-          teamName: match.teams[1].name, 
-          institution: game.institution, 
-          event: game.eventId 
-      });
+        const team2 = await Team.findOne({
+          teamName: match.teams[1].name,
+          institution: game.institution,
+          event: game.eventId
+        });
 
-      if (team1) {
-        team1.totalScore = (team1.totalScore || 0) - oldScore1 + Number(score1);
-        
-        // check roundScores array exists
-        if (!team1.roundScores) team1.roundScores = [];
-        
-        const roundEntry = team1.roundScores.find((r) => r.round === round);
-        if (roundEntry) {
-          roundEntry.score = Number(score1);
+        if (team1) {
+          team1.totalScore = (team1.totalScore || 0) - oldScore1 + Number(score1);
+
+          // check roundScores array exists
+          if (!team1.roundScores) team1.roundScores = [];
+
+          const roundEntry = team1.roundScores.find((r) => r.round === round);
+          if (roundEntry) {
+            roundEntry.score = Number(score1);
+          } else {
+            team1.roundScores.push({ round, score: Number(score1) });
+          }
+          await team1.save();
         } else {
-          team1.roundScores.push({ round, score: Number(score1) });
-        }
-        await team1.save();
-      } else {
           console.log(`Warning: Team 1 (${match.teams[0].name}) not found for stats update.`);
-      }
-
-      if (team2) {
-        team2.totalScore = (team2.totalScore || 0) - oldScore2 + Number(score2);
-        
-        if (!team2.roundScores) team2.roundScores = [];
-
-        const roundEntry = team2.roundScores.find((r) => r.round === round);
-        if (roundEntry) {
-          roundEntry.score = Number(score2);
-        } else {
-          team2.roundScores.push({ round, score: Number(score2) });
         }
-        await team2.save();
-      } else {
+
+        if (team2) {
+          team2.totalScore = (team2.totalScore || 0) - oldScore2 + Number(score2);
+
+          if (!team2.roundScores) team2.roundScores = [];
+
+          const roundEntry = team2.roundScores.find((r) => r.round === round);
+          if (roundEntry) {
+            roundEntry.score = Number(score2);
+          } else {
+            team2.roundScores.push({ round, score: Number(score2) });
+          }
+          await team2.save();
+        } else {
           console.log(`Warning: Team 2 (${match.teams[1].name}) not found for stats update.`);
+        }
       }
     }
-  }
 
     await game.save();
     res.json(game);
@@ -839,7 +813,7 @@ router.put("/games/:gameId/matches/:matchId/schedule", async (req, res) => {
     const game = await Game.findById(gameId);
     if (!game) return res.status(404).json({ message: "Game not found" });
 
-    const parentEvent = await Event.findById(game.eventId); 
+    const parentEvent = await Event.findById(game.eventId);
     if (!parentEvent) return res.status(404).json({ message: "Parent Event not found" });
 
     const match = game.matches.id(matchId);

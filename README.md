@@ -10,8 +10,8 @@
 ## Features
 - **Event Management**: Create, schedule, and organize tournaments and matches.
 - **Participant Profiles & Rosters**: Keep track of players and team assignments.
-- **Real-Time Scoring & Brackets**: Update and monitor scores and tournament standings dynamically.
-- **Automated Issuance**: Automatically generate and distribute certificates to participating players.
+- **Real-Time Scoring & Brackets Updates**: Update and monitor scores and tournament standings dynamically.
+- **Automated Certificates**: Automatically generate and distribute certificates to participating players.
 - **Role-Based Access**: Specialized dashboards for Admins, Co-organizers, Sub-organizers, and Players.
 
 ## Tech Stack

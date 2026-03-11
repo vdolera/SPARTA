@@ -678,8 +678,15 @@ const GameBracket = () => {
                 Schedule
               </button>
               <button
+                disabled={!props.seed.date}
+                style={{
+                  opacity: !props.seed.date ? 0.5 : 1,
+                  cursor: !props.seed.date ? 'not-allowed' : 'pointer',
+                }}
+                title={!props.seed.date ? "Please set a schedule first" : "Add/Update Scores"}
                 onClick={(e) => {
                   e.stopPropagation();
+                  if (!props.seed.date) return; // double check
                   setSelectedMatch({ ...props.seed, type: "scores" });
                   setTempScores(props.seed.teams.map((t) => t.score ?? 0));
                 }}
